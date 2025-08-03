@@ -6,7 +6,6 @@ with pkgs; [
   bat
   docker
   docker-compose
-  ghostty
   gnupg
   iosevka
   jq
