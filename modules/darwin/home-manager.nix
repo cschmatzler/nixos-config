@@ -1,4 +1,10 @@
-{ config, pkgs, lib, home-manager, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  home-manager,
+  ...
+}:
 
 let
   user = "cschmatzler";
@@ -7,7 +13,7 @@ let
 in
 {
   imports = [
-   ./dock
+    ./dock
   ];
 
   # It me
@@ -20,7 +26,7 @@ in
 
   homebrew = {
     enable = true;
-    casks = pkgs.callPackage ./casks.nix {};
+    casks = pkgs.callPackage ./casks.nix { };
 
     masApps = {
     };
@@ -28,18 +34,25 @@ in
 
   home-manager = {
     useGlobalPkgs = true;
-    users.${user} = { pkgs, config, lib, ... }:{
-      home = {
-        enableNixpkgsReleaseCheck = false;
-        packages = pkgs.callPackage ./packages.nix {};
-        file = lib.mkMerge [
-          sharedFiles
-          additionalFiles
-        ];
-        stateVersion = "23.11";
+    users.${user} =
+      {
+        pkgs,
+        config,
+        lib,
+        ...
+      }:
+      {
+        home = {
+          enableNixpkgsReleaseCheck = false;
+          packages = pkgs.callPackage ./packages.nix { };
+          file = lib.mkMerge [
+            sharedFiles
+            additionalFiles
+          ];
+          stateVersion = "23.11";
+        };
+        programs = { } // import ../shared/home-manager.nix { inherit config pkgs lib; };
       };
-      programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
-    };
   };
 
   # Fully declarative dock using the latest from Nix Store

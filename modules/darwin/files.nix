@@ -1,2 +1,7 @@
-{ user, config, pkgs, ... }:
-{}
+{
+  user,
+  config,
+  pkgs,
+  ...
+}:
+{ }

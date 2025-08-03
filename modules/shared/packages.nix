@@ -1,6 +1,7 @@
 { pkgs }:
 
-with pkgs; [
+with pkgs;
+[
   age
   age-plugin-yubikey
   bat
