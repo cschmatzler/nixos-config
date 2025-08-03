@@ -11,63 +11,124 @@ let
   email = "christoph@schmatzler.com";
 in
 {
+  ghostty = {
+    enable = true;
+    package = pkgs.ghostty-bin;
+    settings = {
+      command = "${pkgs.nushell}/bin/nu";
+      theme = "catppuccin-latte";
+      window-padding-x = 8;
+      window-padding-y = 2;
+      window-padding-balance = true;
+      font-family = "Iosevka";
+      font-size = 15.5;
+      font-feature = [
+        "-calt"
+        "-dlig"
+      ];
+      cursor-style = "block";
+      mouse-hide-while-typing = true;
+      mouse-scroll-multiplier = 1.25;
+      shell-integration = "detect";
+      shell-integration-features = "no-cursor";
+
+      keybind = [
+        "global:ctrl+shift+space=toggle_quick_terminal"
+        "shift+enter=text:\\n"
+        "ctrl+one=goto_tab:1"
+        "ctrl+two=goto_tab:2"
+        "ctrl+three=goto_tab:3"
+        "ctrl+four=goto_tab:4"
+        "ctrl+five=goto_tab:5"
+        "ctrl+six=goto_tab:6"
+        "ctrl+seven=goto_tab:7"
+        "ctrl+eight=goto_tab:8"
+        "ctrl+nine=goto_tab:9"
+        "ctrl+left=previous_tab"
+        "ctrl+right=next_tab"
+        "ctrl+h=previous_tab"
+        "ctrl+l=next_tab"
+        "ctrl+shift+left=goto_split:left"
+        "ctrl+shift+right=goto_split:right"
+        "ctrl+shift+h=goto_split:left"
+        "ctrl+shift+j=goto_split:down"
+        "ctrl+shift+k=goto_split:up"
+        "ctrl+shift+l=goto_split:right"
+        "ctrl+shift+enter=new_split:right"
+        "ctrl+t=new_tab"
+        "ctrl+w=close_tab"
+        "ctrl+shift+w=close_surface"
+      ];
+    };
+  };
+
   zsh = {
     enable = true;
-    autocd = false;
-    cdpath = [ "~/Projects" ];
-    plugins = [
-      {
-        name = "powerlevel10k";
-        src = pkgs.zsh-powerlevel10k;
-        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-      {
-        name = "powerlevel10k-config";
-        src = lib.cleanSource ./config;
-        file = "p10k.zsh";
-      }
-    ];
-    initContent = lib.mkBefore ''
-      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-        . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
-      fi
+  };
 
-      # Define variables for directories
-      export PATH=$HOME/.pnpm-packages/bin:$HOME/.pnpm-packages:$PATH
-      export PATH=$HOME/.npm-packages/bin:$HOME/bin:$PATH
-      export PATH=$HOME/.local/share/bin:$PATH
+  nushell = {
+    enable = true;
+    configFile.source = ./.../config/config.nu;
+  };
 
-      # Remove history data we don't want to see
-      export HISTIGNORE="pwd:ls:cd"
+  starship = {
+    enable = true;
+    enableNushellIntegration = true;
+    settings = {
+      add_newline = true;
+      command_timeout = 750;
 
-      # Ripgrep alias
-      alias search=rg -p --glob '!node_modules/*'  $@
+      format = lib.concatStrings [
+        "$directory"
+        "$\{custom.jj\}"
+        "$line_break"
+        "$character"
+      ];
 
-      # Emacs is my editor
-      export ALTERNATE_EDITOR=""
-      export EDITOR="emacsclient -t"
-      export VISUAL="emacsclient -c -a emacs"
+      character = {
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+      };
 
-      e() {
-          emacsclient -t "$@"
-      }
+      custom.jj = {
+        ignore_timeout = true;
+        description = "The current jj status";
+        detect_folders = [ ".jj" ];
+        symbol = "🥋 ";
+        command = lib.concatStrings [
+          "jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 --template '"
+          "separate(\" \","
+          "  change_id.shortest(4),"
+          "  bookmarks,"
+          "  \"|\","
+          "  concat("
+          "    if(conflict, \"💥\"),"
+          "    if(divergent, \"🚧\"),"
+          "    if(hidden, \"👻\"),"
+          "    if(immutable, \"🔒\"),"
+          "  ),"
+          "  raw_escape_sequence(\"\\x1b[1;32m\") ++ if(empty, \"(empty)\"),"
+          "  raw_escape_sequence(\"\\x1b[1;32m\") ++ coalesce("
+          "    truncate_end(29, description.first_line(), \"…\"),"
+          "    \"(no description set)\","
+          "  ) ++ raw_escape_sequence(\"\\x1b[0m\"),"
+          ")"
+        ];
+      };
 
-      # nix shortcuts
-      shell() {
-          nix-shell '<nixpkgs>' -A "$1"
-      }
-
-      # pnpm is a javascript package manager
-      alias pn=pnpm
-      alias px=pnpx
-
-      # Use difftastic, syntax-aware diffing
-      alias diff=difft
-
-      # Always color ls and group directories
-      alias ls='ls --color=auto'
-    '';
+      git_state = {
+        disabled = true;
+      };
+      git_commit = {
+        disabled = true;
+      };
+      git_metrics = {
+        disabled = true;
+      };
+      git_branch = {
+        disabled = true;
+      };
+    };
   };
 
   git = {

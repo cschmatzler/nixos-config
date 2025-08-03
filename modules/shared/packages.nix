@@ -9,12 +9,12 @@ with pkgs;
   docker-compose
   gnupg
   iosevka
-  jujutsu
   jjui
-  nixfmt
   jq
+  jujutsu
   killall
   libfido2
+  nixfmt
   nodejs_24
   openssh
   ripgrep
@@ -24,5 +24,4 @@ with pkgs;
   unzip
   wget
   zip
-  zsh-powerlevel10k
 ]

@@ -16,7 +16,6 @@ in
     ./dock
   ];
 
-  # It me
   users.users.${user} = {
     name = "${user}";
     home = "/Users/${user}";
@@ -28,8 +27,7 @@ in
     enable = true;
     casks = pkgs.callPackage ./casks.nix { };
 
-    masApps = {
-    };
+    masApps = { };
   };
 
   home-manager = {
@@ -55,19 +53,16 @@ in
       };
   };
 
-  # Fully declarative dock using the latest from Nix Store
   local = {
     dock = {
       enable = true;
       username = user;
       entries = [
         { path = "/Applications/Safari.app/"; }
-        { path = "/System/Applications/Messages.app/"; }
-        { path = "/System/Applications/Notes.app/"; }
+        { path = "/${pkgs.ghostty-bin}/Applications/Ghostty.app/"; }
         { path = "${pkgs.alacritty}/Applications/Alacritty.app/"; }
+        { path = "/System/Applications/Notes.app/"; }
         { path = "/System/Applications/Music.app/"; }
-        { path = "/System/Applications/Photos.app/"; }
-        { path = "/System/Applications/Photo Booth.app/"; }
         { path = "/System/Applications/System Settings.app/"; }
         {
           path = "${config.users.users.${user}.home}/Downloads";
