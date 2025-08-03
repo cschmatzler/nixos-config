@@ -1,5 +1,5 @@
 {
-  description = "Starter Configuration with secrets for MacOS and NixOS";
+  description = "Configuration for my macOS laptops and NixOS server";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     agenix.url = "github:ryantm/agenix";
@@ -57,12 +57,12 @@
       };
       mkLinuxApps = system: {
         "apply" = mkApp "apply" system;
+        "build" = mkApp "build" system;
         "build-switch" = mkApp "build-switch" system;
         "copy-keys" = mkApp "copy-keys" system;
         "create-keys" = mkApp "create-keys" system;
         "check-keys" = mkApp "check-keys" system;
-        "install" = mkApp "install" system;
-        "install-with-secrets" = mkApp "install-with-secrets" system;
+        "rollback" = mkApp "rollback" system;
       };
       mkDarwinApps = system: {
         "apply" = mkApp "apply" system;

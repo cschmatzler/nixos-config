@@ -8,6 +8,9 @@ with pkgs; [
   docker-compose
   gnupg
   iosevka
+  jujutsu
+  jjui
+  nixfmt
   jq
   killall
   libfido2
