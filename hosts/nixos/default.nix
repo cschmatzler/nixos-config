@@ -3,22 +3,21 @@
   inputs,
   pkgs,
   agenix,
+  hostname,
+  user,
   ...
 }:
 
 let
-  user = "cschmatzler";
   keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk8iAnIaa1deoc7jw8YACPNVka1ZFJxhnU4G74TmS+p" ];
 in
 {
   imports = [
-    ../../modules/nixos/secrets.nix
-    ../../modules/nixos/disk-config.nix
-    ../../modules/shared
+    ../../profiles/base
+    ../../profiles/nixos
     agenix.nixosModules.default
   ];
 
-  # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
       systemd-boot = {
@@ -35,54 +34,24 @@ in
       "usb_storage"
       "sd_mod"
     ];
-    # Uncomment for AMD GPU
-    # initrd.kernelModules = [ "amdgpu" ];
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "uinput" ];
   };
 
-  # Set your time zone.
-  time.timeZone = "America/New_York";
+  time.timeZone = "UTC";
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
   networking = {
-    hostName = "%HOST%"; # Define your hostname.
+    hostName = hostname;
     useDHCP = false;
     interfaces."%INTERFACE%".useDHCP = true;
   };
 
-  nix = {
-    nixPath = [ "nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos" ];
-    settings = {
-      allowed-users = [ "${user}" ];
-      trusted-users = [
-        "@admin"
-        "${user}"
-      ];
-      substituters = [
-        "https://nix-community.cachix.org"
-        "https://cache.nixos.org"
-      ];
-      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
-    };
+  nix.nixPath = [ "nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos" ];
 
-    package = pkgs.nix;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
-
-  # Manages keys and such
   programs = {
     gnupg.agent.enable = true;
-
-    # Needed for anything GTK related
     dconf.enable = true;
-
-    # My shell
-    zsh.enable = true;
+    fish.enable = true;
   };
 
   services = {
@@ -90,45 +59,24 @@ in
     xserver = {
       enable = true;
 
-      # Uncomment these for AMD or Nvidia GPU
-      # videoDrivers = [ "amdgpu" ];
-      # videoDrivers = [ "nvidia" ];
-
-      # Uncomment this for Nvidia GPU
-      # This helps fix tearing of windows for Nvidia cards
-      # services.xserver.screenSection = ''
-      #   Option       "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-      #   Option       "AllowIndirectGLXProtocol" "off"
-      #   Option       "TripleBuffer" "on"
-      # '';
-
-      # LightDM Display Manager
       displayManager.lightdm = {
         enable = true;
         greeters.slick.enable = true;
-        background = ../../modules/nixos/config/login-wallpaper.png;
+        background = ../../profiles/nixos/config/login-wallpaper.png;
       };
 
-      # Tiling window manager
       windowManager.bspwm = {
         enable = true;
       };
 
       xkb = {
-        # Turn Caps Lock into Ctrl
         layout = "us";
         options = "ctrl:nocaps";
       };
     };
 
-    # Better support for general peripherals
     libinput.enable = true;
-
-    # Let's be able to SSH into this machine
     openssh.enable = true;
-
-    # Sync state between machines
-    # Sync state between machines
     syncthing = {
       enable = true;
       openDefaultPorts = true;
@@ -283,15 +231,12 @@ in
   virtualisation.docker.enable = true;
   virtualisation.docker.logDriver = "json-file";
 
-  # It's me, it's you, it's everyone
+  # Additional user config beyond what's in profiles/nixos
   users.users = {
     ${user} = {
-      isNormalUser = true;
       extraGroups = [
-        "wheel" # Enable ‘sudo’ for the user.
         "docker"
       ];
-      shell = pkgs.zsh;
       openssh.authorizedKeys.keys = keys;
     };
 
