@@ -1,7 +1,8 @@
 $env.PATH = [
   ($env.HOME | path join ".local" "bin"),
   ($env.HOME | path join ".scripts"),
-  "/opt/homebrew/bin"
+  "/run/current-system/sw/bin",
+  "/nix/var/nix/profiles/default/bin"
 ] ++ $env.PATH
 
 $env.EDITOR = "nvim"

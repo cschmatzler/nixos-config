@@ -20,7 +20,8 @@ in
     name = "${user}";
     home = "/Users/${user}";
     isHidden = false;
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
+    ignoreShellProgramCheck = true;
   };
 
   homebrew = {

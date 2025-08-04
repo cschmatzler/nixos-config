@@ -4,9 +4,11 @@ with pkgs;
 [
   age
   age-plugin-yubikey
+  atuin
   bat
   docker
   docker-compose
+  fish
   gnupg
   iosevka
   jjui
@@ -14,6 +16,7 @@ with pkgs;
   jujutsu
   killall
   libfido2
+  neovim
   nixfmt
   nodejs_24
   openssh
@@ -22,6 +25,8 @@ with pkgs;
   tree
   unrar
   unzip
+  vivid
   wget
   zip
+  zoxide
 ]

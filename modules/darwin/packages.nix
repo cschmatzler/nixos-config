@@ -8,4 +8,5 @@ shared-packages
   _1password-gui
   dockutil
   raycast
+  neovim
 ]
