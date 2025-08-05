@@ -38,13 +38,13 @@
           ../base/home-manager/bat.nix
           ../base/home-manager/eza.nix
           ../base/home-manager/fish.nix
-          ../base/home-manager/ghostty.nix
           ../base/home-manager/git.nix
           ../base/home-manager/jujutsu.nix
           ../base/home-manager/ssh.nix
           ../base/home-manager/starship.nix
           ../base/home-manager/zoxide.nix
           ../base/home-manager/zsh.nix
+          ./home-manager/ghostty.nix
         ];
         home = {
           packages = pkgs.callPackage ./packages.nix { };
