@@ -27,13 +27,13 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    secrets = {
-      url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
-      flake = false;
-    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    secrets = {
+      url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
+      flake = false;
     };
   };
   outputs =
@@ -48,6 +48,7 @@
       nixpkgs,
       disko,
       agenix,
+      nixvim,
       secrets,
     }@inputs:
     let

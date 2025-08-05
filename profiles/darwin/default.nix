@@ -3,6 +3,7 @@
   pkgs,
   lib,
   home-manager,
+  nixvim,
   user,
   ...
 }:
@@ -32,19 +33,9 @@
         ...
       }:
       {
-        _module.args = { inherit user; };
+        _module.args = { inherit user nixvim; };
         imports = [
-          ../base/home-manager/atuin.nix
-          ../base/home-manager/bat.nix
-          ../base/home-manager/eza.nix
-          ../base/home-manager/fish.nix
-          ../base/home-manager/git.nix
-          ../base/home-manager/jujutsu.nix
-          ../base/home-manager/ssh.nix
-          ../base/home-manager/starship.nix
-          ../base/home-manager/zellij.nix
-          ../base/home-manager/zoxide.nix
-          ../base/home-manager/zsh.nix
+          ../base/home-manager
           ./home-manager/ghostty.nix
         ];
         fonts.fontconfig.enable = true;
