@@ -37,6 +37,11 @@
           source_func = "omnifunc";
         };
       };
+      indentscope = {};
+      move = {};
+      pairs = {};
+      trailspace = {};
+      visits = {};
       pick = {};
       surround = {};
     };
