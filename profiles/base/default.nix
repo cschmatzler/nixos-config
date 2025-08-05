@@ -58,12 +58,9 @@
     '';
   };
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      agenix.packages."${pkgs.system}".default
-    ]
-    ++ (import ./packages.nix { inherit pkgs; });
+  environment.systemPackages = with pkgs; [
+    agenix.packages."${pkgs.system}".default
+  ];
 
   programs.fish.enable = true;
 

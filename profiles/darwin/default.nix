@@ -46,8 +46,9 @@
           ../base/home-manager/zsh.nix
           ./home-manager/ghostty.nix
         ];
+        fonts.fontconfig.enable = true;
         home = {
-          packages = pkgs.callPackage ./packages.nix { };
+          packages = pkgs.callPackage ./packages.nix { } ++ pkgs.callPackage ../base/packages.nix { };
           stateVersion = "23.11";
         };
       };

@@ -13,7 +13,7 @@
       window-padding-x = 8;
       window-padding-y = 2;
       window-padding-balance = true;
-      font-family = "Iosevka";
+      font-family = "FiraCode Nerd Font";
       font-size = 15.5;
       font-feature = [
         "-calt"

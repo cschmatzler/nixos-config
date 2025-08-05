@@ -9,8 +9,8 @@ with pkgs;
   docker-compose
   git
   gnupg
-  iosevka
   jjui
+  nerd-fonts.fira-code
   jq
   killall
   libfido2
