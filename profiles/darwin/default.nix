@@ -6,9 +6,7 @@
   nixvim,
   user,
   ...
-}:
-
-{
+}: {
   imports = [
     ./dock
     ./system.nix
@@ -25,26 +23,24 @@
 
   home-manager = {
     useGlobalPkgs = true;
-    users.${user} =
-      {
-        pkgs,
-        config,
-        lib,
-        ...
-      }:
-      {
-        _module.args = { inherit user; };
-        imports = [
-          nixvim.homeModules.nixvim
-          ../base/home-manager
-          ./home-manager/ghostty.nix
-        ];
-        fonts.fontconfig.enable = true;
-        home = {
-          packages = pkgs.callPackage ./packages.nix { } ++ pkgs.callPackage ../base/packages.nix { };
-          stateVersion = "24.05";
-        };
+    users.${user} = {
+      pkgs,
+      config,
+      lib,
+      ...
+    }: {
+      _module.args = {inherit user;};
+      imports = [
+        nixvim.homeModules.nixvim
+        ../base/home-manager
+        ./home-manager/ghostty.nix
+      ];
+      fonts.fontconfig.enable = true;
+      home = {
+        packages = pkgs.callPackage ./packages.nix {} ++ pkgs.callPackage ../base/packages.nix {};
+        stateVersion = "24.05";
       };
+    };
   };
 
   local = {
@@ -52,11 +48,11 @@
       enable = true;
       username = user;
       entries = [
-        { path = "/Applications/Safari.app/"; }
-        { path = "/${pkgs.ghostty-bin}/Applications/Ghostty.app/"; }
-        { path = "/System/Applications/Notes.app/"; }
-        { path = "/System/Applications/Music.app/"; }
-        { path = "/System/Applications/System Settings.app/"; }
+        {path = "/Applications/Safari.app/";}
+        {path = "/${pkgs.ghostty-bin}/Applications/Ghostty.app/";}
+        {path = "/System/Applications/Notes.app/";}
+        {path = "/System/Applications/Music.app/";}
+        {path = "/System/Applications/System Settings.app/";}
         {
           path = "${config.users.users.${user}.home}/Downloads";
           section = "others";

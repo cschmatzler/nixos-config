@@ -1,6 +1,4 @@
-{ lib, ... }:
-
-{
+{lib, ...}: {
   system.defaults = {
     NSGlobalDomain = {
       AppleShowAllExtensions = true;

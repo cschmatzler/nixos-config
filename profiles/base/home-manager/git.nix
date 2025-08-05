@@ -1,14 +1,9 @@
-{
-  ...
-}:
-
-let
+{...}: let
   name = "Christoph Schmatzler";
-in
-{
+in {
   programs.git = {
     enable = true;
-    ignores = [ "*.swp" ];
+    ignores = ["*.swp"];
     userName = name;
     lfs = {
       enable = true;

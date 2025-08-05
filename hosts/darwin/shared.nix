@@ -4,9 +4,7 @@
   pkgs,
   lib,
   ...
-}:
-
-{
+}: {
   imports = [
     ../../profiles/base
     ../../profiles/darwin

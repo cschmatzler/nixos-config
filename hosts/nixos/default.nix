@@ -6,12 +6,9 @@
   hostname,
   user,
   ...
-}:
-
-let
-  keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk8iAnIaa1deoc7jw8YACPNVka1ZFJxhnU4G74TmS+p" ];
-in
-{
+}: let
+  keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk8iAnIaa1deoc7jw8YACPNVka1ZFJxhnU4G74TmS+p"];
+in {
   imports = [
     ../../profiles/base
     ../../profiles/nixos
@@ -45,7 +42,7 @@ in
     interfaces."%INTERFACE%".useDHCP = true;
   };
 
-  nix.nixPath = [ "nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos" ];
+  nix.nixPath = ["nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos"];
 
   programs = {
     gnupg.agent.enable = true;
@@ -72,11 +69,10 @@ in
       overrideDevices = true;
 
       settings = {
-        devices = { };
+        devices = {};
         options.globalAnnounceEnabled = false; # Only sync on LAN
       };
     };
-
   };
 
   # Enable CUPS to print documents
@@ -112,10 +108,10 @@ in
         commands = [
           {
             command = "${pkgs.systemd}/bin/reboot";
-            options = [ "NOPASSWD" ];
+            options = ["NOPASSWD"];
           }
         ];
-        groups = [ "wheel" ];
+        groups = ["wheel"];
       }
     ];
   };

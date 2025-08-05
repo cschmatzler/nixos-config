@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   homebrew = {
     enable = true;
-    masApps = { };
+    masApps = {};
   };
 }

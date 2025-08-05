@@ -35,63 +35,57 @@
       flake = false;
     };
   };
-  outputs =
-    {
-      agenix,
-      darwin,
-      disko,
-      home-manager,
-      homebrew-bundle,
-      homebrew-cask,
-      homebrew-core,
-      nix-homebrew,
-      nixpkgs,
-      nixvim,
-      secrets,
-      self,
-    }@inputs:
-    let
-      systemLib = import ./lib/systems.nix inputs;
-      inherit (systemLib)
-        systemConfigs
-        mkDarwinSystem
-        mkNixosSystem
-        mkApps
-        ;
-      inherit (systemConfigs) darwinHosts nixosHosts;
+  outputs = {
+    agenix,
+    darwin,
+    disko,
+    home-manager,
+    homebrew-bundle,
+    homebrew-cask,
+    homebrew-core,
+    nix-homebrew,
+    nixpkgs,
+    nixvim,
+    secrets,
+    self,
+  } @ inputs: let
+    systemLib = import ./lib/systems.nix inputs;
+    inherit
+      (systemLib)
+      systemConfigs
+      mkDarwinSystem
+      mkNixosSystem
+      mkApps
+      ;
+    inherit (systemConfigs) darwinHosts nixosHosts;
 
-      allSystems = [
-        "x86_64-linux"
-        "aarch64-darwin"
-      ];
-      forAllSystems = f: nixpkgs.lib.genAttrs allSystems f;
-      devShell =
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default =
-            with pkgs;
-            mkShell {
-              nativeBuildInputs = with pkgs; [
-                bashInteractive
-                git
-                age
-                age-plugin-yubikey
-              ];
-              shellHook = with pkgs; ''
-                export EDITOR=nvim
-              '';
-            };
+    allSystems = [
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
+    forAllSystems = f: nixpkgs.lib.genAttrs allSystems f;
+    devShell = system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      default = with pkgs;
+        mkShell {
+          nativeBuildInputs = with pkgs; [
+            bashInteractive
+            git
+            age
+            age-plugin-yubikey
+          ];
+          shellHook = with pkgs; ''
+            export EDITOR=nvim
+          '';
         };
-    in
-    {
-      devShells = forAllSystems devShell;
-      apps = forAllSystems mkApps;
-      darwinConfigurations = nixpkgs.lib.genAttrs darwinHosts mkDarwinSystem;
-      nixosConfigurations = nixpkgs.lib.genAttrs nixosHosts (
-        hostname: mkNixosSystem hostname "x86_64-linux"
-      );
     };
+  in {
+    devShells = forAllSystems devShell;
+    apps = forAllSystems mkApps;
+    darwinConfigurations = nixpkgs.lib.genAttrs darwinHosts mkDarwinSystem;
+    nixosConfigurations = nixpkgs.lib.genAttrs nixosHosts (
+      hostname: mkNixosSystem hostname "x86_64-linux"
+    );
+  };
 }

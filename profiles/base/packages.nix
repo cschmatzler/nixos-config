@@ -1,9 +1,8 @@
-{ pkgs }:
-
-with pkgs;
-[
+{pkgs}:
+with pkgs; [
   age
   age-plugin-yubikey
+  alejandra
   delta
   docker
   docker-compose
@@ -16,8 +15,10 @@ with pkgs;
   nerd-fonts.iosevka
   nixfmt
   nodejs_24
+  nurl
   opencode
   openssh
+  prettier
   ripgrep
   sqlite
   tree

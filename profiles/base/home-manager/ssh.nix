@@ -3,9 +3,7 @@
   lib,
   user,
   ...
-}:
-
-{
+}: {
   programs.ssh = {
     enable = true;
     includes = [

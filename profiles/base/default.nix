@@ -5,8 +5,7 @@
   lib,
   user,
   ...
-}:
-{
+}: {
   imports = [
     agenix.darwinModules.default
   ];
@@ -19,16 +18,15 @@
       allowUnsupportedSystem = true;
     };
 
-    overlays =
-      let
-        path = ../../overlays;
-      in
+    overlays = let
+      path = ../../overlays;
+    in
       with builtins;
-      map (n: import (path + ("/" + n))) (
-        filter (n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"))) (
-          attrNames (readDir path)
-        )
-      );
+        map (n: import (path + ("/" + n))) (
+          filter (n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix"))) (
+            attrNames (readDir path)
+          )
+        );
   };
 
   nix = {
@@ -42,7 +40,7 @@
         "https://nix-community.cachix.org"
         "https://cache.nixos.org"
       ];
-      trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+      trusted-public-keys = ["cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="];
     };
     gc = {
       automatic = true;

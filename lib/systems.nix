@@ -10,9 +10,7 @@
   nixvim,
   self,
   ...
-}@inputs:
-
-let
+} @ inputs: let
   user = "cschmatzler";
 
   mkApp = scriptName: system: {
@@ -26,15 +24,15 @@ let
       '')
     }/bin/${scriptName}";
   };
-in
-{
-  mkDarwinSystem =
-    hostname:
+in {
+  mkDarwinSystem = hostname:
     darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      specialArgs = inputs // {
-        inherit user;
-      };
+      specialArgs =
+        inputs
+        // {
+          inherit user;
+        };
       modules = [
         home-manager.darwinModules.home-manager
         nix-homebrew.darwinModules.nix-homebrew
@@ -55,13 +53,14 @@ in
       ];
     };
 
-  mkNixosSystem =
-    hostname: system:
+  mkNixosSystem = hostname: system:
     nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = inputs // {
-        inherit hostname user;
-      };
+      specialArgs =
+        inputs
+        // {
+          inherit hostname user;
+        };
       modules = [
         disko.nixosModules.disko
         home-manager.nixosModules.home-manager
@@ -69,19 +68,17 @@ in
       ];
     };
 
-  mkApps =
-    system:
-    let
-      appNames = [
-        "apply"
-        "build"
-        "build-switch"
-        "copy-keys"
-        "create-keys"
-        "check-keys"
-        "rollback"
-      ];
-    in
+  mkApps = system: let
+    appNames = [
+      "apply"
+      "build"
+      "build-switch"
+      "copy-keys"
+      "create-keys"
+      "check-keys"
+      "rollback"
+    ];
+  in
     nixpkgs.lib.genAttrs appNames (name: mkApp name system);
 
   systemConfigs = {
@@ -89,6 +86,6 @@ in
       "chidi"
       "jason"
     ];
-    nixosHosts = [ "tahani" ];
+    nixosHosts = ["tahani"];
   };
 }

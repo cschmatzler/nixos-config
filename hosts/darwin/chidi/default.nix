@@ -2,9 +2,7 @@
   pkgs,
   user,
   ...
-}:
-
-{
+}: {
   imports = [
     ../shared.nix
   ];
