@@ -33,15 +33,16 @@
         ...
       }:
       {
-        _module.args = { inherit user nixvim; };
+        _module.args = { inherit user; };
         imports = [
+          nixvim.homeModules.nixvim
           ../base/home-manager
           ./home-manager/ghostty.nix
         ];
         fonts.fontconfig.enable = true;
         home = {
           packages = pkgs.callPackage ./packages.nix { } ++ pkgs.callPackage ../base/packages.nix { };
-          stateVersion = "23.11";
+          stateVersion = "24.05";
         };
       };
   };

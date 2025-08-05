@@ -1,5 +1,0 @@
-{
-  imports = [
-    ./oil.nix
-  ];
-}

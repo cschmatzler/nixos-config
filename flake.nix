@@ -29,7 +29,6 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     secrets = {
       url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
@@ -38,18 +37,18 @@
   };
   outputs =
     {
-      self,
-      darwin,
-      nix-homebrew,
-      homebrew-bundle,
-      homebrew-core,
-      homebrew-cask,
-      home-manager,
-      nixpkgs,
-      disko,
       agenix,
+      darwin,
+      disko,
+      home-manager,
+      homebrew-bundle,
+      homebrew-cask,
+      homebrew-core,
+      nix-homebrew,
+      nixpkgs,
       nixvim,
       secrets,
+      self,
     }@inputs:
     let
       systemLib = import ./lib/systems.nix inputs;

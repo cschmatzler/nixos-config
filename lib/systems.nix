@@ -7,6 +7,7 @@
   homebrew-core,
   homebrew-cask,
   disko,
+  nixvim,
   self,
   ...
 }@inputs:

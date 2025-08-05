@@ -3,6 +3,7 @@
   pkgs,
   lib,
   home-manager,
+  nixvim,
   user,
   ...
 }:
@@ -24,8 +25,6 @@ in
     extraGroups = [
       "wheel"
       "sudo"
-      "audio"
-      "video"
       "network"
       "systemd-journal"
     ];
@@ -44,7 +43,8 @@ in
       {
         _module.args = { inherit user; };
         imports = [
-          ../base/home-manager.nix
+          nixvim.homeModules.nixvim
+          ../base/home-manager
         ];
         home = {
           packages = pkgs.callPackage ./packages.nix { };

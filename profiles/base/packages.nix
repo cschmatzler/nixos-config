@@ -13,7 +13,6 @@ with pkgs;
   jq
   killall
   libfido2
-  neovim
   nerd-fonts.iosevka
   nixfmt
   nodejs_24

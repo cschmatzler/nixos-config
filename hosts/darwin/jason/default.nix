@@ -16,8 +16,4 @@
   home-manager.users.${user} = {
     programs.git.userEmail = "christoph@schmatzler.com";
   };
-
-  environment.systemPackages = with pkgs; [
-    slack
-  ];
 }
