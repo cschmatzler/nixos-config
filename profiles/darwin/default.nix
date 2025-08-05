@@ -42,6 +42,7 @@
           ../base/home-manager/jujutsu.nix
           ../base/home-manager/ssh.nix
           ../base/home-manager/starship.nix
+          ../base/home-manager/zellij.nix
           ../base/home-manager/zoxide.nix
           ../base/home-manager/zsh.nix
           ./home-manager/ghostty.nix
