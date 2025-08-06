@@ -8,7 +8,7 @@
       window-padding-x = 8;
       window-padding-y = 2;
       window-padding-balance = true;
-      font-family = "Iosevka Nerd Font";
+      font-family = "Iosevka";
       font-size = 15.5;
       font-feature = [
         "-calt"

@@ -5,7 +5,6 @@
     ./eza.nix
     ./fish.nix
     ./git.nix
-    ./jujutsu.nix
     ./neovim
     ./ssh.nix
     ./starship.nix

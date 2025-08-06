@@ -2,17 +2,17 @@
 with pkgs; [
   age
   age-plugin-yubikey
+  lazygit
   alejandra
   delta
   docker
   docker-compose
   git
   gnupg
-  jjui
   jq
   killall
   libfido2
-  nerd-fonts.iosevka
+  iosevka
   nodejs_24
   nurl
   opencode

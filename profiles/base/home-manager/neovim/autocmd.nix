@@ -18,6 +18,12 @@
         command = "normal zR";
       }
       {
+        event = "FileReadPost";
+        group = "Christoph";
+        pattern = "*";
+        command = "normal zR";
+      }
+      {
         event = "LspAttach";
         group = "Christoph";
         callback.__raw = ''

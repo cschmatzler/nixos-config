@@ -15,7 +15,7 @@
       show-recents = false;
       launchanim = true;
       orientation = "bottom";
-      tilesize = 50;
+      tilesize = 60;
     };
 
     finder = {

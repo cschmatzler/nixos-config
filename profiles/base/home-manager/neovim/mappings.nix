@@ -20,9 +20,15 @@
     }
     {
       mode = "n";
-      key = "<leader>e";
+      key = "<leader>ed";
       action = ":Oil<CR>";
       options.desc = "File browser";
+    }
+    {
+      mode = "n";
+      key = "<leader>gg";
+      action = ":LazyGit<CR>";
+      options.desc = "Lazygit";
     }
   ];
 }

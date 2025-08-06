@@ -4,6 +4,7 @@
     ./autocmd.nix
     ./mappings.nix
     ./plugins/conform.nix
+    ./plugins/lazygit.nix
     ./plugins/mini.nix
     ./plugins/oil.nix
     ./plugins/treesitter.nix

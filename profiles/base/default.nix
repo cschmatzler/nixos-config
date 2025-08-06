@@ -1,8 +1,8 @@
 {
   agenix,
   config,
-  pkgs,
   lib,
+  pkgs,
   user,
   ...
 }: {
@@ -60,10 +60,14 @@
     agenix.packages."${pkgs.system}".default
   ];
 
-  programs.fish.enable = true;
-
   system = {
     primaryUser = user;
     stateVersion = 5;
+  };
+
+  programs.fish.enable = true;
+
+  services.tailscale = {
+    enable = true;
   };
 }

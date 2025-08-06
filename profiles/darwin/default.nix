@@ -8,10 +8,10 @@
   ...
 }: {
   imports = [
-    ./dock
+    ./secrets.nix
     ./system.nix
     ./homebrew.nix
-    ./secrets.nix
+    ./dock
   ];
 
   users.users.${user} = {
@@ -37,7 +37,7 @@
       ];
       fonts.fontconfig.enable = true;
       home = {
-        packages = pkgs.callPackage ./packages.nix {} ++ pkgs.callPackage ../base/packages.nix {};
+        packages = pkgs.callPackage ../base/packages.nix {} ++ pkgs.callPackage ./packages.nix {};
         stateVersion = "24.05";
       };
     };

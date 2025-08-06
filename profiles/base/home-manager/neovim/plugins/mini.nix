@@ -24,6 +24,8 @@
         };
       };
       align = {};
+      diff = {};
+      git = {};
       bracketed = {};
       comment = {};
       completion = {
@@ -33,6 +35,7 @@
       };
       indentscope = {};
       move = {};
+      starter = {};
       pairs = {};
       trailspace = {};
       visits = {};
