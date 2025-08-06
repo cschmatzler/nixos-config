@@ -1,6 +1,8 @@
 {pkgs, ...}: {
   homebrew = {
     enable = true;
-    masApps = {};
+    masApps = {
+      "wipr2" = 1662217862;
+    };
   };
 }

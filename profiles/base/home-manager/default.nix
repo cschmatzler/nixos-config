@@ -2,10 +2,10 @@
   imports = [
     ./atuin.nix
     ./bat.nix
-    ./lazygit.nix
     ./eza.nix
     ./fish.nix
     ./git.nix
+    ./lazygit.nix
     ./neovim
     ./ssh.nix
     ./starship.nix
