@@ -11,7 +11,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-bundle.url = "github:homebrew/homebrew-bundle";
     homebrew-core.url = "github:homebrew/homebrew-core";
     homebrew-cask.url = "github:homebrew/homebrew-cask";
     disko = {
@@ -26,89 +25,107 @@
   };
 
   outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} (let
-      user = "cschmatzler";
-      darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
-      nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
-    in {
-      systems = ["x86_64-linux" "aarch64-darwin"];
-
-      flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (hostname:
-        inputs.darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = inputs // {inherit user hostname;};
-          modules = [
-            inputs.home-manager.darwinModules.home-manager
-            inputs.nix-homebrew.darwinModules.nix-homebrew
-
-            {
-              nix-homebrew = {
-                inherit user;
-                enable = true;
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-                };
-                mutableTaps = false;
-                autoMigrate = true;
-              };
-            }
-            ./hosts/darwin/${hostname}
-          ];
-        });
-
-      flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs nixosHosts (hostname:
-        inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = inputs // {inherit user hostname;};
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.home-manager.nixosModules.home-manager
-            ./hosts/nixos/${hostname}
-          ];
-        });
-
-      perSystem = {
-        pkgs,
-        system,
-        inputs',
-        ...
-      }: let
-        mkApp = name: {
-          type = "app";
-          program = "${(pkgs.writeShellScriptBin name ''
-            PATH=${pkgs.git}/bin:$PATH
-            echo "Running ${name} for ${system}"
-            exec ${inputs.self}/apps/${system}/${name} "$@"
-          '')}/bin/${name}";
-        };
-
-        appNames = [
-          "apply"
-          "build"
-          "build-switch"
-          "copy-keys"
-          "create-keys"
-          "check-keys"
-          "rollback"
-        ];
+    flake-parts.lib.mkFlake {inherit inputs;} (
+      let
+        user = "cschmatzler";
+        darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
+        nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
       in {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            bashInteractive
-            git
-            age
-            age-plugin-yubikey
-          ];
-          shellHook = ''export EDITOR=nvim'';
-        };
+        systems = [
+          "x86_64-linux"
+          "aarch64-darwin"
+        ];
 
-        apps = builtins.listToAttrs (map (n: {
-            name = n;
-            value = mkApp n;
-          })
-          appNames);
-      };
-    });
+        flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (
+          hostname:
+            inputs.darwin.lib.darwinSystem {
+              system = "aarch64-darwin";
+              specialArgs =
+                inputs
+                // {
+                  inherit user hostname;
+                };
+              modules = [
+                inputs.home-manager.darwinModules.home-manager
+                inputs.nix-homebrew.darwinModules.nix-homebrew
+
+                {
+                  nix-homebrew = {
+                    inherit user;
+                    enable = true;
+                    taps = {
+                      "homebrew/homebrew-core" = inputs.homebrew-core;
+                      "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                    };
+                    mutableTaps = false;
+                    autoMigrate = true;
+                  };
+                }
+                ./hosts/darwin/${hostname}
+              ];
+            }
+        );
+
+        flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs nixosHosts (
+          hostname:
+            inputs.nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs =
+                inputs
+                // {
+                  inherit user hostname;
+                };
+              modules = [
+                inputs.disko.nixosModules.disko
+                inputs.home-manager.nixosModules.home-manager
+                ./hosts/nixos/${hostname}
+              ];
+            }
+        );
+
+        perSystem = {
+          pkgs,
+          system,
+          inputs',
+          ...
+        }: let
+          mkApp = name: {
+            type = "app";
+            program = "${(pkgs.writeShellScriptBin name ''
+              PATH=${pkgs.git}/bin:$PATH
+              echo "Running ${name} for ${system}"
+              exec ${inputs.self}/apps/${system}/${name} "$@"
+            '')}/bin/${name}";
+          };
+
+          appNames = [
+            "apply"
+            "build"
+            "build-switch"
+            "copy-keys"
+            "create-keys"
+            "check-keys"
+            "rollback"
+          ];
+        in {
+          devShells.default = pkgs.mkShell {
+            nativeBuildInputs = with pkgs; [
+              bashInteractive
+              git
+              age
+              age-plugin-yubikey
+            ];
+            shellHook = ''export EDITOR=nvim'';
+          };
+
+          apps = builtins.listToAttrs (
+            map (n: {
+              name = n;
+              value = mkApp n;
+            })
+            appNames
+          );
+        };
+      }
+    );
 }

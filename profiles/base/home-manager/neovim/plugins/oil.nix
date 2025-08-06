@@ -27,13 +27,4 @@
       };
     };
   };
-
-  programs.nixvim.keymaps = [
-    {
-      mode = "n";
-      key = "<leader>e";
-      action = ":Oil<CR>";
-      options.desc = "File browser";
-    }
-  ];
 }

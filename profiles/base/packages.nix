@@ -13,7 +13,6 @@ with pkgs; [
   killall
   libfido2
   nerd-fonts.iosevka
-  nixfmt
   nodejs_24
   nurl
   opencode

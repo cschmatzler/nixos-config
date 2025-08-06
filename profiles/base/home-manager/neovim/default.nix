@@ -2,6 +2,7 @@
   imports = [
     ./options.nix
     ./autocmd.nix
+    ./mappings.nix
     ./plugins/conform.nix
     ./plugins/mini.nix
     ./plugins/oil.nix
