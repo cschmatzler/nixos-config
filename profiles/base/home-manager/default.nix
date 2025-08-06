@@ -2,6 +2,7 @@
   imports = [
     ./atuin.nix
     ./bat.nix
+    ./lazygit.nix
     ./eza.nix
     ./fish.nix
     ./git.nix

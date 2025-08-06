@@ -2,7 +2,6 @@
 with pkgs; [
   age
   age-plugin-yubikey
-  lazygit
   alejandra
   delta
   docker

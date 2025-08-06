@@ -8,7 +8,9 @@
 
       format = lib.concatStrings [
         "$directory"
-        "$\{custom.jj\}"
+        "$git_branch"
+        "$git_status"
+        "$git_metrics"
         "$line_break"
         "$character"
       ];
@@ -18,43 +20,14 @@
         error_symbol = "[❯](bold red)";
       };
 
-      custom.jj = {
-        ignore_timeout = true;
-        description = "The current jj status";
-        when = "jj root";
-        symbol = "🥋 ";
-        command = lib.concatStrings [
-          "jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 --template '"
-          "separate(\" \","
-          "  change_id.shortest(4),"
-          "  bookmarks,"
-          "  \"|\","
-          "  concat("
-          "    if(conflict, \"💥\"),"
-          "    if(divergent, \"🚧\"),"
-          "    if(hidden, \"👻\"),"
-          "    if(immutable, \"🔒\"),"
-          "  ),"
-          "  raw_escape_sequence(\"\\x1b[1;32m\") ++ if(empty, \"(empty)\"),"
-          "  raw_escape_sequence(\"\\x1b[1;32m\") ++ coalesce("
-          "    truncate_end(29, description.first_line(), \"…\"),"
-          "    \"(no description set)\","
-          "  ) ++ raw_escape_sequence(\"\\x1b[0m\"),"
-          ")'"
-        ];
+      git_branch = {
+        format = " [ $branch]($style) ";
       };
 
-      git_state = {
-        disabled = true;
-      };
-      git_commit = {
-        disabled = true;
-      };
       git_metrics = {
-        disabled = true;
-      };
-      git_branch = {
-        disabled = true;
+        disabled = false;
+        added_style = "bold green";
+        format = "[+$added]($added_style)/[-$deleted]($deleted_style) ";
       };
     };
   };
