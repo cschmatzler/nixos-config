@@ -8,6 +8,7 @@
     grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
       bash
       fish
+      elixir
       json
       nix
       toml
