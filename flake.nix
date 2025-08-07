@@ -11,9 +11,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core.url = "github:homebrew/homebrew-core";
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-axe = {
+      url = "github:cameroncooke/homebrew-axe";
       flake = false;
     };
     disko = {
@@ -21,10 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim.url = "github:nix-community/nixvim";
-    secrets = {
-      url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
-      flake = false;
-    };
   };
 
   outputs = inputs @ {flake-parts, ...}:
@@ -59,9 +62,9 @@
                     taps = {
                       "homebrew/homebrew-core" = inputs.homebrew-core;
                       "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                      "cameroncooke/axe" = inputs.homebrew-axe;
                     };
-                    mutableTaps = false;
-                    autoMigrate = true;
+                    mutableTaps = true;
                   };
                 }
                 ./hosts/darwin/${hostname}

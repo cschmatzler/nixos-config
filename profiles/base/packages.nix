@@ -3,19 +3,21 @@ with pkgs; [
   age
   age-plugin-yubikey
   alejandra
+  claude-code
   delta
   docker
   docker-compose
   git
   gnupg
+  iosevka
   jq
   killall
   libfido2
-  iosevka
   nodejs_24
   nurl
   opencode
   openssh
+  postgresql_17
   prettier
   ripgrep
   sqlite
