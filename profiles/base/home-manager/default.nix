@@ -7,6 +7,7 @@
     ./git.nix
     ./lazygit.nix
     ./neovim
+    ./mise.nix
     ./ssh.nix
     ./starship.nix
     ./zellij.nix

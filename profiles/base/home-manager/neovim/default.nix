@@ -1,10 +1,11 @@
 {pkgs, ...}: {
   imports = [
-    ./options.nix
     ./autocmd.nix
     ./mappings.nix
+    ./options.nix
     ./plugins/conform.nix
     ./plugins/lazygit.nix
+    ./plugins/lsp.nix
     ./plugins/mini.nix
     ./plugins/oil.nix
     ./plugins/treesitter.nix
