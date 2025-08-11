@@ -4,7 +4,7 @@
     shiftwidth = 2;
     relativenumber = true;
     mouse = "";
-    clipboard.register = "unnamedplus";
+    clipboard = "osc52";
     # foldmethod = "expr";
     # foldexpr = "nvim_treesitter#foldexpr()";
   };
