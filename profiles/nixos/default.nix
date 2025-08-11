@@ -93,6 +93,7 @@ in {
         ../base/home-manager
       ];
       home = {
+        packages = pkgs.callPackage ../base/packages.nix {} ++ pkgs.callPackage ./packages.nix {};
         stateVersion = "25.11";
       };
     };
