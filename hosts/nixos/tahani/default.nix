@@ -1,6 +1,7 @@
 {
   pkgs,
   hostname,
+  user,
   ...
 }: {
   imports = [
@@ -40,5 +41,9 @@
   networking = {
     hostName = hostname;
     useDHCP = true;
+  };
+
+  home-manager.users.${user} = {
+    programs.git.userEmail = "christoph@schmatzler.com";
   };
 }
