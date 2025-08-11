@@ -92,7 +92,9 @@ in {
         nixvim.homeModules.nixvim
         ../base/home-manager
       ];
-      stateVersion = "25.11";
+      home = {
+        stateVersion = "25.11";
+      };
     };
   };
 }
