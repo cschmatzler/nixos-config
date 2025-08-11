@@ -5,4 +5,10 @@ with pkgs; [
   automake
   gnumake
   gcc
+  pkg-config
+  openssl
+  zlib
+  libxml2
+  libxslt
+  libiconv
 ]
