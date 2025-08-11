@@ -5,9 +5,9 @@ with pkgs; [
   alejandra
   claude-code
   delta
-  gh
   docker
   docker-compose
+  gh
   git
   gnupg
   iosevka
@@ -20,6 +20,7 @@ with pkgs; [
   openssh
   postgresql_17
   prettier
+  python314
   ripgrep
   sqlite
   tree
