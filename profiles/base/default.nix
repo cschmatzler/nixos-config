@@ -55,11 +55,6 @@
     agenix.packages."${pkgs.system}".default
   ];
 
-  system = {
-    primaryUser = user;
-    stateVersion = 5;
-  };
-
   programs.fish.enable = true;
 
   services.tailscale = {

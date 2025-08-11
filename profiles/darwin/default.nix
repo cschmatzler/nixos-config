@@ -21,6 +21,12 @@
     Minute = 0;
   };
 
+  # Darwin-specific system settings
+  system = {
+    primaryUser = user;
+    stateVersion = 5;
+  };
+
   users.users.${user} = {
     name = "${user}";
     home = "/Users/${user}";
