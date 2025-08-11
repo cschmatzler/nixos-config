@@ -1,2 +1,4 @@
 {pkgs}:
-with pkgs; []
+with pkgs; [
+  gcc15
+]

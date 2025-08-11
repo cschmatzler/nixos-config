@@ -2,7 +2,6 @@
 with pkgs; [
   age
   age-plugin-yubikey
-  htop
   alejandra
   claude-code
   delta
@@ -12,6 +11,7 @@ with pkgs; [
   gh
   git
   gnupg
+  htop
   iosevka
   jq
   killall
@@ -26,6 +26,7 @@ with pkgs; [
   ripgrep
   sqlite
   tree
+  tree-sitter
   unrar
   unzip
   vivid
