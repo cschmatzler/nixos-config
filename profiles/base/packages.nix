@@ -5,6 +5,7 @@ with pkgs; [
   alejandra
   claude-code
   delta
+  gh
   docker
   docker-compose
   git
