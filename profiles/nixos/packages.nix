@@ -1,2 +1,4 @@
 {pkgs}:
-with pkgs; []
+with pkgs; [
+  wl-clipboard
+]
