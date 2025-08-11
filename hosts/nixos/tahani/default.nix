@@ -1,10 +1,6 @@
 {
-  config,
-  inputs,
   pkgs,
-  agenix,
   hostname,
-  user,
   ...
 }: {
   imports = [
@@ -43,9 +39,6 @@
 
   networking = {
     hostName = hostname;
-    useDHCP = false;
-    interfaces."%INTERFACE%".useDHCP = true;
+    useDHCP = true;
   };
-
-  system.stateVersion = "21.05";
 }
