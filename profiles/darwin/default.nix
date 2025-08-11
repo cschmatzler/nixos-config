@@ -12,15 +12,15 @@
     ./dock
   ];
 
+  system = {
+    primaryUser = user;
+    stateVersion = 6;
+  };
+
   nix.gc.interval = {
     Weekday = 0;
     Hour = 2;
     Minute = 0;
-  };
-
-  system = {
-    primaryUser = user;
-    stateVersion = 5;
   };
 
   users.users.${user} = {
@@ -46,7 +46,6 @@
       fonts.fontconfig.enable = true;
       home = {
         packages = pkgs.callPackage ../base/packages.nix {} ++ pkgs.callPackage ./packages.nix {};
-        stateVersion = "24.05";
       };
     };
   };
