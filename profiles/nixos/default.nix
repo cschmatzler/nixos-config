@@ -4,9 +4,10 @@
   user,
   ...
 }: {
-  imports = [];
+  imports = [
+    ./disks.nix
+  ];
 
-  # Override Darwin-style gc.interval with NixOS systemd format
   nix.gc = {
     automatic = true;
     dates = "weekly";
