@@ -11,6 +11,8 @@ in {
     agenix.nixosModules.default
   ];
 
+  system.stateVersion = "25.11";
+
   time.timeZone = "UTC";
 
   nix = {
@@ -25,11 +27,6 @@ in {
   virtualisation.docker = {
     enable = true;
     logDriver = "json-file";
-  };
-
-  programs = {
-    gnupg.agent.enable = true;
-    fish.enable = true;
   };
 
   services = {
@@ -96,7 +93,7 @@ in {
         ../base/home-manager
       ];
       home = {
-        stateVersion = "25.05";
+        stateVersion = "25.11";
       };
     };
   };

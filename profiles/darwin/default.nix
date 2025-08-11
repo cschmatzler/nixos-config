@@ -1,8 +1,6 @@
 {
   config,
   pkgs,
-  lib,
-  home-manager,
   nixvim,
   user,
   ...
@@ -14,14 +12,12 @@
     ./dock
   ];
 
-  # Darwin-specific gc interval format
   nix.gc.interval = {
     Weekday = 0;
     Hour = 2;
     Minute = 0;
   };
 
-  # Darwin-specific system settings
   system = {
     primaryUser = user;
     stateVersion = 5;
