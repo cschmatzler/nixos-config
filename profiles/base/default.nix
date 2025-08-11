@@ -9,13 +9,6 @@
   ];
 
   nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowBroken = false;
-      allowInsecure = false;
-      allowUnsupportedSystem = false;
-    };
-
     overlays = let
       path = ../../overlays;
     in

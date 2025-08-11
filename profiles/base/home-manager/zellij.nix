@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   programs.zellij = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
     settings = {
       theme = "catppuccin-latte";
       default_layout = "compact";

@@ -5,15 +5,13 @@ YELLOW='\033[1;33m'
 RED='\033[1;31m'
 NC='\033[0m'
 
-# Determine machine name from first argument or hostname
 if [ $# -gt 0 ]; then
     MACHINE_NAME="$1"
-    shift  # Remove machine name from arguments
+    shift
 else
     MACHINE_NAME=$(hostname | cut -d'.' -f1)
 fi
 
-# Validate machine name
 if [ ! -d "hosts/darwin/$MACHINE_NAME" ]; then
     echo "${RED}Error: Machine configuration '$MACHINE_NAME' not found in hosts/darwin/${NC}"
     echo "${YELLOW}Available machines:${NC}"
@@ -26,13 +24,12 @@ fi
 
 FLAKE_SYSTEM="darwinConfigurations.${MACHINE_NAME}.system"
 
-export NIXPKGS_ALLOW_UNFREE=1
 
 echo "${YELLOW}Building configuration for machine: ${MACHINE_NAME}${NC}"
-nix --extra-experimental-features 'nix-command flakes' build .#$FLAKE_SYSTEM "$@"
+NIXPKGS_ALLOW_UNFREE=1 nix --extra-experimental-features 'nix-command flakes' build --impure .#$FLAKE_SYSTEM "$@"
 
 echo "${YELLOW}Switching to new generation...${NC}"
-sudo ./result/sw/bin/darwin-rebuild switch --flake .#${MACHINE_NAME}
+sudo NIXPKGS_ALLOW_UNFREE=1 ./result/sw/bin/darwin-rebuild switch --impure --flake .#${MACHINE_NAME}
 
 echo "${YELLOW}Cleaning up...${NC}"
 unlink ./result

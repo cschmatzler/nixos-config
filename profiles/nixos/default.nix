@@ -91,6 +91,7 @@ in {
       imports = [
         nixvim.homeModules.nixvim
         ../base/home-manager
+        ./home-manager/zellij.nix
       ];
       home = {
         packages = pkgs.callPackage ../base/packages.nix {} ++ pkgs.callPackage ./packages.nix {};
