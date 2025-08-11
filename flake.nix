@@ -84,9 +84,6 @@
               modules = [
                 inputs.disko.nixosModules.disko
                 inputs.home-manager.nixosModules.home-manager
-                {
-                  nixpkgs.config.allowUnfree = true;
-                }
                 ./hosts/nixos/${hostname}
               ];
             }
