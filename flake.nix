@@ -78,7 +78,6 @@
                   inherit user hostname;
                 };
               modules = [
-                inputs.disko.nixosModules.disko
                 inputs.home-manager.nixosModules.home-manager
                 ./hosts/nixos/${hostname}
               ];
