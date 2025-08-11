@@ -14,6 +14,13 @@
     ./dock
   ];
 
+  # Darwin-specific gc interval format
+  nix.gc.interval = {
+    Weekday = 0;
+    Hour = 2;
+    Minute = 0;
+  };
+
   users.users.${user} = {
     name = "${user}";
     home = "/Users/${user}";
