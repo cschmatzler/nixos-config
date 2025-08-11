@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   imports = [
     ./autocmd.nix
     ./mappings.nix
@@ -25,6 +25,5 @@
       };
     };
 
-    clipboard.register = "unnamedplus";
   };
 }

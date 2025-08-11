@@ -19,6 +19,8 @@
       mouse-scroll-multiplier = 1.25;
       shell-integration = "detect";
       shell-integration-features = "no-cursor";
+      clipboard-read = "allow";
+      clipboard-write = "allow";
     };
   };
 }
