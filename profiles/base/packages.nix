@@ -20,7 +20,7 @@ with pkgs; [
   openssh
   postgresql_17
   prettier
-  python314
+  python313
   ripgrep
   sqlite
   tree
