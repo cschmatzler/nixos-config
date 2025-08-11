@@ -2,11 +2,13 @@
 with pkgs; [
   age
   age-plugin-yubikey
+  htop
   alejandra
   claude-code
   delta
   docker
   docker-compose
+  fastfetch
   gh
   git
   gnupg
