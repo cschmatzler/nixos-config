@@ -6,6 +6,13 @@
 }: {
   imports = [];
 
+  # Override Darwin-style gc.interval with NixOS systemd format
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
   users.users.${user} = {
     isNormalUser = true;
     home = "/home/${user}";
