@@ -35,7 +35,6 @@
   };
 
   home-manager = {
-    useGlobalPkgs = true;
     users.${user} = {
       pkgs,
       config,
