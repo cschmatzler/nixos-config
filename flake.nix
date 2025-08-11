@@ -23,10 +23,6 @@
       url = "github:cameroncooke/homebrew-axe";
       flake = false;
     };
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixvim.url = "github:nix-community/nixvim";
   };
 
