@@ -32,7 +32,6 @@ echo "${YELLOW}Building configuration for machine: ${MACHINE_NAME}${NC}"
 nix --extra-experimental-features 'nix-command flakes' build .#$FLAKE_SYSTEM "$@"
 
 echo "${YELLOW}Switching to new generation...${NC}"
-# See https://github.com/nix-darwin/nix-darwin/issues/1457 on why we need sudo
 sudo ./result/sw/bin/darwin-rebuild switch --flake .#${MACHINE_NAME}
 
 echo "${YELLOW}Cleaning up...${NC}"
