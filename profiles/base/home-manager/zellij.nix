@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{lib, pkgs, ...}: {
   programs.zellij = {
     enable = true;
-    enableFishIntegration = false;
+    enableFishIntegration = lib.mkDefault false;
     settings = {
       theme = "catppuccin-latte";
       default_layout = "compact";
