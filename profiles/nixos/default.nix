@@ -1,6 +1,7 @@
 {
   pkgs,
   nixvim,
+  config,
   user,
   agenix,
   ...
@@ -24,9 +25,12 @@ in {
     nixPath = ["nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos"];
   };
 
-  virtualisation.docker = {
+  networking.firewall = {
     enable = true;
-    logDriver = "json-file";
+    trustedInterfaces = ["tailscale0"];
+    allowedUDPPorts = [config.services.tailscale.port];
+    allowedTCPPorts = [22];
+    checkReversePath = "loose";
   };
 
   services = {
@@ -37,7 +41,10 @@ in {
         PasswordAuthentication = false;
       };
     };
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      port = 41641;
+    };
     adguardhome = {
       enable = true;
       settings = {
