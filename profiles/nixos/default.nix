@@ -38,6 +38,25 @@ in {
       };
     };
     tailscale.enable = true;
+    adguardhome = {
+      enable = true;
+      settings = {
+        http.address = "0.0.0.0:10000";
+        dns = {
+          upstream_dns = [
+            "1.1.1.1"
+            "1.0.0.1"
+          ];
+        };
+        filtering = {
+          protection_enabled = true;
+          filtering_enabled = true;
+          safe_search = {
+            enabled = false;
+          };
+        };
+      };
+    };
   };
 
   users.users = {
