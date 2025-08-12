@@ -2,18 +2,13 @@
   programs.nixvim.plugins.mini = {
     enable = true;
     modules = {
-      jump = {};
-      files = {};
-      jump2d = {
-        settings = {
-          spotter.__raw = "require('mini.jump2d').gen_spotter.pattern('[^%s%p]+')";
-          labels = "asdfghjkl";
-          view = {
-            dim = true;
-            n_steps_ahead = 2;
-          };
+      ai = {
+        custom_textobjects = {
+          B.__raw = "require('mini.extra').gen_ai_spec.buffer()";
+          F.__raw = "require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' })";
         };
       };
+      align = {};
       basics = {
         options = {
           basic = true;
@@ -26,49 +21,15 @@
           basic = true;
         };
       };
-      icons = {};
-      statusline = {};
-      extra = {};
-      ai = {
-        custom_textobjects = {
-          B.__raw = "require('mini.extra').gen_ai_spec.buffer()";
-          F.__raw = "require('mini.ai').gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' })";
-        };
-      };
-      align = {};
-      diff = {};
-      git = {};
       bracketed = {};
-      comment = {};
-      completion = {
-        lsp_completion = {
-          source_func = "omnifunc";
-        };
-      };
-      indentscope = {};
-      move = {};
-      starter = {};
-      pairs = {};
-      trailspace = {};
-      visits = {};
-      pick = {};
-      surround = {};
       clue = {
         clues.__raw = ''
           {
-            { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
-            { mode = 'n', keys = '<Leader>e', desc = '+Explore' },
+            { mode = 'n', keys = '<Leader>e', desc = '+Explore/+Edit' },
             { mode = 'n', keys = '<Leader>f', desc = '+Find' },
             { mode = 'n', keys = '<Leader>g', desc = '+Git' },
             { mode = 'n', keys = '<Leader>l', desc = '+LSP' },
-            { mode = 'n', keys = '<Leader>L', desc = '+Lua/Log' },
-            { mode = 'n', keys = '<Leader>o', desc = '+Other' },
-            { mode = 'n', keys = '<Leader>r', desc = '+R' },
-            { mode = 'n', keys = '<Leader>t', desc = '+Terminal/Minitest' },
-            { mode = 'n', keys = '<Leader>T', desc = '+Test' },
-            { mode = 'n', keys = '<Leader>v', desc = '+Visits' },
             { mode = 'x', keys = '<Leader>l', desc = '+LSP' },
-            { mode = 'x', keys = '<Leader>r', desc = '+R' },
             require("mini.clue").gen_clues.builtin_completion(),
             require("mini.clue").gen_clues.g(),
             require("mini.clue").gen_clues.marks(),
@@ -161,6 +122,37 @@
           }
         ];
       };
+      comment = {};
+      completion = {
+        lsp_completion = {
+          source_func = "omnifunc";
+        };
+      };
+      diff = {};
+      extra = {};
+      files = {};
+      git = {};
+      icons = {};
+      indentscope = {};
+      jump = {};
+      jump2d = {
+        settings = {
+          spotter.__raw = "require('mini.jump2d').gen_spotter.pattern('[^%s%p]+')";
+          labels = "asdfghjkl";
+          view = {
+            dim = true;
+            n_steps_ahead = 2;
+          };
+        };
+      };
+      move = {};
+      pairs = {};
+      pick = {};
+      starter = {};
+      statusline = {};
+      surround = {};
+      trailspace = {};
+      visits = {};
     };
   };
 }

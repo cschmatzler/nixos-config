@@ -20,4 +20,9 @@
     enable = true;
     nix-direnv.enable = true;
   };
+
+  home.shellAliases = {
+    v = "nvim";
+    lg = "lazygit";
+  };
 }

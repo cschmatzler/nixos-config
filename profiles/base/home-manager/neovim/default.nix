@@ -4,13 +4,12 @@
     ./mappings.nix
     ./options.nix
     ./plugins/conform.nix
+    ./plugins/grug-far.nix
     ./plugins/lazygit.nix
     ./plugins/lsp.nix
     ./plugins/mini.nix
     ./plugins/treesitter.nix
   ];
-
-  home.shellAliases.v = "nvim";
 
   programs.nixvim = {
     enable = true;

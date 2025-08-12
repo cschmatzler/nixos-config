@@ -13,6 +13,12 @@
       action = ":lua require('mini.files').open(vim.api.nvim_buf_get_name(0))<CR>";
       options.desc = "File directory";
     }
+    {
+      mode = "n";
+      key = "<leader>er";
+      action = ":lua require('grug-far').open()<CR>";
+      options.desc = "Search and replace";
+    }
     # f - find
     {
       mode = "n";
@@ -64,6 +70,12 @@
     }
     {
       mode = "n";
+      key = "<leader>fg";
+      action = ":Pick grep_live<CR>";
+      options.desc = "Grep";
+    }
+    {
+      mode = "n";
       key = "<leader>fr";
       action = ":Pick lsp scope='references'<CR>";
       options.desc = "References (LSP)";
@@ -90,17 +102,59 @@
     # l - lsp/formatter
     {
       mode = "n";
+      key = "<leader>la";
+      action = ":lua vim.lsp.buf.code_action()<CR>";
+      options.desc = "Actions";
+    }
+    {
+      mode = "n";
+      key = "<leader>ld";
+      action = ":lua vim.diagnostic.open_float()<CR>";
+      options.desc = "Diagnostics popup";
+    }
+    {
+      mode = "n";
       key = "<leader>lf";
       action = ":lua require('conform').format({ lsp_fallback = true })<CR>";
       options.desc = "Format";
     }
-    # next
     {
       mode = "n";
-      key = "<leader>/";
-      action = ":Pick grep_live<CR>";
-      options.desc = "Grep";
+      key = "<leader>li";
+      action = ":lua vim.lsp.buf.hover()<CR>";
+      options.desc = "Information";
     }
+    {
+      mode = "n";
+      key = "<leader>lj";
+      action = ":lua vim.diagnostic.goto_next()<CR>";
+      options.desc = "Next diagnostic";
+    }
+    {
+      mode = "n";
+      key = "<leader>lk";
+      action = ":lua vim.diagnostic.goto_prev()<CR>";
+      options.desc = "Prev diagnostic";
+    }
+    {
+      mode = "n";
+      key = "<leader>lr";
+      action = ":lua vim.lsp.buf.rename()<CR>";
+      options.desc = "Rename";
+    }
+    {
+      mode = "n";
+      key = "<leader>lR";
+      action = ":lua vim.lsp.buf.references()<CR>";
+      options.desc = "References";
+    }
+    {
+      mode = "n";
+      key = "<leader>ls";
+      action = ":lua vim.lsp.buf.definition()<CR>";
+      options.desc = "Source definition";
+    }
+    # other
     {
       mode = "n";
       key = "sj";
