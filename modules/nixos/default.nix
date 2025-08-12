@@ -27,10 +27,6 @@ in {
   networking.firewall = {
     enable = true;
     trustedInterfaces = ["eno1" "tailscale0"];
-    allowPing = true;
-    allowedUDPPorts = [53 10000 config.services.tailscale.port];
-    allowedTCPPorts = [22 53];
-    checkReversePath = "loose";
   };
 
   services = {
@@ -44,6 +40,8 @@ in {
     tailscale = {
       enable = true;
       port = 41641;
+      useRoutingFeatures = "server";
+      openFirewall = true;
     };
     adguardhome = {
       enable = true;

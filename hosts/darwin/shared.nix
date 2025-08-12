@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../profiles/base
-    ../../profiles/darwin
+    ../../modules/base
+    ../../modules/darwin
   ];
 }
