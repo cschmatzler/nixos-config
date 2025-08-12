@@ -9,6 +9,7 @@
       bash
       fish
       elixir
+      heex
       json
       nix
       toml
