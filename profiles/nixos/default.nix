@@ -13,7 +13,6 @@ in {
   ];
 
   system.stateVersion = "25.11";
-
   time.timeZone = "UTC";
 
   nix = {
@@ -27,9 +26,10 @@ in {
 
   networking.firewall = {
     enable = true;
-    trustedInterfaces = ["tailscale0"];
-    allowedUDPPorts = [config.services.tailscale.port];
-    allowedTCPPorts = [22];
+    trustedInterfaces = ["eno1" "tailscale0"];
+    allowPing = true;
+    allowedUDPPorts = [53 10000 config.services.tailscale.port];
+    allowedTCPPorts = [22 53];
     checkReversePath = "loose";
   };
 
@@ -47,8 +47,8 @@ in {
     };
     adguardhome = {
       enable = true;
+      port = 10000;
       settings = {
-        http.address = "0.0.0.0:10000";
         dns = {
           upstream_dns = [
             "1.1.1.1"
@@ -88,22 +88,10 @@ in {
 
   security.sudo = {
     enable = true;
-    extraRules = [
-      {
-        commands = [
-          {
-            command = "${pkgs.systemd}/bin/reboot";
-            options = ["NOPASSWD"];
-          }
-        ];
-        groups = ["wheel"];
-      }
-    ];
   };
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     agenix.packages."${pkgs.system}".default
-    inetutils
   ];
 
   home-manager = {
