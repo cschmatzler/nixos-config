@@ -341,24 +341,7 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
-        "secrets": "secrets",
         "sops-nix": "sops-nix"
-      }
-    },
-    "secrets": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1755022209,
-        "narHash": "sha256-FZwzbsIz1iNqQjL85VH6rPfQzmWT1Twz21/XOF3as1E=",
-        "ref": "refs/heads/main",
-        "rev": "f2e263737af6b96108ba90c68406e0811043bcc1",
-        "revCount": 2,
-        "type": "git",
-        "url": "ssh://git@github.com/cschmatzler/nixos-config-secrets.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/cschmatzler/nixos-config-secrets.git"
       }
     },
     "sops-nix": {

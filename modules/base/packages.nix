@@ -2,7 +2,6 @@
 with pkgs; [
   alejandra
   sops
-  claude-code
   delta
   docker
   docker-compose
@@ -26,7 +25,6 @@ with pkgs; [
   sqlite
   tree
   tree-sitter
-  unrar
   unzip
   vivid
   wget

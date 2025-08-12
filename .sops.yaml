@@ -2,7 +2,7 @@ keys:
   - &admin_cschmatzler age1smjjh7l5gchlp4zgfqcxaam506mudacsr37nqj690t0gktzlksvqskd2ek
   - &host_tahani age1njjegjjdqzfnrr54f536yl4lduqgna3wuv7ef6vtl9jw5cju0grsgy62tm
 creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets/[^/]+$
     key_groups:
       - age:
         - *admin_cschmatzler

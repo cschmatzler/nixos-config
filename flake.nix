@@ -24,10 +24,6 @@
       flake = false;
     };
     nixvim.url = "github:nix-community/nixvim";
-    secrets = {
-      url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
-      flake = false;
-    };
   };
 
   outputs = inputs @ {flake-parts, ...}:

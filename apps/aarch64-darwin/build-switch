@@ -26,10 +26,10 @@ FLAKE_SYSTEM="darwinConfigurations.${MACHINE_NAME}.system"
 
 
 echo "${YELLOW}Building configuration for machine: ${MACHINE_NAME}${NC}"
-NIXPKGS_ALLOW_UNFREE=1 nix --extra-experimental-features 'nix-command flakes' build --impure .#$FLAKE_SYSTEM "$@"
+nix --extra-experimental-features 'nix-command flakes' build .#$FLAKE_SYSTEM "$@"
 
 echo "${YELLOW}Switching to new generation...${NC}"
-sudo NIXPKGS_ALLOW_UNFREE=1 ./result/sw/bin/darwin-rebuild switch --impure --flake .#${MACHINE_NAME}
+sudo ./result/sw/bin/darwin-rebuild switch --flake .#${MACHINE_NAME}
 
 echo "${YELLOW}Cleaning up...${NC}"
 unlink ./result
