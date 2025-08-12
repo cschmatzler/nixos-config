@@ -52,8 +52,8 @@
   };
 
   sops.secrets = {
-    syncthing-cert = {
-      sopsFile = "secrets/tahani-syncthing-cert";
+    tahani-syncthing-cert = {
+      sopsFile = "./secrets/tahani-syncthing-cert";
       format = "binary";
       path = "/home/${user}/.config/syncthing/cert.pem";
     };
