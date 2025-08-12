@@ -1,8 +1,4 @@
 {
-  config,
-  pkgs,
-  agenix,
-  secrets,
   user,
   ...
 }: {

@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/master";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    agenix.url = "github:ryantm/agenix";
+    sops-nix.url = "github:Mic92/sops-nix";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
       url = "github:LnL7/nix-darwin/master";
@@ -24,6 +24,10 @@
       flake = false;
     };
     nixvim.url = "github:nix-community/nixvim";
+    secrets = {
+      url = "git+ssh://git@github.com/cschmatzler/nixos-config-secrets.git";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}:

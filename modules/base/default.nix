@@ -1,11 +1,10 @@
 {
-  agenix,
+  sops-nix,
   pkgs,
   user,
   ...
 }: {
   imports = [
-    agenix.darwinModules.default
   ];
 
   nixpkgs = {
@@ -42,13 +41,27 @@
     '';
   };
 
-  environment.systemPackages = with pkgs; [
-    agenix.packages."${pkgs.system}".default
-  ];
-
   programs.fish.enable = true;
 
-  services.tailscale = {
-    enable = true;
+  services = {
+    tailscale = {
+      enable = true;
+    };
+    syncthing = {
+      enable = true;
+      openDefaultPorts = true;
+      dataDir = "/home/${user}/.local/share/syncthing";
+      configDir = "/home/${user}/.config/syncthing";
+      user = "${user}";
+      group = "users";
+      guiAddress = "0.0.0.0:8384";
+      overrideFolders = true;
+      overrideDevices = true;
+
+      settings = {
+        devices = {};
+        options.globalAnnounceEnabled = false;
+      };
+    };
   };
 }

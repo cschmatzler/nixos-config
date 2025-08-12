@@ -1,8 +1,7 @@
 {pkgs}:
 with pkgs; [
-  age
-  age-plugin-yubikey
   alejandra
+  sops
   claude-code
   delta
   docker

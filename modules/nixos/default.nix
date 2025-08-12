@@ -1,15 +1,14 @@
 {
   pkgs,
   nixvim,
-  config,
   user,
-  agenix,
+  sops-nix,
   ...
 }: let
   sshKeys = import ../../shared/ssh-keys.nix;
 in {
   imports = [
-    agenix.nixosModules.default
+    sops-nix.nixosModules.sops
   ];
 
   system.stateVersion = "25.11";
@@ -87,10 +86,6 @@ in {
   security.sudo = {
     enable = true;
   };
-
-  environment.systemPackages = [
-    agenix.packages."${pkgs.system}".default
-  ];
 
   home-manager = {
     users.${user} = {

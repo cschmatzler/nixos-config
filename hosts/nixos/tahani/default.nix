@@ -1,6 +1,7 @@
 {
   pkgs,
   hostname,
+sops,
   user,
   ...
 }: {
@@ -50,6 +51,8 @@
     defaultGateway = "192.168.1.1";
     nameservers = ["1.1.1.1"];
   };
+
+  sops.defaultSopsFile = "./secrets/tahani.yaml";
 
   services.postgresql = {
     enable = true;
