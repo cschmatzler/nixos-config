@@ -1,4 +1,8 @@
-{user, ...}: {
+{
+  user,
+  hostMeta,
+  ...
+}: {
   imports = [
     ../shared.nix
   ];
@@ -7,6 +11,6 @@
   networking.computerName = "Jason";
 
   home-manager.users.${user} = {
-    programs.git.userEmail = "christoph@schmatzler.com";
+    programs.git.userEmail = hostMeta.email;
   };
 }

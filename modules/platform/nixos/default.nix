@@ -2,15 +2,10 @@
   pkgs,
   nixvim,
   user,
+  constants,
   sops-nix,
   ...
-}: let
-  sshKeys = {
-    keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILw2lQn2yEwprOzz50kxG4fKXHzq6askh+XSGLSnWidd"
-    ];
-  };
-in {
+}: {
   imports = [
     ../../core
     ../../networking/firewall.nix
@@ -22,7 +17,7 @@ in {
 
   security.sudo.enable = true;
 
-  system.stateVersion = "25.11";
+  system.stateVersion = constants.stateVersions.nixos;
   time.timeZone = "UTC";
 
   nix = {
@@ -30,8 +25,6 @@ in {
     gc.dates = "weekly";
     nixPath = ["nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos"];
   };
-
-
 
   users.users = {
     ${user} = {
@@ -45,15 +38,13 @@ in {
         "docker"
       ];
       shell = pkgs.fish;
-      openssh.authorizedKeys.keys = sshKeys.keys;
+      openssh.authorizedKeys.keys = constants.sshKeys;
     };
 
     root = {
-      openssh.authorizedKeys.keys = sshKeys.keys;
+      openssh.authorizedKeys.keys = constants.sshKeys;
     };
   };
-
-
 
   home-manager = {
     users.${user} = {
@@ -69,9 +60,10 @@ in {
         ../../home-manager/nixos
       ];
       home = {
-        packages = pkgs.callPackage ../../packages {} 
-                ++ pkgs.callPackage ./packages.nix {};
-        stateVersion = "25.11";
+        packages =
+          pkgs.callPackage ../../packages {}
+          ++ pkgs.callPackage ./packages.nix {};
+        stateVersion = constants.stateVersions.homeManager;
       };
     };
   };

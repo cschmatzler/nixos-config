@@ -3,6 +3,7 @@
   pkgs,
   nixvim,
   user,
+  constants,
   ...
 }: {
   imports = [
@@ -16,7 +17,7 @@
 
   system = {
     primaryUser = user;
-    stateVersion = 6;
+    stateVersion = constants.stateVersions.darwin;
   };
 
   nix = {
@@ -50,9 +51,10 @@
       ];
       fonts.fontconfig.enable = true;
       home = {
-        packages = pkgs.callPackage ../../packages {} 
-                ++ pkgs.callPackage ./packages.nix {};
-        stateVersion = "25.11";
+        packages =
+          pkgs.callPackage ../../packages {}
+          ++ pkgs.callPackage ./packages.nix {};
+        stateVersion = constants.stateVersions.homeManager;
       };
     };
   };

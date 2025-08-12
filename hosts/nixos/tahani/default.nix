@@ -2,6 +2,7 @@
   pkgs,
   hostname,
   user,
+  hostMeta,
   ...
 }: {
   imports = [
@@ -50,13 +51,20 @@
     nameservers = ["1.1.1.1"];
   };
 
-  # sops.secrets = {
-  #   tahani-syncthing-cert = {
-  #     sopsFile = "./secrets/tahani-syncthing-cert";
-  #     format = "binary";
-  #     path = "/home/${user}/.config/syncthing/cert.pem";
-  #   };
-  # };
+  sops.secrets = {
+    tahani-syncthing-cert = {
+      sopsFile = ../../../secrets/tahani-syncthing-cert;
+      format = "binary";
+      owner = user;
+      path = "/home/${user}/.config/syncthing/cert.pem";
+    };
+    tahani-syncthing-key = {
+      sopsFile = ../../../secrets/tahani-syncthing-key;
+      format = "binary";
+      owner = user;
+      path = "/home/${user}/.config/syncthing/key.pem";
+    };
+  };
 
   services.syncthing = {
     enable = true;
@@ -72,6 +80,12 @@
     settings = {
       devices = {};
       options.globalAnnounceEnabled = false;
+    };
+    folders = {
+      "Projects" = {
+        path = "/home/${user}/Projects";
+        devices = [];
+      };
     };
   };
 
@@ -110,6 +124,6 @@
   };
 
   home-manager.users.${user} = {
-    programs.git.userEmail = "christoph@schmatzler.com";
+    programs.git.userEmail = hostMeta.email;
   };
 }

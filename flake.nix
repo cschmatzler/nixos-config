@@ -4,7 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/master";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
       url = "github:LnL7/nix-darwin/master";
@@ -29,7 +32,9 @@
   outputs = inputs @ {flake-parts, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} (
       let
-        user = "cschmatzler";
+        constants = import ./lib/constants.nix;
+        hostMetadata = import ./hosts/metadata.nix;
+        user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
       in {
@@ -45,7 +50,8 @@
               specialArgs =
                 inputs
                 // {
-                  inherit user hostname;
+                  inherit user hostname constants;
+                  hostMeta = hostMetadata.${hostname} or {};
                 };
               modules = [
                 inputs.home-manager.darwinModules.home-manager
@@ -75,7 +81,8 @@
               specialArgs =
                 inputs
                 // {
-                  inherit user hostname;
+                  inherit user hostname constants;
+                  hostMeta = hostMetadata.${hostname} or {};
                 };
               modules = [
                 inputs.home-manager.nixosModules.home-manager
