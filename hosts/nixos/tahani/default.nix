@@ -5,8 +5,7 @@
   ...
 }: {
   imports = [
-    ../../../modules/base
-    ../../../modules/nixos
+    ../../../modules/platform/nixos
   ];
 
   boot = {
@@ -51,13 +50,13 @@
     nameservers = ["1.1.1.1"];
   };
 
-  sops.secrets = {
-    tahani-syncthing-cert = {
-      sopsFile = "./secrets/tahani-syncthing-cert";
-      format = "binary";
-      path = "/home/${user}/.config/syncthing/cert.pem";
-    };
-  };
+  # sops.secrets = {
+  #   tahani-syncthing-cert = {
+  #     sopsFile = "./secrets/tahani-syncthing-cert";
+  #     format = "binary";
+  #     path = "/home/${user}/.config/syncthing/cert.pem";
+  #   };
+  # };
 
   services.syncthing = {
     enable = true;

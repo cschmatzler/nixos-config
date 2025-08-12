@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../modules/base
-    ../../modules/darwin
+    ../../modules/platform/darwin
   ];
 }

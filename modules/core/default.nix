@@ -1,11 +1,5 @@
-{
-  sops-nix,
-  pkgs,
-  user,
-  ...
-}: {
-  imports = [
-  ];
+{pkgs, ...}: {
+  programs.fish.enable = true;
 
   nixpkgs = {
     config = {
@@ -27,7 +21,6 @@
     settings = {
       trusted-users = [
         "@admin"
-        "${user}"
       ];
       substituters = [
         "https://nix-community.cachix.org"
@@ -42,13 +35,5 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-  };
-
-  programs.fish.enable = true;
-
-  services = {
-    tailscale = {
-      enable = true;
-    };
   };
 }

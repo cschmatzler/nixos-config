@@ -1,0 +1,5 @@
+{
+  imports = [
+    ./terminal/ghostty.nix
+  ];
+}

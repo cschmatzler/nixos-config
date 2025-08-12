@@ -6,6 +6,8 @@
   ...
 }: {
   imports = [
+    ../../core
+    ../../networking/tailscale.nix
     ./secrets.nix
     ./system.nix
     ./homebrew.nix
@@ -17,10 +19,13 @@
     stateVersion = 6;
   };
 
-  nix.gc.interval = {
-    Weekday = 0;
-    Hour = 2;
-    Minute = 0;
+  nix = {
+    settings.trusted-users = ["@admin" "${user}"];
+    gc.interval = {
+      Weekday = 0;
+      Hour = 2;
+      Minute = 0;
+    };
   };
 
   users.users.${user} = {
@@ -40,12 +45,13 @@
       _module.args = {inherit user;};
       imports = [
         nixvim.homeModules.nixvim
-        ../base/home-manager
-        ./home-manager/ghostty.nix
+        ../../home-manager/base
+        ../../home-manager/darwin
       ];
       fonts.fontconfig.enable = true;
       home = {
-        packages = pkgs.callPackage ../base/packages.nix {} ++ pkgs.callPackage ./packages.nix {};
+        packages = pkgs.callPackage ../../packages {} 
+                ++ pkgs.callPackage ./packages.nix {};
         stateVersion = "25.11";
       };
     };

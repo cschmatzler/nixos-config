@@ -1,7 +1,6 @@
 {pkgs}:
 with pkgs; [
   alejandra
-  sops
   delta
   docker
   docker-compose
@@ -22,6 +21,7 @@ with pkgs; [
   prettier
   python312
   ripgrep
+  sops
   sqlite
   tree
   tree-sitter
