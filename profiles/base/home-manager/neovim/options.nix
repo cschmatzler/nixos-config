@@ -11,5 +11,9 @@
     globals = {
       clipboard = "osc52";
     };
+    opts = {
+      ignorecase = true;
+      smartcase = true;
+    };
   };
 }

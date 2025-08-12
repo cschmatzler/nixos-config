@@ -2,6 +2,18 @@
   programs.nixvim.plugins.mini = {
     enable = true;
     modules = {
+      jump = {};
+      files = {};
+      jump2d = {
+        settings = {
+          spotter.__raw = "require('mini.jump2d').gen_spotter.pattern('[^%s%p]+')";
+          labels = "asdfghjkl";
+          view = {
+            dim = true;
+            n_steps_ahead = 2;
+          };
+        };
+      };
       basics = {
         options = {
           basic = true;

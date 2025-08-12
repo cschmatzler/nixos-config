@@ -7,7 +7,6 @@
     ./plugins/lazygit.nix
     ./plugins/lsp.nix
     ./plugins/mini.nix
-    ./plugins/oil.nix
     ./plugins/treesitter.nix
   ];
 
