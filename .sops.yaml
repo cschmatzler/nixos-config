@@ -1,9 +1,9 @@
 keys:
-  - &admin_cschmatzler age1smjjh7l5gchlp4zgfqcxaam506mudacsr37nqj690t0gktzlksvqskd2ek
+  - &host_chidi age1ez6j3r5wdp0tjy7n5qzv5vfakdc2nh2zeu388zu7a80l0thv052syxq5e2
   - &host_tahani age1njjegjjdqzfnrr54f536yl4lduqgna3wuv7ef6vtl9jw5cju0grsgy62tm
 creation_rules:
   - path_regex: secrets/[^/]+$
     key_groups:
       - age:
-        - *admin_cschmatzler
+        - *host_chidi
         - *host_tahani

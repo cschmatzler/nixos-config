@@ -9,7 +9,6 @@
   imports = [
     ../../core
     ../../networking/tailscale.nix
-    ./secrets.nix
     ./system.nix
     ./homebrew.nix
     ./dock
