@@ -2,7 +2,6 @@
   pkgs,
   hostname,
   user,
-  hostMeta,
   ...
 }: {
   imports = [
@@ -124,6 +123,6 @@
   };
 
   home-manager.users.${user} = {
-    programs.git.userEmail = hostMeta.email;
+    programs.git.userEmail = "christoph@schmatzler.com";
   };
 }

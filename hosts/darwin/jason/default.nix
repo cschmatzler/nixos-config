@@ -1,6 +1,5 @@
 {
   user,
-  hostMeta,
   ...
 }: {
   imports = [
@@ -11,6 +10,6 @@
   networking.computerName = "Jason";
 
   home-manager.users.${user} = {
-    programs.git.userEmail = hostMeta.email;
+    programs.git.userEmail = "christoph@schmatzler.com";
   };
 }
