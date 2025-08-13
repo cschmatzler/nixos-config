@@ -5,16 +5,22 @@
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
-  isLinux = pkgs.stdenv.isLinux;
-  homeDir = if isDarwin then "/Users/${user}" else "/home/${user}";
+  
+  platformConfig = if isDarwin then {
+    homeDir = "/Users/${user}";
+    group = "staff";
+  } else {
+    homeDir = "/home/${user}";
+    group = "users";
+  };
 in {
   services.syncthing = {
     enable = true;
-    openDefaultPorts = isLinux;
-    dataDir = "${homeDir}/.local/share/syncthing";
-    configDir = "${homeDir}/.config/syncthing";
+    openDefaultPorts = !isDarwin;
+    dataDir = "${platformConfig.homeDir}/.local/share/syncthing";
+    configDir = "${platformConfig.homeDir}/.config/syncthing";
     user = "${user}";
-    group = if isDarwin then "staff" else "users";
+    group = platformConfig.group;
     guiAddress = "0.0.0.0:8384";
     overrideFolders = true;
     overrideDevices = true;
@@ -26,7 +32,7 @@ in {
       };
       folders = {
         "Projects" = {
-          path = "${homeDir}/Projects";
+          path = "${platformConfig.homeDir}/Projects";
           devices = ["tahani" "jason"];
         };
       };
