@@ -1,17 +1,20 @@
 {
   config,
-  pkgs,
-  nixvim,
-  user,
   constants,
+  nixvim,
+  pkgs,
+  user,
+  sops-nix,
   ...
 }: {
   imports = [
     ../../core
     ../../networking/tailscale.nix
-    ./system.nix
-    ./homebrew.nix
+    ../../services/syncthing.nix
     ./dock
+    ./homebrew.nix
+    ./system.nix
+    sops-nix.darwinModules.sops
   ];
 
   system = {
