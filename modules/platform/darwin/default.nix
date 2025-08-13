@@ -10,7 +10,6 @@
   imports = [
     ../../core
     ../../networking/tailscale.nix
-    ../../services/syncthing-darwin.nix
     ../../services/syncthing.nix
     ./dock
     ./homebrew.nix

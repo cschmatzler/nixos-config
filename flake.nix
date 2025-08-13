@@ -44,6 +44,10 @@
 
         flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (
           hostname:
+            let
+              syncthingOverlay = import ./overlays/syncthing-darwin.nix;
+              syncthingModule = (syncthingOverlay null { darwin = {}; }).darwinSyncthingModule;
+            in
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
               specialArgs =
@@ -54,8 +58,11 @@
               modules = [
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
+                syncthingModule
 
                 {
+                  nixpkgs.overlays = [ syncthingOverlay ];
+                  
                   nix-homebrew = {
                     inherit user;
                     enable = true;
