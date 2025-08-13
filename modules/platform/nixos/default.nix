@@ -10,9 +10,9 @@
     ../../core
     ../../networking/firewall.nix
     ../../networking/ssh.nix
+    ../../networking/tailscale.nix
     ../../services/adguard.nix
     ../../services/syncthing.nix
-    ./tailscale.nix
     sops-nix.nixosModules.sops
   ];
 
