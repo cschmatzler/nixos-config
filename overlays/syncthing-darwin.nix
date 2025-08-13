@@ -1,6 +1,5 @@
 final: prev: {
-  darwinModules = prev.darwinModules or {} // {
-    syncthing = { config, lib, pkgs, ... }:
+  darwinSyncthingModule = { config, lib, pkgs, ... }:
       with lib;
       let
         cfg = config.services.syncthing;
@@ -384,7 +383,4 @@ final: prev: {
           '';
         };
       };
-  };
-  
-  darwinSyncthingModule = final.darwinModules.syncthing;
 }

@@ -36,13 +36,6 @@
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
-        
-        loadDarwinOverlay = overlayPath: let
-          overlay = import overlayPath;
-          module = (overlay null { darwin = {}; }).darwinSyncthingModule;
-        in {
-          inherit overlay module;
-        };
       in {
         systems = [
           "x86_64-linux"
@@ -52,7 +45,8 @@
         flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (
           hostname:
             let
-              syncthing = loadDarwinOverlay ./overlays/syncthing-darwin.nix;
+              syncthingOverlay = import ./overlays/syncthing-darwin.nix;
+              syncthingModule = (syncthingOverlay null {}).darwinSyncthingModule;
             in
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
@@ -64,10 +58,10 @@
               modules = [
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
-                syncthing.module
+                syncthingModule
 
                 {
-                  nixpkgs.overlays = [ syncthing.overlay ];
+                  nixpkgs.overlays = [ syncthingOverlay ];
                   
                   nix-homebrew = {
                     inherit user;
