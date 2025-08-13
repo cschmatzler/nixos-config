@@ -1,7 +1,6 @@
 {
   pkgs,
   user,
-  hostMeta,
   ...
 }: {
   imports = [
@@ -12,8 +11,10 @@
   networking.computerName = "Chidi";
 
   home-manager.users.${user} = {
-    programs.git.userEmail = hostMeta.email;
+    programs.git.userEmail = "christoph@tuist.dev";
   };
 
-  environment.systemPackages = with pkgs; hostMeta.extraPackages;
+  environment.systemPackages = with pkgs; [
+    slack
+  ];
 }

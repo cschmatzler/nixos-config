@@ -33,7 +33,6 @@
     flake-parts.lib.mkFlake {inherit inputs;} (
       let
         constants = import ./lib/constants.nix;
-        hostMetadata = import ./hosts/metadata.nix;
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
@@ -51,7 +50,6 @@
                 inputs
                 // {
                   inherit user hostname constants;
-                  hostMeta = hostMetadata.${hostname} or {};
                 };
               modules = [
                 inputs.home-manager.darwinModules.home-manager
@@ -82,7 +80,6 @@
                 inputs
                 // {
                   inherit user hostname constants;
-                  hostMeta = hostMetadata.${hostname} or {};
                 };
               modules = [
                 inputs.home-manager.nixosModules.home-manager

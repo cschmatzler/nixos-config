@@ -3,14 +3,8 @@
     # e - explore/edit
     {
       mode = "n";
-      key = "<leader>ed";
-      action = ":lua require('mini.files').open()<CR>";
-      options.desc = "Directory";
-    }
-    {
-      mode = "n";
       key = "<leader>ef";
-      action = ":lua require('mini.files').open(vim.api.nvim_buf_get_name(0))<CR>";
+      action = ":lua require('oil').open()<CR>";
       options.desc = "File directory";
     }
     {

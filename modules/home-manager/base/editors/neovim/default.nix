@@ -4,7 +4,9 @@
     ./mappings.nix
     ./options.nix
     ./plugins/conform.nix
+    ./plugins/blink-cmp.nix
     ./plugins/grug-far.nix
+    ./plugins/oil.nix
     ./plugins/lazygit.nix
     ./plugins/lsp.nix
     ./plugins/mini.nix

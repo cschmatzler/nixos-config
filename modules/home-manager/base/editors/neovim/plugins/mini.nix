@@ -123,14 +123,8 @@
         ];
       };
       comment = {};
-      completion = {
-        lsp_completion = {
-          source_func = "omnifunc";
-        };
-      };
       diff = {};
       extra = {};
-      files = {};
       git = {};
       icons = {};
       indentscope = {};
