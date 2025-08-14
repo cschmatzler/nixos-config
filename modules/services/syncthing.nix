@@ -34,9 +34,13 @@ in {
         "chidi" = {id = "N7W6SUT-QO6J4BE-T3Y65SM-OFGYGNV-TGYBJPX-JVN4Z72-AENZ247-KWXOQA6";};
       };
       folders = {
-        "Projects" = {
-          path = "${platformConfig.homeDir}/Projects";
-          devices = ["tahani" "jason" "chidi"];
+        "Projects-Personal" = {
+          path = "${platformConfig.homeDir}/Projects/Personal";
+          devices = ["tahani" "jason"];
+        };
+        "Projects-Work" = {
+          path = "${platformConfig.homeDir}/Projects/Work";
+          devices = ["tahani" "chidi"];
         };
       };
       options.globalAnnounceEnabled = false;
