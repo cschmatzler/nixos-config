@@ -1,6 +1,7 @@
 {
   user,
   pkgs,
+  lib,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -33,16 +34,7 @@ in {
         "jason" = {id = "42II2VO-QYPJG26-ZS3MB2I-AOPVZ67-JJNSE76-U54CO5Y-634A5OG-ECU4YQA";};
         "chidi" = {id = "N7W6SUT-QO6J4BE-T3Y65SM-OFGYGNV-TGYBJPX-JVN4Z72-AENZ247-KWXOQA6";};
       };
-      folders = {
-        "Projects-Personal" = {
-          path = "${platformConfig.homeDir}/Projects/Personal";
-          devices = ["tahani" "jason"];
-        };
-        "Projects-Work" = {
-          path = "${platformConfig.homeDir}/Projects/Work";
-          devices = ["tahani" "chidi"];
-        };
-      };
+
       options.globalAnnounceEnabled = false;
     };
   };

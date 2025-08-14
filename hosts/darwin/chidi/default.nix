@@ -10,6 +10,13 @@
   networking.hostName = "chidi";
   networking.computerName = "Chidi";
 
+  services.syncthing.settings.folders = {
+    "Projects/Work" = {
+      path = "/Users/${user}/Projects/Work";
+      devices = ["tahani" "chidi"];
+    };
+  };
+
   home-manager.users.${user} = {
     programs.git.userEmail = "christoph@tuist.dev";
   };
