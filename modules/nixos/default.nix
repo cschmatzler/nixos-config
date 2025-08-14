@@ -7,12 +7,12 @@
   ...
 }: {
   imports = [
-    ../../core
-    ../../networking/firewall.nix
-    ../../networking/ssh.nix
-    ../../networking/tailscale.nix
-    ../../services/adguard.nix
-    ../../services/syncthing.nix
+    ../core.nix
+    ./firewall.nix
+    ./ssh.nix
+    ./adguard.nix
+    ../tailscale.nix
+    ../syncthing.nix
     sops-nix.nixosModules.sops
   ];
 
@@ -57,12 +57,12 @@
       _module.args = {inherit user;};
       imports = [
         nixvim.homeModules.nixvim
-        ../../home-manager/base
-        ../../home-manager/nixos
+        ../home-manager
+        ../home-manager/nixos
       ];
       home = {
         packages =
-          pkgs.callPackage ../../packages {}
+          pkgs.callPackage ../packages.nix {}
           ++ pkgs.callPackage ./packages.nix {};
         stateVersion = constants.stateVersions.homeManager;
       };

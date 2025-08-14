@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ../../../modules/platform/nixos
+    ../../../modules/nixos
   ];
 
   boot = {

@@ -8,9 +8,9 @@
   ...
 }: {
   imports = [
-    ../../core
-    ../../networking/tailscale.nix
-    ../../services/syncthing.nix
+    ../core.nix
+    ../tailscale.nix
+    ../syncthing.nix
     ./dock
     ./homebrew.nix
     ./system.nix
@@ -49,13 +49,13 @@
       _module.args = {inherit user;};
       imports = [
         nixvim.homeModules.nixvim
-        ../../home-manager/base
-        ../../home-manager/darwin
+        ../home-manager
+        ../home-manager/darwin
       ];
       fonts.fontconfig.enable = true;
       home = {
         packages =
-          pkgs.callPackage ../../packages {}
+          pkgs.callPackage ../packages.nix {}
           ++ pkgs.callPackage ./packages.nix {};
         stateVersion = constants.stateVersions.homeManager;
       };

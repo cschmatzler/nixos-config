@@ -1,5 +1,5 @@
 {
   imports = [
-    ./terminal/ghostty.nix
+    ./ghostty.nix
   ];
 }

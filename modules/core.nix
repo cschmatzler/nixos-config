@@ -6,7 +6,7 @@
       allowUnfree = true;
     };
     overlays = let
-      path = ../../overlays;
+      path = ../overlays;
     in
       with builtins;
         map (n: import (path + ("/" + n))) (

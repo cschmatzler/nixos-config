@@ -1,5 +1,5 @@
 {
   imports = [
-    ./terminal/zellij.nix
+    ./zellij.nix
   ];
 }
