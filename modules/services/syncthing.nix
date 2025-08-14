@@ -1,7 +1,6 @@
 {
   user,
   pkgs,
-  lib,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
