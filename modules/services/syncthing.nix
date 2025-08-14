@@ -35,6 +35,13 @@ in {
         "chidi" = {id = "N7W6SUT-QO6J4BE-T3Y65SM-OFGYGNV-TGYBJPX-JVN4Z72-AENZ247-KWXOQA6";};
       };
 
+      folders = {
+        "nixos-config" = {
+          path = "${platformConfig.homeDir}/nixos-config";
+          devices = ["tahani" "jason" "chidi"];
+        };
+      };
+
       options.globalAnnounceEnabled = false;
     };
   };
