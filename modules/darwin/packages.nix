@@ -5,4 +5,5 @@ with pkgs; [
   mas
   raycast
   whatsapp-for-mac
+  (callPackage ../bin/open-project.nix {})
 ]
