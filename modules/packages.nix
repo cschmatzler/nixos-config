@@ -6,10 +6,13 @@ with pkgs; [
   docker
   docker-compose
   fastfetch
+  fd
+  fzf
   gh
   git
   gnupg
   htop
+  hyperfine
   iosevka
   jq
   killall
@@ -18,7 +21,7 @@ with pkgs; [
   openssh
   postgresql_17
   prettier
-  python312
+  sd
   sops
   sqlite
   tree
@@ -26,4 +29,5 @@ with pkgs; [
   unzip
   vivid
   zip
+  (callPackage ./bin/open-project.nix {})
 ]
