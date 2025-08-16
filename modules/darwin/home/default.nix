@@ -1,11 +1,9 @@
 {
   pkgs,
-  config,
   lib,
-  constants,
   ...
 }: let
-  setWallpaperScript = import ../lib/wallpaper.nix {inherit pkgs;};
+  setWallpaperScript = import ../bin/wallpaper.nix {inherit pkgs;};
 in {
   imports = [
     ./ghostty.nix
