@@ -50,7 +50,7 @@
       imports = [
         nixvim.homeModules.nixvim
         ../home/default.nix
-        ../home/darwin/default.nix
+        ./home/default.nix
       ];
       fonts.fontconfig.enable = true;
     };

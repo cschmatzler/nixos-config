@@ -7,6 +7,6 @@
   ];
 
   home = {
-    packages = pkgs.callPackage ../../nixos/packages.nix {};
+    packages = pkgs.callPackage ../packages.nix {};
   };
 }

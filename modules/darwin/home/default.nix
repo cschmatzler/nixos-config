@@ -5,14 +5,14 @@
   constants,
   ...
 }: let
-  setWallpaperScript = import ../../darwin/lib/wallpaper.nix {inherit pkgs;};
+  setWallpaperScript = import ../lib/wallpaper.nix {inherit pkgs;};
 in {
   imports = [
     ./ghostty.nix
   ];
 
   home = {
-    packages = pkgs.callPackage ../../darwin/packages.nix {};
+    packages = pkgs.callPackage ../packages.nix {};
     activation = {
       "setWallpaper" = lib.hm.dag.entryAfter ["revealHomeLibraryDirectory"] ''
         echo "[+] Setting wallpaper"

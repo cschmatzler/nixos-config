@@ -58,7 +58,7 @@
       imports = [
         nixvim.homeModules.nixvim
         ../home/default.nix
-        ../home/nixos/default.nix
+        ./home/default.nix
       ];
     };
   };
