@@ -13,21 +13,17 @@ with pkgs; [
   iosevka
   jq
   killall
-  libfido2
-  nodejs_24
   nurl
   opencode
   openssh
   postgresql_17
   prettier
   python312
-  ripgrep
   sops
   sqlite
   tree
   tree-sitter
   unzip
   vivid
-  wget
   zip
 ]

@@ -4,19 +4,20 @@
   ...
 }: {
   imports = [
-    ./fish.nix
-    ./starship.nix
-    ./zsh.nix
     ./atuin.nix
     ./bat.nix
     ./eza.nix
+    ./fish.nix
     ./git.nix
     ./lazygit.nix
     ./mise.nix
+    ./neovim
+    ./ripgrep.nix
     ./ssh.nix
+    ./starship.nix
     ./zellij.nix
     ./zoxide.nix
-    ./neovim
+    ./zsh.nix
   ];
 
   programs.home-manager.enable = true;
