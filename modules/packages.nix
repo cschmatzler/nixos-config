@@ -7,7 +7,6 @@ with pkgs; [
   docker-compose
   fastfetch
   fd
-  fzf
   gh
   git
   gnupg

@@ -1,6 +1,15 @@
 {
   programs.fish = {
     enable = true;
+    functions = {
+      open_project = ''
+        set -l base "$HOME/Projects"
+        set -l choice (fd -t d -d 1 -a . "$base/Personal" "$base/Work" \
+            | string replace -r -- "^$base/" "" \
+            | fzf --prompt "project > ")
+        test -n "$choice"; and cd "$base/$choice"
+      '';
+    };
     interactiveShellInit = ''
       set fish_greeting
 
@@ -32,6 +41,10 @@
       set fish_pager_color_description 9ca0b0
 
       set -gx LS_COLORS "$(vivid generate catppuccin-latte)"
+
+      for mode in default insert
+        bind --mode $mode \cp open_project
+      end
     '';
   };
 }

@@ -8,6 +8,7 @@
     ./bat.nix
     ./eza.nix
     ./fish.nix
+    ./fzf.nix
     ./git.nix
     ./lazygit.nix
     ./mise.nix
