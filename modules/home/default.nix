@@ -1,4 +1,8 @@
 {
+  pkgs,
+  constants,
+  ...
+}: {
   imports = [
     ./fish.nix
     ./starship.nix
@@ -21,8 +25,12 @@
     nix-direnv.enable = true;
   };
 
-  home.shellAliases = {
-    v = "nvim";
-    lg = "lazygit";
+  home = {
+    packages = pkgs.callPackage ../packages.nix {};
+    stateVersion = constants.stateVersions.homeManager;
+    shellAliases = {
+      v = "nvim";
+      lg = "lazygit";
+    };
   };
 }

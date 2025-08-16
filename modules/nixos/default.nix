@@ -54,18 +54,12 @@
       lib,
       ...
     }: {
-      _module.args = {inherit user;};
+      _module.args = {inherit user constants;};
       imports = [
         nixvim.homeModules.nixvim
-        ../home-manager
-        ../home-manager/nixos
+        ../home/default.nix
+        ../home/nixos/default.nix
       ];
-      home = {
-        packages =
-          pkgs.callPackage ../packages.nix {}
-          ++ pkgs.callPackage ./packages.nix {};
-        stateVersion = constants.stateVersions.homeManager;
-      };
     };
   };
 }

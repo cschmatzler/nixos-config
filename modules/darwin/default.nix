@@ -6,9 +6,7 @@
   user,
   sops-nix,
   ...
-}: let
-  setWallpaperScript = import ./libs/wallpaper.nix {inherit pkgs;};
-in {
+}: {
   imports = [
     ../core.nix
     ../tailscale.nix
@@ -48,26 +46,13 @@ in {
       lib,
       ...
     }: {
-      _module.args = {inherit user;};
+      _module.args = {inherit user constants;};
       imports = [
         nixvim.homeModules.nixvim
-        ../home-manager
-        ../home-manager/darwin
+        ../home/default.nix
+        ../home/darwin/default.nix
       ];
       fonts.fontconfig.enable = true;
-      home = {
-        packages =
-          pkgs.callPackage ../packages.nix {}
-          ++ pkgs.callPackage ./packages.nix {};
-        stateVersion = constants.stateVersions.homeManager;
-
-        activation = {
-          "setWallpaper" = lib.hm.dag.entryAfter ["revealHomeLibraryDirectory"] ''
-            echo "[+] Setting wallpaper"
-            ${setWallpaperScript}/bin/set-wallpaper-script
-          '';
-        };
-      };
     };
   };
 
