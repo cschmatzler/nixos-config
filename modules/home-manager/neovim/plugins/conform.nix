@@ -7,7 +7,6 @@
         nix = ["alejandra"];
         javascript = ["prettier"];
         typescript = ["prettier"];
-        elixir = ["mix"];
       };
     };
   };

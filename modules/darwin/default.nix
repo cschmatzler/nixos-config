@@ -6,7 +6,9 @@
   user,
   sops-nix,
   ...
-}: {
+}: let
+  setWallpaperScript = import ./libs/wallpaper.nix {inherit pkgs;};
+in {
   imports = [
     ../core.nix
     ../tailscale.nix
@@ -58,6 +60,13 @@
           pkgs.callPackage ../packages.nix {}
           ++ pkgs.callPackage ./packages.nix {};
         stateVersion = constants.stateVersions.homeManager;
+
+        activation = {
+          "setWallpaper" = lib.hm.dag.entryAfter ["revealHomeLibraryDirectory"] ''
+            echo "[+] Setting wallpaper"
+            ${setWallpaperScript}/bin/set-wallpaper-script
+          '';
+        };
       };
     };
   };
