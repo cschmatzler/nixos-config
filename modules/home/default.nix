@@ -11,6 +11,7 @@
     ./fish.nix
     ./fzf.nix
     ./git.nix
+    ./direnv.nix
     ./lazygit.nix
     ./mise.nix
     ./neovim
@@ -23,17 +24,9 @@
   ];
 
   programs.home-manager.enable = true;
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
 
   home = {
     packages = pkgs.callPackage ../packages.nix {};
     stateVersion = constants.stateVersions.homeManager;
-    shellAliases = {
-      v = "nvim";
-      lg = "lazygit";
-    };
   };
 }

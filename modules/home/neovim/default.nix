@@ -24,4 +24,8 @@
       };
     };
   };
+
+  home.shellAliases = {
+    v = "neovim";
+  }:
 }
