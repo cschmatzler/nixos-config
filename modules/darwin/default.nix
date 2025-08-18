@@ -11,7 +11,6 @@
     ../core.nix
     ../syncthing.nix
     ../tailscale.nix
-    ./bin/open-project.nix
     ./dock
     ./homebrew.nix
     ./system.nix

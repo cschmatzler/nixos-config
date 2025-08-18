@@ -8,7 +8,7 @@
         ts_ls.enable = true; # TS/JS
         cssls.enable = true; # CSS
         dockerls.enable = true; # Docker
-        elixirls.enable = true; # Elixir
+        # elixirls.enable = true; # Elixir
       };
     };
   };
