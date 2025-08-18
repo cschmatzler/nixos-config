@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./atuin.nix
+    ./bash.nix
     ./bat.nix
     ./eza.nix
     ./fish.nix
