@@ -26,6 +26,6 @@
   };
 
   home.shellAliases = {
-    v = "neovim";
-  }:
+    v = "nvim";
+  };
 }

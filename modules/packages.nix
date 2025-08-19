@@ -1,7 +1,10 @@
 {pkgs, ...}:
 with pkgs; [
+  (callPackage ./bin/open-project.nix {})
   age
   alejandra
+  autoconf
+  automake
   delta
   docker
   docker-compose
@@ -9,17 +12,23 @@ with pkgs; [
   fd
   gh
   git
+  gnumake
   gnupg
   htop
   hyperfine
   iosevka
   jq
   killall
+  ncurses
+  nix-ld
+  nodejs_24
   nurl
   opencode
   openssh
+  pnpm
   postgresql_17
   prettier
+  python312
   sd
   sops
   sqlite
@@ -28,5 +37,4 @@ with pkgs; [
   unzip
   vivid
   zip
-  (callPackage ./bin/open-project.nix {})
 ]
