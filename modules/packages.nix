@@ -2,6 +2,7 @@
 with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
+  lsof
   alejandra
   delta
   docker
