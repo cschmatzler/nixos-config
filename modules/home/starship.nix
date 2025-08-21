@@ -7,7 +7,7 @@
       command_timeout = 200;
       format = "[$directory$git_branch]($style)$character";
       character = {
-        error_symbol = "[✗](bold #e64553)";
+        error_symbol = "[✗ ](bold #e64553)";
         success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #dc8a78)";
       };
       directory = {

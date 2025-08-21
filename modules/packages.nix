@@ -3,8 +3,6 @@ with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
   alejandra
-  autoconf
-  automake
   delta
   docker
   docker-compose
@@ -19,16 +17,9 @@ with pkgs; [
   iosevka
   jq
   killall
-  ncurses
-  nix-ld
-  nodejs_24
   nurl
-  opencode
   openssh
-  pnpm
   postgresql_17
-  prettier
-  python312
   sd
   sops
   sqlite

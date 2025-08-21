@@ -7,14 +7,15 @@
     ./atuin.nix
     ./bash.nix
     ./bat.nix
+    ./direnv.nix
     ./eza.nix
     ./fish.nix
     ./fzf.nix
     ./git.nix
-    ./direnv.nix
     ./lazygit.nix
     ./mise.nix
     ./neovim
+    ./opencode.nix
     ./ripgrep.nix
     ./ssh.nix
     ./starship.nix
