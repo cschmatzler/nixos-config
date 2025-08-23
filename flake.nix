@@ -46,7 +46,6 @@
           hostname: let
             syncthingOverlay = import ./overlays/syncthing-darwin.nix;
             syncthingModule = (syncthingOverlay null {}).darwinSyncthingModule;
-            opencodeOverlay = import ./overlays/opencode.nix;
           in
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
@@ -61,7 +60,7 @@
                 syncthingModule
 
                 {
-                  nixpkgs.overlays = [syncthingOverlay opencodeOverlay];
+                  nixpkgs.overlays = [syncthingOverlay];
 
                   nix-homebrew = {
                     inherit user;
@@ -80,9 +79,7 @@
         );
 
         flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs nixosHosts (
-          hostname: let
-            opencodeOverlay = import ./overlays/opencode.nix;
-          in
+          hostname:
             inputs.nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs =
@@ -92,9 +89,6 @@
                 };
               modules = [
                 inputs.home-manager.nixosModules.home-manager
-                {
-                  nixpkgs.overlays = [opencodeOverlay];
-                }
                 ./hosts/nixos/${hostname}
               ];
             }
