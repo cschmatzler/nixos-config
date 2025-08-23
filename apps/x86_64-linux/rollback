@@ -24,8 +24,12 @@ print_warning() {
     echo -e "${YELLOW}⚠${NC} $1"
 }
 
-print_info "Available generations:"
-darwin-rebuild --list-generations
+print_info "Available system generations:"
+if [[ "$EUID" -ne 0 ]]; then
+    sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+else
+    nix-env --profile /nix/var/nix/profiles/system --list-generations
+fi
 
 echo -n "Enter generation number to rollback to: "
 read -r GEN_NUM
@@ -36,6 +40,12 @@ if [[ -z "$GEN_NUM" ]]; then
 fi
 
 print_warning "Rolling back to generation $GEN_NUM..."
-darwin-rebuild switch --switch-generation "$GEN_NUM"
+if [[ "$EUID" -ne 0 ]]; then
+    sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation "$GEN_NUM" && \
+    sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+else
+    nix-env --profile /nix/var/nix/profiles/system --switch-generation "$GEN_NUM" && \
+    /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+fi
 
 print_success "Rollback to generation $GEN_NUM complete"

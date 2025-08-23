@@ -7,6 +7,7 @@
 }: {
   imports = [
     ../shared.nix
+    ../../../modules/postgresql.nix
   ];
 
   networking.hostName = "chidi";
@@ -18,28 +19,6 @@
 
   services.postgresql = {
     enable = true;
-    package = pkgs.postgresql_17;
-    enableTCPIP = true;
-    port = 5432;
-    ensureDatabases = ["postgres"];
-    ensureUsers = [
-      {
-        name = "postgres";
-        ensureDBOwnership = true;
-      }
-      {
-        name = "cschmatzler";
-        ensureClauses = {
-          superuser = true;
-          createdb = true;
-        };
-      }
-    ];
-    authentication = pkgs.lib.mkForce ''
-      local all all trust
-      host  all all 127.0.0.1/32 trust
-      host  all all ::1/128 trust
-    '';
   };
 
   services.syncthing.settings.folders = {

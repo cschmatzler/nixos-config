@@ -1,17 +1,44 @@
-#!/bin/sh -e
+#!/usr/bin/env bash
 
-VERSION=1.0
+set -euo pipefail
 
-GREEN='\033[1;32m'
-RED='\033[1;31m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
-HOSTNAME="tahani"
+print_info() {
+    echo -e "${BLUE}ℹ ${NC} $1"
+}
 
-echo -e "${YELLOW}Starting...${NC}"
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
 
-# We pass SSH from user to root so root can download secrets from our private Github
-sudo SSH_AUTH_SOCK=$SSH_AUTH_SOCK /run/current-system/sw/bin/nixos-rebuild switch --flake .#$HOSTNAME $@
+print_error() {
+    echo -e "${RED}✗${NC} $1"
+}
 
-echo -e "${GREEN}Switch to new generation complete!${NC}"
+HOSTNAME="${1:-tahani}"
+
+print_info "Building and switching configuration for $HOSTNAME"
+
+# Build
+print_info "Building configuration..."
+if ! nix build ".#nixosConfigurations.$HOSTNAME.config.system.build.toplevel" --no-link "${@:2}"; then
+    print_error "Build failed"
+    exit 1
+fi
+
+print_success "Build completed"
+
+# Switch - note this requires sudo permissions
+print_info "Switching to new configuration (requires sudo)..."
+if [[ "$EUID" -ne 0 ]]; then
+    sudo nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
+else
+    nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
+fi
+
+print_success "Build and switch completed successfully"

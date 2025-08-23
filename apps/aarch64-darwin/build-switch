@@ -1,37 +1,35 @@
-#!/bin/sh -e
+#!/usr/bin/env bash
 
-GREEN='\033[1;32m'
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[1;31m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
-if [ $# -gt 0 ]; then
-    MACHINE_NAME="$1"
-    shift
-else
-    MACHINE_NAME=$(hostname | cut -d'.' -f1)
+print_info() {
+    echo -e "${BLUE}ℹ ${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
+
+print_info "Building and switching configuration for $HOSTNAME"
+
+# Build
+print_info "Building configuration..."
+nix build ".#darwinConfigurations.$HOSTNAME.system" --show-trace "${@:2}"
+
+# Switch
+print_info "Switching to new configuration..."
+./result/sw/bin/darwin-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
+
+if [[ -L ./result ]]; then
+    unlink ./result
 fi
 
-if [ ! -d "hosts/darwin/$MACHINE_NAME" ]; then
-    echo "${RED}Error: Machine configuration '$MACHINE_NAME' not found in hosts/darwin/${NC}"
-    echo "${YELLOW}Available machines:${NC}"
-    ls -1 hosts/darwin/ | grep -v "default.nix\|shared.nix" || echo "  No machine configurations found"
-    echo ""
-    echo "${YELLOW}Usage: $0 [machine-name] [additional-nix-args]${NC}"
-    echo "  If no machine name is provided, uses current hostname: $(hostname | cut -d'.' -f1)"
-    exit 1
-fi
-
-FLAKE_SYSTEM="darwinConfigurations.${MACHINE_NAME}.system"
-
-
-echo "${YELLOW}Building configuration for machine: ${MACHINE_NAME}${NC}"
-nix --extra-experimental-features 'nix-command flakes' build .#$FLAKE_SYSTEM "$@"
-
-echo "${YELLOW}Switching to new generation...${NC}"
-sudo ./result/sw/bin/darwin-rebuild switch --flake .#${MACHINE_NAME}
-
-echo "${YELLOW}Cleaning up...${NC}"
-unlink ./result
-
-echo "${GREEN}Switch to new generation complete for ${MACHINE_NAME}!${NC}"
+print_success "Build and switch completed successfully"

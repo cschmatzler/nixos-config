@@ -119,9 +119,6 @@
             "apply"
             "build"
             "build-switch"
-            "copy-keys"
-            "create-keys"
-            "check-keys"
             "rollback"
           ];
         in {

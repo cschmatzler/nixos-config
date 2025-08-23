@@ -1,19 +1,29 @@
-#!/bin/sh -e
+#!/usr/bin/env bash
 
-GREEN='\033[1;32m'
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[1;31m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
-SYSTEM_TYPE="aarch64-darwin"
-FLAKE_SYSTEM="darwinConfigurations.${SYSTEM_TYPE}.system"
+print_info() {
+    echo -e "${BLUE}ℹ ${NC} $1"
+}
 
-export NIXPKGS_ALLOW_UNFREE=1
+print_success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
 
-echo "${YELLOW}Starting build...${NC}"
-nix --extra-experimental-features 'nix-command flakes' build .#$FLAKE_SYSTEM $@
+HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
 
-echo "${YELLOW}Cleaning up...${NC}"
-unlink ./result
+print_info "Building configuration for $HOSTNAME"
 
-echo "${GREEN}Switch to new generation complete!${NC}"
+nix build ".#darwinConfigurations.$HOSTNAME.system" --show-trace "${@:2}"
+
+if [[ -L ./result ]]; then
+    unlink ./result
+fi
+
+print_success "Build completed successfully"

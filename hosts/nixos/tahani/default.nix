@@ -67,23 +67,7 @@
 
   services.postgresql = {
     enable = true;
-    package = pkgs.postgresql_17;
     extensions = [pkgs.postgresql17Packages.timescaledb];
-    enableTCPIP = true;
-    ensureDatabases = ["postgres"];
-    ensureUsers = [
-      {
-        name = "postgres";
-        ensureDBOwnership = true;
-      }
-      {
-        name = "cschmatzler";
-        ensureClauses = {
-          superuser = true;
-          createdb = true;
-        };
-      }
-    ];
     authentication = pkgs.lib.mkOverride 10 ''
       local all all trust
       host  all all 127.0.0.1/32 trust
