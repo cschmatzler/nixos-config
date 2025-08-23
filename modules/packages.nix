@@ -15,7 +15,7 @@ with pkgs; [
   gnupg
   htop
   hyperfine
-  iosevka
+  fira-code
   jq
   killall
   nurl
