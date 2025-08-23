@@ -2,7 +2,7 @@
   programs.opencode = {
     enable = true;
     settings = {
-      theme = "catppuccin";
+      theme = "system";
       formatter = {
         mix = {
           disabled = true;
