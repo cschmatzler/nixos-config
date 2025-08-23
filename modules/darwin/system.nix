@@ -27,6 +27,4 @@
       TrackpadThreeFingerDrag = true;
     };
   };
-
-
 }
