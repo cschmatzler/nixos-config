@@ -27,6 +27,7 @@
       flake = false;
     };
     nixvim.url = "github:nix-community/nixvim";
+    zjstatus.url = "github:dj95/zjstatus";
   };
 
   outputs = inputs @ {flake-parts, ...}:
@@ -46,6 +47,9 @@
           hostname: let
             syncthingOverlay = import ./overlays/syncthing-darwin.nix;
             syncthingModule = (syncthingOverlay null {}).darwinSyncthingModule;
+            zjstatusOverlay = final: prev: {
+              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+            };
           in
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
@@ -60,7 +64,7 @@
                 syncthingModule
 
                 {
-                  nixpkgs.overlays = [syncthingOverlay];
+                  nixpkgs.overlays = [syncthingOverlay zjstatusOverlay];
 
                   nix-homebrew = {
                     inherit user;
@@ -79,7 +83,11 @@
         );
 
         flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs nixosHosts (
-          hostname:
+          hostname: let
+            zjstatusOverlay = final: prev: {
+              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+            };
+          in
             inputs.nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs =
@@ -89,6 +97,9 @@
                 };
               modules = [
                 inputs.home-manager.nixosModules.home-manager
+                {
+                  nixpkgs.overlays = [zjstatusOverlay];
+                }
                 ./hosts/nixos/${hostname}
               ];
             }
