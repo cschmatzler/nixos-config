@@ -24,7 +24,7 @@ print_warning() {
     echo -e "${YELLOW}⚡${NC} $1"
 }
 
-print_info "Available system generations:"
+print_info "Available generations:"
 if [[ "$EUID" -ne 0 ]]; then
     sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
 else

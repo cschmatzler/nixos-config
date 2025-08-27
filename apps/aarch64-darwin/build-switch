@@ -16,17 +16,30 @@ print_success() {
     echo -e "${GREEN}✅${NC} $1"
 }
 
+print_error() {
+    echo -e "${RED}❌${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚡${NC} $1"
+}
+
 HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
 
 print_info "Building and switching configuration for $HOSTNAME"
 
 # Build
 print_info "Building configuration..."
-nix build ".#darwinConfigurations.$HOSTNAME.system" --show-trace "${@:2}"
+if ! nix build ".#darwinConfigurations.$HOSTNAME.system" --show-trace "${@:2}"; then
+    print_error "Build failed"
+    exit 1
+fi
+
+print_success "Build completed"
 
 # Switch
 print_info "Switching to new configuration..."
-./result/sw/bin/darwin-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
+sudo ./result/sw/bin/darwin-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
 
 if [[ -L ./result ]]; then
     unlink ./result

@@ -16,6 +16,14 @@ print_success() {
     echo -e "${GREEN}✅${NC} $1"
 }
 
+print_error() {
+    echo -e "${RED}❌${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚡${NC} $1"
+}
+
 HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
 
 print_info "Building configuration for $HOSTNAME"
