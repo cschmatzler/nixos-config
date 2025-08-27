@@ -31,12 +31,21 @@
   };
 
   outputs = inputs @ {flake-parts, ...}:
+    let
+      loadOverlays = path: with builtins;
+        map (n: import (path + ("/" + n)))
+            (filter (n: match ".*\\.nix" n != null)
+                    (attrNames (readDir path)));
+    in
     flake-parts.lib.mkFlake {inherit inputs;} (
       let
         constants = import ./lib/constants.nix;
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
+        
+        commonOverlays = loadOverlays ./overlays;
+        darwinOverlays = loadOverlays ./overlays/darwin;
       in {
         systems = [
           "x86_64-linux"
@@ -45,11 +54,10 @@
 
         flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (
           hostname: let
-            syncthingOverlay = import ./overlays/syncthing-darwin.nix;
-            syncthingModule = (syncthingOverlay null {}).darwinSyncthingModule;
-            zjstatusOverlay = final: prev: {
-              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-            };
+            syncthingOverlay = builtins.filter (o: o ? darwinSyncthingModule) darwinOverlays;
+            darwinModules = if syncthingOverlay != [] 
+                           then [((builtins.head syncthingOverlay) null {}).darwinSyncthingModule]
+                           else [];
           in
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
@@ -61,10 +69,15 @@
               modules = [
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
-                syncthingModule
-
+              ]
+              ++ darwinModules
+              ++ [
                 {
-                  nixpkgs.overlays = [syncthingOverlay zjstatusOverlay];
+                  nixpkgs.overlays = commonOverlays ++ darwinOverlays ++ [
+                    (final: prev: {
+                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                    })
+                  ];
 
                   nix-homebrew = {
                     inherit user;
@@ -83,11 +96,7 @@
         );
 
         flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs nixosHosts (
-          hostname: let
-            zjstatusOverlay = final: prev: {
-              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-            };
-          in
+          hostname:
             inputs.nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs =
@@ -98,7 +107,11 @@
               modules = [
                 inputs.home-manager.nixosModules.home-manager
                 {
-                  nixpkgs.overlays = [zjstatusOverlay];
+                  nixpkgs.overlays = commonOverlays ++ [
+                    (final: prev: {
+                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                    })
+                  ];
                 }
                 ./hosts/nixos/${hostname}
               ];
