@@ -4,25 +4,16 @@
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
-
-  platformConfig =
-    if isDarwin
-    then {
-      homeDir = "/Users/${user}";
-      group = "staff";
-    }
-    else {
-      homeDir = "/home/${user}";
-      group = "users";
-    };
+  homeDir = if isDarwin then "/Users/${user}" else "/home/${user}";
+  group = if isDarwin then "staff" else "users";
 in {
   services.syncthing = {
     enable = true;
     openDefaultPorts = !isDarwin;
-    dataDir = "${platformConfig.homeDir}/.local/share/syncthing";
-    configDir = "${platformConfig.homeDir}/.config/syncthing";
+    dataDir = "${homeDir}/.local/share/syncthing";
+    configDir = "${homeDir}/.config/syncthing";
     user = "${user}";
-    group = platformConfig.group;
+    group = group;
     guiAddress = "0.0.0.0:8384";
     overrideFolders = true;
     overrideDevices = true;
@@ -45,7 +36,7 @@ in {
 
       folders = {
         "nixos-config" = {
-          path = "${platformConfig.homeDir}/nixos-config";
+          path = "${homeDir}/nixos-config";
           devices = ["tahani" "jason" "chidi"];
         };
       };

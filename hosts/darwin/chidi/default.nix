@@ -13,9 +13,7 @@
   networking.hostName = "chidi";
   networking.computerName = "Chidi";
 
-  nixpkgs.overlays = [
-    (import ../../../overlays/postgresql-darwin.nix)
-  ];
+
 
   services.postgresql = {
     enable = true;

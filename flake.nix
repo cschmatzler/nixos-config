@@ -30,20 +30,20 @@
     zjstatus.url = "github:dj95/zjstatus";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    let
-      loadOverlays = path: with builtins;
+  outputs = inputs @ {flake-parts, ...}: let
+    loadOverlays = path:
+      with builtins;
         map (n: import (path + ("/" + n)))
-            (filter (n: match ".*\\.nix" n != null)
-                    (attrNames (readDir path)));
-    in
+        (filter (n: match ".*\\.nix" n != null)
+          (attrNames (readDir path)));
+  in
     flake-parts.lib.mkFlake {inherit inputs;} (
       let
         constants = import ./lib/constants.nix;
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
-        
+
         commonOverlays = loadOverlays ./overlays;
         darwinOverlays = loadOverlays ./overlays/darwin;
       in {
@@ -53,12 +53,7 @@
         ];
 
         flake.darwinConfigurations = inputs.nixpkgs.lib.genAttrs darwinHosts (
-          hostname: let
-            syncthingOverlay = builtins.filter (o: o ? darwinSyncthingModule) darwinOverlays;
-            darwinModules = if syncthingOverlay != [] 
-                           then [((builtins.head syncthingOverlay) null {}).darwinSyncthingModule]
-                           else [];
-          in
+          hostname:
             inputs.darwin.lib.darwinSystem {
               system = "aarch64-darwin";
               specialArgs =
@@ -69,29 +64,29 @@
               modules = [
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
-              ]
-              ++ darwinModules
-              ++ [
-                {
-                  nixpkgs.overlays = commonOverlays ++ darwinOverlays ++ [
-                    (final: prev: {
-                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                    })
-                  ];
+                  {
+                    nixpkgs.overlays =
+                      commonOverlays
+                      ++ darwinOverlays
+                      ++ [
+                        (final: prev: {
+                          zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                        })
+                      ];
 
-                  nix-homebrew = {
-                    inherit user;
-                    enable = true;
-                    taps = {
-                      "homebrew/homebrew-core" = inputs.homebrew-core;
-                      "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                      "cameroncooke/axe" = inputs.homebrew-axe;
+                    nix-homebrew = {
+                      inherit user;
+                      enable = true;
+                      taps = {
+                        "homebrew/homebrew-core" = inputs.homebrew-core;
+                        "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                        "cameroncooke/axe" = inputs.homebrew-axe;
+                      };
+                      mutableTaps = true;
                     };
-                    mutableTaps = true;
-                  };
-                }
-                ./hosts/darwin/${hostname}
-              ];
+                  }
+                  ./hosts/darwin/${hostname}
+                ];
             }
         );
 
@@ -107,11 +102,13 @@
               modules = [
                 inputs.home-manager.nixosModules.home-manager
                 {
-                  nixpkgs.overlays = commonOverlays ++ [
-                    (final: prev: {
-                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                    })
-                  ];
+                  nixpkgs.overlays =
+                    commonOverlays
+                    ++ [
+                      (final: prev: {
+                        zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                      })
+                    ];
                 }
                 ./hosts/nixos/${hostname}
               ];

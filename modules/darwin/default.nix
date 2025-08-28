@@ -13,6 +13,7 @@
     ../tailscale.nix
     ./dock
     ./homebrew.nix
+    ./syncthing.nix
     ./system.nix
     sops-nix.darwinModules.sops
   ];
