@@ -6,6 +6,7 @@
   imports = [
     ./atuin.nix
     ./bash.nix
+    ./jujutsu.nix
     ./bat.nix
     ./direnv.nix
     ./eza.nix

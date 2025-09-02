@@ -7,12 +7,14 @@
     };
     grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
       bash
-      fish
       elixir
+      fish
       heex
       json
       nix
       toml
+      typescript
+      vue
       yaml
     ];
   };
