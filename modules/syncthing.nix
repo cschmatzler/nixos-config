@@ -4,8 +4,14 @@
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
-  homeDir = if isDarwin then "/Users/${user}" else "/home/${user}";
-  group = if isDarwin then "staff" else "users";
+  homeDir =
+    if isDarwin
+    then "/Users/${user}"
+    else "/home/${user}";
+  group =
+    if isDarwin
+    then "staff"
+    else "users";
 in {
   services.syncthing = {
     enable = true;

@@ -13,8 +13,6 @@
   networking.hostName = "chidi";
   networking.computerName = "Chidi";
 
-
-
   services.postgresql = {
     enable = true;
   };

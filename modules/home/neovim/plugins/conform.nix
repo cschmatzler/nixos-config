@@ -7,6 +7,7 @@
         nix = ["alejandra"];
         javascript = ["prettier"];
         typescript = ["prettier"];
+        vue = ["prettier"];
       };
     };
   };

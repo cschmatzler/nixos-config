@@ -1,15 +1,39 @@
 {
+  lib,
+  pkgs,
+  ...
+}: {
   programs.nixvim.plugins = {
     lsp = {
       enable = true;
       inlayHints = true;
       servers = {
-        nil_ls.enable = true; # Nix
-        ts_ls.enable = true; # TS/JS
-        volar.enable = true; # Vue
-        cssls.enable = true; # CSS
-        dockerls.enable = true; # Docker
-        elixirls.enable = true; # Elixir
+        nil_ls.enable = true;
+        vtsls = {
+          enable = true;
+          package = pkgs.vtsls;
+          filetypes = ["vue" "javascript" "javascriptreact" "typescript" "typescriptreact"];
+          settings = {
+            vtsls = {
+              tsserver = {
+                globalPlugins = [
+                  {
+                    name = "@vue/typescript-plugin";
+                    # Keep your working path to the language server package
+                    location = "${pkgs.vue-language-server}/lib/language-tools/packages/language-server";
+                    languages = ["vue"];
+                    configNamespace = "typescript";
+                    enableForWorkspaceTypeScriptVersions = true;
+                  }
+                ];
+              };
+            };
+          };
+        };
+        cssls.enable = true;
+        dockerls.enable = true;
+        elixirls.enable = true;
+        yamlls.enable = true;
       };
     };
   };

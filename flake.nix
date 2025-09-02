@@ -64,29 +64,29 @@
               modules = [
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
-                  {
-                    nixpkgs.overlays =
-                      commonOverlays
-                      ++ darwinOverlays
-                      ++ [
-                        (final: prev: {
-                          zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                        })
-                      ];
+                {
+                  nixpkgs.overlays =
+                    commonOverlays
+                    ++ darwinOverlays
+                    ++ [
+                      (final: prev: {
+                        zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                      })
+                    ];
 
-                    nix-homebrew = {
-                      inherit user;
-                      enable = true;
-                      taps = {
-                        "homebrew/homebrew-core" = inputs.homebrew-core;
-                        "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                        "cameroncooke/axe" = inputs.homebrew-axe;
-                      };
-                      mutableTaps = true;
+                  nix-homebrew = {
+                    inherit user;
+                    enable = true;
+                    taps = {
+                      "homebrew/homebrew-core" = inputs.homebrew-core;
+                      "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                      "cameroncooke/axe" = inputs.homebrew-axe;
                     };
-                  }
-                  ./hosts/darwin/${hostname}
-                ];
+                    mutableTaps = true;
+                  };
+                }
+                ./hosts/darwin/${hostname}
+              ];
             }
         );
 
