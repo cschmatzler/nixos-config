@@ -2,23 +2,24 @@
 with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
-  devenv
-  lsof
   alejandra
   delta
+  devenv
   docker
   docker-compose
   fastfetch
   fd
+  fira-code
   gh
   git
   gnumake
   gnupg
   htop
   hyperfine
-  fira-code
+  jjui
   jq
   killall
+  lsof
   nurl
   openssh
   postgresql_17
