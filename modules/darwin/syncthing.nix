@@ -348,14 +348,14 @@ in {
       serviceConfig = {
         ProgramArguments = [
           "${cfg.package}/bin/syncthing"
-          "-no-browser"
-          "-gui-address=${
+          "--no-browser"
+          "--gui-address=${
             if isUnixGui
             then "unix://"
             else ""
           }${cfg.guiAddress}"
-          "-config=${cfg.configDir}"
-          "-data=${cfg.configDir}"
+          "--config=${cfg.configDir}"
+          "--data=${cfg.configDir}"
         ];
         EnvironmentVariables = {
           STNORESTART = "yes";

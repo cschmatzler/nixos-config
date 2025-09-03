@@ -3,8 +3,10 @@ with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
   alejandra
+  ast-grep
   delta
   devenv
+  dig
   docker
   docker-compose
   fastfetch
