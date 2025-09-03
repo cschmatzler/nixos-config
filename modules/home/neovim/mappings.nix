@@ -86,13 +86,6 @@
       action = ":Pick lsp scope='document_symbol'<CR>";
       options.desc = "Symbols (LSP, buffer)";
     }
-    # g - git
-    {
-      mode = "n";
-      key = "<leader>gg";
-      action = ":LazyGit<CR>";
-      options.desc = "Lazygit";
-    }
     # l - lsp/formatter
     {
       mode = "n";

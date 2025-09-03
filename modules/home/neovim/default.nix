@@ -6,9 +6,9 @@
     ./plugins/blink-cmp.nix
     ./plugins/conform.nix
     ./plugins/grug-far.nix
-    ./plugins/lazygit.nix
     ./plugins/lsp.nix
     ./plugins/mini.nix
+    ./plugins/supermaven.nix
     ./plugins/oil.nix
     ./plugins/treesitter.nix
   ];
@@ -23,6 +23,9 @@
         flavour = "latte";
       };
     };
+    extraConfigLua = ''
+      vim.ui.select = MiniPick.ui_select
+    '';
   };
 
   home.shellAliases = {
