@@ -8,7 +8,6 @@
 }: {
   imports = [
     ../core.nix
-    ../postgresql.nix
     ./firewall.nix
     ./ssh.nix
     ./adguard.nix

@@ -30,22 +30,13 @@
     zjstatus.url = "github:dj95/zjstatus";
   };
 
-  outputs = inputs @ {flake-parts, ...}: let
-    loadOverlays = path:
-      with builtins;
-        map (n: import (path + ("/" + n)))
-        (filter (n: match ".*\\.nix" n != null)
-          (attrNames (readDir path)));
-  in
+  outputs = inputs @ {flake-parts, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} (
       let
         constants = import ./lib/constants.nix;
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
-
-        commonOverlays = loadOverlays ./overlays;
-        darwinOverlays = loadOverlays ./overlays/darwin;
       in {
         systems = [
           "x86_64-linux"
@@ -65,14 +56,11 @@
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
                 {
-                  nixpkgs.overlays =
-                    commonOverlays
-                    ++ darwinOverlays
-                    ++ [
-                      (final: prev: {
-                        zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                      })
-                    ];
+                  nixpkgs.overlays = [
+                    (final: prev: {
+                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                    })
+                  ];
 
                   nix-homebrew = {
                     inherit user;
@@ -102,13 +90,11 @@
               modules = [
                 inputs.home-manager.nixosModules.home-manager
                 {
-                  nixpkgs.overlays =
-                    commonOverlays
-                    ++ [
-                      (final: prev: {
-                        zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                      })
-                    ];
+                  nixpkgs.overlays = [
+                    (final: prev: {
+                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                    })
+                  ];
                 }
                 ./hosts/nixos/${hostname}
               ];

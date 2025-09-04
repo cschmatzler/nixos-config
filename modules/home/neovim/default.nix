@@ -4,6 +4,7 @@
     ./mappings.nix
     ./options.nix
     ./plugins/blink-cmp.nix
+    ./plugins/harpoon.nix
     ./plugins/conform.nix
     ./plugins/grug-far.nix
     ./plugins/lsp.nix

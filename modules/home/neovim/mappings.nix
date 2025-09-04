@@ -148,5 +148,41 @@
       action = ":lua require('mini.jump2d').start(require('mini.jump2d').builtin_opts.query)<CR>";
       options.desc = "Jump to character";
     }
+    {
+      mode = "n";
+      key = "<leader>a";
+      action = ":lua require('harpoon'):list():add()<CR>";
+      options.desc = "Add harpoon";
+    }
+    {
+      mode = "n";
+      key = "<C-e>";
+      action = ":lua require('harpoon').ui:toggle_quick_menu(require('harpoon'):list())<CR>";
+      options.desc = "Toggle harpoon quick menu";
+    }
+    {
+      mode = "n";
+      key = "<leader>1";
+      action = ":lua require('harpoon'):list():select(1)<CR>";
+      options.desc = "Go to harpoon 1";
+    }
+    {
+      mode = "n";
+      key = "<leader>2";
+      action = ":lua require('harpoon'):list():select(2)<CR>";
+      options.desc = "Go to harpoon 2";
+    }
+    {
+      mode = "n";
+      key = "<leader>3";
+      action = ":lua require('harpoon'):list():select(3)<CR>";
+      options.desc = "Go to harpoon 3";
+    }
+    {
+      mode = "n";
+      key = "<leader>4";
+      action = ":lua require('harpoon'):list():select(4)<CR>";
+      options.desc = "Go to harpoon 4";
+    }
   ];
 }
