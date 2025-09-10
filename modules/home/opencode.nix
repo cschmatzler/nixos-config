@@ -2,7 +2,7 @@
   programs.opencode = {
     enable = true;
     settings = {
-      theme = "system";
+      theme = "catppuccin";
       instructions = [
         "CLAUDE.md"
         "AGENT.md"
