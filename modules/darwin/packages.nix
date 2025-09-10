@@ -2,8 +2,9 @@
 with pkgs; [
   _1password-gui
   dockutil
-  xcodes
   mas
   raycast
+  tailscale
+  xcodes
   # whatsapp-for-mac
 ]

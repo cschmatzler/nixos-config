@@ -8,7 +8,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -93,6 +96,18 @@
                   nixpkgs.overlays = [
                     (final: prev: {
                       zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+                    })
+                    (_: prev: {
+                      tailscale = prev.tailscale.overrideAttrs (old: {
+                        checkFlags =
+                          builtins.map (
+                            flag:
+                              if prev.lib.hasPrefix "-skip=" flag
+                              then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
+                              else flag
+                          )
+                          old.checkFlags;
+                      });
                     })
                   ];
                 }

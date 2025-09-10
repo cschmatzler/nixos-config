@@ -33,8 +33,7 @@ fi
 
 print_success "Build completed"
 
-# Switch - note this requires sudo permissions
-print_info "Switching to new configuration (requires sudo)..."
+print_info "Switching to new configuration..."
 if [[ "$EUID" -ne 0 ]]; then
     sudo nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
 else

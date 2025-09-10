@@ -27,6 +27,25 @@
     nixPath = ["nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos"];
   };
 
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 42;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "ahci"
+      "nvme"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
+    ];
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
+
   users.users = {
     ${user} = {
       isNormalUser = true;

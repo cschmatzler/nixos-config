@@ -2,7 +2,7 @@
   homebrew = {
     enable = true;
     casks = [
-      "orbstack"
+      "orion"
     ];
     masApps = {
       "wipr2" = 1662217862;
