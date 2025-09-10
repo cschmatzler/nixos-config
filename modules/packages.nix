@@ -4,6 +4,7 @@ with pkgs; [
   age
   alejandra
   ast-grep
+  codex
   delta
   devenv
   dig
@@ -13,7 +14,6 @@ with pkgs; [
   fd
   fira-code
   gh
-  ghostty.terminfo
   git
   gnumake
   gnupg

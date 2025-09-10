@@ -3,21 +3,9 @@
     # clipboard - OSC52 yank and paste
     {
       mode = ["n" "v"];
-      key = "y";
+      key = "<leader>y";
       action = ''"+y'';
       options.desc = "Yank to system clipboard (OSC52)";
-    }
-    {
-      mode = ["n" "v"];
-      key = "p";
-      action = ''"+p'';
-      options.desc = "Paste from system clipboard (OSC52)";
-    }
-    {
-      mode = ["n" "v"];
-      key = "P";
-      action = ''"+P'';
-      options.desc = "Paste before from system clipboard (OSC52)";
     }
     # e - explore/edit
     {
