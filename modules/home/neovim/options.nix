@@ -1,6 +1,7 @@
 {
   programs.nixvim = {
     globals = {
+      clipboard = "osc52";
     };
     opts = {
       expandtab = true;

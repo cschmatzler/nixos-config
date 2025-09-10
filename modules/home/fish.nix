@@ -42,6 +42,10 @@
 
       set -gx LS_COLORS "$(vivid generate catppuccin-mocha)"
 
+      set -gx COLORTERM truecolor
+      set -gx COLORFGBG "15;0"
+      set -gx TERM_BACKGROUND dark
+
       for mode in default insert
         bind --mode $mode \cp open_project
       end

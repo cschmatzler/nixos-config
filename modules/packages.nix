@@ -2,7 +2,6 @@
 with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
-  rclone
   alejandra
   ast-grep
   delta
@@ -14,6 +13,7 @@ with pkgs; [
   fd
   fira-code
   gh
+  ghostty.terminfo
   git
   gnumake
   gnupg
