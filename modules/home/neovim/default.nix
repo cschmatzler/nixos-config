@@ -21,7 +21,7 @@
     colorschemes.catppuccin = {
       enable = true;
       settings = {
-        flavour = "latte";
+        flavour = "mocha";
       };
     };
     extraConfigLua = ''

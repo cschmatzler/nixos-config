@@ -4,7 +4,7 @@
     package = pkgs.ghostty-bin;
     settings = {
       command = "${pkgs.fish}/bin/fish";
-      theme = "catppuccin-latte";
+      theme = "catppuccin-mocha";
       window-padding-x = 8;
       window-padding-y = 2;
       window-padding-balance = true;

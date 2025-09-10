@@ -7,7 +7,7 @@
     enable = true;
     enableFishIntegration = lib.mkDefault false;
     settings = {
-      theme = "catppuccin-latte";
+      theme = "catppuccin-mocha";
       default_layout = "default";
       default_shell = "${pkgs.fish}/bin/fish";
       pane_frames = false;

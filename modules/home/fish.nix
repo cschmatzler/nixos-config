@@ -40,7 +40,7 @@
       set fish_pager_color_completion 4c4f69
       set fish_pager_color_description 9ca0b0
 
-      set -gx LS_COLORS "$(vivid generate catppuccin-latte)"
+      set -gx LS_COLORS "$(vivid generate catppuccin-mocha)"
 
       for mode in default insert
         bind --mode $mode \cp open_project
