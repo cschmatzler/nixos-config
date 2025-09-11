@@ -62,7 +62,7 @@
       enable = true;
       username = user;
       entries = [
-        {path = "/Applications/Orion.app/";}
+        {path = "/Applications/Zen.app/";}
         {path = "/${pkgs.ghostty-bin}/Applications/Ghostty.app/";}
         {path = "/System/Applications/Notes.app/";}
         {path = "/System/Applications/Music.app/";}

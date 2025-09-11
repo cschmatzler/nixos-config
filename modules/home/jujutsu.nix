@@ -10,6 +10,7 @@
         tool = "delta";
       };
       ui = {
+        default-command = "status";
         diff-formatter = ":git";
         pager = ["delta" "--pager" "less -FRX"];
       };

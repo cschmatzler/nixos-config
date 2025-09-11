@@ -32,7 +32,7 @@
         };
         cssls.enable = true;
         dockerls.enable = true;
-        elixirls.enable = true;
+        elixirls.enable = false;
         yamlls.enable = true;
       };
     };

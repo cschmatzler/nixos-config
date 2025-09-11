@@ -114,7 +114,7 @@
     {
       mode = "n";
       key = "<leader>ld";
-      action = ":lua vim.diagnostic.open_float()<CR>";
+      action = ":lua vim.diagnostic.open_float({ severity = { min = vim.diagnostic.severity.HINT } })<CR>";
       options.desc = "Diagnostics popup";
     }
     {
@@ -162,7 +162,7 @@
     # other
     {
       mode = "n";
-      key = "sj";
+      key = "<leader>j";
       action = ":lua require('mini.jump2d').start(require('mini.jump2d').builtin_opts.query)<CR>";
       options.desc = "Jump to character";
     }

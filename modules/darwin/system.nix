@@ -1,6 +1,7 @@
-{lib, ...}: {
+{
   system.defaults = {
     NSGlobalDomain = {
+      AppleInterfaceStyle = "Dark";
       AppleShowAllExtensions = true;
       ApplePressAndHoldEnabled = false;
       KeyRepeat = 2;
