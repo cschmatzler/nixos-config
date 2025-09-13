@@ -11,6 +11,7 @@
     ./firewall.nix
     ./ssh.nix
     ./adguard.nix
+    ./docker.nix
     ../tailscale.nix
     ../syncthing.nix
     sops-nix.nixosModules.sops
