@@ -63,6 +63,14 @@
                     (final: prev: {
                       zjstatus = inputs.zjstatus.packages.${prev.system}.default;
                     })
+                    (final: prev: {
+                      ghostty-bin = prev.ghostty-bin.overrideAttrs (old: {
+                        src = prev.fetchurl {
+                          url = "https://release.files.ghostty.org/1.2.0/Ghostty.dmg";
+                          hash = "sha256-ZOUUGI9UlZjxZtbctvjfKfMz6VTigXKikB6piKFPJkc=";
+                        };
+                      });
+                    })
                   ];
 
                   nix-homebrew = {
