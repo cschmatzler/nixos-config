@@ -148,22 +148,6 @@
         "type": "github"
       }
     },
-    "homebrew-axe": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1748788613,
-        "narHash": "sha256-rHXT2HX2HByObjdncBMGMM/4ezakO4bQsO+KGxB5Ajk=",
-        "owner": "cameroncooke",
-        "repo": "homebrew-axe",
-        "rev": "bd522a3347cdd2763000bfc697dc7ab42d72df62",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cameroncooke",
-        "repo": "homebrew-axe",
-        "type": "github"
-      }
-    },
     "homebrew-cask": {
       "flake": false,
       "locked": {
@@ -354,7 +338,6 @@
         "darwin": "darwin",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "homebrew-axe": "homebrew-axe",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "nix-homebrew": "nix-homebrew",

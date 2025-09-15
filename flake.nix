@@ -76,7 +76,6 @@
                     taps = {
                       "homebrew/homebrew-core" = inputs.homebrew-core;
                       "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                      "cameroncooke/axe" = inputs.homebrew-axe;
                     };
                     mutableTaps = true;
                   };
