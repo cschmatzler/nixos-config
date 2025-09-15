@@ -25,10 +25,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-axe = {
-      url = "github:cameroncooke/homebrew-axe";
-      flake = false;
-    };
     nixvim.url = "github:nix-community/nixvim";
     zjstatus.url = "github:dj95/zjstatus";
   };
@@ -65,9 +61,10 @@
                     })
                     (final: prev: {
                       ghostty-bin = prev.ghostty-bin.overrideAttrs (old: {
+                        version = "1.2.0";
                         src = prev.fetchurl {
                           url = "https://release.files.ghostty.org/1.2.0/Ghostty.dmg";
-                          hash = "sha256-ZOUUGI9UlZjxZtbctvjfKfMz6VTigXKikB6piKFPJkc=";
+                          hash = "sha256-QyHKQ00iRxWS6GwPfRAi9RDSlgX/50N0+MASmnPGAo4=";
                         };
                       });
                     })
@@ -104,18 +101,6 @@
                   nixpkgs.overlays = [
                     (final: prev: {
                       zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                    })
-                    (_: prev: {
-                      tailscale = prev.tailscale.overrideAttrs (old: {
-                        checkFlags =
-                          builtins.map (
-                            flag:
-                              if prev.lib.hasPrefix "-skip=" flag
-                              then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
-                              else flag
-                          )
-                          old.checkFlags;
-                      });
                     })
                   ];
                 }
