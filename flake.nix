@@ -36,6 +36,7 @@
         user = constants.user;
         darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
         nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
+        overlays = import ./overlays {inherit inputs;};
       in {
         systems = [
           "x86_64-linux"
@@ -55,11 +56,7 @@
                 inputs.home-manager.darwinModules.home-manager
                 inputs.nix-homebrew.darwinModules.nix-homebrew
                 {
-                  nixpkgs.overlays = [
-                    (final: prev: {
-                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                    })
-                  ];
+                  nixpkgs.overlays = overlays;
 
                   nix-homebrew = {
                     inherit user;
@@ -88,11 +85,7 @@
               modules = [
                 inputs.home-manager.nixosModules.home-manager
                 {
-                  nixpkgs.overlays = [
-                    (final: prev: {
-                      zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-                    })
-                  ];
+                  nixpkgs.overlays = overlays;
                 }
                 ./hosts/nixos/${hostname}
               ];
@@ -139,6 +132,7 @@
             appNames
           );
         };
+        flake.overlays = overlays;
       }
     );
 }
