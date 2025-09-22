@@ -7,6 +7,7 @@
 in {
   imports = [
     ./ghostty.nix
+    ./jankyborders.nix
   ];
 
   home = {
