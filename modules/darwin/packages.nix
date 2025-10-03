@@ -4,7 +4,7 @@ with pkgs; [
   dockutil
   mas
   raycast
-  tailscale
+  # tailscale
+  whatsapp-for-mac
   xcodes
-  # whatsapp-for-mac
 ]

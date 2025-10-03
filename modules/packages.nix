@@ -19,7 +19,6 @@ with pkgs; [
   gnupg
   htop
   hyperfine
-  jjui
   jq
   killall
   lsof

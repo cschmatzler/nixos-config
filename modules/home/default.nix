@@ -6,13 +6,14 @@
   imports = [
     ./atuin.nix
     ./bash.nix
-    ./jujutsu.nix
     ./bat.nix
     ./direnv.nix
     ./eza.nix
     ./fish.nix
     ./fzf.nix
     ./git.nix
+    ./jjui.nix
+    ./jujutsu.nix
     ./mise.nix
     ./neovim
     ./opencode.nix

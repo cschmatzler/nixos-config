@@ -9,6 +9,10 @@
       inlayHints = true;
       servers = {
         nil_ls.enable = true;
+        cssls.enable = true;
+        dockerls.enable = true;
+        elixirls.enable = true;
+        yamlls.enable = true;
         vtsls = {
           enable = true;
           package = pkgs.vtsls;
@@ -19,7 +23,6 @@
                 globalPlugins = [
                   {
                     name = "@vue/typescript-plugin";
-                    # Keep your working path to the language server package
                     location = "${pkgs.vue-language-server}/lib/language-tools/packages/language-server";
                     languages = ["vue"];
                     configNamespace = "typescript";
@@ -30,10 +33,6 @@
             };
           };
         };
-        cssls.enable = true;
-        dockerls.enable = true;
-        elixirls.enable = false;
-        yamlls.enable = true;
       };
     };
   };

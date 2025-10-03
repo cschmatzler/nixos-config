@@ -2,10 +2,9 @@
   homebrew = {
     enable = true;
     casks = [
+      "hey-desktop"
       "zen"
+      "pareto-security"
     ];
-    masApps = {
-      "wipr2" = 1662217862;
-    };
   };
 }

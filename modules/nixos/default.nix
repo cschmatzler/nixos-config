@@ -8,12 +8,12 @@
 }: {
   imports = [
     ../core.nix
-    ./firewall.nix
-    ./ssh.nix
+    ../syncthing.nix
+    ../tailscale.nix
     ./adguard.nix
     ./docker.nix
-    ../tailscale.nix
-    ../syncthing.nix
+    ./firewall.nix
+    ./ssh.nix
     sops-nix.nixosModules.sops
   ];
 
