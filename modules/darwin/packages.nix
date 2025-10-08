@@ -6,5 +6,6 @@ with pkgs; [
   raycast
   # tailscale
   whatsapp-for-mac
+  jetbrains.datagrip
   xcodes
 ]
