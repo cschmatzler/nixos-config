@@ -7,7 +7,6 @@
         nil_ls.enable = true;
         cssls.enable = true;
         dockerls.enable = true;
-        elixirls.enable = true;
         yamlls.enable = true;
         vtsls.enable = true;
       };
