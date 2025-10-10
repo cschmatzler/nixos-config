@@ -5,6 +5,7 @@ in {
     enable = true;
     ignores = ["*.swp"];
     userName = name;
+    userEmail = "christoph@schmatzler.com";
     lfs = {
       enable = true;
     };
@@ -13,10 +14,19 @@ in {
       core = {
         editor = "vim";
         autocrlf = "input";
+        pager = "delta";
       };
       # commit.gpgsign = true;
       pull.rebase = true;
       rebase.autoStash = true;
+      interactive.diffFilter = "delta --color-only";
+      delta = {
+        navigate = true;
+        line-numbers = true;
+        syntax-theme = "GitHub";
+        side-by-side = true;
+        pager = "less -FRX";
+      };
     };
   };
 

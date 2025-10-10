@@ -94,16 +94,7 @@
       options.desc = "Symbols (LSP, buffer)";
     }
     # g - git
-    {
-      mode = "n";
-      key = "<leader>gg";
-      action.__raw = ''
-        function()
-          require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
-        end
-      '';
-      options.desc = "jjui";
-    }
+
     # l - lsp/formatter
     {
       mode = "n";
