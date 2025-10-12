@@ -4,14 +4,15 @@
     ./mappings.nix
     ./options.nix
     ./plugins/blink-cmp.nix
-    ./plugins/harpoon.nix
     ./plugins/conform.nix
+    ./plugins/diffview.nix
     ./plugins/grug-far.nix
+    ./plugins/harpoon.nix
     ./plugins/lsp.nix
-    ./plugins/neogit.nix
     ./plugins/mini.nix
-    ./plugins/supermaven.nix
+    ./plugins/neogit.nix
     ./plugins/oil.nix
+    ./plugins/supermaven.nix
     ./plugins/toggleterm.nix
     ./plugins/treesitter.nix
   ];

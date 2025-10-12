@@ -2,6 +2,7 @@
 with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
+  codex
   amp-cli
   alejandra
   ast-grep
@@ -21,7 +22,6 @@ with pkgs; [
   hyperfine
   jq
   killall
-
   lsof
   nurl
   openssh

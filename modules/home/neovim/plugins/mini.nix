@@ -148,5 +148,6 @@
       trailspace = {};
       visits = {};
     };
+    mockDevIcons = true;
   };
 }

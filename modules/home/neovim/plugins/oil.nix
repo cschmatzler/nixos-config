@@ -2,9 +2,6 @@
   programs.nixvim.plugins.oil = {
     enable = true;
     settings = {
-      columns = [
-        "icon"
-      ];
       keymaps = {
         "<C-r>" = "actions.refresh";
         "<leader>qq" = "actions.close";

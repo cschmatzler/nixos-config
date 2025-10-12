@@ -16,7 +16,6 @@ in {
         autocrlf = "input";
         pager = "delta";
       };
-      # commit.gpgsign = true;
       pull.rebase = true;
       rebase.autoStash = true;
       interactive.diffFilter = "delta --color-only";

@@ -6,42 +6,42 @@
         commit.signOff = true;
         paging = {
           colorArg = "always";
-          pager = "DELTA_FEATURES=decorations delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
+          pager = "DELTA_FEATURES=decorations delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
         };
       };
 
       gui = {
         authorColors = {
-          "*" = "#7287fd";
+          "*" = "#b4befe";
         };
         theme = {
           activeBorderColor = [
-            "#8839ef"
+            "#cba6f7"
             "bold"
           ];
           inactiveBorderColor = [
-            "#6c6f85"
+            "#a6adc8"
           ];
           optionsTextColor = [
-            "#1e66f5"
+            "#89b4fa"
           ];
           selectedLineBgColor = [
-            "#ccd0da"
+            "#313244"
           ];
           cherryPickedCommitBgColor = [
-            "#bcc0cc"
+            "#45475a"
           ];
           cherryPickedCommitFgColor = [
-            "#8839ef"
+            "#cba6f7"
           ];
           defaultFgColor = [
-            "#4c4f69"
+            "#cdd6f4"
           ];
           searchingActiveBorderColor = [
-            "#df8e1d"
+            "#f9e2af"
           ];
           unstagedChangesColor = [
-            "#d20f39"
+            "#f38ba8"
           ];
         };
       };
