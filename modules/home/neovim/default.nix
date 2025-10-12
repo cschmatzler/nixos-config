@@ -8,6 +8,7 @@
     ./plugins/conform.nix
     ./plugins/grug-far.nix
     ./plugins/lsp.nix
+    ./plugins/neogit.nix
     ./plugins/mini.nix
     ./plugins/supermaven.nix
     ./plugins/oil.nix

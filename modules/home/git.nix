@@ -27,6 +27,11 @@ in {
         side-by-side = true;
         pager = "less -FRX";
       };
+      pager = {
+        diff = "delta";
+        log = "delta";
+        show = "delta";
+      };
     };
   };
 

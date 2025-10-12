@@ -94,6 +94,16 @@
       options.desc = "Symbols (LSP, buffer)";
     }
     # g - git
+    {
+      mode = "n";
+      key = "<leader>gg";
+      action.__raw = ''
+        function()
+          require('neogit').open({})
+        end
+      '';
+      options.desc = "Neogit";
+    }
 
     # l - lsp/formatter
     {
