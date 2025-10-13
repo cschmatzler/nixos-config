@@ -5,7 +5,6 @@ in {
     enable = true;
     ignores = ["*.swp"];
     userName = name;
-    userEmail = "christoph@schmatzler.com";
     lfs = {
       enable = true;
     };

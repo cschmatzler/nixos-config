@@ -7,7 +7,6 @@
 in {
   imports = [
     ./ghostty.nix
-    ./zed.nix
   ];
 
   home = {
