@@ -3,18 +3,21 @@
   pkgs,
   ...
 }: {
-  programs.zellij = {
-    enable = true;
-    enableFishIntegration = lib.mkDefault false;
-    settings = {
-      theme = "catppuccin-mocha";
-      default_layout = "default";
-      default_shell = "${pkgs.fish}/bin/fish";
-      pane_frames = false;
-      show_startup_tips = false;
-      show_release_notes = false;
+  programs.zellij =
+    {
+      enable = true;
+      settings = {
+        theme = "catppuccin-latte";
+        default_layout = "default";
+        default_shell = "${pkgs.fish}/bin/fish";
+        pane_frames = false;
+        show_startup_tips = false;
+        show_release_notes = false;
+      };
+    }
+    // lib.optionalAttrs pkgs.stdenv.isLinux {
+      enableFishIntegration = true;
     };
-  };
 
   xdg.configFile."zellij/layouts/default.kdl".text = ''
     layout {
@@ -27,26 +30,26 @@
           plugin location="file:${pkgs.zjstatus}/bin/zjstatus.wasm" {
             hide_frame_for_single_pane "true"
 
-            format_left  "{mode}#[fg=#89b4fa,bg=#1e1e2e,bold] {session}#[bg=#1e1e2e] {tabs}"
+            format_left  "{mode}#[fg=#1e66f5,bg=#eff1f5,bold] {session}#[bg=#eff1f5] {tabs}"
             format_right "{datetime}"
-            format_space "#[bg=#1e1e2e]"
+            format_space "#[bg=#eff1f5]"
 
-            mode_normal          "#[fg=#1e1e2e,bg=#89b4fa] "
-            mode_locked          "#[fg=#1e1e2e,bg=#fab387] L "
-            mode_tab             "#[fg=#1e1e2e,bg=#a6e3a1] T "
-            mode_pane            "#[fg=#1e1e2e,bg=#cba6f7] P "
-            mode_session         "#[fg=#1e1e2e,bg=#94e2d5] S "
-            mode_resize          "#[fg=#1e1e2e,bg=#f9e2af] R "
-            mode_move            "#[fg=#1e1e2e,bg=#f5c2e7] M "
-            mode_search          "#[fg=#1e1e2e,bg=#f38ba8] S "
+            mode_normal          "#[fg=#eff1f5,bg=#1e66f5] "
+            mode_locked          "#[fg=#eff1f5,bg=#fe640b] L "
+            mode_tab             "#[fg=#eff1f5,bg=#40a02b] T "
+            mode_pane            "#[fg=#eff1f5,bg=#8839ef] P "
+            mode_session         "#[fg=#eff1f5,bg=#04a5e5] S "
+            mode_resize          "#[fg=#eff1f5,bg=#df8e1d] R "
+            mode_move            "#[fg=#eff1f5,bg=#ea76cb] M "
+            mode_search          "#[fg=#eff1f5,bg=#d20f39] S "
 
-            tab_normal               "#[fg=#6c7086,bg=#1e1e2e] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-            tab_active               "#[fg=#1e1e2e,bg=#89b4fa,bold,underline] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+            tab_normal               "#[fg=#acb0be,bg=#eff1f5] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+            tab_active               "#[fg=#eff1f5,bg=#1e66f5,bold,underline] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
             tab_fullscreen_indicator "□ "
             tab_sync_indicator       "  "
             tab_floating_indicator   "󰉈 "
 
-            datetime          "#[fg=#cdd6f4,bg=#1e1e2e] {format} "
+            datetime          "#[fg=#4c4f69,bg=#eff1f5] {format} "
             datetime_format   "%A, %d %b %Y %H:%M"
             datetime_timezone "Europe/Berlin"
           }

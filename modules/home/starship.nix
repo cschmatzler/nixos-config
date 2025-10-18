@@ -7,8 +7,8 @@
       command_timeout = 200;
       format = "$directory$git_branch$git_commit$git_status$git_state$git_metrics\n$character";
       character = {
-        error_symbol = "[✗ ](bold #e64553)";
-        success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #dc8a78)";
+        error_symbol = "[✗ ](bold #d20f39)";
+        success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #179299)";
       };
       directory = {
         truncation_length = 2;
@@ -19,7 +19,7 @@
       git_branch = {
         format = " @[$branch(:$remote_branch)]($style)";
         symbol = "";
-        style = "bold #a6e3a1";
+        style = "bold #40a02b";
         truncation_length = 28;
       };
       git_commit = {
@@ -27,11 +27,11 @@
         only_detached = false;
         tag_disabled = true;
         format = " [$hash]($style)";
-        style = "bold #89b4fa";
+        style = "bold #1e66f5";
       };
       git_status = {
         format = " [$ahead_behind$staged$modified$renamed$deleted$typechanged$untracked$stashed$conflicted]($style)";
-        style = "bold #f9e2af";
+        style = "bold #df8e1d";
         ahead = " a+$count";
         behind = " b+$count";
         diverged = " div:$ahead_count/$behind_count";
@@ -46,7 +46,7 @@
       };
       git_state = {
         format = " {$state($progress_current/$progress_total)}($style)";
-        style = "bold #f38ba8";
+        style = "bold #d20f39";
       };
       git_metrics = {
         disabled = false;
