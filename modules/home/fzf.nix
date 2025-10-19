@@ -14,11 +14,11 @@
       --preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
       --separator='─' --scrollbar='┃' --layout='reverse'
 
-      --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
-      --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
-      --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
-      --color=selected-bg:#45475a
-      --color=border:#6c7086,label:#cdd6f4
+      --color=bg+:#CCD0DA,bg:#EFF1F5,spinner:#DC8A78,hl:#D20F39
+      --color=fg:#4C4F69,header:#D20F39,info:#8839EF,pointer:#DC8A78
+      --color=marker:#7287FD,fg+:#4C4F69,prompt:#8839EF,hl+:#D20F39
+      --color=selected-bg:#BCC0CC
+      --color=border:#9CA0B0,label:#4C4F69
     '';
   };
 }

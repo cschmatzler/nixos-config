@@ -2,8 +2,8 @@
 with pkgs; [
   (callPackage ./bin/open-project.nix {})
   age
-  amp-cli
   alejandra
+  amp-cli
   ast-grep
   delta
   devenv
@@ -28,6 +28,7 @@ with pkgs; [
   sd
   sops
   sqlite
+  tokei
   tree
   tree-sitter
   unzip
