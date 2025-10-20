@@ -6,11 +6,13 @@
 }: {
   programs.ssh = {
     enable = true;
+    enableDefaultConfig = false;
     includes = [
       (lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${user}/.ssh/config_external")
       (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${user}/.ssh/config_external")
     ];
     matchBlocks = {
+      "*" = {};
       "github.com" = {
         identitiesOnly = true;
         identityFile = [

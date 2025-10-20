@@ -5,6 +5,7 @@ with pkgs; [
   alejandra
   amp-cli
   ast-grep
+  codex
   delta
   devenv
   dig
@@ -13,6 +14,7 @@ with pkgs; [
   fastfetch
   fd
   fira-code
+  iosevka
   gh
   git
   gnumake

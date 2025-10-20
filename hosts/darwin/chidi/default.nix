@@ -18,7 +18,7 @@
   };
 
   home-manager.users.${user} = {
-    programs.git.userEmail = "christoph@tuist.dev";
+    programs.git.settings.user.email = "christoph@tuist.dev";
   };
 
   environment.systemPackages = with pkgs; [

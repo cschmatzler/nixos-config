@@ -4,11 +4,8 @@ in {
   programs.git = {
     enable = true;
     ignores = ["*.swp"];
-    userName = name;
-    lfs = {
-      enable = true;
-    };
-    extraConfig = {
+    settings = {
+      user.name = name;
       init.defaultBranch = "main";
       core = {
         editor = "vim";
@@ -30,6 +27,9 @@ in {
         log = "delta";
         show = "delta";
       };
+    };
+    lfs = {
+      enable = true;
     };
   };
 
