@@ -5,15 +5,11 @@
     settings = {
       command = "${pkgs.fish}/bin/fish";
       theme = "Catppuccin Latte";
-      window-padding-x = 8;
-      window-padding-y = 2;
+      window-padding-x = 12;
+      window-padding-y = 3;
       window-padding-balance = true;
-      font-family = "TX-02";
-      font-size = 15.5;
-      font-feature = [
-        "-calt"
-        "-dlig"
-      ];
+      font-family = "TX-02 SemiCondensed";
+      font-size = 16.5;
       cursor-style = "block";
       mouse-hide-while-typing = true;
       mouse-scroll-multiplier = 1.25;

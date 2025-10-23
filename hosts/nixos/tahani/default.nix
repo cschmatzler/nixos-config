@@ -57,6 +57,6 @@
   };
 
   home-manager.users.${user} = {
-    programs.git.userEmail = "christoph@schmatzler.com";
+    programs.git.settings.user.email = "christoph@schmatzler.com";
   };
 }
