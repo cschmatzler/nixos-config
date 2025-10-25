@@ -1,11 +1,44 @@
 {
+  config,
   hostname,
   user,
   ...
 }: {
   imports = [
-    ../../../modules/nixos
+    ../../modules/nixos
   ];
+
+  services.adguardhome = {
+    enable = true;
+    port = 10000;
+    settings = {
+      dns = {
+        upstream_dns = [
+          "1.1.1.1"
+          "1.0.0.1"
+        ];
+      };
+      filtering = {
+        protection_enabled = true;
+        filtering_enabled = true;
+        safe_search = {
+          enabled = false;
+        };
+      };
+    };
+  };
+
+  virtualisation.docker = {
+    enable = true;
+  };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "yes";
+      PasswordAuthentication = false;
+    };
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/NIXROOT";
@@ -28,17 +61,24 @@
     ];
     defaultGateway = "192.168.1.1";
     nameservers = ["1.1.1.1"];
+    firewall = {
+      enable = true;
+      trustedInterfaces = ["eno1" "tailscale0"];
+      allowedUDPPorts = [config.services.tailscale.port];
+      allowedTCPPorts = [22];
+      checkReversePath = "loose";
+    };
   };
 
   sops.secrets = {
     tahani-syncthing-cert = {
-      sopsFile = ../../../secrets/tahani-syncthing-cert;
+      sopsFile = ../../secrets/tahani-syncthing-cert;
       format = "binary";
       owner = user;
       path = "/home/${user}/.config/syncthing/cert.pem";
     };
     tahani-syncthing-key = {
-      sopsFile = ../../../secrets/tahani-syncthing-key;
+      sopsFile = ../../secrets/tahani-syncthing-key;
       format = "binary";
       owner = user;
       path = "/home/${user}/.config/syncthing/key.pem";

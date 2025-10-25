@@ -34,8 +34,8 @@
       let
         constants = import ./lib/constants.nix;
         user = constants.user;
-        darwinHosts = builtins.attrNames (builtins.readDir ./hosts/darwin);
-        nixosHosts = builtins.attrNames (builtins.readDir ./hosts/nixos);
+        darwinHosts = ["chidi" "jason"];
+        nixosHosts = ["tahani"];
         overlays = import ./overlays {inherit inputs;};
       in {
         systems = [
@@ -68,7 +68,7 @@
                     mutableTaps = true;
                   };
                 }
-                ./hosts/darwin/${hostname}
+                ./hosts/${hostname}
               ];
             }
         );
@@ -87,7 +87,7 @@
                 {
                   nixpkgs.overlays = overlays;
                 }
-                ./hosts/nixos/${hostname}
+                ./hosts/${hostname}
               ];
             }
         );
