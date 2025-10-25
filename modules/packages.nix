@@ -13,8 +13,6 @@ with pkgs; [
   docker-compose
   fastfetch
   fd
-  fira-code
-  iosevka
   gh
   git
   gnumake
