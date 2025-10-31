@@ -13,6 +13,8 @@
     };
   };
 
+  sops.age.keyFile = "/Users/${user}/.config/sops/age/keys.txt";
+
   sops.secrets = {
     jason-syncthing-cert = {
       sopsFile = ../../secrets/jason-syncthing-cert;
