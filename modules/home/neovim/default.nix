@@ -12,8 +12,6 @@
     ./plugins/mini.nix
     ./plugins/neogit.nix
     ./plugins/oil.nix
-    ./plugins/supermaven.nix
-    ./plugins/toggleterm.nix
     ./plugins/treesitter.nix
   ];
 

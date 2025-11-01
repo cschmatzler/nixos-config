@@ -77,6 +77,18 @@
     }
     {
       mode = "n";
+      key = "<leader>fm";
+      action = ":Pick git_hunks<CR>";
+      options.desc = "Modified hunks (all)";
+    }
+    {
+      mode = "n";
+      key = "<leader>fM";
+      action = ":Pick git_hunks path='%'<CR>";
+      options.desc = "Modified hunks (buffer)";
+    }
+    {
+      mode = "n";
       key = "<leader>fr";
       action = ":Pick lsp scope='references'<CR>";
       options.desc = "References (LSP)";
@@ -92,6 +104,18 @@
       key = "<leader>fS";
       action = ":Pick lsp scope='document_symbol'<CR>";
       options.desc = "Symbols (LSP, buffer)";
+    }
+    {
+      mode = "n";
+      key = "<leader>fv";
+      action = ":Pick visit_paths cwd=\"\"<CR>";
+      options.desc = "Visit paths (all)";
+    }
+    {
+      mode = "n";
+      key = "<leader>fV";
+      action = ":Pick visit_paths<CR>";
+      options.desc = "Visit paths (cwd)";
     }
     # g - git
     {
