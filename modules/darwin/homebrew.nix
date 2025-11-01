@@ -1,6 +1,9 @@
 {
   homebrew = {
     enable = true;
-    casks = [];
+    casks = [
+      "helium-browser"
+      "pearcleaner"
+    ];
   };
 }
