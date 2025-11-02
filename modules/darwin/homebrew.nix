@@ -4,6 +4,7 @@
     casks = [
       "helium-browser"
       "pearcleaner"
+      "tidal"
     ];
   };
 }

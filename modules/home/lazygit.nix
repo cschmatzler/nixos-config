@@ -4,10 +4,14 @@
     settings = {
       git = {
         commit.signOff = true;
-        paging = {
-          colorArg = "always";
-          pager = "DELTA_FEATURES=decorations delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
-        };
+        pagers = [
+          {
+            delta = {
+              colorArg = "always";
+              pager = "DELTA_FEATURES=decorations delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
+            };
+          }
+        ];
       };
 
       gui = {
