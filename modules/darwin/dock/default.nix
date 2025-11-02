@@ -103,7 +103,7 @@ in {
 					else
 					  echo >&2 "Dock setup complete."
 					fi
-					USERBLOCK
+USERBLOCK
 				'';
 			}
 		);
