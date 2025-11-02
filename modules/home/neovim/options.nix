@@ -7,6 +7,7 @@
 			expandtab = false;
 			tabstop = 2;
 			ignorecase = true;
+			list = false;
 			mouse = "";
 			relativenumber = true;
 			shiftwidth = 2;
