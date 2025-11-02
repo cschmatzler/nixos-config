@@ -5,6 +5,7 @@ with pkgs; [
 	alejandra
 	amp-cli
 	ast-grep
+	bun
 	codex
 	delta
 	devenv
