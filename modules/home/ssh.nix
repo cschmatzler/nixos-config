@@ -1,25 +1,25 @@
 {
-  pkgs,
-  lib,
-  user,
-  ...
+	pkgs,
+	lib,
+	user,
+	...
 }: {
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    includes = [
-      (lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${user}/.ssh/config_external")
-      (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${user}/.ssh/config_external")
-    ];
-    matchBlocks = {
-      "*" = {};
-      "github.com" = {
-        identitiesOnly = true;
-        identityFile = [
-          (lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${user}/.ssh/id_ed25519")
-          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${user}/.ssh/id_ed25519")
-        ];
-      };
-    };
-  };
+	programs.ssh = {
+		enable = true;
+		enableDefaultConfig = false;
+		includes = [
+			(lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${user}/.ssh/config_external")
+			(lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${user}/.ssh/config_external")
+		];
+		matchBlocks = {
+			"*" = {};
+			"github.com" = {
+				identitiesOnly = true;
+				identityFile = [
+					(lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${user}/.ssh/id_ed25519")
+					(lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${user}/.ssh/id_ed25519")
+				];
+			};
+		};
+	};
 }

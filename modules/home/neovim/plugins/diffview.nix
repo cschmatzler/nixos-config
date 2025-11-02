@@ -1,5 +1,5 @@
 {
-  programs.nixvim.plugins.diffview = {
-    enable = true;
-  };
+	programs.nixvim.plugins.diffview = {
+		enable = true;
+	};
 }
