@@ -9,10 +9,11 @@
 		./plugins/diffview.nix
 		./plugins/grug-far.nix
 		./plugins/harpoon.nix
+
 		./plugins/lsp.nix
 		./plugins/mini.nix
-		./plugins/neogit.nix
 		./plugins/oil.nix
+		./plugins/toggleterm.nix
 		./plugins/treesitter.nix
 	];
 
