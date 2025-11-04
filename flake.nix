@@ -2,7 +2,7 @@
 	description = "Configuration for my macOS laptops and NixOS server";
 
 	inputs = {
-		nixpkgs.url = "github:delafthi/nixpkgs/push-lmyskwyrymrq";
+		nixpkgs.url = "github:nixos/nixpkgs/master";
 		flake-parts.url = "github:hercules-ci/flake-parts";
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
