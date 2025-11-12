@@ -63,7 +63,7 @@
 			username = user;
 			entries = [
 				{path = "/Applications/Helium.app/";}
-				{path = "/${pkgs.ghostty-bin}/Applications/Ghostty.app/";}
+				{path = "${config.users.users.${user}.home}/Applications/Home Manager Apps/Ghostty.app/";}
 				{path = "/System/Applications/Calendar.app/";}
 				{path = "/System/Applications/Mail.app/";}
 				{path = "/System/Applications/Notes.app/";}

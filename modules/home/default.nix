@@ -12,6 +12,8 @@
 		./fish.nix
 		./fzf.nix
 		./git.nix
+		./jjui.nix
+		./jujutsu.nix
 		./lazygit.nix
 		./mise.nix
 		./neovim
