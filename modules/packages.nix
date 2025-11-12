@@ -3,10 +3,8 @@ with pkgs; [
 	(callPackage ./bin/open-project.nix {})
 	age
 	alejandra
-	amp-cli
 	ast-grep
 	bun
-	codex
 	delta
 	devenv
 	dig
