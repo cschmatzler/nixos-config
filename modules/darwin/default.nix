@@ -1,6 +1,7 @@
 {
 	config,
 	constants,
+	inputs,
 	nixvim,
 	pkgs,
 	user,
@@ -47,7 +48,7 @@
 			lib,
 			...
 		}: {
-			_module.args = {inherit user constants;};
+			_module.args = {inherit user constants inputs;};
 			imports = [
 				nixvim.homeModules.nixvim
 				../home/default.nix

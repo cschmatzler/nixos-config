@@ -25,9 +25,10 @@
 			url = "github:homebrew/homebrew-cask";
 			flake = false;
 		};
-		nixvim.url = "github:nix-community/nixvim";
-		zjstatus.url = "github:dj95/zjstatus";
-	};
+	nixvim.url = "github:nix-community/nixvim";
+	zjstatus.url = "github:dj95/zjstatus";
+	beads.url = "github:steveyegge/beads";
+};
 
 	outputs = inputs @ {flake-parts, ...}:
 		flake-parts.lib.mkFlake {inherit inputs;} (
@@ -51,7 +52,7 @@
 								specialArgs =
 									inputs
 									// {
-										inherit user hostname constants;
+										inherit inputs user hostname constants;
 									};
 								modules = [
 									inputs.home-manager.darwinModules.home-manager
@@ -82,7 +83,7 @@
 								specialArgs =
 									inputs
 									// {
-										inherit user hostname constants;
+										inherit inputs user hostname constants;
 									};
 								modules = [
 									inputs.home-manager.nixosModules.home-manager
