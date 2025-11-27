@@ -1,8 +1,10 @@
-{pkgs, inputs, ...}:
+{
+	pkgs,
+	inputs,
+	...
+}:
 with pkgs; [
-	(inputs.beads.packages.${pkgs.system}.default.overrideAttrs (old: {
-		vendorHash = "sha256-jpaeKw5dbZuhV9Z18aQ9tDMS/Eo7HaXiZefm26UlPyI=";
-	}))
+	inputs.nix-ai-tools.packages.${pkgs.system}.amp
 	(callPackage ./bin/open-project.nix {})
 	age
 	alejandra

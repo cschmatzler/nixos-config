@@ -25,10 +25,10 @@
 			url = "github:homebrew/homebrew-cask";
 			flake = false;
 		};
-	nixvim.url = "github:nix-community/nixvim";
-	zjstatus.url = "github:dj95/zjstatus";
-	beads.url = "github:steveyegge/beads";
-};
+		nixvim.url = "github:nix-community/nixvim";
+		zjstatus.url = "github:dj95/zjstatus";
+		nix-ai-tools.url = "github:numtide/nix-ai-tools";
+	};
 
 	outputs = inputs @ {flake-parts, ...}:
 		flake-parts.lib.mkFlake {inherit inputs;} (
