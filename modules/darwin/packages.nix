@@ -5,6 +5,6 @@ with pkgs; [
 	mas
 	raycast
 	tailscale
-	whatsapp-for-mac
+	# whatsapp-for-mac
 	xcodes
 ]
