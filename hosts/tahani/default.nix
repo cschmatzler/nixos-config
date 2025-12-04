@@ -2,10 +2,12 @@
 	config,
 	hostname,
 	user,
+	inputs,
 	...
 }: {
 	imports = [
 		../../modules/nixos
+		inputs.tangled.nixosModules.knot
 	];
 
 	services.adguardhome = {
@@ -25,6 +27,14 @@
 					enabled = false;
 				};
 			};
+		};
+	};
+
+	services.tangled.knot = {
+		enable = true;
+		server = {
+			hostname = "knot.schmatzler.com";
+			owner = "did:plc:yiapylv5gwzlyzesppjmukvj";
 		};
 	};
 
@@ -65,7 +75,7 @@
 			enable = true;
 			trustedInterfaces = ["eno1" "tailscale0"];
 			allowedUDPPorts = [config.services.tailscale.port];
-			allowedTCPPorts = [22];
+			allowedTCPPorts = [22 5555];
 			checkReversePath = "loose";
 		};
 	};

@@ -4,6 +4,7 @@
 	...
 }:
 with pkgs; [
+	inputs.beads.packages.${pkgs.system}.default
 	inputs.nix-ai-tools.packages.${pkgs.system}.amp
 	(callPackage ./bin/open-project.nix {})
 	age

@@ -28,6 +28,11 @@
 		nixvim.url = "github:nix-community/nixvim";
 		zjstatus.url = "github:dj95/zjstatus";
 		nix-ai-tools.url = "github:numtide/nix-ai-tools";
+		beads.url = "github:steveyegge/beads";
+		tangled = {
+			url = "git+https://tangled.org/tangled.org/core";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
