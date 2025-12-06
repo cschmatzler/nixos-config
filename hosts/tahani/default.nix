@@ -96,6 +96,16 @@
 		};
 	};
 
+	services.gitea = {
+		enable = true;
+		settings = {
+			server = {
+				DOMAIN = "git.tahani";
+				HTTP_PORT = 8380;
+			};
+		};
+	};
+
 	home-manager.users.${user} = {
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 	};

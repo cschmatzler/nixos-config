@@ -12,7 +12,7 @@ with pkgs; [
 	ast-grep
 	bun
 	delta
-	devenv
+	# devenv
 	dig
 	docker
 	docker-compose
