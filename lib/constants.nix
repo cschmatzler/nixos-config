@@ -2,7 +2,8 @@
 	user = "cschmatzler";
 
 	sshKeys = [
-		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILw2lQn2yEwprOzz50kxG4fKXHzq6askh+XSGLSnWidd"
+		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHfRZQ+7ejD3YHbyMTrV0gN1Gc0DxtGgl5CVZSupo5ws"
+		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL/I+/2QT47raegzMIyhwMEPKarJP/+Ox9ewA4ZFJwk/"
 	];
 
 	stateVersions = {
