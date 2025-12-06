@@ -22,6 +22,13 @@
 		};
 	};
 
+	systemd.services.knot = {
+		after = [ "network-online.target" ];
+		wants = [ "network-online.target" ];
+	};
+
+	networking.firewall.allowedTCPPorts = [ 5555 ];
+
 	services.openssh = {
 		enable = true;
 		settings = {
