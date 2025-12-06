@@ -58,11 +58,9 @@
 						hostname:
 							inputs.darwin.lib.darwinSystem {
 								system = "aarch64-darwin";
-								specialArgs =
-									inputs
-									// {
-										inherit inputs user hostname constants;
-									};
+								specialArgs = {
+									inherit inputs user hostname constants;
+								};
 								modules = [
 									inputs.home-manager.darwinModules.home-manager
 									inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -89,11 +87,9 @@
 						hostname:
 							inputs.nixpkgs.lib.nixosSystem {
 								system = "x86_64-linux";
-								specialArgs =
-									inputs
-									// {
-										inherit inputs user hostname constants;
-									};
+								specialArgs = {
+									inherit inputs user hostname constants;
+								};
 								modules = [
 									inputs.home-manager.nixosModules.home-manager
 									{

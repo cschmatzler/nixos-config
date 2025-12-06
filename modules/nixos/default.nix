@@ -1,17 +1,15 @@
 {
 	pkgs,
 	inputs,
-	nixvim,
 	user,
 	constants,
-	sops-nix,
 	...
 }: {
 	imports = [
 		../core.nix
 		../syncthing.nix
 		../tailscale.nix
-		sops-nix.nixosModules.sops
+		inputs.sops-nix.nixosModules.sops
 	];
 
 	security.sudo.enable = true;
@@ -74,7 +72,7 @@
 		}: {
 			_module.args = {inherit user constants inputs;};
 			imports = [
-				nixvim.homeModules.nixvim
+				inputs.nixvim.homeModules.nixvim
 				../home/default.nix
 				./home/default.nix
 			];

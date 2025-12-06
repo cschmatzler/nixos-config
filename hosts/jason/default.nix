@@ -9,7 +9,7 @@
 	services.syncthing.settings.folders = {
 		"Projects/Personal" = {
 			path = "/Users/${user}/Projects/Personal";
-			devices = ["jason" "jason"];
+			devices = ["tahani" "jason"];
 		};
 	};
 

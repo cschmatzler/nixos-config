@@ -2,10 +2,8 @@
 	config,
 	constants,
 	inputs,
-	nixvim,
 	pkgs,
 	user,
-	sops-nix,
 	...
 }: {
 	imports = [
@@ -16,7 +14,7 @@
 		./homebrew.nix
 		./syncthing.nix
 		./system.nix
-		sops-nix.darwinModules.sops
+		inputs.sops-nix.darwinModules.sops
 	];
 
 	system = {
@@ -50,7 +48,7 @@
 		}: {
 			_module.args = {inherit user constants inputs;};
 			imports = [
-				nixvim.homeModules.nixvim
+				inputs.nixvim.homeModules.nixvim
 				../home/default.nix
 				./home/default.nix
 			];
