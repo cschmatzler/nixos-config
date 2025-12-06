@@ -24,7 +24,7 @@ print_warning() {
     echo -e "${YELLOW}⚡${NC} $1"
 }
 
-HOSTNAME="${1:-tahani}"
+HOSTNAME="${1:-$(hostname)}"
 
 print_info "Building configuration for $HOSTNAME"
 
