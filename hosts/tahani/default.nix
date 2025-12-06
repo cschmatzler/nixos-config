@@ -2,12 +2,10 @@
 	config,
 	hostname,
 	user,
-	inputs,
 	...
 }: {
 	imports = [
 		../../modules/nixos
-		inputs.tangled.nixosModules.knot
 	];
 
 	services.adguardhome = {
@@ -27,14 +25,6 @@
 					enabled = false;
 				};
 			};
-		};
-	};
-
-	services.tangled.knot = {
-		enable = true;
-		server = {
-			hostname = "knot.schmatzler.com";
-			owner = "did:plc:yiapylv5gwzlyzesppjmukvj";
 		};
 	};
 

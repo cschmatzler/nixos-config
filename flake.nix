@@ -33,6 +33,10 @@
 			url = "git+https://tangled.org/tangled.org/core";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		disko = {
+			url = "github:nix-community/disko";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
@@ -41,7 +45,7 @@
 				constants = import ./lib/constants.nix;
 				user = constants.user;
 				darwinHosts = ["chidi" "jason"];
-				nixosHosts = ["tahani"];
+				nixosHosts = ["michael" "tahani"];
 				overlays = import ./overlays {inherit inputs;};
 			in {
 				systems = [
