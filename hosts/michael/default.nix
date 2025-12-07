@@ -22,7 +22,14 @@
 		};
 	};
 
-	networking.firewall.allowedTCPPorts = [ 5444 5555 ];
+	networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+	services.caddy = {
+		enable = true;
+		virtualHosts."knot.schmatzler.com".extraConfig = ''
+			reverse_proxy localhost:5555
+		'';
+	};
 
 	services.openssh = {
 		enable = true;
