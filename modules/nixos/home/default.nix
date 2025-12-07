@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-	home = {
-		packages = pkgs.callPackage ../packages.nix {};
-	};
+  home = {
+    packages = pkgs.callPackage ../packages.nix {};
+  };
 }
