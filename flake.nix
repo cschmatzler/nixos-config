@@ -45,7 +45,7 @@
         constants = import ./lib/constants.nix;
         user = constants.user;
         darwinHosts = ["chidi" "jason"];
-        nixosHosts = ["tahani"];
+        nixosHosts = ["michael" "tahani"];
         overlays = import ./overlays {inherit inputs;};
       in {
         systems = [
