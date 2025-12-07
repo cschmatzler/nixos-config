@@ -1,7 +1,7 @@
 {
-  programs.nixvim.plugins = {
-    grug-far = {
-      enable = true;
-    };
-  };
+	programs.nixvim.plugins = {
+		grug-far = {
+			enable = true;
+		};
+	};
 }

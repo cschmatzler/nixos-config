@@ -1,10 +1,10 @@
 {
-  homebrew = {
-    enable = true;
-    casks = [
-      "helium-browser"
-      "pearcleaner"
-      "tidal"
-    ];
-  };
+	homebrew = {
+		enable = true;
+		casks = [
+			"helium-browser"
+			"pearcleaner"
+			"tidal"
+		];
+	};
 }

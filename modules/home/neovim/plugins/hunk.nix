@@ -1,7 +1,7 @@
 {
-  programs.nixvim.plugins = {
-    hunk = {
-      enable = true;
-    };
-  };
+	programs.nixvim.plugins = {
+		hunk = {
+			enable = true;
+		};
+	};
 }
