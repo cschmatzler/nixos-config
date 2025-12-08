@@ -14,6 +14,7 @@
 		./plugins/oil.nix
 		./plugins/toggleterm.nix
 		./plugins/treesitter.nix
+		./plugins/zk.nix
 	];
 
 	programs.nixvim = {

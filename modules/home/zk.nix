@@ -1,16 +1,9 @@
 {
 	programs.zk = {
 		enable = true;
-		settings = {
-			notebook = {
-				path = "~/Projects/Personal/Zettelkasten";
-			};
-			note = {
-				language = "en";
-			};
-			extra = {
-				author = "Christoph Schmatzler";
-			};
-		};
+		settings = {};
+	};
+	home.sessionVariables = {
+		ZK_NOTEBOOK_DIR = "$HOME/Projects/Personal/Zettelkasten";
 	};
 }
