@@ -11,10 +11,11 @@
 			fish
 			heex
 			json
+			markdown
 			nix
 			toml
+			tsx
 			typescript
-			vue
 			yaml
 		];
 	};

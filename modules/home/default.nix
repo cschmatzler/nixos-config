@@ -23,6 +23,7 @@
 		./ssh.nix
 		./starship.nix
 		./zellij.nix
+		./zk.nix
 		./zoxide.nix
 		./zsh.nix
 	];

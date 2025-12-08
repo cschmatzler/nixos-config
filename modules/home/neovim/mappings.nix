@@ -231,5 +231,66 @@
 			action = ":lua require('harpoon'):list():select(4)<CR>";
 			options.desc = "Go to harpoon 4";
 		}
+		# z - zk (notes)
+		{
+			mode = "n";
+			key = "<leader>zn";
+			action = ":ZkNew { title = vim.fn.input('Title: ') }<CR>";
+			options.desc = "New note";
+		}
+		{
+			mode = "n";
+			key = "<leader>zo";
+			action = ":ZkNotes { sort = { 'modified' } }<CR>";
+			options.desc = "Open notes";
+		}
+		{
+			mode = "n";
+			key = "<leader>zt";
+			action = ":ZkTags<CR>";
+			options.desc = "Browse tags";
+		}
+		{
+			mode = "n";
+			key = "<leader>zf";
+			action = ":ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>";
+			options.desc = "Find notes";
+		}
+		{
+			mode = "v";
+			key = "<leader>zf";
+			action = ":'<,'>ZkMatch<CR>";
+			options.desc = "Find notes matching selection";
+		}
+		{
+			mode = "n";
+			key = "<leader>zb";
+			action = ":ZkBacklinks<CR>";
+			options.desc = "Backlinks";
+		}
+		{
+			mode = "n";
+			key = "<leader>zl";
+			action = ":ZkLinks<CR>";
+			options.desc = "Outbound links";
+		}
+		{
+			mode = "n";
+			key = "<leader>zi";
+			action = ":ZkInsertLink<CR>";
+			options.desc = "Insert link";
+		}
+		{
+			mode = "v";
+			key = "<leader>zi";
+			action = ":'<,'>ZkInsertLinkAtSelection<CR>";
+			options.desc = "Insert link at selection";
+		}
+		{
+			mode = "v";
+			key = "<leader>zc";
+			action = ":'<,'>ZkNewFromTitleSelection<CR>";
+			options.desc = "Create note from selection";
+		}
 	];
 }

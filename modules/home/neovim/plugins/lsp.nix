@@ -9,6 +9,7 @@
 				dockerls.enable = true;
 				yamlls.enable = true;
 				vtsls.enable = true;
+				zk.enable = true;
 			};
 		};
 	};
