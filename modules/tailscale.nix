@@ -9,6 +9,7 @@
 		}
 		// lib.optionalAttrs pkgs.stdenv.isLinux {
 			openFirewall = true;
+			permitCertUid = "caddy";
 			useRoutingFeatures = "server";
 		};
 }

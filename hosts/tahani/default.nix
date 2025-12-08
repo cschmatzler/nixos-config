@@ -100,8 +100,9 @@
 		enable = true;
 		settings = {
 			server = {
-				ROOT_URL = "https://gitea.manticore-hippocampus.ts.net";
-				# DOMAIN = "gitea.manticore-hippocampus.ts.net";
+				ROOT_URL = "https://gitea.manticore-hippocampus.ts.net/";
+				DOMAIN = "gitea.manticore-hippocampus.ts.net";
+				HTTP_ADDR = "127.0.0.1";
 				HTTP_PORT = 8380;
 			};
 		};
@@ -113,11 +114,12 @@
 			respond "OK"
 		'';
 		virtualHosts."gitea.manticore-hippocampus.ts.net".extraConfig = ''
-			handle {
-			  reverse_proxy localhost:8380
-			}
+			reverse_proxy localhost:8380
 		'';
 	};
+
+	# Allow Caddy to fetch Tailscale HTTPS certs
+	services.tailscale.permitCertUid = "caddy";
 
 	home-manager.users.${user} = {
 		programs.git.settings.user.email = "christoph@schmatzler.com";
