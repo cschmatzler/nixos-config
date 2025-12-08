@@ -100,10 +100,23 @@
 		enable = true;
 		settings = {
 			server = {
-				DOMAIN = "git.tahani";
+				ROOT_URL = "https://gitea.manticore-hippocampus.ts.net";
+				# DOMAIN = "gitea.manticore-hippocampus.ts.net";
 				HTTP_PORT = 8380;
 			};
 		};
+	};
+
+	services.caddy = {
+		enable = true;
+		virtualHosts."tahani.manticore-hippocampus.ts.net".extraConfig = ''
+			respond "OK"
+		'';
+		virtualHosts."gitea.manticore-hippocampus.ts.net".extraConfig = ''
+			handle {
+			  reverse_proxy localhost:8380
+			}
+		'';
 	};
 
 	home-manager.users.${user} = {
