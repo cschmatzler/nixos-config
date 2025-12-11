@@ -7,7 +7,6 @@
 		../../modules/core.nix
 		../../modules/darwin.nix
 		../../modules/darwin-syncthing.nix
-		../../modules/darwin-system.nix
 		../../modules/dock.nix
 		../../modules/homebrew.nix
 		../../modules/syncthing.nix
