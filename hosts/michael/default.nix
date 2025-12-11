@@ -2,6 +2,9 @@
 	modulesPath,
 	hostname,
 	inputs,
+	user,
+	pkgs,
+	constants,
 	...
 }: {
 	imports = [
@@ -9,9 +12,38 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
-		../../modules/nixos
+		../../modules/nixos.nix
 		inputs.disko.nixosModules.disko
 	];
+
+	home-manager.users.${user} = {
+		imports = [
+			../../modules/bash.nix
+			../../modules/bat.nix
+			../../modules/direnv.nix
+			../../modules/eza.nix
+			../../modules/fish.nix
+			../../modules/fzf.nix
+			../../modules/git.nix
+			../../modules/jjui.nix
+			../../modules/jujutsu.nix
+			../../modules/lazygit.nix
+			../../modules/neovim
+			../../modules/ripgrep.nix
+			../../modules/ssh.nix
+			../../modules/starship.nix
+			../../modules/zoxide.nix
+		];
+
+		programs.home-manager.enable = true;
+
+		home = {
+			packages =
+				(pkgs.callPackage ../../modules/packages.nix {inherit inputs;})
+				++ (pkgs.callPackage ../../modules/nixos-packages.nix {});
+			stateVersion = constants.stateVersions.homeManager;
+		};
+	};
 
 	networking.firewall.allowedTCPPorts = [80 443];
 

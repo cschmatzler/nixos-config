@@ -4,7 +4,7 @@
 	...
 }: {
 	imports = [
-		../../modules/darwin
+		../../modules/darwin.nix
 	];
 
 	networking.hostName = "chidi";

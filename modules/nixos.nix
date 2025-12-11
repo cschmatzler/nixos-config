@@ -6,9 +6,8 @@
 	...
 }: {
 	imports = [
-		../core.nix
-		../syncthing.nix
-		../tailscale.nix
+		./core.nix
+		./tailscale.nix
 		inputs.sops-nix.nixosModules.sops
 	];
 
@@ -73,8 +72,6 @@
 			_module.args = {inherit user constants inputs;};
 			imports = [
 				inputs.nixvim.homeModules.nixvim
-				../home/default.nix
-				./home/default.nix
 			];
 		};
 	};

@@ -1,6 +1,6 @@
 {user, ...}: {
 	imports = [
-		../../modules/darwin
+		../../modules/darwin.nix
 	];
 
 	networking.hostName = "jason";

@@ -7,13 +7,13 @@
 	...
 }: {
 	imports = [
-		../core.nix
-		../syncthing.nix
-		../tailscale.nix
-		./dock
-		./homebrew.nix
+		./core.nix
 		./syncthing.nix
-		./system.nix
+		./tailscale.nix
+		./darwin-dock.nix
+		./darwin-homebrew.nix
+		./darwin-syncthing.nix
+		./darwin-system.nix
 		inputs.sops-nix.darwinModules.sops
 	];
 
@@ -49,8 +49,8 @@
 			_module.args = {inherit user constants inputs;};
 			imports = [
 				inputs.nixvim.homeModules.nixvim
-				../home/default.nix
-				./home/default.nix
+				./home.nix
+				./darwin-home.nix
 			];
 			fonts.fontconfig.enable = true;
 		};

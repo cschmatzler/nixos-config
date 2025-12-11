@@ -2,11 +2,56 @@
 	config,
 	hostname,
 	user,
+	inputs,
+	pkgs,
+	constants,
 	...
 }: {
 	imports = [
-		../../modules/nixos
+		../../modules/nixos.nix
+		../../modules/syncthing.nix
 	];
+
+	home-manager.users.${user} = {
+		imports = [
+			../../modules/atuin.nix
+			../../modules/bash.nix
+			../../modules/bat.nix
+			../../modules/direnv.nix
+			../../modules/eza.nix
+			../../modules/fish.nix
+			../../modules/fzf.nix
+			../../modules/git.nix
+			../../modules/jjui.nix
+			../../modules/jujutsu.nix
+			../../modules/lazygit.nix
+			../../modules/mise.nix
+			../../modules/neovim
+			../../modules/opencode.nix
+			../../modules/ripgrep.nix
+			../../modules/ssh.nix
+			../../modules/starship.nix
+			../../modules/zellij.nix
+			../../modules/zk.nix
+			../../modules/zoxide.nix
+			../../modules/zsh.nix
+		];
+
+		programs.home-manager.enable = true;
+
+		home = {
+			packages =
+				(pkgs.callPackage ../../modules/packages.nix {inherit inputs;})
+				++ (pkgs.callPackage ../../modules/nixos-packages.nix {})
+				++ [
+					inputs.beads.packages.${pkgs.system}.default
+					inputs.nix-ai-tools.packages.${pkgs.system}.amp
+				];
+			stateVersion = constants.stateVersions.homeManager;
+		};
+
+		programs.git.settings.user.email = "christoph@schmatzler.com";
+	};
 
 	services.adguardhome = {
 		enable = true;
@@ -105,8 +150,4 @@
 
 	# Allow Caddy to fetch Tailscale HTTPS certs
 	services.tailscale.permitCertUid = "caddy";
-
-	home-manager.users.${user} = {
-		programs.git.settings.user.email = "christoph@schmatzler.com";
-	};
 }

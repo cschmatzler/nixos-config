@@ -3,14 +3,14 @@
 	lib,
 	...
 }: let
-	setWallpaperScript = import ../bin/wallpaper.nix {inherit pkgs;};
+	setWallpaperScript = import ./darwin-wallpaper.nix {inherit pkgs;};
 in {
 	imports = [
-		./ghostty.nix
+		./darwin-ghostty.nix
 	];
 
 	home = {
-		packages = pkgs.callPackage ../packages.nix {};
+		packages = pkgs.callPackage ./darwin-packages.nix {};
 		activation = {
 			"setWallpaper" =
 				lib.hm.dag.entryAfter ["revealHomeLibraryDirectory"] ''

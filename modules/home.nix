@@ -31,7 +31,7 @@
 	programs.home-manager.enable = true;
 
 	home = {
-		packages = pkgs.callPackage ../packages.nix {inherit inputs;};
+		packages = pkgs.callPackage ./packages.nix {inherit inputs;};
 		stateVersion = constants.stateVersions.homeManager;
 	};
 }
