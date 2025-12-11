@@ -4,13 +4,13 @@
 	...
 }: {
 	imports = [
-		../../modules/core.nix
-		../../modules/darwin.nix
-		../../modules/darwin-syncthing.nix
-		../../modules/dock.nix
-		../../modules/homebrew.nix
 		../../modules/syncthing.nix
-		../../modules/tailscale.nix
+		../../profiles/core.nix
+		../../profiles/darwin.nix
+		../../profiles/dock.nix
+		../../profiles/homebrew.nix
+		../../profiles/syncthing.nix
+		../../profiles/tailscale.nix
 		inputs.sops-nix.darwinModules.sops
 	];
 
@@ -50,29 +50,29 @@
 		_module.args = {inherit user constants inputs;};
 		imports = [
 			inputs.nixvim.homeModules.nixvim
-			../../modules/atuin.nix
-			../../modules/bash.nix
-			../../modules/bat.nix
-			../../modules/direnv.nix
-			../../modules/eza.nix
-			../../modules/fish.nix
-			../../modules/fzf.nix
-			../../modules/ghostty.nix
-			../../modules/git.nix
-			../../modules/home.nix
-			../../modules/jjui.nix
-			../../modules/jujutsu.nix
-			../../modules/lazygit.nix
-			../../modules/mise.nix
-			../../modules/neovim
-			../../modules/opencode.nix
-			../../modules/ripgrep.nix
-			../../modules/ssh.nix
-			../../modules/starship.nix
-			../../modules/zellij.nix
-			../../modules/zk.nix
-			../../modules/zoxide.nix
-			../../modules/zsh.nix
+			../../profiles/atuin.nix
+			../../profiles/bash.nix
+			../../profiles/bat.nix
+			../../profiles/direnv.nix
+			../../profiles/eza.nix
+			../../profiles/fish.nix
+			../../profiles/fzf.nix
+			../../profiles/ghostty.nix
+			../../profiles/git.nix
+			../../profiles/home.nix
+			../../profiles/jjui.nix
+			../../profiles/jujutsu.nix
+			../../profiles/lazygit.nix
+			../../profiles/mise.nix
+			../../profiles/neovim
+			../../profiles/opencode.nix
+			../../profiles/ripgrep.nix
+			../../profiles/ssh.nix
+			../../profiles/starship.nix
+			../../profiles/zellij.nix
+			../../profiles/zk.nix
+			../../profiles/zoxide.nix
+			../../profiles/zsh.nix
 		];
 		fonts.fontconfig.enable = true;
 		programs.git.settings.user.email = "christoph@schmatzler.com";

@@ -12,10 +12,10 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
-		../../modules/core.nix
-		../../modules/fail2ban.nix
-		../../modules/gitea.nix
-		../../modules/nixos.nix
+		../../profiles/core.nix
+		../../profiles/fail2ban.nix
+		../../profiles/gitea.nix
+		../../profiles/nixos.nix
 		inputs.disko.nixosModules.disko
 	];
 
@@ -27,22 +27,22 @@
 		_module.args = {inherit user constants inputs;};
 		imports = [
 			inputs.nixvim.homeModules.nixvim
-			../../modules/bash.nix
-			../../modules/bat.nix
-			../../modules/direnv.nix
-			../../modules/eza.nix
-			../../modules/fish.nix
-			../../modules/fzf.nix
-			../../modules/git.nix
-			../../modules/home.nix
-			../../modules/jjui.nix
-			../../modules/jujutsu.nix
-			../../modules/lazygit.nix
-			../../modules/neovim
-			../../modules/ripgrep.nix
-			../../modules/ssh.nix
-			../../modules/starship.nix
-			../../modules/zoxide.nix
+			../../profiles/bash.nix
+			../../profiles/bat.nix
+			../../profiles/direnv.nix
+			../../profiles/eza.nix
+			../../profiles/fish.nix
+			../../profiles/fzf.nix
+			../../profiles/git.nix
+			../../profiles/home.nix
+			../../profiles/jjui.nix
+			../../profiles/jujutsu.nix
+			../../profiles/lazygit.nix
+			../../profiles/neovim
+			../../profiles/ripgrep.nix
+			../../profiles/ssh.nix
+			../../profiles/starship.nix
+			../../profiles/zoxide.nix
 		];
 	};
 
