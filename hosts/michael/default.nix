@@ -13,6 +13,7 @@
 		./disk-config.nix
 		./hardware-configuration.nix
 		../../modules/core.nix
+		../../modules/fail2ban.nix
 		../../modules/gitea.nix
 		../../modules/nixos.nix
 		inputs.disko.nixosModules.disko
