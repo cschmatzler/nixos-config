@@ -21,7 +21,7 @@
 				SAME_SITE = "strict";
 			};
 			api.ENABLE_SWAGGER = false;
-			server.LANDING_PAGE = "organizations";
+			server.LANDING_PAGE = "explore";
 		};
 	};
 
