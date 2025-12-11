@@ -96,25 +96,10 @@
 		};
 	};
 
-	services.gitea = {
-		enable = true;
-		settings = {
-			server = {
-				ROOT_URL = "https://gitea.manticore-hippocampus.ts.net/";
-				DOMAIN = "gitea.manticore-hippocampus.ts.net";
-				HTTP_ADDR = "127.0.0.1";
-				HTTP_PORT = 8380;
-			};
-		};
-	};
-
 	services.caddy = {
 		enable = true;
 		virtualHosts."tahani.manticore-hippocampus.ts.net".extraConfig = ''
 			respond "OK"
-		'';
-		virtualHosts."gitea.manticore-hippocampus.ts.net".extraConfig = ''
-			reverse_proxy localhost:8380
 		'';
 	};
 
