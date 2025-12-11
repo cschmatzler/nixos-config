@@ -20,4 +20,7 @@
 			};
 		};
 	};
+	home.sessionVariables = {
+		OPENCODE_EXPERIMENTAL_EXA = "true";
+	};
 }
