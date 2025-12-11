@@ -12,12 +12,19 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
+		../../modules/core.nix
 		../../modules/nixos.nix
 		inputs.disko.nixosModules.disko
 	];
 
 	home-manager.users.${user} = {
+		pkgs,
+		lib,
+		...
+	}: {
+		_module.args = {inherit user constants inputs;};
 		imports = [
+			inputs.nixvim.homeModules.nixvim
 			../../modules/bash.nix
 			../../modules/bat.nix
 			../../modules/direnv.nix
@@ -25,6 +32,7 @@
 			../../modules/fish.nix
 			../../modules/fzf.nix
 			../../modules/git.nix
+			../../modules/home.nix
 			../../modules/jjui.nix
 			../../modules/jujutsu.nix
 			../../modules/lazygit.nix
@@ -34,15 +42,6 @@
 			../../modules/starship.nix
 			../../modules/zoxide.nix
 		];
-
-		programs.home-manager.enable = true;
-
-		home = {
-			packages =
-				(pkgs.callPackage ../../modules/packages.nix {inherit inputs;})
-				++ (pkgs.callPackage ../../modules/nixos-packages.nix {});
-			stateVersion = constants.stateVersions.homeManager;
-		};
 	};
 
 	networking.firewall.allowedTCPPorts = [80 443];

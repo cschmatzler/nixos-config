@@ -1,22 +1,9 @@
 {
-	config,
 	constants,
-	inputs,
 	pkgs,
 	user,
 	...
 }: {
-	imports = [
-		./core.nix
-		./syncthing.nix
-		./tailscale.nix
-		./darwin-dock.nix
-		./darwin-homebrew.nix
-		./darwin-syncthing.nix
-		./darwin-system.nix
-		inputs.sops-nix.darwinModules.sops
-	];
-
 	system = {
 		primaryUser = user;
 		stateVersion = constants.stateVersions.darwin;
@@ -38,42 +25,5 @@
 		shell = pkgs.fish;
 	};
 
-	home-manager = {
-		useGlobalPkgs = true;
-		users.${user} = {
-			pkgs,
-			config,
-			lib,
-			...
-		}: {
-			_module.args = {inherit user constants inputs;};
-			imports = [
-				inputs.nixvim.homeModules.nixvim
-				./home.nix
-				./darwin-home.nix
-			];
-			fonts.fontconfig.enable = true;
-		};
-	};
-
-	local = {
-		dock = {
-			enable = true;
-			username = user;
-			entries = [
-				{path = "/Applications/Helium.app/";}
-				{path = "${config.users.users.${user}.home}/Applications/Home Manager Apps/Ghostty.app/";}
-				{path = "/System/Applications/Calendar.app/";}
-				{path = "/System/Applications/Mail.app/";}
-				{path = "/System/Applications/Notes.app/";}
-				{path = "/System/Applications/Music.app/";}
-				{path = "/System/Applications/System Settings.app/";}
-				{
-					path = "${config.users.users.${user}.home}/Downloads";
-					section = "others";
-					options = "--sort name --view grid --display stack";
-				}
-			];
-		};
-	};
+	home-manager.useGlobalPkgs = true;
 }

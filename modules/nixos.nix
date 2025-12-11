@@ -1,16 +1,9 @@
 {
 	pkgs,
-	inputs,
 	user,
 	constants,
 	...
 }: {
-	imports = [
-		./core.nix
-		./tailscale.nix
-		inputs.sops-nix.nixosModules.sops
-	];
-
 	security.sudo.enable = true;
 
 	system.stateVersion = constants.stateVersions.nixos;
@@ -61,18 +54,5 @@
 		};
 	};
 
-	home-manager = {
-		useGlobalPkgs = true;
-		users.${user} = {
-			pkgs,
-			config,
-			lib,
-			...
-		}: {
-			_module.args = {inherit user constants inputs;};
-			imports = [
-				inputs.nixvim.homeModules.nixvim
-			];
-		};
-	};
+	home-manager.useGlobalPkgs = true;
 }

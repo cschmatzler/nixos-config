@@ -3,40 +3,54 @@
 	inputs,
 	...
 }:
-with pkgs; [
-	(callPackage ./open-project.nix {})
-	age
-	alejandra
-	ast-grep
-	bun
-	delta
-	devenv
-	dig
-	docker
-	docker-compose
-	fastfetch
-	fd
-	gh
-	git
-	gnumake
-	gnupg
-	hledger
-	htop
-	hyperfine
-	jq
-	killall
-	lsof
-	nurl
-	openssh
-	postgresql_17
-	sd
-	sops
-	sqlite
-	tokei
-	tree
-	tree-sitter
-	unzip
-	vivid
-	ov
-	zip
-]
+with pkgs;
+	[
+		(callPackage ./open-project.nix {})
+		age
+		alejandra
+		ast-grep
+		bun
+		delta
+		devenv
+		dig
+		docker
+		docker-compose
+		fastfetch
+		fd
+		gh
+		git
+		gnumake
+		gnupg
+		hledger
+		htop
+		hyperfine
+		jq
+		killall
+		lsof
+		nurl
+		openssh
+		postgresql_17
+		sd
+		sops
+		sqlite
+		tokei
+		tree
+		tree-sitter
+		unzip
+		vivid
+		ov
+		zip
+	]
+	++ lib.optionals stdenv.isDarwin [
+		_1password-gui
+		dockutil
+		mas
+		raycast
+		tailscale
+		xcodes
+	]
+	++ lib.optionals stdenv.isLinux [
+		gcc15
+		lm_sensors
+		ghostty.terminfo
+	]

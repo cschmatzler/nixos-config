@@ -8,12 +8,21 @@
 	...
 }: {
 	imports = [
+		../../modules/core.nix
 		../../modules/nixos.nix
 		../../modules/syncthing.nix
+		../../modules/tailscale.nix
+		inputs.sops-nix.nixosModules.sops
 	];
 
 	home-manager.users.${user} = {
+		pkgs,
+		lib,
+		...
+	}: {
+		_module.args = {inherit user constants inputs;};
 		imports = [
+			inputs.nixvim.homeModules.nixvim
 			../../modules/atuin.nix
 			../../modules/bash.nix
 			../../modules/bat.nix
@@ -22,6 +31,7 @@
 			../../modules/fish.nix
 			../../modules/fzf.nix
 			../../modules/git.nix
+			../../modules/home.nix
 			../../modules/jjui.nix
 			../../modules/jujutsu.nix
 			../../modules/lazygit.nix
@@ -37,18 +47,10 @@
 			../../modules/zsh.nix
 		];
 
-		programs.home-manager.enable = true;
-
-		home = {
-			packages =
-				(pkgs.callPackage ../../modules/packages.nix {inherit inputs;})
-				++ (pkgs.callPackage ../../modules/nixos-packages.nix {})
-				++ [
-					inputs.beads.packages.${pkgs.system}.default
-					inputs.nix-ai-tools.packages.${pkgs.system}.amp
-				];
-			stateVersion = constants.stateVersions.homeManager;
-		};
+		home.packages = [
+			inputs.beads.packages.${pkgs.system}.default
+			inputs.nix-ai-tools.packages.${pkgs.system}.amp
+		];
 
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 	};

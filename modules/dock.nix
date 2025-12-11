@@ -2,6 +2,7 @@
 	config,
 	pkgs,
 	lib,
+	user,
 	...
 }:
 with lib; let
@@ -36,13 +37,27 @@ in {
 										};
 								};
 							});
-					readOnly = true;
+					default = [
+						{path = "/Applications/Helium.app/";}
+						{path = "${config.users.users.${user}.home}/Applications/Home Manager Apps/Ghostty.app/";}
+						{path = "/System/Applications/Calendar.app/";}
+						{path = "/System/Applications/Mail.app/";}
+						{path = "/System/Applications/Notes.app/";}
+						{path = "/System/Applications/Music.app/";}
+						{path = "/System/Applications/System Settings.app/";}
+						{
+							path = "${config.users.users.${user}.home}/Downloads";
+							section = "others";
+							options = "--sort name --view grid --display stack";
+						}
+					];
 				};
 
 			username =
 				mkOption {
 					description = "Username to apply the dock settings to";
 					type = types.str;
+					default = user;
 				};
 		};
 	};
