@@ -33,6 +33,7 @@ with pkgs;
 		sd
 		sops
 		sqlite
+		tea
 		tokei
 		tree
 		tree-sitter

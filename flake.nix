@@ -27,7 +27,7 @@
 		};
 		nixvim.url = "github:nix-community/nixvim";
 		zjstatus.url = "github:dj95/zjstatus";
-		nix-ai-tools.url = "github:numtide/nix-ai-tools";
+		llm-agents.url = "github:numtide/llm-agents.nix";
 		beads.url = "github:steveyegge/beads";
 		tangled = {
 			url = "git+https://tangled.org/tangled.org/core";

@@ -49,7 +49,7 @@
 
 		home.packages = [
 			inputs.beads.packages.${pkgs.stdenv.hostPlatform.system}.default
-			inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}.amp
+			inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp
 		];
 
 		programs.git.settings.user.email = "christoph@schmatzler.com";

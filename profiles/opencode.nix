@@ -5,7 +5,7 @@
 }: {
 	programs.opencode = {
 		enable = true;
-		package = inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
+		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
 			theme = "catppuccin";
 			instructions = [
