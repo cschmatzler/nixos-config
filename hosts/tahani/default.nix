@@ -48,8 +48,8 @@
 		];
 
 		home.packages = [
-			inputs.beads.packages.${pkgs.stdenv.hostPlatform.system}.default
 			inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp
+			inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.beads
 		];
 
 		programs.git.settings.user.email = "christoph@schmatzler.com";
