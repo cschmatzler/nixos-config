@@ -122,6 +122,7 @@
 					}
 				];
 			};
+			cmdline = {};
 			comment = {};
 			diff = {};
 			extra = {};
