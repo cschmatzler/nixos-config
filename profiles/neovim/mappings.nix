@@ -120,6 +120,12 @@
 		# g - git
 		{
 			mode = "n";
+			key = "<leader>gc";
+			action = ":JJDiffConflicts<CR>";
+			options.desc = "Resolve conflicts";
+		}
+		{
+			mode = "n";
 			key = "<leader>gg";
 			action.__raw = ''
 				function()
