@@ -142,14 +142,4 @@
 			devices = ["tahani" "chidi"];
 		};
 	};
-
-	services.caddy = {
-		enable = true;
-		virtualHosts."tahani.manticore-hippocampus.ts.net".extraConfig = ''
-			respond "OK"
-		'';
-	};
-
-	# Allow Caddy to fetch Tailscale HTTPS certs
-	services.tailscale.permitCertUid = "caddy";
 }
