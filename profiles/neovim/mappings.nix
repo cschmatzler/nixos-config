@@ -120,11 +120,6 @@
 		# g - git
 		{
 			mode = "n";
-			key = "<leader>gd";
-			action = ":DiffviewOpen<CR>";
-		}
-		{
-			mode = "n";
 			key = "<leader>gg";
 			action.__raw = ''
 				function()
