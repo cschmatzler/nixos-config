@@ -25,7 +25,6 @@
 			url = "github:homebrew/homebrew-cask";
 			flake = false;
 		};
-		ghostty.url = "github:ghostty-org/ghostty";
 		nixvim.url = "github:nix-community/nixvim";
 		zjstatus.url = "github:dj95/zjstatus";
 		llm-agents.url = "github:numtide/llm-agents.nix";
