@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{inputs, pkgs, ...}: {
 	programs.ghostty = {
 		enable = true;
-		package = pkgs.ghostty-bin;
+		package = inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
 		settings = {
 			command = "${pkgs.fish}/bin/fish";
 			theme = "Catppuccin Latte";
