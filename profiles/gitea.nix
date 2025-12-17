@@ -28,8 +28,6 @@
 	services.litestream = {
 		enable = true;
 		environmentFile = "/run/secrets/litestream";
-		user = "gitea";
-		group = "gitea";
 		settings = {
 			dbs = [
 				{
@@ -44,6 +42,13 @@
 					];
 				}
 			];
+		};
+	};
+
+	systemd.services.litestream = {
+		serviceConfig = {
+			User = "gitea";
+			Group = "gitea";
 		};
 	};
 
