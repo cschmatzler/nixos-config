@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
 	networking.firewall.allowedTCPPorts = [80 443];
 
 	services.gitea = {
@@ -25,32 +25,11 @@
 		};
 	};
 
-	users.users.litestream.extraGroups = ["gitea"];
-
-	systemd.services.gitea.serviceConfig.ExecStartPost =
-		"+"
-		+ pkgs.writeShellScript "grant-gitea-permissions" ''
-			timeout=10
-
-			while [ ! -f /var/lib/gitea/data/gitea.db ];
-			do
-				if [ "$timeout" == 0 ]; then
-					echo "ERROR: Timeout while waiting for /var/lib/gitea/data/gitea.db."
-					exit 1
-				fi
-
-				sleep 1
-
-				((timeout--))
-			done
-
-			find /var/lib/gitea -type d -exec chmod -v 775 {} \;
-			find /var/lib/gitea -type f -exec chmod -v 660 {} \;
-		'';
-
 	services.litestream = {
 		enable = true;
 		environmentFile = "/run/secrets/litestream";
+		user = "gitea";
+		group = "gitea";
 		settings = {
 			dbs = [
 				{
