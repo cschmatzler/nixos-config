@@ -1,4 +1,4 @@
-{...}: {
+{lib, ...}: {
 	networking.firewall.allowedTCPPorts = [80 443];
 
 	services.gitea = {
@@ -47,8 +47,8 @@
 
 	systemd.services.litestream = {
 		serviceConfig = {
-			User = "gitea";
-			Group = "gitea";
+			User = lib.mkForce "gitea";
+			Group = lib.mkForce "gitea";
 		};
 	};
 
