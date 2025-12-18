@@ -16,6 +16,7 @@
 		../../profiles/fail2ban.nix
 		../../profiles/gitea.nix
 		../../profiles/nixos.nix
+		../../profiles/tailscale.nix
 		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
 	];
