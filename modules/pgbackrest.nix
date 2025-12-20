@@ -21,57 +21,75 @@ in {
 			description = "Path to the environment file containing S3 credentials and cipher passphrase";
 		};
 
-		s3 = {
-			endpoint = mkOption {
-				type = types.str;
-				default = "s3.eu-central-003.backblazeb2.com";
-				description = "S3 endpoint URL";
-			};
+		s3 = mkOption {
+			type = types.submodule {
+				options = {
+					endpoint = mkOption {
+						type = types.str;
+						default = "s3.eu-central-003.backblazeb2.com";
+						description = "S3 endpoint URL";
+					};
 
-			bucket = mkOption {
-				type = types.str;
-				description = "S3 bucket name";
-			};
+					bucket = mkOption {
+						type = types.str;
+						description = "S3 bucket name";
+					};
 
-			region = mkOption {
-				type = types.str;
-				default = "eu-central-003";
-				description = "S3 region";
-			};
+					region = mkOption {
+						type = types.str;
+						default = "eu-central-003";
+						description = "S3 region";
+					};
 
-			path = mkOption {
-				type = types.str;
-				default = "/backups";
-				description = "Path within the S3 bucket";
+					path = mkOption {
+						type = types.str;
+						default = "/backups";
+						description = "Path within the S3 bucket";
+					};
+				};
 			};
+			default = {};
+			description = "S3 storage configuration";
 		};
 
-		retention = {
-			full = mkOption {
-				type = types.int;
-				default = 7;
-				description = "Number of full backups to retain";
-			};
+		retention = mkOption {
+			type = types.submodule {
+				options = {
+					full = mkOption {
+						type = types.int;
+						default = 7;
+						description = "Number of full backups to retain";
+					};
 
-			diff = mkOption {
-				type = types.int;
-				default = 7;
-				description = "Number of differential backups to retain";
+					diff = mkOption {
+						type = types.int;
+						default = 7;
+						description = "Number of differential backups to retain";
+					};
+				};
 			};
+			default = {};
+			description = "Backup retention configuration";
 		};
 
-		compression = {
-			type = mkOption {
-				type = types.str;
-				default = "zst";
-				description = "Compression algorithm (none, gz, lz4, zst)";
-			};
+		compression = mkOption {
+			type = types.submodule {
+				options = {
+					type = mkOption {
+						type = types.str;
+						default = "zst";
+						description = "Compression algorithm (none, gz, lz4, zst)";
+					};
 
-			level = mkOption {
-				type = types.int;
-				default = 3;
-				description = "Compression level";
+					level = mkOption {
+						type = types.int;
+						default = 3;
+						description = "Compression level";
+					};
+				};
 			};
+			default = {};
+			description = "Compression configuration";
 		};
 
 		processMax = mkOption {
@@ -80,18 +98,24 @@ in {
 			description = "Maximum number of processes for parallel operations";
 		};
 
-		schedule = {
-			full = mkOption {
-				type = types.str;
-				default = "daily";
-				description = "OnCalendar expression for full backups";
-			};
+		schedule = mkOption {
+			type = types.submodule {
+				options = {
+					full = mkOption {
+						type = types.str;
+						default = "daily";
+						description = "OnCalendar expression for full backups";
+					};
 
-			diff = mkOption {
-				type = types.str;
-				default = "hourly";
-				description = "OnCalendar expression for differential backups";
+					diff = mkOption {
+						type = types.str;
+						default = "hourly";
+						description = "OnCalendar expression for differential backups";
+					};
+				};
 			};
+			default = {};
+			description = "Backup schedule configuration";
 		};
 	};
 
