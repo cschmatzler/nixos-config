@@ -5,9 +5,9 @@
 	...
 }:
 with lib; let
-	cfg = config.services.pgbackrest;
+	cfg = config.my.pgbackrest;
 in {
-	options.services.pgbackrest = {
+	options.my.pgbackrest = {
 		enable = mkEnableOption "pgBackRest PostgreSQL backup";
 
 		stanza = mkOption {
