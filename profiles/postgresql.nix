@@ -1,4 +1,8 @@
-{lib, pkgs, ...}: {
+{
+	lib,
+	pkgs,
+	...
+}: {
 	services.postgresql = {
 		enable = true;
 		package = pkgs.postgresql_18;
@@ -6,8 +10,6 @@
 		settings = {
 			listen_addresses = lib.mkForce "*";
 			wal_level = "logical";
-			archive_mode = "on";
-			archive_command = "${pkgs.pgbackrest}/bin/pgbackrest --stanza=main archive-push %p";
 			max_wal_senders = 3;
 			max_connections = 100;
 			shared_buffers = "256MB";
