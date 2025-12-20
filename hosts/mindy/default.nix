@@ -1,5 +1,6 @@
 {
 	config,
+	lib,
 	modulesPath,
 	hostname,
 	inputs,
@@ -25,9 +26,26 @@
 	sops.secrets.mindy-pgbackrest = {
 		sopsFile = ../../secrets/mindy-pgbackrest;
 		format = "binary";
+		owner = "postgres";
+		group = "postgres";
 	};
 
-	environment.systemPackages = [pkgs.pgbackrest];
+	environment.systemPackages = [
+		pkgs.pgbackrest
+		(pkgs.writeShellScriptBin "pgbackrest-archive-push" ''
+			set -a
+			source /run/secrets/mindy-pgbackrest
+			set +a
+			exec ${pkgs.pgbackrest}/bin/pgbackrest --stanza=main archive-push "$1"
+		'')
+	];
+
+	services.postgresql.settings.archive_command = lib.mkForce "${pkgs.writeShellScript "pgbackrest-archive-push" ''
+		set -a
+		source /run/secrets/mindy-pgbackrest
+		set +a
+		exec ${pkgs.pgbackrest}/bin/pgbackrest --stanza=main archive-push %p
+	''}";
 
 	environment.etc."pgbackrest/pgbackrest.conf".text = ''
 		[global]
