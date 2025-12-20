@@ -3,7 +3,6 @@
 	hostname,
 	user,
 	inputs,
-	pkgs,
 	constants,
 	...
 }: {

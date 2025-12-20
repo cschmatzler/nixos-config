@@ -25,6 +25,8 @@
 	};
 
 	sops.age.keyFile = "/Users/${user}/.config/sops/age/keys.txt";
+	sops.age.sshKeyPaths = [];
+	sops.gnupg.sshKeyPaths = [];
 
 	sops.secrets = {
 		jason-syncthing-cert = {
@@ -42,12 +44,6 @@
 	};
 
 	home-manager.users.${user} = {
-		pkgs,
-		lib,
-		constants,
-		...
-	}: {
-		_module.args = {inherit user constants inputs;};
 		imports = [
 			inputs.nixvim.homeModules.nixvim
 			../../profiles/atuin.nix

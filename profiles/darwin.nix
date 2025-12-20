@@ -1,9 +1,12 @@
 {
 	constants,
+	inputs,
 	pkgs,
 	user,
 	...
 }: {
+	home-manager.extraSpecialArgs = {inherit user constants inputs;};
+
 	system = {
 		primaryUser = user;
 		stateVersion = constants.stateVersions.darwin;
