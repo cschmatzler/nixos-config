@@ -3,6 +3,9 @@
 		enable = true;
 		virtualHosts."docs.manticore-hippocampus.ts.net" = {
 			extraConfig = ''
+				tls {
+					get_certificate tailscale
+				}
 				reverse_proxy localhost:${toString config.services.paperless.port}
 			'';
 		};
@@ -30,6 +33,7 @@
 				"desktop.ini"
 			];
 			PAPERLESS_OCR_LANGUAGE = "deu+eng";
+			PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://docs.manticore-hippocampus.ts.net";
 		};
 	};
 }
