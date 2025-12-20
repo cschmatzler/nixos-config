@@ -11,6 +11,7 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
+		../../modules/pgbackrest.nix
 		../../profiles/core.nix
 		../../profiles/fail2ban.nix
 		../../profiles/nixos.nix
