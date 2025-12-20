@@ -1,4 +1,13 @@
 {config, ...}: {
+	services.caddy = {
+		enable = true;
+		virtualHosts."docs.manticore-hippocampus.ts.net" = {
+			extraConfig = ''
+				reverse_proxy localhost:${toString config.services.paperless.port}
+			'';
+		};
+	};
+
 	services.redis.servers.paperless = {
 		enable = true;
 		port = 6379;
