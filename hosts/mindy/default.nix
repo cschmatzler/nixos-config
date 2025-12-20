@@ -44,8 +44,8 @@
 		set -a
 		source /run/secrets/mindy-pgbackrest
 		set +a
-		exec ${pkgs.pgbackrest}/bin/pgbackrest --stanza=main archive-push %p
-	''}";
+		exec ${pkgs.pgbackrest}/bin/pgbackrest --stanza=main archive-push "$1"
+	''} %p";
 
 	environment.etc."pgbackrest/pgbackrest.conf".text = ''
 		[global]
