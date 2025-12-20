@@ -52,10 +52,27 @@
 		pg1-user=postgres
 	'';
 
-	systemd.services.pgbackrest-backup = {
-		description = "pgBackRest Full Backup";
+	systemd.services.pgbackrest-stanza-create = {
+		description = "pgBackRest Stanza Create";
 		after = ["postgresql.service"];
 		requires = ["postgresql.service"];
+		path = [pkgs.pgbackrest];
+		serviceConfig = {
+			Type = "oneshot";
+			User = "postgres";
+			EnvironmentFile = "/run/secrets/mindy-pgbackrest";
+			RemainAfterExit = true;
+		};
+		script = ''
+			pgbackrest --stanza=main stanza-create || true
+		'';
+	};
+
+	systemd.services.pgbackrest-backup = {
+		description = "pgBackRest Full Backup";
+		after = ["postgresql.service" "pgbackrest-stanza-create.service"];
+		requires = ["postgresql.service"];
+		wants = ["pgbackrest-stanza-create.service"];
 		path = [pkgs.pgbackrest];
 		serviceConfig = {
 			Type = "oneshot";
@@ -78,8 +95,9 @@
 
 	systemd.services.pgbackrest-backup-diff = {
 		description = "pgBackRest Differential Backup";
-		after = ["postgresql.service"];
+		after = ["postgresql.service" "pgbackrest-stanza-create.service"];
 		requires = ["postgresql.service"];
+		wants = ["pgbackrest-stanza-create.service"];
 		path = [pkgs.pgbackrest];
 		serviceConfig = {
 			Type = "oneshot";
