@@ -141,5 +141,7 @@
 		};
 	};
 
+	virtualisation.docker.enable = true;
+
 	networking.hostName = hostname;
 }
