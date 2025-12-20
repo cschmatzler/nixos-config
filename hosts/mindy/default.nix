@@ -11,6 +11,9 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
+		./openssh.nix
+		./pgbackrest.nix
+		./secrets.nix
 		../../modules/pgbackrest.nix
 		../../profiles/core.nix
 		../../profiles/fail2ban.nix
@@ -20,19 +23,6 @@
 		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
 	];
-
-	sops.secrets.mindy-pgbackrest = {
-		sopsFile = ../../secrets/mindy-pgbackrest;
-		format = "binary";
-		owner = "postgres";
-		group = "postgres";
-	};
-
-	my.pgbackrest = {
-		enable = true;
-		secretFile = "/run/secrets/mindy-pgbackrest";
-		s3.bucket = "mindy-pgbackrest";
-	};
 
 	home-manager.users.${user} = {
 		pkgs,
@@ -59,14 +49,6 @@
 			../../profiles/starship.nix
 			../../profiles/zoxide.nix
 		];
-	};
-
-	services.openssh = {
-		enable = true;
-		settings = {
-			PermitRootLogin = "yes";
-			PasswordAuthentication = false;
-		};
 	};
 
 	virtualisation.docker.enable = true;

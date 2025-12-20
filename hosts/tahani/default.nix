@@ -1,12 +1,17 @@
 {
-	config,
-	hostname,
-	user,
 	inputs,
+	pkgs,
+	user,
 	constants,
 	...
 }: {
 	imports = [
+		./adguardhome.nix
+		./networking.nix
+		./openssh.nix
+		./paperless.nix
+		./secrets.nix
+		./syncthing.nix
 		../../profiles/core.nix
 		../../profiles/nixos.nix
 		../../profiles/syncthing.nix
@@ -54,120 +59,5 @@
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 	};
 
-	services.adguardhome = {
-		enable = true;
-		port = 10000;
-		settings = {
-			dns = {
-				upstream_dns = [
-					"1.1.1.1"
-					"1.0.0.1"
-				];
-			};
-			filtering = {
-				protection_enabled = true;
-				filtering_enabled = true;
-				safe_search = {
-					enabled = false;
-				};
-			};
-		};
-	};
-
-	virtualisation.docker = {
-		enable = true;
-	};
-
-	services.openssh = {
-		enable = true;
-		settings = {
-			PermitRootLogin = "prohibit-password";
-			PasswordAuthentication = false;
-		};
-	};
-
-	fileSystems."/" = {
-		device = "/dev/disk/by-label/NIXROOT";
-		fsType = "ext4";
-	};
-
-	fileSystems."/boot" = {
-		device = "/dev/disk/by-label/NIXBOOT";
-		fsType = "vfat";
-	};
-
-	networking = {
-		hostName = hostname;
-		useDHCP = false;
-		interfaces.eno1.ipv4.addresses = [
-			{
-				address = "192.168.1.10";
-				prefixLength = 24;
-			}
-		];
-		defaultGateway = "192.168.1.1";
-		nameservers = ["1.1.1.1"];
-		firewall = {
-			enable = true;
-			trustedInterfaces = ["eno1" "tailscale0"];
-			allowedUDPPorts = [config.services.tailscale.port];
-			allowedTCPPorts = [22 5555];
-			checkReversePath = "loose";
-		};
-	};
-
-	sops.secrets = {
-		tahani-syncthing-cert = {
-			sopsFile = ../../secrets/tahani-syncthing-cert;
-			format = "binary";
-			owner = user;
-			path = "/home/${user}/.config/syncthing/cert.pem";
-		};
-		tahani-syncthing-key = {
-			sopsFile = ../../secrets/tahani-syncthing-key;
-			format = "binary";
-			owner = user;
-			path = "/home/${user}/.config/syncthing/key.pem";
-		};
-		tahani-paperless-password = {
-			sopsFile = ../../secrets/tahani-paperless-password;
-			format = "binary";
-		};
-	};
-
-	services.syncthing.settings.folders = {
-		"Projects/Personal" = {
-			path = "/home/${user}/Projects/Personal";
-			devices = ["tahani" "jason"];
-		};
-		"Projects/Work" = {
-			path = "/home/${user}/Projects/Work";
-			devices = ["tahani" "chidi"];
-		};
-	};
-
-	services.redis.servers.paperless = {
-		enable = true;
-		port = 6379;
-		bind = "127.0.0.1";
-		settings = {
-			maxmemory = "256mb";
-			maxmemory-policy = "allkeys-lru";
-		};
-	};
-
-	services.paperless = {
-		enable = true;
-		address = "0.0.0.0";
-		passwordFile = config.sops.secrets.tahani-paperless-password.path;
-		settings = {
-			PAPERLESS_DBENGINE = "sqlite";
-			PAPERLESS_REDIS = "redis://127.0.0.1:6379";
-			PAPERLESS_CONSUMER_IGNORE_PATTERN = [
-				".DS_STORE/*"
-				"desktop.ini"
-			];
-			PAPERLESS_OCR_LANGUAGE = "deu+eng";
-		};
-	};
+	virtualisation.docker.enable = true;
 }

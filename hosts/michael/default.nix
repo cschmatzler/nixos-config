@@ -11,6 +11,8 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
+		./openssh.nix
+		./secrets.nix
 		../../profiles/core.nix
 		../../profiles/fail2ban.nix
 		../../profiles/gitea.nix
@@ -19,11 +21,6 @@
 		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
 	];
-
-	sops.secrets.litestream = {
-		sopsFile = ../../secrets/michael-litestream;
-		format = "binary";
-	};
 
 	home-manager.users.${user} = {
 		pkgs,
@@ -50,14 +47,6 @@
 			../../profiles/starship.nix
 			../../profiles/zoxide.nix
 		];
-	};
-
-	services.openssh = {
-		enable = true;
-		settings = {
-			PermitRootLogin = "yes";
-			PasswordAuthentication = false;
-		};
 	};
 
 	networking.hostName = hostname;
