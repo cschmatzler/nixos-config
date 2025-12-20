@@ -28,10 +28,6 @@
 		nixvim.url = "github:nix-community/nixvim";
 		zjstatus.url = "github:dj95/zjstatus";
 		llm-agents.url = "github:numtide/llm-agents.nix";
-		tangled = {
-			url = "git+https://tangled.org/tangled.org/core";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
 		disko = {
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";
