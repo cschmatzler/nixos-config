@@ -11,11 +11,11 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
-		./openssh.nix
 		./pgbackrest.nix
 		./secrets.nix
 		../../modules/pgbackrest.nix
 		../../profiles/core.nix
+		../../profiles/openssh.nix
 		../../profiles/fail2ban.nix
 		../../profiles/nixos.nix
 		../../profiles/postgresql.nix

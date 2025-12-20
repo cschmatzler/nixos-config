@@ -8,11 +8,11 @@
 	imports = [
 		./adguardhome.nix
 		./networking.nix
-		./openssh.nix
 		./paperless.nix
 		./secrets.nix
 		./syncthing.nix
 		../../profiles/core.nix
+		../../profiles/openssh.nix
 		../../profiles/nixos.nix
 		../../profiles/syncthing.nix
 		../../profiles/tailscale.nix

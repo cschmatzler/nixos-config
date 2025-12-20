@@ -11,9 +11,9 @@
 		(modulesPath + "/profiles/qemu-guest.nix")
 		./disk-config.nix
 		./hardware-configuration.nix
-		./openssh.nix
 		./secrets.nix
 		../../profiles/core.nix
+		../../profiles/openssh.nix
 		../../profiles/fail2ban.nix
 		../../profiles/gitea.nix
 		../../profiles/nixos.nix
