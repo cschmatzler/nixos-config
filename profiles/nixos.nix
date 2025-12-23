@@ -6,6 +6,21 @@
 	...
 }: {
 	security.sudo.enable = true;
+	security.sudo.extraRules = [
+		{
+			users = [user];
+			commands = [
+				{
+					command = "/run/current-system/sw/bin/nix-env";
+					options = ["NOPASSWD"];
+				}
+				{
+					command = "/nix/store/*/bin/switch-to-configuration";
+					options = ["NOPASSWD"];
+				}
+			];
+		}
+	];
 
 	system.stateVersion = constants.stateVersions.nixos;
 	time.timeZone = "UTC";
