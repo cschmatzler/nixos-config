@@ -53,7 +53,7 @@
 	};
 
 	users.users.${user} = {
-		name = "${user}";
+		name = user;
 		home = "/Users/${user}";
 		isHidden = false;
 		shell = pkgs.fish;

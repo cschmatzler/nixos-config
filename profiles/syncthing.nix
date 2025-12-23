@@ -1,6 +1,7 @@
 {
 	user,
 	pkgs,
+	constants,
 	...
 }: let
 	isDarwin = pkgs.stdenv.isDarwin;
@@ -12,36 +13,37 @@
 		if isDarwin
 		then "staff"
 		else "users";
+	deviceIds = constants.syncthingDeviceIds;
 in {
 	services.syncthing = {
 		enable = true;
 		openDefaultPorts = !isDarwin;
 		dataDir = "${homeDir}/.local/share/syncthing";
 		configDir = "${homeDir}/.config/syncthing";
-		user = "${user}";
-		group = group;
+		user = user;
+		inherit group;
 		guiAddress = "0.0.0.0:8384";
 		overrideFolders = true;
 		overrideDevices = true;
 
 		settings = {
 			devices = {
-				"tahani" = {
-					id = "6B7OZZF-TEAMUGO-FBOELXP-Z4OY7EU-5ZHLB5T-V6Z3UDB-Q2DYR43-QBYW6QM";
+				tahani = {
+					id = deviceIds.tahani;
 					addresses = ["tcp://tahani:22000"];
 				};
-				"jason" = {
-					id = "42II2VO-QYPJG26-ZS3MB2I-AOPVZ67-JJNSE76-U54CO5Y-634A5OG-ECU4YQA";
+				jason = {
+					id = deviceIds.jason;
 					addresses = ["tcp://jason:22000"];
 				};
-				"chidi" = {
-					id = "N7W6SUT-QO6J4BE-T3Y65SM-OFGYGNV-TGYBJPX-JVN4Z72-AENZ247-KWXOQA6";
+				chidi = {
+					id = deviceIds.chidi;
 					addresses = ["tcp://chidi:22000"];
 				};
 			};
 
 			folders = {
-				"nixos-config" = {
+				nixos-config = {
 					path = "${homeDir}/nixos-config";
 					devices = ["tahani" "jason" "chidi"];
 				};

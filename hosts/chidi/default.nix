@@ -2,7 +2,7 @@
 	inputs,
 	pkgs,
 	user,
-	constants,
+	hostname,
 	...
 }: {
 	imports = [
@@ -18,8 +18,8 @@
 		inputs.sops-nix.darwinModules.sops
 	];
 
-	networking.hostName = "chidi";
-	networking.computerName = "Chidi";
+	networking.hostName = hostname;
+	networking.computerName = hostname;
 
 	home-manager.users.${user} = {
 		imports = [

@@ -3,7 +3,6 @@
 	hostname,
 	inputs,
 	user,
-	constants,
 	...
 }: {
 	imports = [
@@ -25,11 +24,6 @@
 	];
 
 	home-manager.users.${user} = {
-		pkgs,
-		lib,
-		...
-	}: {
-		_module.args = {inherit user constants inputs;};
 		imports = [
 			inputs.nixvim.homeModules.nixvim
 			../../profiles/bash.nix

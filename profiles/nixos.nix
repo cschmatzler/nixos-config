@@ -2,6 +2,7 @@
 	pkgs,
 	user,
 	constants,
+	inputs,
 	...
 }: {
 	security.sudo.enable = true;
@@ -9,8 +10,12 @@
 	system.stateVersion = constants.stateVersions.nixos;
 	time.timeZone = "UTC";
 
+	home-manager.sharedModules = [
+		{_module.args = {inherit user constants inputs;};}
+	];
+
 	nix = {
-		settings.trusted-users = ["${user}"];
+		settings.trusted-users = [user];
 		gc.dates = "weekly";
 		nixPath = ["nixos-config=/home/${user}/.local/share/src/nixos-config:/etc/nixos"];
 	};

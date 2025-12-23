@@ -41,7 +41,6 @@
 					'';
 				};
 			};
-			# Antigravity Google models (for opencode-antigravity-auth plugin)
 			provider = {
 				google = {
 					models = {
@@ -128,10 +127,6 @@
 		};
 	};
 
-	# oh-my-opencode configuration
-	# - Disables built-in google_auth (using antigravity plugin instead)
-	# - Oracle uses Zen API (opencode/gpt-5.2) instead of ChatGPT subscription
-	# - Frontend/document/multimodal agents use Antigravity Gemini models
 	home.file.".config/opencode/oh-my-opencode.json".text = builtins.toJSON {
 		"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
 		google_auth = false;

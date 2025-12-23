@@ -1,20 +1,19 @@
-{user, ...}: {
-	sops.secrets = {
-		tahani-syncthing-cert = {
-			sopsFile = ../../secrets/tahani-syncthing-cert;
-			format = "binary";
-			owner = user;
-			path = "/home/${user}/.config/syncthing/cert.pem";
+{
+	user,
+	hostname,
+	...
+}: let
+	secrets = import ../../lib/secrets.nix;
+in {
+	sops.secrets =
+		secrets.mkSyncthingSecrets {
+			inherit hostname user;
+			isDarwin = false;
+		}
+		// {
+			tahani-paperless-password = {
+				sopsFile = ../../secrets/tahani-paperless-password;
+				format = "binary";
+			};
 		};
-		tahani-syncthing-key = {
-			sopsFile = ../../secrets/tahani-syncthing-key;
-			format = "binary";
-			owner = user;
-			path = "/home/${user}/.config/syncthing/key.pem";
-		};
-		tahani-paperless-password = {
-			sopsFile = ../../secrets/tahani-paperless-password;
-			format = "binary";
-		};
-	};
 }

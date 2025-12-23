@@ -1,6 +1,7 @@
 {
 	inputs,
 	user,
+	hostname,
 	...
 }: {
 	imports = [
@@ -16,8 +17,8 @@
 		inputs.sops-nix.darwinModules.sops
 	];
 
-	networking.hostName = "jason";
-	networking.computerName = "Jason";
+	networking.hostName = hostname;
+	networking.computerName = hostname;
 
 	home-manager.users.${user} = {
 		imports = [

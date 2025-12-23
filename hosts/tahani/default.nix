@@ -2,7 +2,7 @@
 	inputs,
 	pkgs,
 	user,
-	constants,
+	hostname,
 	...
 }: {
 	imports = [
@@ -20,11 +20,6 @@
 	];
 
 	home-manager.users.${user} = {
-		pkgs,
-		lib,
-		...
-	}: {
-		_module.args = {inherit user constants inputs;};
 		imports = [
 			inputs.nixvim.homeModules.nixvim
 			../../profiles/atuin.nix
@@ -60,4 +55,6 @@
 	};
 
 	virtualisation.docker.enable = true;
+
+	networking.hostName = hostname;
 }
