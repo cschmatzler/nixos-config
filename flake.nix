@@ -56,7 +56,6 @@
 					inputs.nixpkgs.lib.genAttrs darwinHosts (
 						hostname:
 							inputs.darwin.lib.darwinSystem {
-								system = "aarch64-darwin";
 								specialArgs = {
 									inherit inputs user hostname constants;
 								};
@@ -64,6 +63,7 @@
 									inputs.home-manager.darwinModules.home-manager
 									inputs.nix-homebrew.darwinModules.nix-homebrew
 									{
+										nixpkgs.hostPlatform = "aarch64-darwin";
 										nixpkgs.overlays = overlays;
 
 										nix-homebrew = {
@@ -85,13 +85,13 @@
 					inputs.nixpkgs.lib.genAttrs nixosHosts (
 						hostname:
 							inputs.nixpkgs.lib.nixosSystem {
-								system = "x86_64-linux";
 								specialArgs = {
 									inherit inputs user hostname constants;
 								};
 								modules = [
 									inputs.home-manager.nixosModules.home-manager
 									{
+										nixpkgs.hostPlatform = "x86_64-linux";
 										nixpkgs.overlays = overlays;
 									}
 									./hosts/${hostname}
