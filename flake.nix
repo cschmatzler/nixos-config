@@ -102,7 +102,7 @@
 				flake.colmena =
 					{
 						meta = {
-							nixpkgs = import inputs.nixpkgs {system = "x86_64-linux";};
+							nixpkgs = import inputs.nixpkgs {localSystem = "x86_64-linux";};
 							specialArgs = {inherit inputs user constants;};
 						};
 					}
@@ -115,6 +115,7 @@
 							imports = [
 								inputs.home-manager.nixosModules.home-manager
 								{
+									nixpkgs.hostPlatform = "x86_64-linux";
 									nixpkgs.overlays = overlays;
 									_module.args.hostname = hostname;
 								}
