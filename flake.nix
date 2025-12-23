@@ -32,6 +32,10 @@
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		colmena = {
+			url = "github:zhaofengli/colmena";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
@@ -95,10 +99,33 @@
 							}
 					);
 
+				flake.colmena =
+					{
+						meta = {
+							nixpkgs = import inputs.nixpkgs {system = "x86_64-linux";};
+							specialArgs = {inherit inputs user constants;};
+						};
+					}
+					// inputs.nixpkgs.lib.genAttrs nixosHosts (
+						hostname: {
+							deployment = {
+								targetHost = hostname;
+								targetUser = user;
+							};
+							imports = [
+								inputs.home-manager.nixosModules.home-manager
+								{
+									nixpkgs.overlays = overlays;
+									_module.args.hostname = hostname;
+								}
+								./hosts/${hostname}
+							];
+						}
+					);
+
 				perSystem = {
 					pkgs,
 					system,
-					inputs',
 					...
 				}: let
 					mkApp = name: {
@@ -117,17 +144,6 @@
 						"rollback"
 					];
 				in {
-					devShells.default =
-						pkgs.mkShell {
-							nativeBuildInputs = with pkgs; [
-								bashInteractive
-								git
-								age
-								age-plugin-yubikey
-							];
-							shellHook = ''export EDITOR=nvim'';
-						};
-
 					apps =
 						builtins.listToAttrs (
 							map (n: {
@@ -137,7 +153,6 @@
 							appNames
 						);
 				};
-				flake.overlays = overlays;
 			}
 		);
 }

@@ -10,6 +10,7 @@ with pkgs;
 		alejandra
 		ast-grep
 		bun
+		colmena
 		delta
 		devenv
 		dig
