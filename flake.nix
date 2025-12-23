@@ -102,7 +102,7 @@
 				flake.colmena =
 					{
 						meta = {
-							nixpkgs = import inputs.nixpkgs {localSystem = "x86_64-linux";};
+							nixpkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 							specialArgs = {inherit inputs user constants;};
 						};
 					}
