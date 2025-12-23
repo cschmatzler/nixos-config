@@ -9,8 +9,9 @@ in {
 	sops.age.sshKeyPaths = [];
 	sops.gnupg.sshKeyPaths = [];
 
-	sops.secrets = secrets.mkSyncthingSecrets {
-		inherit hostname user;
-		isDarwin = true;
-	};
+	sops.secrets =
+		secrets.mkSyncthingSecrets {
+			inherit hostname user;
+			isDarwin = true;
+		};
 }

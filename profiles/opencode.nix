@@ -127,24 +127,25 @@
 		};
 	};
 
-	home.file.".config/opencode/oh-my-opencode.json".text = builtins.toJSON {
-		"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
-		google_auth = false;
-		agents = {
-			oracle = {
-				model = "opencode/gpt-5.2";
-			};
-			frontend-ui-ux-engineer = {
-				model = "google/gemini-3-pro-high";
-			};
-			document-writer = {
-				model = "google/gemini-3-flash";
-			};
-			multimodal-looker = {
-				model = "google/gemini-3-flash";
+	home.file.".config/opencode/oh-my-opencode.json".text =
+		builtins.toJSON {
+			"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
+			google_auth = false;
+			agents = {
+				oracle = {
+					model = "opencode/gpt-5.2";
+				};
+				frontend-ui-ux-engineer = {
+					model = "google/gemini-3-pro-high";
+				};
+				document-writer = {
+					model = "google/gemini-3-flash";
+				};
+				multimodal-looker = {
+					model = "google/gemini-3-flash";
+				};
 			};
 		};
-	};
 
 	home.sessionVariables = {
 		OPENCODE_EXPERIMENTAL_EXA = "true";

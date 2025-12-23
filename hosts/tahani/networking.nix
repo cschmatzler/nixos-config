@@ -1,4 +1,8 @@
-{config, hostname, ...}: {
+{
+	config,
+	hostname,
+	...
+}: {
 	networking = {
 		hostName = hostname;
 		useDHCP = false;
