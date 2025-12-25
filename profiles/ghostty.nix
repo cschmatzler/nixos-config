@@ -1,7 +1,7 @@
 {pkgs, ...}: {
 	programs.ghostty = {
 		enable = true;
-		package = pkgs.ghostty-bin;
+		package = pkgs.emptyDirectory;
 		settings = {
 			command = "${pkgs.fish}/bin/fish";
 			theme = "Catppuccin Latte";
