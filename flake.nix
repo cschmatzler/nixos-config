@@ -124,6 +124,14 @@
 						}
 					);
 
+				flake.nixosModules = {
+					pgbackrest = ./modules/pgbackrest.nix;
+				};
+
+				flake.lib = {
+					constants = import ./lib/constants.nix;
+				};
+
 				perSystem = {
 					pkgs,
 					system,
@@ -144,14 +152,7 @@
 						"build-switch"
 						"rollback"
 					];
-			in {
-				flake.nixosModules = {
-					pgbackrest = ./modules/pgbackrest.nix;
-				};
-
-				flake.lib = {
-					constants = import ./lib/constants.nix;
-				};
+				in {
 					apps =
 						builtins.listToAttrs (
 							map (n: {
