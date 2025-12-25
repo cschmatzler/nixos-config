@@ -60,6 +60,7 @@
 			{
 				name = "shnosh";
 				ensureDBOwnership = true;
+				ensureClauses.superuser = true;
 			}
 		];
 	};
