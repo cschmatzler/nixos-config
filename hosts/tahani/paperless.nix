@@ -1,6 +1,9 @@
 {config, ...}: {
 	services.caddy = {
 		enable = true;
+		globalConfig = ''
+			admin off
+		'';
 		virtualHosts."docs.manticore-hippocampus.ts.net" = {
 			extraConfig = ''
 				tls {
