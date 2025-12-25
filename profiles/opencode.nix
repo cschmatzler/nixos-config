@@ -9,7 +9,7 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode"
+				"oh-my-opencode@2.5.3"
 				"opencode-antigravity-auth@1.2.2"
 			];
 			instructions = [
@@ -145,9 +145,6 @@
 					model = "google/gemini-3-flash";
 				};
 			};
+			disabled_hooks = [ "startup-toast" "background-notification" "session-notification" ];
 		};
-
-	home.sessionVariables = {
-		OPENCODE_EXPERIMENTAL_EXA = "true";
-	};
 }
