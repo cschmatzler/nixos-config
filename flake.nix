@@ -44,7 +44,7 @@
 				constants = import ./lib/constants.nix;
 				user = constants.user;
 				darwinHosts = ["chidi" "jason"];
-				nixosHosts = ["michael" "mindy" "tahani"];
+				nixosHosts = ["michael" "tahani"];
 				overlays = import ./overlays {inherit inputs;};
 			in {
 				systems = [
@@ -144,7 +144,14 @@
 						"build-switch"
 						"rollback"
 					];
-				in {
+			in {
+				flake.nixosModules = {
+					pgbackrest = ./modules/pgbackrest.nix;
+				};
+
+				flake.lib = {
+					constants = import ./lib/constants.nix;
+				};
 					apps =
 						builtins.listToAttrs (
 							map (n: {
