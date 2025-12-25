@@ -53,4 +53,14 @@
 	};
 
 	networking.hostName = hostname;
+
+	services.postgresql = {
+		ensureDatabases = ["shnosh"];
+		ensureUsers = [
+			{
+				name = "shnosh";
+				ensureDBOwnership = true;
+			}
+		];
+	};
 }
