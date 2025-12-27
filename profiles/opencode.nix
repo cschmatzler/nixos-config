@@ -9,7 +9,7 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode@2.5.4"
+				"oh-my-opencode@2.7.2"
 				"opencode-antigravity-auth@1.2.2"
 			];
 			instructions = [
@@ -131,6 +131,9 @@
 		builtins.toJSON {
 			"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
 			google_auth = false;
+			experimental = {
+				dcp_for_compaction = true;
+			};
 			agents = {
 				oracle = {
 					model = "opencode/gpt-5.2";

@@ -39,7 +39,7 @@ in {
 							});
 					default = [
 						{path = "/Applications/Helium.app/";}
-						{path = "${config.users.users.${user}.home}/Applications/Home Manager Apps/Ghostty.app/";}
+						{path = "/Applications/Ghostty.app/";}
 						{path = "/System/Applications/Calendar.app/";}
 						{path = "/System/Applications/Mail.app/";}
 						{path = "/System/Applications/Notes.app/";}
