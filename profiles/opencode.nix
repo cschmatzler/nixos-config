@@ -9,7 +9,7 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode@2.5.3"
+				"oh-my-opencode@2.5.4"
 				"opencode-antigravity-auth@1.2.2"
 			];
 			instructions = [
