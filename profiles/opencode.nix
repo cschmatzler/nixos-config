@@ -135,6 +135,9 @@
 				dcp_for_compaction = true;
 			};
 			agents = {
+				explore = {
+					model = "opencode/minimax-free";
+				};
 				oracle = {
 					model = "opencode/gpt-5.2";
 				};
