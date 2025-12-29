@@ -3,18 +3,17 @@
 	pkgs,
 	...
 }: {
-	programs.zellij =
-		{
-			enable = true;
-			settings = {
-				theme = "catppuccin-latte";
-				default_layout = "default";
-				default_shell = "${pkgs.fish}/bin/fish";
-				pane_frames = false;
-				show_startup_tips = false;
-				show_release_notes = false;
-			};
+	programs.zellij = {
+		enable = true;
+		settings = {
+			theme = "catppuccin-latte";
+			default_layout = "default";
+			default_shell = "${pkgs.fish}/bin/fish";
+			pane_frames = false;
+			show_startup_tips = false;
+			show_release_notes = false;
 		};
+	};
 
 	xdg.configFile."zellij/layouts/default.kdl".text = ''
 		layout {
