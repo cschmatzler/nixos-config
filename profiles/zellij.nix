@@ -14,9 +14,6 @@
 				show_startup_tips = false;
 				show_release_notes = false;
 			};
-		}
-		// lib.optionalAttrs pkgs.stdenv.isLinux {
-			enableFishIntegration = true;
 		};
 
 	xdg.configFile."zellij/layouts/default.kdl".text = ''
