@@ -29,5 +29,5 @@
 
 	networking.firewall.interfaces."docker0".allowedTCPPorts = [5432];
 	networking.firewall.interfaces."tailscale0".allowedTCPPorts = [5432];
-  networking.firewall.interfaces."br-+".allowedTCPPorts = [5432];
+	networking.firewall.interfaces."br-+".allowedTCPPorts = [5432];
 }

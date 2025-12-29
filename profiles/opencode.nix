@@ -148,6 +148,6 @@
 					model = "google/gemini-3-flash";
 				};
 			};
-			disabled_hooks = [ "startup-toast" "background-notification" "session-notification" ];
+			disabled_hooks = ["startup-toast" "background-notification" "session-notification"];
 		};
 }
