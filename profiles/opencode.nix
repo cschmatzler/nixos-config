@@ -117,7 +117,7 @@
 			};
 			agents = {
 				explore = {
-					model = "opencode/minimax-free";
+					model = "opencode/minimax-m2.1-free";
 				};
 				oracle = {
 					model = "opencode/gpt-5.2";
