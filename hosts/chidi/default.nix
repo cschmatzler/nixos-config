@@ -7,13 +7,10 @@
 }: {
 	imports = [
 		./secrets.nix
-		./syncthing.nix
-		../../modules/syncthing.nix
 		../../profiles/core.nix
 		../../profiles/darwin.nix
 		../../profiles/dock.nix
 		../../profiles/homebrew.nix
-		../../profiles/syncthing.nix
 		../../profiles/tailscale.nix
 		inputs.sops-nix.darwinModules.sops
 	];
