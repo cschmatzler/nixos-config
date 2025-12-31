@@ -27,7 +27,6 @@
 		containers.paperless-ai = {
 			image = "clusterzx/paperless-ai:latest";
 			autoStart = true;
-			ports = ["3000:3000"];
 			volumes = [
 				"paperless-ai-data:/app/data"
 			];
@@ -37,11 +36,11 @@
 				PAPERLESS_AI_PORT = "3000";
 				# Initial setup wizard will configure the rest
 				PAPERLESS_AI_INITIAL_SETUP = "yes";
-				# Paperless-ngx API URL accessible from container
-				PAPERLESS_API_URL = "http://host.docker.internal:${toString config.services.paperless.port}/api";
+				# Paperless-ngx API URL accessible from container (using host network)
+				PAPERLESS_API_URL = "http://127.0.0.1:${toString config.services.paperless.port}/api";
 			};
 			extraOptions = [
-				"--add-host=host.docker.internal:host-gateway"
+				"--network=host"
 			];
 		};
 	};
