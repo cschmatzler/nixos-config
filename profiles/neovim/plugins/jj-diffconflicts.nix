@@ -7,7 +7,7 @@
 						owner = "rafikdraoui";
 						repo = "jj-diffconflicts";
 						rev = "main";
-						hash = "sha256-FXsLSYy+eli8VArUL8ZOiPtyOk4Q8TUYwobEefZPRII=";
+						hash = "sha256-tyRTw3ENV7zlZF3Dp9zO4Huu02K5uyXb3brAJCW4w2M=";
 					};
 			})
 	];
