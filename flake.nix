@@ -41,11 +41,17 @@
 	outputs = inputs @ {flake-parts, ...}:
 		flake-parts.lib.mkFlake {inherit inputs;} (
 			let
+				inherit (inputs.nixpkgs) lib;
 				constants = import ./lib/constants.nix;
-				user = constants.user;
+				inherit (constants) user;
+
 				darwinHosts = ["chidi" "jason"];
 				nixosHosts = ["michael" "tahani"];
+
 				overlays = import ./overlays {inherit inputs;};
+				nixpkgsConfig = hostPlatform: {
+					nixpkgs = {inherit hostPlatform overlays;};
+				};
 			in {
 				systems = [
 					"x86_64-linux"
@@ -53,27 +59,23 @@
 				];
 
 				flake.darwinConfigurations =
-					inputs.nixpkgs.lib.genAttrs darwinHosts (
+					lib.genAttrs darwinHosts (
 						hostname:
 							inputs.darwin.lib.darwinSystem {
-								specialArgs = {
-									inherit inputs user hostname constants;
-								};
+								specialArgs = {inherit inputs user hostname constants;};
 								modules = [
 									inputs.home-manager.darwinModules.home-manager
 									inputs.nix-homebrew.darwinModules.nix-homebrew
+									(nixpkgsConfig "aarch64-darwin")
 									{
-										nixpkgs.hostPlatform = "aarch64-darwin";
-										nixpkgs.overlays = overlays;
-
 										nix-homebrew = {
 											inherit user;
 											enable = true;
+											mutableTaps = true;
 											taps = {
 												"homebrew/homebrew-core" = inputs.homebrew-core;
 												"homebrew/homebrew-cask" = inputs.homebrew-cask;
 											};
-											mutableTaps = true;
 										};
 									}
 									./hosts/${hostname}
@@ -82,18 +84,13 @@
 					);
 
 				flake.nixosConfigurations =
-					inputs.nixpkgs.lib.genAttrs nixosHosts (
+					lib.genAttrs nixosHosts (
 						hostname:
-							inputs.nixpkgs.lib.nixosSystem {
-								specialArgs = {
-									inherit inputs user hostname constants;
-								};
+							lib.nixosSystem {
+								specialArgs = {inherit inputs user hostname constants;};
 								modules = [
 									inputs.home-manager.nixosModules.home-manager
-									{
-										nixpkgs.hostPlatform = "x86_64-linux";
-										nixpkgs.overlays = overlays;
-									}
+									(nixpkgsConfig "x86_64-linux")
 									./hosts/${hostname}
 								];
 							}
@@ -106,7 +103,7 @@
 							specialArgs = {inherit inputs user constants;};
 						};
 					}
-					// inputs.nixpkgs.lib.genAttrs nixosHosts (
+					// lib.genAttrs nixosHosts (
 						hostname: {
 							deployment = {
 								targetHost = hostname;
@@ -114,11 +111,8 @@
 							};
 							imports = [
 								inputs.home-manager.nixosModules.home-manager
-								{
-									nixpkgs.hostPlatform = "x86_64-linux";
-									nixpkgs.overlays = overlays;
-									_module.args.hostname = hostname;
-								}
+								(nixpkgsConfig "x86_64-linux")
+								{_module.args.hostname = hostname;}
 								./hosts/${hostname}
 							];
 						}
@@ -128,9 +122,7 @@
 					pgbackrest = ./modules/pgbackrest.nix;
 				};
 
-				flake.lib = {
-					constants = import ./lib/constants.nix;
-				};
+				flake.lib = {inherit constants;};
 
 				perSystem = {
 					pkgs,
@@ -153,14 +145,7 @@
 						"rollback"
 					];
 				in {
-					apps =
-						builtins.listToAttrs (
-							map (n: {
-									name = n;
-									value = mkApp n;
-								})
-							appNames
-						);
+					apps = pkgs.lib.genAttrs appNames mkApp;
 				};
 			}
 		);
