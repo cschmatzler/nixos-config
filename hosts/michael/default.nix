@@ -2,6 +2,7 @@
 	modulesPath,
 	hostname,
 	inputs,
+	config,
 	user,
 	...
 }: {
@@ -11,15 +12,28 @@
 		./disk-config.nix
 		./hardware-configuration.nix
 		./secrets.nix
+		../../modules/gitea.nix
 		../../profiles/core.nix
 		../../profiles/openssh.nix
 		../../profiles/fail2ban.nix
-		../../profiles/gitea.nix
 		../../profiles/nixos.nix
 		../../profiles/tailscale.nix
 		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
 	];
+
+	my.gitea = {
+		enable = true;
+		litestream = {
+			bucket = "michael-gitea-litestream";
+			secretFile = config.sops.secrets.michael-gitea-litestream.path;
+		};
+		restic = {
+			bucket = "michael-gitea-repositories";
+			passwordFile = config.sops.secrets.michael-gitea-restic-password.path;
+			environmentFile = config.sops.secrets.michael-gitea-restic-env.path;
+		};
+	};
 
 	home-manager.users.${user} = {
 		imports = [

@@ -1,18 +1,20 @@
 {...}: {
-	sops.secrets.gitea-litestream = {
+	sops.secrets.michael-gitea-litestream = {
 		sopsFile = ../../secrets/michael-gitea-litestream;
-		format = "binary";
-	};
-
-	sops.secrets.restic-gitea-password = {
-		sopsFile = ../../secrets/michael-restic-gitea-password;
 		format = "binary";
 		owner = "gitea";
 		group = "gitea";
 	};
 
-	sops.secrets.restic-gitea-env = {
-		sopsFile = ../../secrets/michael-restic-gitea-env;
+	sops.secrets.michael-gitea-restic-password = {
+		sopsFile = ../../secrets/michael-gitea-restic-password;
+		format = "binary";
+		owner = "gitea";
+		group = "gitea";
+	};
+
+	sops.secrets.michael-gitea-restic-env = {
+		sopsFile = ../../secrets/michael-gitea-restic-env;
 		format = "binary";
 		owner = "gitea";
 		group = "gitea";
