@@ -34,20 +34,17 @@ in {
 									default = "s3.eu-central-003.backblazeb2.com";
 									description = "S3 endpoint URL";
 								};
-
 							bucket =
 								mkOption {
 									type = types.str;
 									description = "S3 bucket name";
 								};
-
 							region =
 								mkOption {
 									type = types.str;
 									default = "eu-central-003";
 									description = "S3 region";
 								};
-
 							path =
 								mkOption {
 									type = types.str;
@@ -71,7 +68,6 @@ in {
 									default = 7;
 									description = "Number of full backups to retain";
 								};
-
 							diff =
 								mkOption {
 									type = types.int;
@@ -95,7 +91,6 @@ in {
 									default = "zst";
 									description = "Compression algorithm (none, gz, lz4, zst)";
 								};
-
 							level =
 								mkOption {
 									type = types.int;
@@ -126,7 +121,6 @@ in {
 									default = "daily";
 									description = "OnCalendar expression for full backups";
 								};
-
 							diff =
 								mkOption {
 									type = types.str;

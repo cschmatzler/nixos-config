@@ -1,10 +1,5 @@
-{
-	config,
-	hostname,
-	...
-}: {
+{config, ...}: {
 	networking = {
-		hostName = hostname;
 		useDHCP = false;
 		interfaces.eno1.ipv4.addresses = [
 			{

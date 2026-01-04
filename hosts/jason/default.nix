@@ -19,7 +19,6 @@
 
 	home-manager.users.${user} = {
 		imports = [
-			inputs.nixvim.homeModules.nixvim
 			../../profiles/atuin.nix
 			../../profiles/bash.nix
 			../../profiles/bat.nix
@@ -43,6 +42,7 @@
 			../../profiles/zk.nix
 			../../profiles/zoxide.nix
 			../../profiles/zsh.nix
+			inputs.nixvim.homeModules.nixvim
 		];
 		fonts.fontconfig.enable = true;
 		programs.git.settings.user.email = "christoph@schmatzler.com";

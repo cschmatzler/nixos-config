@@ -1,8 +1,8 @@
 {
 	pkgs,
+	inputs,
 	user,
 	constants,
-	inputs,
 	...
 }: {
 	security.sudo.enable = true;

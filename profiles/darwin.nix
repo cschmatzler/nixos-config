@@ -1,8 +1,8 @@
 {
-	constants,
-	inputs,
 	pkgs,
+	inputs,
 	user,
+	constants,
 	...
 }: {
 	home-manager.extraSpecialArgs = {inherit user constants inputs;};

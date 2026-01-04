@@ -1,8 +1,8 @@
 {
-	pkgs,
 	lib,
-	constants,
+	pkgs,
 	inputs,
+	constants,
 	...
 }: let
 	setWallpaperScript = import ./wallpaper.nix {inherit pkgs;};

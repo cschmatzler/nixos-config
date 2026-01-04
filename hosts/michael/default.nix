@@ -1,9 +1,9 @@
 {
-	modulesPath,
-	hostname,
-	inputs,
 	config,
+	inputs,
 	user,
+	hostname,
+	modulesPath,
 	...
 }: {
 	imports = [
@@ -14,9 +14,9 @@
 		./secrets.nix
 		../../modules/gitea.nix
 		../../profiles/core.nix
-		../../profiles/openssh.nix
 		../../profiles/fail2ban.nix
 		../../profiles/nixos.nix
+		../../profiles/openssh.nix
 		../../profiles/tailscale.nix
 		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
@@ -35,9 +35,10 @@
 		};
 	};
 
+	networking.hostName = hostname;
+
 	home-manager.users.${user} = {
 		imports = [
-			inputs.nixvim.homeModules.nixvim
 			../../profiles/bash.nix
 			../../profiles/bat.nix
 			../../profiles/direnv.nix
@@ -54,8 +55,7 @@
 			../../profiles/ssh.nix
 			../../profiles/starship.nix
 			../../profiles/zoxide.nix
+			inputs.nixvim.homeModules.nixvim
 		];
 	};
-
-	networking.hostName = hostname;
 }

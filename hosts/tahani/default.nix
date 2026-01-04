@@ -10,15 +10,16 @@
 		./paperless.nix
 		./secrets.nix
 		../../profiles/core.nix
-		../../profiles/openssh.nix
 		../../profiles/nixos.nix
+		../../profiles/openssh.nix
 		../../profiles/tailscale.nix
 		inputs.sops-nix.nixosModules.sops
 	];
 
+	networking.hostName = hostname;
+
 	home-manager.users.${user} = {
 		imports = [
-			inputs.nixvim.homeModules.nixvim
 			../../profiles/atuin.nix
 			../../profiles/bash.nix
 			../../profiles/bat.nix
@@ -41,6 +42,7 @@
 			../../profiles/zk.nix
 			../../profiles/zoxide.nix
 			../../profiles/zsh.nix
+			inputs.nixvim.homeModules.nixvim
 		];
 
 		programs.git.settings.user.email = "christoph@schmatzler.com";
@@ -54,6 +56,4 @@
 			size = 16 * 1024;
 		}
 	];
-
-	networking.hostName = hostname;
 }
