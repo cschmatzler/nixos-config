@@ -1,6 +1,5 @@
 {
 	inputs,
-	pkgs,
 	user,
 	hostname,
 	...
@@ -44,11 +43,6 @@
 			../../profiles/zsh.nix
 		];
 
-		home.packages = [
-			inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp
-			inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.beads
-		];
-
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 	};
 
@@ -57,7 +51,7 @@
 	swapDevices = [
 		{
 			device = "/swapfile";
-			size = 16 * 1024; # 16GB
+			size = 16 * 1024;
 		}
 	];
 
