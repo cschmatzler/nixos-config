@@ -1,6 +1,6 @@
 {...}: {
-	sops.secrets.litestream = {
-		sopsFile = ../../secrets/michael-litestream;
+	sops.secrets.gitea-litestream = {
+		sopsFile = ../../secrets/michael-gitea-litestream;
 		format = "binary";
 	};
 

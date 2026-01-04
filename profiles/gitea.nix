@@ -53,7 +53,7 @@
 
 	services.litestream = {
 		enable = true;
-		environmentFile = "/run/secrets/litestream";
+		environmentFile = "/run/secrets/gitea-litestream";
 		settings = {
 			dbs = [
 				{
@@ -61,7 +61,7 @@
 					replicas = [
 						{
 							type = "s3";
-							bucket = "gitea-litestream";
+							bucket = "michael-gitea-litestream";
 							path = "gitea";
 							endpoint = "s3.eu-central-003.backblazeb2.com";
 						}
@@ -92,15 +92,13 @@
 	};
 
 	services.restic.backups.gitea = {
-		repository = "s3:s3.eu-central-003.backblazeb2.com/gitea-restic";
+		repository = "s3:s3.eu-central-003.backblazeb2.com/michael-gitea-repositories";
 		paths = ["/var/lib/gitea"];
 		exclude = [
-			# Database is backed up via Litestream
+			"/var/lib/gitea/log"
 			"/var/lib/gitea/data/gitea.db"
 			"/var/lib/gitea/data/gitea.db-shm"
 			"/var/lib/gitea/data/gitea.db-wal"
-			# Logs aren't needed in backups
-			"/var/lib/gitea/log"
 		];
 		passwordFile = "/run/secrets/restic-gitea-password";
 		environmentFile = "/run/secrets/restic-gitea-env";
