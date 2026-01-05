@@ -6,6 +6,7 @@
 }: {
 	imports = [
 		./adguardhome.nix
+		./cache.nix
 		./networking.nix
 		./paperless.nix
 		./secrets.nix
