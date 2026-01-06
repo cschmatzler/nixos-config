@@ -1,8 +1,10 @@
 {pkgs}:
 pkgs.writeShellScriptBin "open-project" ''
-	  TARGET=$(fd -t d --exact-depth 1 . $HOME/Projects |
+	TARGET=$(fd -t d --exact-depth 1 . $HOME/Projects |
 		sed "s~$HOME/Projects/~~" |
 		fzf --prompt "project > ")
 
-	zellij run -i -- /${pkgs.fish}/bin/fish -c "cd $HOME/Projects/$TARGET; fish"
+	if [ -n "$TARGET" ]; then
+		echo "$HOME/Projects/$TARGET"
+	fi
 ''

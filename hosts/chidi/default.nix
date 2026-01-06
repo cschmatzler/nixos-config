@@ -39,7 +39,6 @@
 			../../profiles/ripgrep.nix
 			../../profiles/ssh.nix
 			../../profiles/starship.nix
-			../../profiles/zellij.nix
 			../../profiles/zk.nix
 			../../profiles/zoxide.nix
 			../../profiles/zsh.nix
