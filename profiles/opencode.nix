@@ -56,9 +56,6 @@
 	home.file.".config/opencode/oh-my-opencode.json".text =
 		builtins.toJSON {
 			google_auth = false;
-			experimental = {
-				dcp_for_compaction = true;
-			};
 			agents = {
 				explore = {
 					model = "opencode/minimax-m2.1-free";
