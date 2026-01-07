@@ -9,8 +9,8 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode"
-				"opencode-antigravity-auth"
+				"oh-my-opencode@2.14.0"
+				"opencode-antigravity-auth@1.2.7"
 			];
 			instructions = [
 				"CLAUDE.md"
