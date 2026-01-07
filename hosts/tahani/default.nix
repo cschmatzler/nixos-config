@@ -1,4 +1,5 @@
 {
+	pkgs,
 	inputs,
 	user,
 	hostname,
@@ -50,6 +51,11 @@
 	};
 
 	virtualisation.docker.enable = true;
+
+	environment.systemPackages = with pkgs; [
+		chromium
+		playwright-driver.browsers
+	];
 
 	swapDevices = [
 		{
