@@ -42,6 +42,7 @@
 			../../profiles/zk.nix
 			../../profiles/zoxide.nix
 			../../profiles/zsh.nix
+			./calendar.nix
 			inputs.nixvim.homeModules.nixvim
 		];
 
