@@ -30,6 +30,7 @@ with pkgs;
 		lsof
 		nurl
 		openssh
+		ov
 		postgresql_17
 		sd
 		sops
@@ -40,8 +41,9 @@ with pkgs;
 		tree-sitter
 		unzip
 		vivid
-		ov
 		zip
+		nodejs_24
+		pnpm
 	]
 	++ lib.optionals stdenv.isDarwin [
 		_1password-gui
