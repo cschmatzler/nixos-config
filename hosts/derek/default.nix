@@ -1,20 +1,22 @@
 {
-	pkgs,
 	inputs,
 	user,
 	hostname,
+	modulesPath,
 	...
 }: {
 	imports = [
-		./adguardhome.nix
-		./cache.nix
-		./networking.nix
-		./paperless.nix
+		(modulesPath + "/installer/scan/not-detected.nix")
+		(modulesPath + "/profiles/qemu-guest.nix")
+		./disk-config.nix
+		./hardware-configuration.nix
 		./secrets.nix
 		../../profiles/core.nix
+		../../profiles/fail2ban.nix
 		../../profiles/nixos.nix
 		../../profiles/openssh.nix
 		../../profiles/tailscale.nix
+		inputs.disko.nixosModules.disko
 		inputs.sops-nix.nixosModules.sops
 	];
 
@@ -22,7 +24,6 @@
 
 	home-manager.users.${user} = {
 		imports = [
-			../../profiles/atuin.nix
 			../../profiles/bash.nix
 			../../profiles/bat.nix
 			../../profiles/direnv.nix
@@ -34,32 +35,13 @@
 			../../profiles/jjui.nix
 			../../profiles/jujutsu.nix
 			../../profiles/lazygit.nix
-			../../profiles/mise.nix
 			../../profiles/neovim
-			../../profiles/opencode.nix
 			../../profiles/ripgrep.nix
 			../../profiles/ssh.nix
 			../../profiles/starship.nix
-			../../profiles/zk.nix
 			../../profiles/zoxide.nix
-			../../profiles/zsh.nix
+			./calendar.nix
 			inputs.nixvim.homeModules.nixvim
 		];
-
-		programs.git.settings.user.email = "christoph@schmatzler.com";
 	};
-
-	virtualisation.docker.enable = true;
-
-	environment.systemPackages = with pkgs; [
-		chromium
-		playwright-driver.browsers
-	];
-
-	swapDevices = [
-		{
-			device = "/swapfile";
-			size = 16 * 1024;
-		}
-	];
 }

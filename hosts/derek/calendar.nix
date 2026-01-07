@@ -25,7 +25,7 @@
 				type = "caldav";
 				url = "https://caldav.icloud.com/";
 				userName = "christoph@schmatzler.com";
-				passwordCommand = ["cat" "/run/secrets/tahani-icloud-password"];
+				passwordCommand = ["cat" "/run/secrets/derek-icloud-password"];
 			};
 
 			local = {

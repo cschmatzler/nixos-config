@@ -46,7 +46,7 @@
 				inherit (constants) user;
 
 				darwinHosts = ["chidi" "jason"];
-				nixosHosts = ["michael" "tahani"];
+				nixosHosts = ["derek" "michael" "tahani"];
 
 				overlays = import ./overlays {inherit inputs;};
 				nixpkgsConfig = hostPlatform: {

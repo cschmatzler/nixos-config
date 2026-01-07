@@ -10,6 +10,7 @@ with pkgs;
 		alejandra
 		ast-grep
 		bun
+		uv
 		colmena
 		delta
 		devenv
@@ -55,6 +56,7 @@ with pkgs;
 	]
 	++ lib.optionals stdenv.isLinux [
 		gcc15
-		lm_sensors
 		ghostty.terminfo
+		lm_sensors
+		sonoscli
 	]

@@ -4,6 +4,7 @@ keys:
   - &host_mindy age1dqt3znmzcgghsjjzzax0pf0eyu95h0p7kaf5v988ysjv7fl7lumsatl048
   - &host_jason age1ez6j3r5wdp0tjy7n5qzv5vfakdc2nh2zeu388zu7a80l0thv052syxq5e2
   - &host_chidi age1tlymdmaukhwupzrhszspp26lgd8s64rw4vu9lwc7gsgrjm78095s9fe9l3
+  - &host_derek age1h537hhl5qgew5sswjp7xf7d4j4aq0gg9s5flnr8twm2smnqyudhqmum8uy
 creation_rules:
   - path_regex: secrets/[^/]+$
     key_groups:
@@ -13,3 +14,4 @@ creation_rules:
         - *host_mindy
         - *host_jason
         - *host_chidi
+        - *host_derek
