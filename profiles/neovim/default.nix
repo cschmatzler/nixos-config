@@ -5,7 +5,6 @@
 		./options.nix
 		./plugins/blink-cmp.nix
 		./plugins/conform.nix
-		./plugins/copilot.nix
 		./plugins/grug-far.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
