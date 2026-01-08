@@ -9,7 +9,7 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode@2.14.0"
+				"oh-my-opencode@3.0.0-beta.2"
 			];
 			instructions = [
 				"CLAUDE.md"
@@ -31,6 +31,15 @@
 				sisyphus = {
 					model = "opencode/claude-opus-4-5";
 				};
+				orchestrator-sisyphus = {
+					model = "opencode/claude-opus-4-5";
+				};
+				"Prometheus (Planner)" = {
+					model = "opencode/claude-opus-4-5";
+				};
+				"Metis (Plan Consultant)" = {
+					model = "opencode/claude-opus-4-5";
+				};
 				explore = {
 					model = "opencode/minimax-m2.1-free";
 				};
@@ -45,6 +54,14 @@
 				};
 				multimodal-looker = {
 					model = "opencode/gemini-3-flash";
+				};
+			};
+			categories = {
+				visual = {
+					model = "opencode/gemini-3-pro";
+				};
+				business-logic = {
+					model = "opencode/gpt-5.2";
 				};
 			};
 			disabled_hooks = ["startup-toast" "background-notification" "session-notification"];
