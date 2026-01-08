@@ -10,7 +10,6 @@ with pkgs;
 		alejandra
 		ast-grep
 		bun
-		uv
 		colmena
 		delta
 		devenv
@@ -29,9 +28,11 @@ with pkgs;
 		jq
 		killall
 		lsof
+		nodejs_24
 		nurl
 		openssh
 		ov
+		pnpm
 		postgresql_17
 		sd
 		sops
@@ -43,8 +44,6 @@ with pkgs;
 		unzip
 		vivid
 		zip
-		nodejs_24
-		pnpm
 	]
 	++ lib.optionals stdenv.isDarwin [
 		_1password-gui
