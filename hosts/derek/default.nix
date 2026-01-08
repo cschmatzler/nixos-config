@@ -1,4 +1,5 @@
 {
+	pkgs,
 	inputs,
 	user,
 	hostname,
@@ -21,6 +22,11 @@
 	];
 
 	networking.hostName = hostname;
+
+	environment.systemPackages = with pkgs; [
+		chromium
+		playwright-driver.browsers
+	];
 
 	home-manager.users.${user} = {
 		imports = [

@@ -51,11 +51,6 @@
 
 	virtualisation.docker.enable = true;
 
-	environment.systemPackages = with pkgs; [
-		chromium
-		playwright-driver.browsers
-	];
-
 	swapDevices = [
 		{
 			device = "/swapfile";
