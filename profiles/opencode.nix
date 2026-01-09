@@ -40,6 +40,12 @@
 				"Metis (Plan Consultant)" = {
 					model = "opencode/claude-opus-4-5";
 				};
+        "Momus (Plan Reviewer)" = {
+					model = "opencode/gpt-5.2";
+				};
+				momus = {
+					model = "opencode/gpt-5.2";
+				};
 				explore = {
 					model = "opencode/minimax-m2.1-free";
 				};
@@ -57,6 +63,9 @@
 				};
 			};
 			categories = {
+				general = {
+					model = "opencode/claude-opus-4-5";
+				};
 				visual = {
 					model = "opencode/gemini-3-pro";
 				};
