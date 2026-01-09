@@ -40,7 +40,7 @@
 				"Metis (Plan Consultant)" = {
 					model = "opencode/claude-opus-4-5";
 				};
-        "Momus (Plan Reviewer)" = {
+				"Momus (Plan Reviewer)" = {
 					model = "opencode/gpt-5.2";
 				};
 				momus = {
