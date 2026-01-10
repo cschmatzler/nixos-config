@@ -46,6 +46,9 @@
 				momus = {
 					model = "opencode/gpt-5.2";
 				};
+				librarian = {
+					model = "opencode/claude-sonnet-4-5";
+				};
 				explore = {
 					model = "opencode/minimax-m2.1-free";
 				};
