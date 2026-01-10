@@ -57,5 +57,4 @@ with pkgs;
 		gcc15
 		ghostty.terminfo
 		lm_sensors
-		sonoscli
 	]
