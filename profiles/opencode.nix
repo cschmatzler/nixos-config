@@ -9,7 +9,7 @@
 		settings = {
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode@3.0.0-beta.2"
+				"oh-my-opencode@3.0.0-beta.5"
 			];
 			instructions = [
 				"CLAUDE.md"
