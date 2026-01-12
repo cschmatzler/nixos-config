@@ -1,4 +1,6 @@
-{
+{pkgs, ...}: {
+	home.packages = [pkgs.jj-ryu];
+
 	programs.jujutsu = {
 		enable = true;
 		settings = {

@@ -40,6 +40,10 @@
 			url = "github:jnsahaj/lumen";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		jj-ryu = {
+			url = "github:dmmulroy/jj-ryu";
+			flake = false;
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
