@@ -7,7 +7,6 @@
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			# Default model for opencode sessions
 			model = "opencode/claude-opus-4-5";
 			theme = "catppuccin";
 			plugin = [
@@ -36,7 +35,6 @@
 				"Sisyphus-Junior" = {
 					model = "opencode/claude-sonnet-4-5";
 				};
-
 				sisyphus = {
 					model = "opencode/claude-opus-4-5";
 				};
@@ -76,7 +74,6 @@
 				};
 			};
 			categories = {
-				# Matches oh-my-opencode built-in categories
 				"visual-engineering" = {
 					model = "opencode/gemini-3-pro";
 				};
@@ -98,7 +95,6 @@
 				general = {
 					model = "opencode/claude-sonnet-4-5";
 				};
-				# Back-compat / short names you might use manually
 				visual = {
 					model = "opencode/gemini-3-pro";
 				};
