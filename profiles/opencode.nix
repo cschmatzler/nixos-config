@@ -7,6 +7,8 @@
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
+			# Default model for opencode sessions
+			model = "opencode/claude-opus-4-5";
 			theme = "catppuccin";
 			plugin = [
 				"oh-my-opencode@3.0.0-beta.5"
@@ -28,6 +30,13 @@
 		builtins.toJSON {
 			google_auth = false;
 			agents = {
+				Sisyphus = {
+					model = "opencode/claude-opus-4-5";
+				};
+				"Sisyphus-Junior" = {
+					model = "opencode/claude-sonnet-4-5";
+				};
+
 				sisyphus = {
 					model = "opencode/claude-opus-4-5";
 				};
@@ -47,8 +56,9 @@
 					model = "opencode/gpt-5.2";
 				};
 				librarian = {
-					model = "opencode/claude-sonnet-4-5";
+					model = "opencode/glm-4.7-free";
 				};
+
 				explore = {
 					model = "opencode/minimax-m2.1-free";
 				};
@@ -66,16 +76,37 @@
 				};
 			};
 			categories = {
-				general = {
+				# Matches oh-my-opencode built-in categories
+				"visual-engineering" = {
+					model = "opencode/gemini-3-pro";
+				};
+				ultrabrain = {
+					model = "opencode/gpt-5.2";
+				};
+				artistry = {
+					model = "opencode/gemini-3-pro";
+				};
+				quick = {
+					model = "opencode/claude-haiku-4-5";
+				};
+				"most-capable" = {
 					model = "opencode/claude-opus-4-5";
 				};
+				writing = {
+					model = "opencode/gemini-3-flash";
+				};
+				general = {
+					model = "opencode/claude-sonnet-4-5";
+				};
+				# Back-compat / short names you might use manually
 				visual = {
 					model = "opencode/gemini-3-pro";
 				};
-				business-logic = {
+				"business-logic" = {
 					model = "opencode/gpt-5.2";
 				};
 			};
+
 			disabled_hooks = ["startup-toast" "background-notification" "session-notification"];
 		};
 }

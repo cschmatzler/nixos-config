@@ -6,6 +6,8 @@
 	programs.khal = {
 		enable = true;
 		locale = {
+			local_timezone = "Europe/Berlin";
+			default_timezone = "Europe/Berlin";
 			timeformat = "%H:%M";
 			dateformat = "%d/%m/%Y";
 			longdateformat = "%d/%m/%Y";
@@ -16,7 +18,6 @@
 
 	accounts.calendar = {
 		basePath = ".local/share/calendars";
-
 		accounts.icloud = {
 			primary = true;
 			primaryCollection = "home";
