@@ -1,4 +1,5 @@
 {
+	inputs,
 	lib,
 	pkgs,
 	...
@@ -20,11 +21,15 @@ with pkgs;
 		fd
 		gh
 		git
+		glow
 		gnumake
 		gnupg
 		hledger
 		htop
 		hyperfine
+		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
+		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage-codex
+		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage-opencode
 		jq
 		killall
 		lsof
