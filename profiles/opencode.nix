@@ -10,7 +10,7 @@
 			model = "opencode/claude-opus-4-5";
 			theme = "catppuccin";
 			plugin = [
-				"oh-my-opencode@3.0.0-beta.5"
+				"oh-my-opencode@3.0.0-beta.6"
 			];
 			instructions = [
 				"CLAUDE.md"
