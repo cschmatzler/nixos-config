@@ -27,10 +27,6 @@ with pkgs;
 		hledger
 		htop
 		hyperfine
-		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.amp
-		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
-		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage-codex
-		inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.ccusage-opencode
 		jq
 		killall
 		lsof

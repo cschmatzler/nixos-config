@@ -19,6 +19,9 @@
 					disabled = true;
 				};
 			};
+			agent = {
+				explore = {model = "opencode/glm-4-7";};
+			};
 		};
 	};
 }
