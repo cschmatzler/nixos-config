@@ -10,6 +10,7 @@
 			model = "opencode/gpt-5-2-codex";
 			small_model = "opencode/gpt-5-1-codex-mini";
 			theme = "catppuccin";
+			permission = "allow";
 			instructions = [
 				"CLAUDE.md"
 				"AGENT.md"
