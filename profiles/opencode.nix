@@ -7,7 +7,8 @@
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			model = "opencode/gpt-5.2";
+			model = "opencode/gpt-5-2-codex";
+			small_model = "opencode/gpt-5-1-codex-mini";
 			theme = "catppuccin";
 			instructions = [
 				"CLAUDE.md"
@@ -20,7 +21,9 @@
 				};
 			};
 			agent = {
-				explore = {model = "opencode/glm-4-7";};
+				explore = {
+					model = "opencode/glm-4-7";
+				};
 			};
 		};
 	};
