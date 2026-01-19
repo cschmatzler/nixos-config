@@ -23,7 +23,7 @@
 			};
 			agent = {
 				explore = {
-					model = "opencode/glm-4-7";
+					model = "opencode/minimax-m2.1-free";
 				};
 			};
 		};
