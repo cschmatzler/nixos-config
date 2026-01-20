@@ -36,7 +36,7 @@
 			revset-aliases = {
 				"closest_bookmark(to)" = "heads(::to & bookmarks())";
 				"closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
-				"mine()" = "author(christoph@schmatzler.com)";
+				"mine()" = "author(\"christoph@schmatzler.com\")";
 				"wip()" = "mine() ~ immutable()";
 				"open()" = "mine() ~ ::trunk()";
 				"current()" = "@:: & mutable()";
