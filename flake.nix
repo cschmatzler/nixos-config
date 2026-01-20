@@ -47,7 +47,7 @@
 		jj-starship.url = "github:dmmulroy/jj-starship";
 	};
 
-	outputs = inputs @ {flake-parts, jj-starship, ...}:
+	outputs = inputs @ {flake-parts, ...}:
 		flake-parts.lib.mkFlake {inherit inputs;} (
 			let
 				inherit (inputs.nixpkgs) lib;
@@ -57,7 +57,7 @@
 				darwinHosts = ["chidi" "jason"];
 				nixosHosts = ["michael" "tahani"];
 
-				overlays = import ./overlays {inherit inputs;} ++ [jj-starship.overlays.default];
+				overlays = import ./overlays {inherit inputs;};
 				nixpkgsConfig = hostPlatform: {
 					nixpkgs = {inherit hostPlatform overlays;};
 				};

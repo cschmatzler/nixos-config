@@ -10,7 +10,7 @@
 		cursor-style = block
 		mouse-hide-while-typing = true
 		mouse-scroll-multiplier = 1.25
-		shell-integration = detect
+		shell-integration = fish
 		shell-integration-features = no-cursor
 		clipboard-read = allow
 		clipboard-write = allow

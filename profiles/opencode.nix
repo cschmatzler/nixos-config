@@ -10,7 +10,23 @@
 			model = "opencode/gpt-5-2-codex";
 			small_model = "opencode/gpt-5-1-codex-mini";
 			theme = "catppuccin";
-			permission = "allow";
+			keybinds = {
+				leader = "ctrl+o";
+			};
+			permission = {
+				read = {
+					"*" = "allow";
+					"*.env" = "deny";
+					"*.env.*" = "deny";
+					"*.envrc" = "deny";
+					"secrets/*" = "deny";
+				};
+			};
+			agent = {
+				explore = {
+					model = "opencode/minimax-m2.1-free";
+				};
+			};
 			instructions = [
 				"CLAUDE.md"
 				"AGENT.md"
@@ -22,7 +38,23 @@
 				};
 			};
 			mcp = {
+				context7 = {
+					enabled = true;
+					type = "remote";
+					url = "https://mcp.context7.com/mcp";
+				};
+				grep_app = {
+					enabled = true;
+					type = "remote";
+					url = "https://mcp.grep.app";
+				};
+				opensrc = {
+					enabled = true;
+					type = "local";
+					command = ["bunx" "opensrc-mcp"];
+				};
 				appsignal = {
+					enabled = false;
 					type = "local";
 					command = [
 						"docker"
@@ -36,12 +68,6 @@
 					environment = {
 						APPSIGNAL_API_KEY = "{env:APPSIGNAL_API_KEY}";
 					};
-					enabled = true;
-				};
-			};
-			agent = {
-				explore = {
-					model = "opencode/minimax-m2.1-free";
 				};
 			};
 		};
