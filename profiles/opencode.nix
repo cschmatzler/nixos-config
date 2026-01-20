@@ -21,6 +21,24 @@
 					disabled = true;
 				};
 			};
+			mcp = {
+				appsignal = {
+					type = "local";
+					command = [
+						"docker"
+						"run"
+						"-i"
+						"--rm"
+						"-e"
+						"APPSIGNAL_API_KEY"
+						"appsignal/mcp"
+					];
+					environment = {
+						APPSIGNAL_API_KEY = "{env:APPSIGNAL_API_KEY}";
+					};
+					enabled = true;
+				};
+			};
 			agent = {
 				explore = {
 					model = "opencode/minimax-m2.1-free";
