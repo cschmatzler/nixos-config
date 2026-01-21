@@ -16,7 +16,7 @@
 				repo_root_style = "bold cyan";
 				repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
 			};
-		custom.scm = {
+			custom.scm = {
 				when = "jj-starship detect";
 				shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
 				format = "$output ";

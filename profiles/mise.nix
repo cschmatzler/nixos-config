@@ -2,8 +2,7 @@
 	programs.mise = {
 		enable = true;
 		enableFishIntegration = true;
-		enableZshIntegration = true;
-		settings = {
+		globalConfig.settings = {
 			auto_install = false;
 		};
 	};
