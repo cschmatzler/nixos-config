@@ -96,6 +96,9 @@
 				"com.apple.AdLib" = {
 					allowApplePersonalizedAdvertising = false;
 				};
+				"com.apple.Spotlight" = {
+					MenuItemHidden = true;
+				};
 			};
 		};
 	};
