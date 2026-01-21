@@ -21,6 +21,7 @@
 	home-manager.users.${user} = {
 		imports = [
 			../../profiles/atuin.nix
+			../../profiles/aerospace.nix
 			../../profiles/bash.nix
 			../../profiles/bat.nix
 			../../profiles/direnv.nix
