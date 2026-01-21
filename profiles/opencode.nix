@@ -54,7 +54,7 @@
 					command = ["bunx" "opensrc-mcp"];
 				};
 				appsignal = {
-					enabled = false;
+					enabled = true;
 					type = "local";
 					command = [
 						"docker"
