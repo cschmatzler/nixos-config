@@ -127,11 +127,16 @@
 						}
 					);
 
-				flake.nixosModules = {
-					pgbackrest = ./modules/pgbackrest.nix;
-				};
+			flake.nixosModules = {
+				pgbackrest = ./modules/pgbackrest.nix;
+			};
 
-				flake.lib = {inherit constants;};
+			flake.overlays = {
+				default = lib.composeManyExtensions overlays;
+				list = overlays;
+			};
+
+			flake.lib = {inherit constants;};
 
 				perSystem = {
 					pkgs,
