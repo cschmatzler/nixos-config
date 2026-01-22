@@ -12,6 +12,11 @@ in {
 				autocrlf = "input";
 				pager = "delta";
 			};
+			credential = {
+				helper = "!gh auth git-credential";
+				"https://github.com".useHttpPath = true;
+				"https://gist.github.com".useHttpPath = true;
+			};
 			pull.rebase = true;
 			rebase.autoStash = true;
 			interactive.diffFilter = "delta --color-only";
