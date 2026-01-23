@@ -67,4 +67,23 @@
 			};
 		};
 	};
+
+	xdg.configFile = {
+		"opencode/agent" = {
+			source = ./opencode/agent;
+			recursive = true;
+		};
+		"opencode/command" = {
+			source = ./opencode/command;
+			recursive = true;
+		};
+		"opencode/skill" = {
+			source = ./opencode/skill;
+			recursive = true;
+		};
+		"opencode/tool" = {
+			source = ./opencode/tool;
+			recursive = true;
+		};
+	};
 }
