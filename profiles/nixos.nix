@@ -65,7 +65,6 @@
 				"sudo"
 				"network"
 				"systemd-journal"
-				"docker"
 			];
 			shell = pkgs.fish;
 			openssh.authorizedKeys.keys = constants.sshKeys;

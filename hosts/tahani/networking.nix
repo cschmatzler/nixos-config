@@ -11,7 +11,7 @@
 		nameservers = ["1.1.1.1"];
 		firewall = {
 			enable = true;
-			trustedInterfaces = ["eno1" "tailscale0"];
+			trustedInterfaces = ["tailscale0"];
 			allowedUDPPorts = [config.services.tailscale.port];
 			allowedTCPPorts = [22];
 			checkReversePath = "loose";

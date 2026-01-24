@@ -52,6 +52,8 @@
 
 	virtualisation.docker.enable = true;
 
+	users.users.${user}.extraGroups = ["docker"];
+
 	swapDevices = [
 		{
 			device = "/swapfile";
