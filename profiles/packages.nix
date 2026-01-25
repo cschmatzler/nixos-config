@@ -52,6 +52,7 @@ with pkgs;
 	]
 	++ lib.optionals stdenv.isDarwin [
 		_1password-gui
+		alcove
 		dockutil
 		mas
 		raycast
