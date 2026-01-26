@@ -32,6 +32,11 @@
 				"AGENT.md"
 				"AGENTS.md"
 			];
+			formatter = {
+				mix = {
+					disabled = true;
+				};
+			};
 			mcp = {
 				context7 = {
 					enabled = true;
