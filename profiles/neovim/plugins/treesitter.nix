@@ -5,18 +5,6 @@
 			highlight.enable = true;
 			indent.enable = true;
 		};
-		grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-			bash
-			elixir
-			fish
-			heex
-			json
-			markdown
-			nix
-			toml
-			tsx
-			typescript
-			yaml
-		];
+    grammarPackages = pkgs.vimPlugins.nvim-treesitter.allGrammars;
 	};
 }
