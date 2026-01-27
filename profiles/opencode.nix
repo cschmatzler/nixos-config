@@ -30,7 +30,7 @@
 			};
 			agent = {
 				plan = {
-					model = "opencode/gpt-5-2-codex";
+					model = "opencode/gpt-5.2-codex";
 				};
 				explore = {
 					model = "minimax-m2.1";
