@@ -1,12 +1,13 @@
-{...}: {
+{
 	programs.aerospace = {
 		enable = true;
 		launchd.enable = true;
 		settings = {
-			"accordion-padding" = 30;
-			"default-root-container-layout" = "tiles";
-			"default-root-container-orientation" = "auto";
-			"on-focused-monitor-changed" = [
+			start-at-login = true;
+			accordion-padding = 30;
+			default-root-container-layout = "tiles";
+			default-root-container-orientation = "auto";
+			on-focused-monitor-changed = [
 				"move-mouse monitor-lazy-center"
 			];
 
@@ -23,7 +24,7 @@
 				};
 			};
 
-			"on-window-detected" = [
+			on-window-detected = [
 				{
 					"if" = {
 						"app-id" = "com.apple.systempreferences";
