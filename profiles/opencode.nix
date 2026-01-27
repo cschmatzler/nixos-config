@@ -8,12 +8,13 @@
 		OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
 		OPENCODE_ENABLE_EXA = 1;
 	};
+
 	programs.opencode = {
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			model = "opencode/gpt-5-2-codex";
-			small_model = "opencode/glm-4.7";
+			model = "opencode/kimi-k2.5";
+			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
 			keybinds = {
 				leader = "ctrl+o";
@@ -28,8 +29,11 @@
 				};
 			};
 			agent = {
+				plan = {
+					model = "opencode/gpt-5-2-codex";
+				};
 				explore = {
-					model = "opencode/glm-4.7";
+					model = "minimax-m2.1";
 				};
 			};
 			instructions = [
