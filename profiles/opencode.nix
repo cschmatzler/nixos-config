@@ -33,7 +33,7 @@
 					model = "opencode/gpt-5.2-codex";
 				};
 				explore = {
-					model = "minimax-m2.1";
+					model = "opencode/minimax-m2.1";
 				};
 			};
 			instructions = [
