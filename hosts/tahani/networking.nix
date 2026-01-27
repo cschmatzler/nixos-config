@@ -1,5 +1,5 @@
 {config, ...}: {
-	boot.kernel.sysctl."net.ipv4.conf.eno1.rp_filter" = 0;
+	services.tailscale.extraSetFlags = ["--accept-routes=false"];
 
 	networking = {
 		useDHCP = false;
@@ -14,14 +14,14 @@
 		firewall = {
 			enable = true;
 			trustedInterfaces = ["eno1" "tailscale0"];
-		allowedUDPPorts = [
-			53
-			config.services.tailscale.port
-		];
-		allowedTCPPorts = [
-			22
-			53
-		];
+			allowedUDPPorts = [
+				53
+				config.services.tailscale.port
+			];
+			allowedTCPPorts = [
+				22
+				53
+			];
 			checkReversePath = "loose";
 		};
 	};
