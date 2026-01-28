@@ -4,16 +4,18 @@
 	...
 }: {
 	home.sessionVariables = {
-		OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
-		OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
 		OPENCODE_ENABLE_EXA = 1;
+		OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
+		OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
+		OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
+		OPENCODE_EXPERIMENTAL_FILE_WATCHER = 1;
 	};
 
 	programs.opencode = {
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			model = "opencode/kimi-k2.5";
+			model = "opencode/claude-opus-4-5";
 			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
 			keybinds = {
