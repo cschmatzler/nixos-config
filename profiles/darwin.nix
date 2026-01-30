@@ -81,6 +81,8 @@
 
 			spaces.spans-displays = false;
 
+			WindowManager.StandardHideWidgets = true;
+
 			menuExtraClock = {
 				Show24Hour = true;
 				ShowDate = 1;
