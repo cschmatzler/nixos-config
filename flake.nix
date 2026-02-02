@@ -45,6 +45,10 @@
 			flake = false;
 		};
 		jj-starship.url = "github:dmmulroy/jj-starship";
+		nono = {
+			url = "github:lukehinds/nono";
+			flake = false;
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:

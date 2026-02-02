@@ -548,6 +548,22 @@
         "type": "github"
       }
     },
+    "nono": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770047555,
+        "narHash": "sha256-BL1lBZYs6bsjk/+g+Zc2lUjErlvgYYJQqYEKLUjvtVU=",
+        "owner": "lukehinds",
+        "repo": "nono",
+        "rev": "8d382fbc0b21ad06d255a97000d876c15b5dea09",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lukehinds",
+        "repo": "nono",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "colmena": "colmena",
@@ -564,6 +580,7 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3",
         "nixvim": "nixvim",
+        "nono": "nono",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }
