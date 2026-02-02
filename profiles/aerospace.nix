@@ -11,6 +11,18 @@
 				"move-mouse monitor-lazy-center"
 			];
 
+			workspace-to-monitor-force-assignment = {
+				"1" = "secondary";
+				"2" = "secondary";
+				"3" = "secondary";
+				"4" = "secondary";
+				"5" = "secondary";
+				"6" = "secondary";
+				"7" = "secondary";
+				"8" = "secondary";
+				"9" = "main";
+			};
+
 			gaps = {
 				inner = {
 					horizontal = 8;
@@ -24,20 +36,44 @@
 				};
 			};
 
-			on-window-detected = [
-				{
-					"if" = {
-						"app-id" = "com.apple.systempreferences";
-					};
-					run = "layout floating";
-				}
-				{
-					"if" = {
-						"app-id" = "com.mitchellh.ghostty";
-					};
-					run = "layout tiling";
-				}
-			];
+		on-window-detected = [
+			{
+				"if" = {
+					"app-id" = "com.apple.systempreferences";
+				};
+				run = "layout floating";
+			}
+			{
+				"if" = {
+					"app-id" = "com.mitchellh.ghostty";
+				};
+				run = ["layout tiling" "move-node-to-workspace 3"];
+			}
+			{
+				"if" = {
+					"app-id" = "net.imput.helium";
+				};
+				run = "move-node-to-workspace 2";
+			}
+			{
+				"if" = {
+					"app-id" = "com.tinyspeck.slackmacgap";
+				};
+				run = "move-node-to-workspace 5";
+			}
+			{
+				"if" = {
+					"app-id" = "net.whatsapp.WhatsApp";
+				};
+				run = "move-node-to-workspace 5";
+			}
+			{
+				"if" = {
+					"app-id" = "com.tidal.desktop";
+				};
+				run = "move-node-to-workspace 6";
+			}
+		];
 
 			mode = {
 				main.binding = {
