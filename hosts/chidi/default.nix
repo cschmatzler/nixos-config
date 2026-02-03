@@ -37,6 +37,7 @@
 			../../profiles/nono.nix
 			../../profiles/neovim
 			../../profiles/opencode.nix
+			../../profiles/claude-code.nix
 			../../profiles/ripgrep.nix
 			../../profiles/ssh.nix
 			../../profiles/starship.nix
