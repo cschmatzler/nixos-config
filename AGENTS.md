@@ -1,8 +1,5 @@
 # AGENTS.md
 
-## ⚠️ VERSION CONTROL: JUJUTSU (jj) ONLY
-**NEVER run git commands.** This repo uses Jujutsu (`jj`). Use `jj status`, `jj diff`, `jj commit`, etc.
-
 ## Build Commands
 
 ### Local Development

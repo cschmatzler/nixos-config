@@ -36,44 +36,44 @@
 				};
 			};
 
-		on-window-detected = [
-			{
-				"if" = {
-					"app-id" = "com.apple.systempreferences";
-				};
-				run = "layout floating";
-			}
-			{
-				"if" = {
-					"app-id" = "com.mitchellh.ghostty";
-				};
-				run = ["layout tiling" "move-node-to-workspace 3"];
-			}
-			{
-				"if" = {
-					"app-id" = "net.imput.helium";
-				};
-				run = "move-node-to-workspace 2";
-			}
-			{
-				"if" = {
-					"app-id" = "com.tinyspeck.slackmacgap";
-				};
-				run = "move-node-to-workspace 5";
-			}
-			{
-				"if" = {
-					"app-id" = "net.whatsapp.WhatsApp";
-				};
-				run = "move-node-to-workspace 5";
-			}
-			{
-				"if" = {
-					"app-id" = "com.tidal.desktop";
-				};
-				run = "move-node-to-workspace 6";
-			}
-		];
+			on-window-detected = [
+				{
+					"if" = {
+						"app-id" = "com.apple.systempreferences";
+					};
+					run = "layout floating";
+				}
+				{
+					"if" = {
+						"app-id" = "com.mitchellh.ghostty";
+					};
+					run = ["layout tiling" "move-node-to-workspace 3"];
+				}
+				{
+					"if" = {
+						"app-id" = "net.imput.helium";
+					};
+					run = "move-node-to-workspace 2";
+				}
+				{
+					"if" = {
+						"app-id" = "com.tinyspeck.slackmacgap";
+					};
+					run = "move-node-to-workspace 5";
+				}
+				{
+					"if" = {
+						"app-id" = "net.whatsapp.WhatsApp";
+					};
+					run = "move-node-to-workspace 5";
+				}
+				{
+					"if" = {
+						"app-id" = "com.tidal.desktop";
+					};
+					run = "move-node-to-workspace 6";
+				}
+			];
 
 			mode = {
 				main.binding = {

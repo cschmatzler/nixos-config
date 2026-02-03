@@ -30,8 +30,6 @@
 			../../profiles/ghostty.nix
 			../../profiles/git.nix
 			../../profiles/home.nix
-			../../profiles/jjui.nix
-			../../profiles/jujutsu.nix
 			../../profiles/lazygit.nix
 			../../profiles/lumen.nix
 			../../profiles/mise.nix

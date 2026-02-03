@@ -5,7 +5,7 @@
 		settings = {
 			add_newline = true;
 			command_timeout = 2000;
-			format = "[$directory$\{custom.scm}]($style)$character";
+			format = "$directory$git_branch$git_status$character";
 			character = {
 				error_symbol = "[✗ ](bold #e64553)";
 				success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #dc8a78)";
@@ -16,10 +16,26 @@
 				repo_root_style = "bold cyan";
 				repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
 			};
-			custom.scm = {
-				when = "jj-starship detect";
-				shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
-				format = "$output ";
+			git_branch = {
+				format = "[$symbol$branch(:$remote_branch)]($style) ";
+				symbol = " ";
+				style = "bold #8839ef";
+				truncation_length = 20;
+				truncation_symbol = "…";
+			};
+			git_status = {
+				format = "([$all_status$ahead_behind]($style) )";
+				style = "bold #df8e1d";
+				conflicted = "=$count ";
+				ahead = "⇡$count ";
+				behind = "⇣$count ";
+				diverged = "⇡$ahead_count⇣$behind_count ";
+				untracked = "?$count ";
+				stashed = "\\$$count ";
+				modified = "!$count ";
+				staged = "+$count ";
+				renamed = "»$count ";
+				deleted = "✘$count ";
 			};
 		};
 	};

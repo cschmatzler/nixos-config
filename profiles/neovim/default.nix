@@ -8,7 +8,6 @@
 		./plugins/grug-far.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
-		./plugins/jj-diffconflicts.nix
 		./plugins/lsp.nix
 		./plugins/mini.nix
 		./plugins/oil.nix

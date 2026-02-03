@@ -40,11 +40,6 @@
 			url = "github:jnsahaj/lumen";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		jj-ryu = {
-			url = "github:dmmulroy/jj-ryu";
-			flake = false;
-		};
-		jj-starship.url = "github:dmmulroy/jj-starship";
 		nono = {
 			url = "github:lukehinds/nono";
 			flake = false;
