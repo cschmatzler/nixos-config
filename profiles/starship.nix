@@ -23,20 +23,20 @@
 				truncation_length = 20;
 				truncation_symbol = "…";
 			};
-			git_status = {
-				format = "([$all_status$ahead_behind]($style) )";
-				style = "bold #df8e1d";
-				conflicted = "=$count ";
-				ahead = "⇡$count ";
-				behind = "⇣$count ";
-				diverged = "⇡$ahead_count⇣$behind_count ";
-				untracked = "?$count ";
-				stashed = "\\$$count ";
-				modified = "!$count ";
-				staged = "+$count ";
-				renamed = "»$count ";
-				deleted = "✘$count ";
-			};
+		git_status = {
+			format = "([$all_status$ahead_behind]($style) )";
+			style = "bold #df8e1d";
+			conflicted = "conflict:$count ";
+			ahead = "ahead:$count ";
+			behind = "behind:$count ";
+			diverged = "ahead:$ahead_count behind:$behind_count ";
+			untracked = "new:$count ";
+			stashed = "stash:$count ";
+			modified = "mod:$count ";
+			staged = "staged:$count ";
+			renamed = "mv:$count ";
+			deleted = "del:$count ";
+		};
 		};
 	};
 }
