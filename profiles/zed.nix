@@ -47,21 +47,6 @@
 			inlay_hints = {
 				enabled = true;
 			};
-			project_panel = {
-				button = false;
-			};
-			outline_panel = {
-				button = false;
-			};
-			collaboration_panel = {
-				button = false;
-			};
-			notification_panel = {
-				button = false;
-			};
-			chat_panel = {
-				button = false;
-			};
 			ssh_connections = [
 				{
 					host = "tahani";
