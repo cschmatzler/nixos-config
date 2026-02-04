@@ -44,6 +44,10 @@
 			url = "github:lukehinds/nono";
 			flake = false;
 		};
+		overseer = {
+			url = "github:dmmulroy/overseer";
+			flake = false;
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:

@@ -495,6 +495,22 @@
         "type": "github"
       }
     },
+    "overseer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770220117,
+        "narHash": "sha256-kTIQTxkk+eNZK69hvWQe9Cw/AXH2wxRYaV4AoQZp5KU=",
+        "owner": "dmmulroy",
+        "repo": "overseer",
+        "rev": "81f6015e30a565f0a638d4451ace64bd572c051f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dmmulroy",
+        "repo": "overseer",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "colmena": "colmena",
@@ -510,6 +526,7 @@
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
         "nono": "nono",
+        "overseer": "overseer",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }
