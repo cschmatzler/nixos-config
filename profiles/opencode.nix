@@ -83,7 +83,7 @@
 				overseer = {
 					enabled = true;
 					type = "local";
-					command = ["npx" "-y" "@dmmulroy/overseer" "mcp"];
+					command = ["${pkgs.overseer}/bin/os" "mcp"];
 				};
 			};
 		};
