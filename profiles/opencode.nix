@@ -80,6 +80,11 @@
 						APPSIGNAL_API_KEY = "{env:APPSIGNAL_API_KEY}";
 					};
 				};
+				overseer = {
+					enabled = true;
+					type = "local";
+					command = ["npx" "-y" "@dmmulroy/overseer" "mcp"];
+				};
 			};
 		};
 	};
