@@ -43,6 +43,7 @@
 			../../profiles/starship.nix
 			../../profiles/zk.nix
 			../../profiles/zoxide.nix
+			../../profiles/zed.nix
 			../../profiles/zsh.nix
 			inputs.nixvim.homeModules.nixvim
 		];
