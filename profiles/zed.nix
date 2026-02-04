@@ -62,13 +62,6 @@
 			chat_panel = {
 				button = false;
 			};
-			assistant = {
-				enabled = false;
-				button = false;
-			};
-			features = {
-				edit_prediction_provider = "none";
-			};
 			ssh_connections = [
 				{
 					host = "tahani";
