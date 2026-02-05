@@ -15,7 +15,7 @@
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			model = "anthropic/claude-opus-4-5";
+			model = "anthropic/claude-opus-4-6";
 			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
 			plugin = ["opencode-anthropic-auth"];
@@ -33,7 +33,7 @@
 			};
 			agent = {
 				plan = {
-					model = "anthropic/claude-opus-4-5";
+					model = "anthropic/claude-opus-4-6";
 				};
 				explore = {
 					model = "opencode/minimax-m2.1";
