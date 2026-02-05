@@ -6,7 +6,7 @@
 	home.sessionVariables = {
 		OPENCODE_ENABLE_EXA = 1;
 		OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
-		# OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
+		OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
 		OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
 		OPENCODE_EXPERIMENTAL_FILE_WATCHER = 1;
 	};
@@ -15,9 +15,10 @@
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 		settings = {
-			model = "opencode/claude-opus-4-5";
+			model = "anthropic/claude-opus-4-5";
 			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
+			plugin = ["opencode-anthropic-auth"];
 			keybinds = {
 				leader = "ctrl+o";
 			};
@@ -32,7 +33,7 @@
 			};
 			agent = {
 				plan = {
-					model = "opencode/gpt-5.2-codex";
+					model = "anthropic/claude-opus-4-5";
 				};
 				explore = {
 					model = "opencode/minimax-m2.1";
