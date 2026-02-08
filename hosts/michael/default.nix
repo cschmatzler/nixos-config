@@ -39,7 +39,7 @@
 
 	home-manager.users.${user} = {
 		imports = [
-			../../profiles/fish.nix
+			../../profiles/nushell.nix
 			../../profiles/home.nix
 			../../profiles/ssh.nix
 			inputs.nixvim.homeModules.nixvim

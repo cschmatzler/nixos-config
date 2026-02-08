@@ -1,7 +1,6 @@
 {
 	programs.fzf = {
 		enable = true;
-		enableFishIntegration = true;
 	};
 
 	home.sessionVariables = {

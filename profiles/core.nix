@@ -1,5 +1,6 @@
 {pkgs, ...}: {
 	programs.fish.enable = true;
+	environment.shells = [pkgs.nushell];
 
 	nixpkgs = {
 		config = {

@@ -24,8 +24,7 @@
 			../../profiles/bash.nix
 			../../profiles/bat.nix
 			../../profiles/direnv.nix
-			../../profiles/eza.nix
-			../../profiles/fish.nix
+			../../profiles/nushell.nix
 			../../profiles/fzf.nix
 			../../profiles/ghostty.nix
 			../../profiles/git.nix

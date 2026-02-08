@@ -1,7 +1,7 @@
 {
 	programs.mise = {
 		enable = true;
-		enableFishIntegration = true;
+		enableNushellIntegration = true;
 		globalConfig.settings = {
 			auto_install = false;
 		};

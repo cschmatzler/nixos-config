@@ -1,6 +1,6 @@
 {pkgs, ...}: {
 	xdg.configFile."ghostty/config".text = ''
-		command = ${pkgs.fish}/bin/fish
+		command = ${pkgs.nushell}/bin/nu
 		theme = Catppuccin Latte
 		window-padding-x = 12
 		window-padding-y = 3
@@ -10,7 +10,7 @@
 		cursor-style = block
 		mouse-hide-while-typing = true
 		mouse-scroll-multiplier = 1.25
-		shell-integration = fish
+		shell-integration = none
 		shell-integration-features = no-cursor
 		clipboard-read = allow
 		clipboard-write = allow

@@ -95,15 +95,10 @@ in {
 		gf = "git fetch";
 		gfa = "git fetch --all --tags --prune";
 		gfo = "git fetch origin";
-		gfg = "git ls-files | grep";
 		gg = "git gui citool";
 		gga = "git gui citool --amend";
-		ggpull = "git pull origin \"$(git branch --show-current)\"";
-		ggpush = "git push origin \"$(git branch --show-current)\"";
-		ggsup = "git branch --set-upstream-to=origin/$(git branch --show-current)";
 		ghh = "git help";
 		gignore = "git update-index --assume-unchanged";
-		gignored = "git ls-files -v | grep \"^[[:lower:]]\"";
 		gl = "git pull";
 		glg = "git log --stat";
 		glgp = "git log --stat --patch";
@@ -118,7 +113,6 @@ in {
 		glols = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset\" --stat";
 		glod = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset\"";
 		glods = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset\" --date=short";
-		gluc = "git pull upstream $(git branch --show-current)";
 		glum = "git pull upstream main";
 		gm = "git merge";
 		gma = "git merge --abort";
@@ -133,7 +127,6 @@ in {
 		gpd = "git push --dry-run";
 		gpf = "git push --force-with-lease";
 		gpod = "git push origin --delete";
-		gpoat = "git push origin --all && git push origin --tags";
 		gpr = "git pull --rebase";
 		gpra = "git pull --rebase --autostash";
 		gprav = "git pull --rebase --autostash -v";
@@ -142,8 +135,6 @@ in {
 		gprv = "git pull --rebase -v";
 		gprum = "git pull --rebase upstream main";
 		gprumi = "git pull --rebase=interactive upstream main";
-		gpsup = "git push --set-upstream origin $(git branch --show-current)";
-		gpsupf = "git push --set-upstream origin $(git branch --show-current) --force-with-lease";
 		gpv = "git push --verbose";
 		gpu = "git push upstream";
 		gr = "git remote";
@@ -169,13 +160,11 @@ in {
 		grm = "git rm";
 		grmc = "git rm --cached";
 		grmv = "git remote rename";
-		groh = "git reset origin/$(git branch --show-current) --hard";
 		grrm = "git remote remove";
 		grs = "git restore";
 		grset = "git remote set-url";
 		grss = "git restore --source";
 		grst = "git restore --staged";
-		grt = "cd \"$(git rev-parse --show-toplevel || echo .)\"";
 		gru = "git reset --";
 		grup = "git remote update";
 		grv = "git remote --verbose";
@@ -201,16 +190,43 @@ in {
 		gswm = "git switch main";
 		gta = "git tag --annotate";
 		gts = "git tag --sign";
-		gtv = "git tag | sort -V";
 		gunignore = "git update-index --no-assume-unchanged";
-		gunwip = "git rev-list --max-count=1 --format=\"%s\" HEAD | grep -q \"\\--wip--\" && git reset HEAD~1";
 		gwch = "git whatchanged -p --abbrev-commit --pretty=medium";
-		gwipe = "git reset --hard && git clean --force -df";
 		gwt = "git worktree";
 		gwta = "git worktree add";
 		gwtls = "git worktree list";
 		gwtmv = "git worktree move";
 		gwtrm = "git worktree remove";
-		gwip = "git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message \"--wip-- [skip ci]\"";
 	};
+
+	# Complex git aliases that require pipes/subshells — nushell `alias` can't
+	# handle these, so they're defined as custom commands instead.
+	programs.nushell.extraConfig = ''
+		def ggpull [] { git pull origin (git branch --show-current | str trim) }
+		def ggpush [] { git push origin (git branch --show-current | str trim) }
+		def ggsup [] { git branch $"--set-upstream-to=origin/(git branch --show-current | str trim)" }
+		def gluc [] { git pull upstream (git branch --show-current | str trim) }
+		def gpsup [] { git push --set-upstream origin (git branch --show-current | str trim) }
+		def gpsupf [] { git push --set-upstream origin (git branch --show-current | str trim) --force-with-lease }
+		def groh [] { git reset $"origin/(git branch --show-current | str trim)" --hard }
+		def --env grt [] {
+			let toplevel = (do { git rev-parse --show-toplevel } | complete | get stdout | str trim)
+			if ($toplevel | is-not-empty) { cd $toplevel } else { cd . }
+		}
+		def gfg [...pattern: string] { git ls-files | lines | where {|f| $f =~ ($pattern | str join ".*") } }
+		def gignored [] { git ls-files -v | lines | where {|l| ($l | str substring 0..1) =~ "[a-z]" } }
+		def gpoat [] { git push origin --all; git push origin --tags }
+		def gtv [] { git tag | lines | sort }
+		def gwipe [] { git reset --hard; git clean --force -df }
+		def gunwip [] {
+			let msg = (git rev-list --max-count=1 --format="%s" HEAD | lines | get 1)
+			if ($msg | str contains "--wip--") { git reset HEAD~1 }
+		}
+		def gwip [] {
+			git add -A
+			let deleted = (git ls-files --deleted | lines)
+			if ($deleted | is-not-empty) { git rm ...$deleted }
+			git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"
+		}
+	'';
 }

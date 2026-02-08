@@ -118,7 +118,7 @@
 		name = user;
 		home = "/Users/${user}";
 		isHidden = false;
-		shell = pkgs.fish;
+		shell = pkgs.nushell;
 	};
 
 	home-manager.useGlobalPkgs = true;
