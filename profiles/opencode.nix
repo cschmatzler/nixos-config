@@ -28,6 +28,7 @@
 					"*.env.*" = "deny";
 					"*.envrc" = "deny";
 					"secrets/*" = "deny";
+					"~/.local/share/opencode/mcp-auth.json" = "deny";
 				};
 			};
 			agent = {
