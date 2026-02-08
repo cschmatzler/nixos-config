@@ -11,7 +11,6 @@
 			history = {
 				file_format = "sqlite";
 			};
-			use_ls_colors = true;
 		};
 
 		environmentVariables = {
