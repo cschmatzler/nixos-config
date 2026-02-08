@@ -45,7 +45,6 @@ with pkgs;
 		tree-sitter
 		unzip
 		vivid
-		watchman
 		zip
 	]
 	++ lib.optionals stdenv.isDarwin [
