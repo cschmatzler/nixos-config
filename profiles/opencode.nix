@@ -17,7 +17,7 @@
 			model = "anthropic/claude-opus-4-6";
 			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
-			plugin = ["opencode-anthropic-auth"];
+			plugin = ["oh-my-opencode" "opencode-anthropic-auth"];
 			keybinds = {
 				leader = "ctrl+o";
 			};
@@ -91,5 +91,10 @@
 			source = ./opencode/tool;
 			recursive = true;
 		};
+		"opencode/oh-my-opencode.json".text =
+			builtins.toJSON {
+				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
+				disabled_mcps = ["websearch" "context7" "grep_app"];
+			};
 	};
 }
