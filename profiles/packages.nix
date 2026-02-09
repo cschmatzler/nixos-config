@@ -52,6 +52,7 @@ with pkgs;
 		alcove
 		dockutil
 		mas
+		openusage
 		raycast
 		tailscale
 		xcodes

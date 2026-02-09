@@ -48,6 +48,10 @@
 			url = "github:dmmulroy/overseer";
 			flake = false;
 		};
+		openusage = {
+			url = "github:robinebers/openusage/v0.5.1";
+			flake = false;
+		};
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
