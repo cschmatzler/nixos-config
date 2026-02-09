@@ -50,6 +50,14 @@
 				};
 			};
 			mcp = {
+				cog = {
+					enabled = true;
+					type = "remote";
+					url = "https://trycog.ai/mcp";
+					headers = {
+						Authorization = "Bearer {env:COG_API_TOKEN}";
+					};
+				};
 				context7 = {
 					enabled = true;
 					type = "remote";
