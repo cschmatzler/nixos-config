@@ -36,7 +36,7 @@
 					model = "anthropic/claude-opus-4-6";
 				};
 				explore = {
-					model = "opencode/minimax-m2.1";
+					model = "anthropic/claude-haiku-4-5";
 				};
 			};
 			instructions = [
@@ -74,7 +74,7 @@
 					command = ["bunx" "opensrc-mcp"];
 				};
 				overseer = {
-					enabled = true;
+					enabled = false;
 					type = "local";
 					command = ["${pkgs.overseer}/bin/os" "mcp"];
 				};
