@@ -95,6 +95,10 @@
 			builtins.toJSON {
 				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
 				disabled_mcps = ["websearch" "context7" "grep_app"];
+				git_master = {
+					commit_footer = false;
+					include_co_authored_by = false;
+				};
 			};
 	};
 }
