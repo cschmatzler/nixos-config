@@ -5,7 +5,7 @@
 ### Local Development
 ```bash
 nix run .#build               # Build current host config
-nix run .#build -- <hostname> # Build specific host (chidi, jason, michael, mindy, tahani)
+nix run .#build -- <hostname> # Build specific host (chidi, jason, michael, tahani)
 nix run .#apply               # Build and apply locally (darwin-rebuild/nixos-rebuild switch)
 nix flake check               # Validate flake
 ```
@@ -13,7 +13,7 @@ nix flake check               # Validate flake
 ### Remote Deployment (NixOS only)
 ```bash
 colmena build                 # Build all NixOS hosts
-colmena apply --on <host>     # Deploy to specific NixOS host (michael, mindy, tahani)
+colmena apply --on <host>     # Deploy to specific NixOS host (michael, tahani)
 colmena apply                 # Deploy to all NixOS hosts
 ```
 
