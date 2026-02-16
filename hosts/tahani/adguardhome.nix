@@ -4,6 +4,9 @@
 		host = "0.0.0.0";
 		port = 10000;
 		settings = {
+			dhcp = {
+				enabled = false;
+			};
 			dns = {
 				upstream_dns = [
 					"1.1.1.1"
