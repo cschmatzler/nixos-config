@@ -26,7 +26,6 @@
 			flake = false;
 		};
 		nixvim.url = "github:nix-community/nixvim";
-		zjstatus.url = "github:dj95/zjstatus";
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		disko = {
 			url = "github:nix-community/disko";
