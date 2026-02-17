@@ -45,7 +45,6 @@ with pkgs;
 		tree-sitter
 		unzip
 		vivid
-		wrangler
 		zip
 	]
 	++ lib.optionals stdenv.isDarwin [
