@@ -50,16 +50,6 @@
 				};
 			};
 			mcp = {
-				context7 = {
-					enabled = true;
-					type = "remote";
-					url = "https://mcp.context7.com/mcp";
-				};
-				grep_app = {
-					enabled = true;
-					type = "remote";
-					url = "https://mcp.grep.app";
-				};
 				opensrc = {
 					enabled = true;
 					type = "local";
@@ -94,10 +84,13 @@
 		"opencode/oh-my-opencode.json".text =
 			builtins.toJSON {
 				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
-				disabled_mcps = ["websearch" "context7" "grep_app"];
 				git_master = {
 					commit_footer = false;
 					include_co_authored_by = false;
+				};
+				experimental = {
+					task_system = true;
+					hashline_edit = true;
 				};
 			};
 	};
