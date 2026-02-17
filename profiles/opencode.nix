@@ -88,10 +88,6 @@
 					commit_footer = false;
 					include_co_authored_by = false;
 				};
-				experimental = {
-					task_system = true;
-					hashline_edit = true;
-				};
 			};
 	};
 }
