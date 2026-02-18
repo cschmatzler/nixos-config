@@ -33,7 +33,6 @@
 			../../profiles/lazygit.nix
 			../../profiles/lumen.nix
 			../../profiles/mise.nix
-			../../profiles/nono.nix
 			../../profiles/neovim
 			../../profiles/opencode.nix
 			../../profiles/overseer.nix

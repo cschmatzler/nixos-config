@@ -39,10 +39,6 @@
 			url = "github:jnsahaj/lumen";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		nono = {
-			url = "github:lukehinds/nono";
-			flake = false;
-		};
 		overseer = {
 			url = "github:dmmulroy/overseer";
 			flake = false;
