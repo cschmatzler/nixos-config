@@ -430,39 +430,6 @@
         "type": "github"
       }
     },
-    "nono": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1771408289,
-        "narHash": "sha256-eKhLcC6Ssv3dQjYLFrGEdaPdEbnSGXLZVXG4cdTPKOU=",
-        "owner": "lukehinds",
-        "repo": "nono",
-        "rev": "cf93f976e8f37b83f496b04ccb1054b55aca55f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lukehinds",
-        "repo": "nono",
-        "type": "github"
-      }
-    },
-    "openusage": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1770543295,
-        "narHash": "sha256-DvgEPZhFm06igalUPgnQ8VLkl0gk/3rm+lbEJ2/s7gM=",
-        "owner": "robinebers",
-        "repo": "openusage",
-        "rev": "22a7bd5f7856397400e60dd787ad82b23c763969",
-        "type": "github"
-      },
-      "original": {
-        "owner": "robinebers",
-        "ref": "v0.5.1",
-        "repo": "openusage",
-        "type": "github"
-      }
-    },
     "overseer": {
       "flake": false,
       "locked": {
@@ -493,8 +460,6 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
-        "nono": "nono",
-        "openusage": "openusage",
         "overseer": "overseer",
         "sops-nix": "sops-nix"
       }
