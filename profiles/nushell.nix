@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+	lib,
+	pkgs,
+	...
+}: {
 	programs.nushell = {
 		enable = true;
 
@@ -19,9 +23,15 @@
 			TERM_BACKGROUND = "light";
 		};
 
-		extraEnv = ''
-			$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate catppuccin-latte)
-		'';
+		extraEnv =
+			''
+				$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate catppuccin-latte)
+			''
+			+ lib.optionalString pkgs.stdenv.isDarwin ''
+				# Nushell on Darwin doesn't source /etc/zprofile or path_helper,
+				# so nix-managed paths must be added explicitly.
+				$env.PATH = ($env.PATH | split row (char esep) | prepend "/run/current-system/sw/bin" | prepend $"($env.HOME)/.nix-profile/bin")
+			'';
 
 		extraConfig = ''
 			# --- Catppuccin Latte Theme ---
