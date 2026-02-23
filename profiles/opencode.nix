@@ -43,6 +43,7 @@
 				"CLAUDE.md"
 				"AGENT.md"
 				"AGENTS.md"
+				"AGENTS.local.md"
 			];
 			formatter = {
 				mix = {
