@@ -42,7 +42,7 @@
 			instructions = [
 				"CLAUDE.md"
 				"AGENT.md"
-				"AGENTS.md"
+				# "AGENTS.md"
 				"AGENTS.local.md"
 			];
 			formatter = {
