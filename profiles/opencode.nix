@@ -57,7 +57,7 @@
 					command = ["bunx" "opensrc-mcp"];
 				};
 				overseer = {
-					enabled = true;
+					enabled = false;
 					type = "local";
 					command = ["${pkgs.overseer}/bin/os" "mcp"];
 				};
