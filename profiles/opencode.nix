@@ -18,9 +18,6 @@
 			small_model = "opencode/minimax-m2.1";
 			theme = "catppuccin";
 			plugin = ["oh-my-opencode" "opencode-anthropic-auth"];
-			keybinds = {
-				leader = "ctrl+o";
-			};
 			permission = {
 				read = {
 					"*" = "allow";
