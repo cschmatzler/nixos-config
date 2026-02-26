@@ -16,16 +16,19 @@ Requirements:
 2. Use today's date in both notes (date in title and inside content).
 3. In the `material` output:
    - Keep clean markdown structure with headings and bullet points.
+   - Do not add a top-level title heading (no `# ...`) because `zk new --title` already sets the note title.
    - Translate examples, dialogues, and all lesson texts into English when not already translated.
    - For bigger reading passages, include a word-by-word breakdown.
    - For declension/conjugation/grammar tables, provide a complete table of possibilities relevant to the topic.
-   - When numbers appear, include their written-out form.
+   - Spell out numbers only when the source token is Albanian; do not spell out English numbers.
 4. In the `exercises` output:
    - Include every exercise in markdown.
+   - Do not add a top-level title heading (no `# ...`) because `zk new --title` already sets the note title.
    - Translate each exercise to English.
    - Solve all non-free-writing tasks (multiple choice, fill in the blanks, etc.) and include example solutions.
    - For free-writing tasks, provide expanded examples using basic vocabulary from the lesson (if prompted for 3, provide 10).
    - Translate free-writing example answers into English.
+   - Spell out numbers only when the source token is Albanian; do not spell out English numbers.
 
 Execution steps:
 
