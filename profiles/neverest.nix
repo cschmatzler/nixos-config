@@ -53,6 +53,7 @@ in {
 							type = "password";
 							cmd = concatStringsSep " " account.passwordCommand;
 						};
+						clients-pool-size = 8;
 					};
 					folder = {
 						aliases = {
@@ -67,28 +68,4 @@ in {
 				};
 			};
 		};
-
-	systemd.user.services.neverest-sync = {
-		Unit = {
-			Description = "Neverest email sync";
-		};
-		Service = {
-			Type = "oneshot";
-			ExecStart = "${pkgs.neverest}/bin/neverest sync";
-		};
-	};
-
-	systemd.user.timers.neverest-sync = {
-		Unit = {
-			Description = "Neverest email sync timer";
-		};
-		Timer = {
-			OnBootSec = "1min";
-			OnUnitActiveSec = "5min";
-			Persistent = true;
-		};
-		Install = {
-			WantedBy = ["timers.target"];
-		};
-	};
 }
