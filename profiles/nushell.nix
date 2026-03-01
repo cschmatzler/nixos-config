@@ -21,6 +21,7 @@
 			COLORTERM = "truecolor";
 			COLORFGBG = "15;0";
 			TERM_BACKGROUND = "light";
+			EDITOR = "nvim";
 		};
 
 		extraEnv =

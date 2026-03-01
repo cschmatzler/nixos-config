@@ -61,6 +61,7 @@ Workflow:
 Execution rules:
 - Never perform bulk operations. One message ID per `read`, `move`, `delete`, and attachment command.
 - Always use page size 20 for envelope listing (`-s 20`).
+- If any single-ID command fails, log the error and continue with the next unreviewed ID.
 - Never skip reading message content before deciding.
 - Keep decisions conservative: only route clearly ephemeral automated/system messages to `Deleted Messages`.
 - Never move or delete human communications via automation.
