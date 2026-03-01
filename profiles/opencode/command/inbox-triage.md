@@ -6,9 +6,10 @@ Process email with strict manual triage using Himalaya only.
 
 Hard requirements:
 - Use `himalaya` for every mailbox interaction (folders, listing, reading, moving, deleting, attachments).
-- Process exactly one message at a time. Never run bulk actions on multiple IDs.
+- Process exactly one message ID at a time. Never run bulk actions on multiple IDs.
 - Do not use pattern-matching commands or searches (`grep`, `rg`, `awk`, `sed`, `himalaya envelope list` query filters, etc.).
 - Always inspect current folders first, then triage.
+- Treat this as a single deterministic run over a snapshot of message IDs discovered during this run.
 
 Workflow:
 1. Run `himalaya folder list` first and use those folders as the primary taxonomy.
@@ -27,41 +28,47 @@ Workflow:
 4. Determine source folder:
    - If `$ARGUMENTS` contains a folder name, use that as source.
    - Otherwise use `INBOX`.
-5. List envelopes in explicit pages of 20 from the source folder without search filters.
-   - Use: `himalaya envelope list -f "<source>" -p <page> -s 20`.
-   - Start at page `1`.
-   - Work page-by-page in ascending order.
-6. For each page:
-   - Enumerate IDs in the returned order.
-   - Process each single envelope ID fully before touching the next ID.
-   - Do not request the next page until every ID from the current page is finished.
-7. For each single envelope ID, do all checks before any move/delete:
-   - Read the message (`himalaya message read -f "<source>" <id>`).
-   - If needed for classification, inspect attachments with Himalaya (`himalaya attachment download -f "<source>" <id>`), then reason from the attachment names/content.
-8. Classify and act for that one ID:
-   - Ephemeral communication from automated/system senders (alerts, bot/status updates, auth/login codes, OTP/2FA verification emails, password-reset codes, no archival value): delete it.
-   - Communication from actual people: do not delete, do not move, and do not auto-triage; leave untouched in the current folder (typically `INBOX`).
-   - Orders/invoices: move only real order/invoice/business records to `Orders and Invoices`.
-   - Payments: move payment confirmations, payment reminders, and payment-provider messages (e.g. Klarna, PayPal, Stripe) to `Payments`. Do not confuse with order confirmations or invoices — `Payments` is specifically for payment-transaction correspondence.
-   - Shipping-only notifications: do not move to `Orders and Invoices` unless there is actual invoice/receipt/order-document value (for example, invoice attached or embedded billing document).
+5. Build a run scope safely:
+   - List with fixed page size `20`: `himalaya envelope list -f "<source>" -p 1 -s 20`.
+   - Enumerate IDs in returned order.
+   - Process each ID fully before touching the next ID.
+   - After each single-ID action, relist page `1` with `-s 20` and continue with the next unprocessed ID.
+   - Keep an in-memory reviewed set for this run to avoid reprocessing IDs already handled or intentionally left untouched.
+   - Stop when a fresh page-1 listing contains no unprocessed IDs.
+6. For each single envelope ID, do all checks before any move/delete:
+   - Read the message: `himalaya message read -f "<source>" <id>`.
+   - If needed for classification, inspect attachments with `himalaya attachment download -f "<source>" <id>`.
+   - If attachments are downloaded, inspect them and remove temporary local files after use.
+7. Classification precedence (higher rule wins on conflict):
+   - Human communication from an actual person: do not delete, do not move, leave untouched.
+   - Clearly ephemeral automated/system message (alerts, bot/status updates, OTP/2FA, password reset codes, login codes) with no archival value: move to `Deleted Messages`.
+   - Payment transaction correspondence (payment confirmations/reminders, provider messages such as Klarna/PayPal/Stripe): move to `Payments`.
+   - Orders/invoices/business records: move to `Orders and Invoices`.
+   - Shipping-only notifications: do not move to `Orders and Invoices` unless there is actual invoice/receipt/order-document value.
    - Marketing/newsletters: move to `Newsletters and Marketing`.
-   - Delivery/submission confirmations (`Einlieferungen`) when appropriate.
-   - Long-term but uncategorized messages: create a new folder and move there.
-9. Folder creation rule:
-   - If none of the existing folders fit but the message should be kept, create a concise new folder with `himalaya folder add "<new-folder>"`, then move the message there.
-10. Continue until all messages in source folder are processed:
-   - After a page is completely processed, request the next page (`-p <page+1>`) with the same page size (`-s 20`).
-   - Stop only when there are no more envelopes to process.
+   - Delivery/submission confirmations: move to `Einlieferungen` when appropriate.
+   - Long-term but uncategorized messages: create a concise new folder and move there.
+8. Folder creation rule:
+   - Create a new folder only if no existing folder fits and the message should be kept.
+   - Naming constraints: concise topic name, avoid duplicates, and avoid broad catch-all names.
+   - Command: `himalaya folder add "<new-folder>"`.
 
 Execution rules:
 - Never perform bulk operations. One message ID per `read`, `move`, `delete`, and attachment command.
-- Never query page `N+1` before fully processing page `N`.
 - Always use page size 20 for envelope listing (`-s 20`).
 - Never skip reading message content before deciding.
-- Keep decisions conservative: delete only clearly ephemeral automated/system messages.
+- Keep decisions conservative: only route clearly ephemeral automated/system messages to `Deleted Messages`.
 - Never move or delete human communications via automation.
 - Never route new messages to `Archive`; treat it as deprecated legacy-only.
-- Report a compact action log at the end: per-folder counts, created folders, and a short rationale for non-obvious classifications.
+- Define "processed" as "reviewed once in this run" (including intentionally untouched human messages).
+- Include only messages observed during this run's listings; if new mail arrives mid-run, leave it for the next run.
+- Report a compact action log at the end with:
+  - source folder,
+  - total reviewed IDs,
+  - counts by action (untouched/moved-to-folder/deleted),
+  - per-destination-folder counts,
+  - created folders,
+  - short rationale for non-obvious classifications.
 
 <user-request>
 $ARGUMENTS
