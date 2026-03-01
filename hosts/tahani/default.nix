@@ -29,6 +29,7 @@
 			../../profiles/nushell.nix
 			../../profiles/fzf.nix
 			../../profiles/git.nix
+			../../profiles/himalaya.nix
 			../../profiles/home.nix
 			../../profiles/jjui.nix
 			../../profiles/jujutsu.nix
