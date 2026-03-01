@@ -15,6 +15,7 @@ Workflow:
 2. Use this existing folder set as defaults when it fits:
    - `INBOX`
    - `Orders and Invoices`
+   - `Payments`
    - `Einlieferungen`
    - `Newsletters and Marketing`
    - `Junk`
@@ -34,6 +35,7 @@ Workflow:
    - Ephemeral communication from automated/system senders (alerts, bot/status updates, auth/login codes, OTP/2FA verification emails, password-reset codes, no archival value): delete it.
    - Communication from actual people: do not delete, do not move, and do not auto-triage; leave untouched in the current folder (typically `INBOX`).
    - Orders/invoices: move only real order/invoice/business records to `Orders and Invoices`.
+   - Payments: move payment confirmations, payment reminders, and payment-provider messages (e.g. Klarna, PayPal, Stripe) to `Payments`. Do not confuse with order confirmations or invoices — `Payments` is specifically for payment-transaction correspondence.
    - Shipping-only notifications: do not move to `Orders and Invoices` unless there is actual invoice/receipt/order-document value (for example, invoice attached or embedded billing document).
    - Marketing/newsletters: move to `Newsletters and Marketing`.
    - Delivery/submission confirmations (`Einlieferungen`) when appropriate.
