@@ -32,7 +32,6 @@ Workflow:
    - List with fixed page size `20` and JSON output: `himalaya envelope list -f "<source>" -p 1 -s 20 --output json`.
    - Start at page `1`. Enumerate IDs in returned order.
    - Process each ID fully before touching the next ID.
-   - After each single-ID action that moves or deletes a message, relist the current page with `-s 20 --output json` and continue with the next unprocessed ID.
    - Keep an in-memory reviewed set for this run to avoid reprocessing IDs already handled or intentionally left untouched.
    - When all IDs on the current page are in the reviewed set, advance to the next page.
    - Stop when a page returns fewer results than the page size (end of folder) and all its IDs are in the reviewed set.
