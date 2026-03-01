@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+	pkgs,
+	lib,
+	osConfig,
+	...
+}: {
 	programs.zellij = {
 		enable = true;
 		settings = {
@@ -10,6 +15,13 @@
 			show_release_notes = false;
 		};
 	};
+
+	programs.nushell.extraConfig =
+		lib.optionalString (osConfig.networking.hostName == "tahani") ''
+			if 'ZELLIJ' not-in ($env | columns) {
+				zellij
+			}
+		'';
 
 	xdg.configFile."zellij/layouts/default.kdl".text = ''
 		layout {
