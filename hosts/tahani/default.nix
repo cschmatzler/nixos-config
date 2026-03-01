@@ -30,6 +30,7 @@
 			../../profiles/fzf.nix
 			../../profiles/git.nix
 			../../profiles/himalaya.nix
+			../../profiles/neverest.nix
 			../../profiles/home.nix
 			../../profiles/jjui.nix
 			../../profiles/jujutsu.nix

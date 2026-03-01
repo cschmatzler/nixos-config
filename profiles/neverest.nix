@@ -6,13 +6,13 @@
 }:
 with lib; let
 	tomlFormat = pkgs.formats.toml {};
-	account = config.accounts.email.accounts.icloud;
+	account = config.accounts.email.accounts."christoph@schmatzler.com";
 	maildirPath = account.maildir.absPath;
 in {
 	home.packages = [pkgs.neverest];
 
 	xdg.configFile."neverest/config.toml".source = tomlFormat.generate "neverest-config.toml" {
-		accounts.icloud = {
+		accounts."christoph@schmatzler.com" = {
 			default = true;
 
 			folder.filters = "all";
