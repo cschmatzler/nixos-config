@@ -142,28 +142,6 @@
         "type": "github"
       }
     },
-    "fenix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "neverest",
-          "nixpkgs"
-        ],
-        "rust-analyzer-src": "rust-analyzer-src_2"
-      },
-      "locked": {
-        "lastModified": 1732405626,
-        "narHash": "sha256-uDbQrdOyqa2679kKPzoztMxesOV7DG2+FuX/TZdpxD0=",
-        "owner": "soywod",
-        "repo": "fenix",
-        "rev": "c7af381484169a78fb79a11652321ae80b0f92a6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "soywod",
-        "repo": "fenix",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -397,26 +375,6 @@
         "type": "github"
       }
     },
-    "neverest": {
-      "inputs": {
-        "fenix": "fenix_2",
-        "nixpkgs": "nixpkgs_4",
-        "pimalaya": "pimalaya_2"
-      },
-      "locked": {
-        "lastModified": 1734595002,
-        "narHash": "sha256-MXQDy5b/ooSkISEVM9KxHeqkkhPimZJtX3j9jqTP5aU=",
-        "owner": "pimalaya",
-        "repo": "neverest",
-        "rev": "cc5f5214d3bea064ed059116ac81e40a803faa7e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pimalaya",
-        "repo": "neverest",
-        "type": "github"
-      }
-    },
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
@@ -521,21 +479,6 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1732539489,
-        "narHash": "sha256-EPstM4aUuClDkFdoyno1CSRZIfGdCfZKw/XzMlQB0NY=",
-        "owner": "soywod",
-        "repo": "nixpkgs",
-        "rev": "87b010196489f96e4acdcc804ed3d096476e46ad",
-        "type": "github"
-      },
-      "original": {
-        "owner": "soywod",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_5": {
-      "locked": {
         "lastModified": 1772370856,
         "narHash": "sha256-OXf9tB+s1EPCzIBR4eIQTm1dbbfVgjPNEGChgwEvvIU=",
         "owner": "nixos",
@@ -550,7 +493,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_6": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1770380644,
         "narHash": "sha256-P7dWMHRUWG5m4G+06jDyThXO7kwSk46C1kgjEWcybkE=",
@@ -566,7 +509,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_7": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1765934234,
         "narHash": "sha256-pJjWUzNnjbIAMIc5gRFUuKCDQ9S1cuh3b2hKgA7Mc4A=",
@@ -585,7 +528,7 @@
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": "nixpkgs_5",
         "systems": "systems_3"
       },
       "locked": {
@@ -634,22 +577,6 @@
         "type": "github"
       }
     },
-    "pimalaya_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1732869386,
-        "narHash": "sha256-83tDRVfSBVZgIp6WOb6r/T6cHfP7lNsK1MUTdkGMi14=",
-        "owner": "pimalaya",
-        "repo": "nix",
-        "rev": "be23e0deeb014c6be5232322b892c9bee25dee77",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pimalaya",
-        "repo": "nix",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "colmena": "colmena",
@@ -663,9 +590,8 @@
         "jj-ryu": "jj-ryu",
         "jj-starship": "jj-starship",
         "llm-agents": "llm-agents",
-        "neverest": "neverest",
         "nix-homebrew": "nix-homebrew",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_4",
         "nixvim": "nixvim",
         "overseer": "overseer",
         "sops-nix": "sops-nix",
@@ -680,23 +606,6 @@
         "owner": "rust-lang",
         "repo": "rust-analyzer",
         "rev": "a9026e6d5068172bf5a0d52a260bb290961d1cb4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rust-lang",
-        "ref": "nightly",
-        "repo": "rust-analyzer",
-        "type": "github"
-      }
-    },
-    "rust-analyzer-src_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1732050317,
-        "narHash": "sha256-G5LUEOC4kvB/Xbkglv0Noi04HnCfryur7dVjzlHkgpI=",
-        "owner": "rust-lang",
-        "repo": "rust-analyzer",
-        "rev": "c0bbbb3e5d7d1d1d60308c8270bfd5b250032bb4",
         "type": "github"
       },
       "original": {
@@ -848,7 +757,7 @@
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils_3",
-        "nixpkgs": "nixpkgs_7",
+        "nixpkgs": "nixpkgs_6",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
