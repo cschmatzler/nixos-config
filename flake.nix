@@ -45,6 +45,8 @@
 			url = "github:dmmulroy/overseer";
 			flake = false;
 		};
+		himalaya.url = "github:pimalaya/himalaya";
+		neverest.url = "github:pimalaya/neverest";
 	};
 
 	outputs = inputs @ {flake-parts, ...}:
