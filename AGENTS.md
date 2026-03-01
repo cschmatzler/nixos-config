@@ -17,6 +17,8 @@ colmena apply --on <host>     # Deploy to specific NixOS host (michael, tahani)
 colmena apply                 # Deploy to all NixOS hosts
 ```
 
+When you're on tahani and asked to apply, that means running `colmena apply`.
+
 ### Formatting
 ```bash
 alejandra .                   # Format all Nix files
