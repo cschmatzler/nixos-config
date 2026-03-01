@@ -17,6 +17,7 @@ with pkgs;
 		dig
 		docker
 		docker-compose
+		dust
 		fastfetch
 		fd
 		gh
@@ -33,19 +34,19 @@ with pkgs;
 		nodejs_24
 		nurl
 		openssh
+		ouch
 		ov
 		pnpm
 		postgresql_17
 		sd
+		serie
 		sops
 		sqlite
 		tea
 		tokei
 		tree
 		tree-sitter
-		unzip
 		vivid
-		zip
 	]
 	++ lib.optionals stdenv.isDarwin [
 		_1password-gui
