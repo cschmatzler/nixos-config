@@ -42,7 +42,9 @@ Workflow:
 7. Classification precedence (higher rule wins on conflict):
    - Human communication from an actual person: do not delete, do not move, leave untouched.
    - Clearly ephemeral automated/system message (alerts, bot/status updates, OTP/2FA, password reset codes, login codes) with no archival value: move to `Deleted Messages`.
-   - Payment transaction correspondence (payment confirmations/reminders, provider messages such as Klarna/PayPal/Stripe): move to `Payments`.
+   - Payment transaction correspondence (actual charge/payment confirmations, receipts, failed-payment notices, provider payment events such as Klarna/PayPal/Stripe): move to `Payments`.
+   - Subscription renewal notifications (auto-renew reminders, "will renew soon", price-change notices without a concrete transaction) are operational alerts, not payment records: move to `Deleted Messages`.
+   - "Kontoauszug verfügbar/ist online" notifications are availability alerts, not payment records: move to `Deleted Messages`.
    - Orders/invoices/business records: move to `Orders and Invoices`.
    - Shipping-only notifications: do not move to `Orders and Invoices` unless there is actual invoice/receipt/order-document value.
    - Marketing/newsletters: move to `Newsletters and Marketing`.
