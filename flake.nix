@@ -36,10 +36,11 @@
 			url = "github:zhaofengli/colmena";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		lumen = {
-			url = "github:jnsahaj/lumen";
-			inputs.nixpkgs.follows = "nixpkgs";
+		jj-ryu = {
+			url = "github:dmmulroy/jj-ryu";
+			flake = false;
 		};
+		jj-starship.url = "github:dmmulroy/jj-starship";
 		overseer = {
 			url = "github:dmmulroy/overseer";
 			flake = false;

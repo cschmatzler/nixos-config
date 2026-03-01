@@ -5,7 +5,7 @@
 		settings = {
 			add_newline = true;
 			command_timeout = 2000;
-			format = "$directory$git_branch$git_status$character";
+			format = "$directory$git_branch$git_status$\{custom.scm}$character";
 			character = {
 				error_symbol = "[✗ ](bold #e64553)";
 				success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #dc8a78)";
@@ -36,6 +36,11 @@
 				staged = "staged:$count ";
 				renamed = "mv:$count ";
 				deleted = "del:$count ";
+			};
+			custom.scm = {
+				when = "jj-starship detect";
+				shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
+				format = "$output ";
 			};
 		};
 	};

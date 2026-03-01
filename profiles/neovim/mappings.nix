@@ -120,13 +120,19 @@
 		# g - git
 		{
 			mode = "n";
+			key = "<leader>gc";
+			action = ":JJDiffConflicts<CR>";
+			options.desc = "Resolve conflicts";
+		}
+		{
+			mode = "n";
 			key = "<leader>gg";
 			action.__raw = ''
-				function()
-				  require('toggleterm.terminal').Terminal:new({ cmd = 'lazygit', direction = 'float' }):toggle()
-				end
+						function()
+				require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
+						end
 			'';
-			options.desc = "lazygit";
+			options.desc = "jjui";
 		}
 		# l - lsp/formatter
 		{

@@ -28,6 +28,8 @@ with pkgs;
 		hledger
 		htop
 		hyperfine
+		jj-ryu
+		jj-starship
 		jq
 		killall
 		lsof
