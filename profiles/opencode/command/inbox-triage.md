@@ -17,7 +17,7 @@ Workflow:
    - `INBOX`
    - `Orders and Invoices`
    - `Payments`
-   - `Einlieferungen`
+   - `Outgoing Shipments`
    - `Newsletters and Marketing`
    - `Junk`
    - `Deleted Messages`
@@ -46,7 +46,7 @@ Workflow:
    - Orders/invoices/business records: move to `Orders and Invoices`.
    - Shipping-only notifications: do not move to `Orders and Invoices` unless there is actual invoice/receipt/order-document value.
    - Marketing/newsletters: move to `Newsletters and Marketing`.
-   - Delivery/submission confirmations: move to `Einlieferungen` when appropriate.
+   - Delivery/submission confirmations: move to `Outgoing Shipments` when appropriate.
    - Long-term but uncategorized messages: create a concise new folder and move there.
 8. Folder creation rule:
    - Create a new folder only if no existing folder fits and the message should be kept.
