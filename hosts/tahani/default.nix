@@ -6,8 +6,8 @@
 	hostname,
 	...
 }: let
-	himalayaPackage = config.home-manager.users.${user}.programs.himalaya.package;
-	opencodePackage = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
+	himalaya = config.home-manager.users.${user}.programs.himalaya.package;
+	opencode = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
 in {
 	imports = [
 		./adguardhome.nix
@@ -63,8 +63,8 @@ in {
 			};
 			Service = {
 				Type = "oneshot";
-				ExecStart = "${opencodePackage}/bin/opencode run --command inbox-triage";
-				Environment = "PATH=${himalayaPackage}/bin:${opencodePackage}/bin";
+				ExecStart = "${opencode}/bin/opencode run --command inbox-triage";
+				Environment = "PATH=${himalaya}/bin:${opencode}/bin";
 			};
 		};
 
