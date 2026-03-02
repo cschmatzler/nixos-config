@@ -4,7 +4,7 @@
 		package =
 			pkgs.writeShellApplication {
 				name = "himalaya";
-				runtimeInputs = [pkgs.coreutils pkgs.himalaya];
+				runtimeInputs = [pkgs.bash pkgs.coreutils pkgs.himalaya];
 				text = ''
 					exec env RUST_LOG="warn,imap_codec::response=error" ${pkgs.himalaya}/bin/himalaya "$@"
 				'';
