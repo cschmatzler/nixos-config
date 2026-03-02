@@ -64,7 +64,7 @@ in {
 			Service = {
 				Type = "oneshot";
 				ExecStart = "${opencode}/bin/opencode run --command inbox-triage";
-				Environment = "PATH=${himalaya}/bin:${opencode}/bin";
+				Environment = "PATH=${himalaya}/bin:${opencode}/bin:${pkgs.coreutils}/bin";
 			};
 		};
 
