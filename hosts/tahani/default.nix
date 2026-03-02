@@ -52,6 +52,29 @@
 		];
 
 		programs.git.settings.user.email = "christoph@schmatzler.com";
+
+		systemd.user.services.opencode-inbox-triage = {
+			Unit = {
+				Description = "OpenCode inbox triage";
+			};
+			Service = {
+				Type = "oneshot";
+				ExecStart = "${inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode}/bin/opencode run --command inbox-triage";
+			};
+		};
+
+		systemd.user.timers.opencode-inbox-triage = {
+			Unit = {
+				Description = "Run OpenCode inbox triage every 10 minutes";
+			};
+			Timer = {
+				OnCalendar = "*:0/10";
+				Persistent = true;
+			};
+			Install = {
+				WantedBy = ["timers.target"];
+			};
+		};
 	};
 
 	virtualisation.docker.enable = true;
