@@ -3,13 +3,6 @@
 	pkgs,
 	...
 }: {
-	home.sessionVariables = {
-		OPENCODE_ENABLE_EXA = 1;
-		OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
-		OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
-		OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
-	};
-
 	programs.opencode = {
 		enable = true;
 		package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
@@ -52,11 +45,6 @@
 					enabled = true;
 					type = "local";
 					command = ["bunx" "opensrc-mcp"];
-				};
-				overseer = {
-					enabled = false;
-					type = "local";
-					command = ["${pkgs.overseer}/bin/os" "mcp"];
 				};
 			};
 		};
