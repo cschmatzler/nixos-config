@@ -3,44 +3,50 @@
 		enable = true;
 		enableNushellIntegration = true;
 		settings = {
-			add_newline = true;
-			command_timeout = 2000;
-			format = "$directory$git_branch$git_status$\{custom.scm}$character";
+			format = "$directory\${custom.scm}$all";
+			buf = {
+				disabled = true;
+			};
 			character = {
-				error_symbol = "[✗ ](bold #e64553)";
-				success_symbol = "[❯](bold #40a02b)[❯](bold #df8e1d)[❯](bold #dc8a78)";
+				error_symbol = "[󰘧](bold red)";
+				success_symbol = "[󰘧](bold green)";
 			};
 			directory = {
-				truncation_length = 2;
-				truncation_symbol = "…/";
-				repo_root_style = "bold cyan";
-				repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
+				truncate_to_repo = false;
+			};
+			dotnet = {
+				detect_files = ["global.json" "Directory.Build.props" "Directory.Build.targets" "Packages.props"];
 			};
 			git_branch = {
-				format = "[$symbol$branch(:$remote_branch)]($style) ";
+				disabled = true;
 				symbol = " ";
-				style = "bold #8839ef";
-				truncation_length = 20;
-				truncation_symbol = "…";
+				truncation_length = 18;
 			};
 			git_status = {
-				format = "([$all_status$ahead_behind]($style) )";
-				style = "bold #df8e1d";
-				conflicted = "conflict:$count ";
-				ahead = "ahead:$count ";
-				behind = "behind:$count ";
-				diverged = "ahead:$ahead_count behind:$behind_count ";
-				untracked = "new:$count ";
-				stashed = "stash:$count ";
-				modified = "mod:$count ";
-				staged = "staged:$count ";
-				renamed = "mv:$count ";
-				deleted = "del:$count ";
+				disabled = true;
+			};
+			git_commit = {
+				disabled = true;
+			};
+			git_state = {
+				disabled = true;
 			};
 			custom.scm = {
 				when = "jj-starship detect";
 				shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
 				format = "$output ";
+			};
+			golang = {
+				symbol = " ";
+			};
+			lua = {
+				symbol = " ";
+			};
+			nix_shell = {
+				symbol = " ";
+			};
+			package = {
+				disabled = true;
 			};
 		};
 	};
