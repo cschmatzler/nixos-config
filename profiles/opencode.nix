@@ -10,7 +10,7 @@
 			model = "anthropic/claude-opus-4-6";
 			small_model = "anthropic/claude-haiku-4-5";
 			theme = "catppuccin";
-			plugin = ["oh-my-opencode@3.10.0" "opencode-anthropic-auth"];
+			plugin = ["oh-my-opencode@latest" "opencode-anthropic-auth@latest"];
 			permission = {
 				read = {
 					"*" = "allow";
