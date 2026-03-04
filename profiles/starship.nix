@@ -3,7 +3,7 @@
 		enable = true;
 		enableNushellIntegration = true;
 		settings = {
-			format = "$directory\${custom.scm}$all";
+			format = "$directory\${custom.scm}$hostname$line_break$character";
 			buf = {
 				disabled = true;
 			};
