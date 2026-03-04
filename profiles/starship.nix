@@ -14,9 +14,6 @@
 			directory = {
 				truncate_to_repo = false;
 			};
-			dotnet = {
-				detect_files = ["global.json" "Directory.Build.props" "Directory.Build.targets" "Packages.props"];
-			};
 			git_branch = {
 				disabled = true;
 				symbol = " ";
@@ -36,13 +33,7 @@
 				shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
 				format = "$output ";
 			};
-			golang = {
-				symbol = " ";
-			};
 			lua = {
-				symbol = " ";
-			};
-			nix_shell = {
 				symbol = " ";
 			};
 			package = {
