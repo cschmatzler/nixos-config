@@ -71,14 +71,7 @@
 			source = ./opencode/plugin;
 			recursive = true;
 		};
-		"opencode/AGENTS.md".text = ''
-			# Global AGENTS.md
-
-			## Version Control
-
-			- Use `jj` for VCS, not `git`
-			- `jj tug` is an alias for `jj bookmark move --from closest_bookmark(@-) --to @-`
-		'';
+		"opencode/AGENTS.md".source = ./opencode/AGENTS.md;
 		"opencode/oh-my-opencode.json".text =
 			builtins.toJSON {
 				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
