@@ -42,7 +42,6 @@ in {
 			../../profiles/mise.nix
 			../../profiles/neovim
 			../../profiles/opencode.nix
-			../../profiles/overseer.nix
 			../../profiles/claude-code.nix
 			../../profiles/ripgrep.nix
 			../../profiles/ssh.nix

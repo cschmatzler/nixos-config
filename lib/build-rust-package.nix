@@ -1,14 +1,14 @@
 {
+	inputs,
 	input,
 	prev,
 }: let
+	naersk-lib = prev.callPackage inputs.naersk {};
 	manifest = (prev.lib.importTOML "${input}/Cargo.toml").package;
 in
-	prev.rustPlatform.buildRustPackage {
+	naersk-lib.buildPackage {
 		pname = manifest.name;
 		version = manifest.version;
-
-		cargoLock.lockFile = "${input}/Cargo.lock";
 
 		src = input;
 

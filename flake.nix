@@ -41,11 +41,12 @@
 			flake = false;
 		};
 		jj-starship.url = "github:dmmulroy/jj-starship";
-		overseer = {
-			url = "github:dmmulroy/overseer";
-			flake = false;
-		};
 		himalaya.url = "github:pimalaya/himalaya";
+		naersk = {
+			url = "github:nix-community/naersk/master";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+		tuicr.url = "github:agavra/tuicr";
 	};
 
 	outputs = inputs @ {flake-parts, ...}:

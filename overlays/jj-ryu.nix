@@ -1,7 +1,7 @@
 {inputs}: final: prev: {
 	jj-ryu =
 		import ../lib/build-rust-package.nix {
-			inherit prev;
+			inherit inputs prev;
 			input = inputs.jj-ryu;
 		};
 }

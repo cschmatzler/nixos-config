@@ -48,6 +48,7 @@ with pkgs;
 		tokei
 		tree
 		tree-sitter
+		tuicr
 		vivid
 	]
 	++ lib.optionals stdenv.isDarwin [
