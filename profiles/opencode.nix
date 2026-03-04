@@ -70,6 +70,7 @@
 		"opencode/oh-my-opencode.json".text =
 			builtins.toJSON {
 				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
+				disabled_skills = ["playwright" "dev-browser"];
 				git_master = {
 					commit_footer = false;
 					include_co_authored_by = false;
