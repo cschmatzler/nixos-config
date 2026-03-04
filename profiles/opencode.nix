@@ -67,6 +67,10 @@
 			source = ./opencode/tool;
 			recursive = true;
 		};
+		"opencode/plugin" = {
+			source = ./opencode/plugin;
+			recursive = true;
+		};
 		"opencode/oh-my-opencode.json".text =
 			builtins.toJSON {
 				"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
