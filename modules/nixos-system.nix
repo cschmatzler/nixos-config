@@ -24,7 +24,15 @@
 						options = ["NOPASSWD"];
 					}
 					{
+						command = "/nix/store/*/activate-rs";
+						options = ["NOPASSWD"];
+					}
+					{
 						command = "/nix/store/*/bin/wait-activate";
+						options = ["NOPASSWD"];
+					}
+					{
+						command = "/nix/store/*/wait-activate";
 						options = ["NOPASSWD"];
 					}
 				];
