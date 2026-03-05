@@ -38,8 +38,8 @@
 
 			        tab_normal               "#[fg=#acb0be,bg=#eff1f5] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
 			        tab_active               "#[fg=#eff1f5,bg=#1e66f5,bold,underline] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-			        tab_fullscreen_indicator "□ "
-			        tab_sync_indicator       "  "
+			        tab_fullscreen_indicator "󰊓 "
+			        tab_sync_indicator       "󰓦 "
 			        tab_floating_indicator   "󰉈 "
 
 			        datetime          "#[fg=#4c4f69,bg=#eff1f5] {format} "
