@@ -1,26 +1,32 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-HOSTNAME="${1:-$(hostname)}"
-
-print_info "Building and switching configuration for $HOSTNAME"
-
-# Build
-print_info "Building configuration..."
-if ! nix build ".#nixosConfigurations.$HOSTNAME.config.system.build.toplevel" --no-link "${@:2}"; then
-    print_error "Build failed"
-    exit 1
-fi
-
-print_success "Build completed"
-
-print_info "Switching to new configuration..."
-if [[ "$EUID" -ne 0 ]]; then
-    sudo nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
-else
-    nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
-fi
-
-print_success "Build and switch completed successfully"
+def main [hostname?: string, ...rest: string] {
+    let host = if ($hostname | is-empty) {
+        hostname | str trim
+    } else { $hostname }
+    
+    print_info $"Building and switching configuration for ($host)"
+    
+    # Build
+    print_info "Building configuration..."
+    if (nix build $".#nixosConfigurations.($host).config.system.build.toplevel" --no-link ...$rest | complete).exit_code != 0 {
+        print_error "Build failed"
+        exit 1
+    }
+    
+    print_success "Build completed"
+    
+    # Switch
+    print_info "Switching to new configuration..."
+    let euid = (id -u | str trim | into int)
+    
+    if $euid != 0 {
+        sudo nixos-rebuild switch --flake $".#($host)" ...$rest
+    } else {
+        nixos-rebuild switch --flake $".#($host)" ...$rest
+    }
+    
+    print_success "Build and switch completed successfully"
+}

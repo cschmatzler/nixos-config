@@ -1,30 +1,34 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-print_info "Available generations:"
-if [[ "$EUID" -ne 0 ]]; then
-    sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
-else
-    nix-env --profile /nix/var/nix/profiles/system --list-generations
-fi
-
-echo -n "Enter generation number to rollback to: "
-read -r GEN_NUM
-
-if [[ -z "$GEN_NUM" ]]; then
-    print_error "No generation number provided"
-    exit 1
-fi
-
-print_warning "Rolling back to generation $GEN_NUM..."
-if [[ "$EUID" -ne 0 ]]; then
-    sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation "$GEN_NUM" && \
-    sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
-else
-    nix-env --profile /nix/var/nix/profiles/system --switch-generation "$GEN_NUM" && \
-    /nix/var/nix/profiles/system/bin/switch-to-configuration switch
-fi
-
-print_success "Rollback to generation $GEN_NUM complete"
+def main [] {
+    print_info "Available generations:"
+    
+    let euid = (id -u | str trim | into int)
+    
+    if $euid != 0 {
+        sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+    } else {
+        nix-env --profile /nix/var/nix/profiles/system --list-generations
+    }
+    
+    let gen_num = input "Enter generation number to rollback to: "
+    
+    if ($gen_num | is-empty) {
+        print_error "No generation number provided"
+        exit 1
+    }
+    
+    print_warning $"Rolling back to generation ($gen_num)..."
+    
+    if $euid != 0 {
+        sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation $gen_num
+        sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+    } else {
+        nix-env --profile /nix/var/nix/profiles/system --switch-generation $gen_num
+        /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+    }
+    
+    print_success $"Rollback to generation ($gen_num) complete"
+}

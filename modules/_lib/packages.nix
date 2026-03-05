@@ -1,0 +1,66 @@
+{
+	inputs,
+	lib,
+	pkgs,
+	...
+}:
+with pkgs;
+	[
+		(callPackage ./open-project.nix {})
+		age
+		alejandra
+		ast-grep
+		bun
+		delta
+		devenv
+		dig
+		docker
+		docker-compose
+		dust
+		fastfetch
+		fd
+		gh
+		git
+		glow
+		gnumake
+		gnupg
+		hledger
+		htop
+		hyperfine
+		jj-ryu
+		jj-starship
+		jq
+		killall
+		lsof
+		nodejs_24
+		nurl
+		openssh
+		ouch
+		ov
+		pnpm
+		postgresql_17
+		sd
+		serie
+		sops
+		sqlite
+		tea
+		tokei
+		tree
+		tree-sitter
+		tuicr
+		vivid
+	]
+	++ lib.optionals stdenv.isDarwin [
+		_1password-gui
+		alcove
+		dockutil
+		mas
+		raycast
+		tailscale
+		xcodes
+	]
+	++ lib.optionals stdenv.isLinux [
+		gcc15
+		ghostty.terminfo
+		lm_sensors
+	]

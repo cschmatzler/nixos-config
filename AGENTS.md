@@ -12,12 +12,12 @@ nix flake check               # Validate flake
 
 ### Remote Deployment (NixOS only)
 ```bash
-colmena build                 # Build all NixOS hosts
-colmena apply --on <host>     # Deploy to specific NixOS host (michael, tahani)
-colmena apply                 # Deploy to all NixOS hosts
+nix run .#deploy              # Deploy to all NixOS hosts
+nix run .#deploy -- .#michael # Deploy to specific NixOS host
+nix run .#deploy -- .#tahani  # Deploy to specific NixOS host
 ```
 
-When you're on tahani and asked to apply, that means running `colmena apply`.
+When you're on tahani and asked to apply, that means running `nix run .#deploy`.
 
 ### Formatting
 ```bash
@@ -32,13 +32,34 @@ alejandra .                   # Format all Nix files
 - **Command**: Run `alejandra .` before committing
 
 ### File Structure
-- **Hosts**: `hosts/<hostname>/` - Per-machine configurations
-  - Darwin: `chidi`, `jason`
-  - NixOS: `michael`, `tahani`
-- **Profiles**: `profiles/` - Reusable program/service configurations (imported by hosts)
-- **Modules**: `modules/` - Custom NixOS/darwin modules
-- **Lib**: `lib/` - Shared constants and utilities
+- **Modules**: `modules/` - All configuration (flake-parts modules, auto-imported by import-tree)
+  - `_lib/` - Utility functions (underscore = ignored by import-tree)
+  - `_darwin/` - Darwin-specific sub-modules
+  - `_neovim/` - Neovim plugin configs
+  - `_opencode/` - OpenCode agent/command/skill configs
+  - `_hosts/` - Host-specific sub-files (disk-config, hardware, etc.)
+- **Apps**: `apps/` - Per-system app scripts (Nushell)
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)
+
+### Architecture
+
+**Framework**: den (vic/den) — every .nix file in `modules/` is a flake-parts module
+
+**Pattern**: Feature/aspect-centric, not host-centric
+
+**Aspects**: `den.aspects.<name>.<class>` where class is:
+- `nixos` - NixOS-only configuration
+- `darwin` - macOS-only configuration
+- `homeManager` - Home Manager configuration
+- `os` - Applies to both NixOS and darwin
+
+**Hosts**: `den.hosts.<system>.<name>` defined in `modules/hosts.nix`
+
+**Defaults**: `den.default.*` defined in `modules/defaults.nix`
+
+**Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `_darwin/`, etc.) are excluded from auto-import
+
+**Deployment**: deploy-rs for NixOS hosts (michael, tahani); darwin hosts (chidi, jason) are local-only
 
 ### Nix Language Conventions
 
@@ -48,20 +69,11 @@ alejandra .                   # Format all Nix files
 ```
 Destructure arguments on separate lines. Use `...` to capture remaining args.
 
-**Imports**:
-```nix
-../../profiles/foo.nix
-```
-Use relative paths from file location, not absolute paths.
-
 **Attribute Sets**:
 ```nix
-options.my.gitea = {
-  enable = lib.mkEnableOption "Gitea git hosting service";
-  bucket = lib.mkOption {
-    type = lib.types.str;
-    description = "S3 bucket name";
-  };
+den.aspects.myfeature.os = {
+  enable = true;
+  config = "value";
 };
 ```
 One attribute per line with trailing semicolons.
@@ -77,7 +89,7 @@ with pkgs;
 ```
 Use `with pkgs;` for package lists, one item per line.
 
-**Modules**:
+**Aspect Definition**:
 ```nix
 {
   config,
@@ -86,9 +98,9 @@ Use `with pkgs;` for package lists, one item per line.
   ...
 }:
 with lib; let
-  cfg = config.my.feature;
+  cfg = config.den.aspects.myfeature;
 in {
-  options.my.feature = {
+  options.den.aspects.myfeature = {
     enable = mkEnableOption "Feature description";
   };
   config = mkIf cfg.enable {
@@ -113,22 +125,27 @@ in {
 ```
 
 ### Naming Conventions
-- **Option names**: `my.<feature>.<option>` for custom modules
-- **Hostnames**: Lowercase, descriptive (e.g., `michael`, `tahani`)
-- **Profile files**: Descriptive, lowercase with hyphens (e.g., `homebrew.nix`)
+- **Aspect names**: `den.aspects.<name>.<class>` for feature configuration
+- **Hostnames**: Lowercase, descriptive (e.g., `michael`, `tahani`, `chidi`, `jason`)
+- **Module files**: Descriptive, lowercase with hyphens (e.g., `neovim-config.nix`)
 
 ### Secrets Management
 - Use SOPS for secrets (see `.sops.yaml`)
 - Never commit unencrypted secrets
-- Secrets files in `hosts/<host>/secrets.nix` import SOPS-generated files
+- Secret definitions in `modules/secrets.nix`
 
-### Imports Pattern
-Host configs import:
-1. System modules (`modulesPath + "/..."`)
-2. Host-specific files (`./disk-config.nix`, `./hardware-configuration.nix`)
-3. SOPS secrets (`./secrets.nix`)
-4. Custom modules (`../../modules/*.nix`)
-5. Base profiles (`../../profiles/*.nix`)
-6. Input modules (`inputs.<module>.xxxModules.module`)
+### Aspect Composition
+Use `den.aspects.<name>.includes` to compose aspects:
+```nix
+den.aspects.myfeature.includes = [
+  "other-aspect"
+  "another-aspect"
+];
+```
 
-Home-manager users import profiles in a similar manner.
+### Key Conventions
+- No `specialArgs` — den batteries handle input passing
+- No hostname string comparisons in shared aspects
+- Host-specific config goes in `den.aspects.<hostname>.*`
+- Shared config uses `os` class (applies to both NixOS and darwin)
+- Non-module files go in `_`-prefixed subdirs

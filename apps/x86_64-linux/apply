@@ -1,16 +1,21 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-HOSTNAME="${1:-$(hostname)}"
-
-print_info "Applying configuration for $HOSTNAME"
-
-if [[ "$EUID" -ne 0 ]]; then
-    sudo nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
-else
-    nixos-rebuild switch --flake ".#$HOSTNAME" "${@:2}"
-fi
-
-print_success "Configuration applied successfully"
+def main [hostname?: string, ...rest: string] {
+    let host = if ($hostname | is-empty) {
+        hostname | str trim
+    } else { $hostname }
+    
+    print_info $"Applying configuration for ($host)"
+    
+    let euid = (id -u | str trim | into int)
+    
+    if $euid != 0 {
+        sudo nixos-rebuild switch --flake $".#($host)" ...$rest
+    } else {
+        nixos-rebuild switch --flake $".#($host)" ...$rest
+    }
+    
+    print_success "Configuration applied successfully"
+}

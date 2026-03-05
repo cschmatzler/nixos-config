@@ -1,16 +1,19 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-HOSTNAME="${1:-$(hostname)}"
-
-print_info "Building configuration for $HOSTNAME"
-
-nix build ".#nixosConfigurations.$HOSTNAME.config.system.build.toplevel" --show-trace "${@:2}"
-
-if [[ -L ./result ]]; then
-    unlink ./result
-fi
-
-print_success "Build completed successfully"
+def main [hostname?: string, ...rest: string] {
+    let host = if ($hostname | is-empty) {
+        hostname | str trim
+    } else { $hostname }
+    
+    print_info $"Building configuration for ($host)"
+    
+    nix build $".#nixosConfigurations.($host).config.system.build.toplevel" --show-trace ...$rest
+    
+    if ("./result" | path exists) {
+        rm ./result
+    }
+    
+    print_success "Build completed successfully"
+}

@@ -1,0 +1,371 @@
+{...}: {
+	den.aspects.dev-tools.homeManager = {...}: let
+		name = "Christoph Schmatzler";
+	in {
+		# Git configuration
+		programs.git = {
+			enable = true;
+			ignores = ["*.swp"];
+			settings = {
+				user.name = name;
+				init.defaultBranch = "main";
+				core = {
+					editor = "vim";
+					autocrlf = "input";
+					pager = "delta";
+				};
+				credential = {
+					helper = "!gh auth git-credential";
+					"https://github.com".useHttpPath = true;
+					"https://gist.github.com".useHttpPath = true;
+				};
+				pull.rebase = true;
+				rebase.autoStash = true;
+				interactive.diffFilter = "delta --color-only";
+				delta = {
+					navigate = true;
+					line-numbers = true;
+					syntax-theme = "GitHub";
+					side-by-side = true;
+					pager = "less -FRX";
+				};
+				pager = {
+					diff = "delta";
+					log = "delta";
+					show = "delta";
+				};
+			};
+			lfs = {
+				enable = true;
+			};
+		};
+
+		# Git shell aliases
+		home.shellAliases = {
+			g = "git";
+			ga = "git add";
+			gaa = "git add --all";
+			gapa = "git add --patch";
+			gau = "git add --update";
+			gav = "git add --verbose";
+			gap = "git apply";
+			gapt = "git apply --3way";
+			gb = "git branch";
+			gba = "git branch --all";
+			gbd = "git branch --delete";
+			gbD = "git branch --delete --force";
+			gbl = "git blame -w";
+			gbnm = "git branch --no-merged";
+			gbr = "git branch --remote";
+			gbs = "git bisect";
+			gbsb = "git bisect bad";
+			gbsg = "git bisect good";
+			gbsn = "git bisect new";
+			gbso = "git bisect old";
+			gbsr = "git bisect reset";
+			gbss = "git bisect start";
+			gc = "git commit --verbose";
+			gca = "git commit --verbose --all";
+			gcam = "git commit --all --message";
+			gcas = "git commit --all --signoff";
+			gcasm = "git commit --all --signoff --message";
+			gcb = "git checkout -b";
+			gcB = "git checkout -B";
+			gcf = "git config --list";
+			gclean = "git clean --interactive -d";
+			gcl = "git clone --recurse-submodules";
+			gclf = "git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules";
+			gcm = "git checkout main";
+			gcmsg = "git commit --message";
+			gcn = "git commit --verbose --no-edit";
+			gco = "git checkout";
+			gcor = "git checkout --recurse-submodules";
+			gcount = "git shortlog --summary --numbered";
+			gcp = "git cherry-pick";
+			gcpa = "git cherry-pick --abort";
+			gcpc = "git cherry-pick --continue";
+			gcs = "git commit --gpg-sign";
+			gcss = "git commit --gpg-sign --signoff";
+			gcssm = "git commit --gpg-sign --signoff --message";
+			gcsm = "git commit --signoff --message";
+			gd = "git diff";
+			gdca = "git diff --cached";
+			gdcw = "git diff --cached --word-diff";
+			gds = "git diff --staged";
+			gdw = "git diff --word-diff";
+			gdt = "git diff-tree --no-commit-id --name-only -r";
+			gdup = "git diff @{upstream}";
+			gf = "git fetch";
+			gfa = "git fetch --all --tags --prune";
+			gfo = "git fetch origin";
+			gg = "git gui citool";
+			gga = "git gui citool --amend";
+			ghh = "git help";
+			gignore = "git update-index --assume-unchanged";
+			gl = "git pull";
+			glg = "git log --stat";
+			glgp = "git log --stat --patch";
+			glgg = "git log --graph";
+			glgga = "git log --graph --decorate --all";
+			glgm = "git log --graph --max-count=10";
+			glo = "git log --oneline --decorate";
+			glog = "git log --oneline --decorate --graph";
+			gloga = "git log --oneline --decorate --graph --all";
+			glol = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset\"";
+			glola = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset\" --all";
+			glols = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset\" --stat";
+			glod = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset\"";
+			glods = "git log --graph --pretty=\"%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset\" --date=short";
+			glum = "git pull upstream main";
+			gm = "git merge";
+			gma = "git merge --abort";
+			gmc = "git merge --continue";
+			gms = "git merge --squash";
+			gmff = "git merge --ff-only";
+			gmtl = "git mergetool --no-prompt";
+			gmtlvim = "git mergetool --no-prompt --tool=vimdiff";
+			gmum = "git merge upstream/main";
+			gmom = "git merge origin/main";
+			gp = "git push";
+			gpd = "git push --dry-run";
+			gpf = "git push --force-with-lease";
+			gpod = "git push origin --delete";
+			gpr = "git pull --rebase";
+			gpra = "git pull --rebase --autostash";
+			gprav = "git pull --rebase --autostash -v";
+			gprom = "git pull --rebase origin main";
+			gpromi = "git pull --rebase=interactive origin main";
+			gprv = "git pull --rebase -v";
+			gprum = "git pull --rebase upstream main";
+			gprumi = "git pull --rebase=interactive upstream main";
+			gpv = "git push --verbose";
+			gpu = "git push upstream";
+			gr = "git remote";
+			gra = "git remote add";
+			grb = "git rebase";
+			grba = "git rebase --abort";
+			grbc = "git rebase --continue";
+			grbd = "git rebase develop";
+			grbi = "git rebase --interactive";
+			grbm = "git rebase main";
+			grbo = "git rebase --onto";
+			grbom = "git rebase origin/main";
+			grbs = "git rebase --skip";
+			grbum = "git rebase upstream/main";
+			grev = "git revert";
+			greva = "git revert --abort";
+			grevc = "git revert --continue";
+			grf = "git reflog";
+			grh = "git reset";
+			grhh = "git reset --hard";
+			grhk = "git reset --keep";
+			grhs = "git reset --soft";
+			grm = "git rm";
+			grmc = "git rm --cached";
+			grmv = "git remote rename";
+			grrm = "git remote remove";
+			grs = "git restore";
+			grset = "git remote set-url";
+			grss = "git restore --source";
+			grst = "git restore --staged";
+			gru = "git reset --";
+			grup = "git remote update";
+			grv = "git remote --verbose";
+			gsb = "git status --short --branch";
+			gsh = "git show";
+			gsi = "git submodule init";
+			gsps = "git show --pretty=short --show-signature";
+			gss = "git status --short";
+			gst = "git status";
+			gsta = "git stash push";
+			gstaa = "git stash apply";
+			gstall = "git stash --all";
+			gstc = "git stash clear";
+			gstd = "git stash drop";
+			gstl = "git stash list";
+			gstp = "git stash pop";
+			gsts = "git stash show --patch";
+			gstu = "git stash push --include-untracked";
+			gsu = "git submodule update";
+			gsw = "git switch";
+			gswc = "git switch --create";
+			gswd = "git switch develop";
+			gswm = "git switch main";
+			gta = "git tag --annotate";
+			gts = "git tag --sign";
+			gunignore = "git update-index --no-assume-unchanged";
+			gwch = "git whatchanged -p --abbrev-commit --pretty=medium";
+			gwt = "git worktree";
+			gwta = "git worktree add";
+			gwtls = "git worktree list";
+			gwtmv = "git worktree move";
+			gwtrm = "git worktree remove";
+			lg = "lazygit";
+		};
+
+		# Complex git aliases that require pipes/subshells — nushell `alias` can't
+		# handle these, so they're defined as custom commands instead.
+		programs.nushell.extraConfig = ''
+			def ggpull [] { git pull origin (git branch --show-current | str trim) }
+			def ggpush [] { git push origin (git branch --show-current | str trim) }
+			def ggsup [] { git branch $"--set-upstream-to=origin/(git branch --show-current | str trim)" }
+			def gluc [] { git pull upstream (git branch --show-current | str trim) }
+			def gpsup [] { git push --set-upstream origin (git branch --show-current | str trim) }
+			def gpsupf [] { git push --set-upstream origin (git branch --show-current | str trim) --force-with-lease }
+			def groh [] { git reset $"origin/(git branch --show-current | str trim)" --hard }
+			def --env grt [] {
+				let toplevel = (do { git rev-parse --show-toplevel } | complete | get stdout | str trim)
+				if ($toplevel | is-not-empty) { cd $toplevel } else { cd . }
+			}
+			def gfg [...pattern: string] { git ls-files | lines | where {|f| $f =~ ($pattern | str join ".*") } }
+			def gignored [] { git ls-files -v | lines | where {|l| ($l | str substring 0..1) =~ "[a-z]" } }
+			def gpoat [] { git push origin --all; git push origin --tags }
+			def gtv [] { git tag | lines | sort }
+			def gwipe [] { git reset --hard; git clean --force -df }
+			def gunwip [] {
+				let msg = (git rev-list --max-count=1 --format="%s" HEAD | lines | get 1)
+				if ($msg | str contains "--wip--") { git reset HEAD~1 }
+			}
+			def gwip [] {
+				git add -A
+				let deleted = (git ls-files --deleted | lines)
+				if ($deleted | is-not-empty) { git rm ...$deleted }
+				git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"
+			}
+		'';
+
+		# Jujutsu configuration
+		programs.jujutsu = {
+			enable = true;
+			settings = {
+				user = {
+					name = name;
+					email = "christoph@schmatzler.com";
+				};
+				git = {
+					sign-on-push = true;
+					subprocess = true;
+					write-change-id-header = true;
+					private-commits = "description(glob:'wip:*') | description(glob:'WIP:*') | description(exact:'')";
+				};
+				fsmonitor = {
+					backend = "watchman";
+				};
+				ui = {
+					default-command = "status";
+					diff-formatter = ":git";
+					pager = ["delta" "--pager" "less -FRX"];
+					diff-editor = ["nvim" "-c" "DiffEditor $left $right $output"];
+					movement = {
+						edit = true;
+					};
+				};
+				aliases = {
+					n = ["new"];
+					tug = ["bookmark" "move" "--from" "closest_bookmark(@-)" "--to" "@-"];
+					stack = ["log" "-r" "stack()"];
+					retrunk = ["rebase" "-d" "trunk()"];
+					bm = ["bookmark"];
+					gf = ["git" "fetch"];
+					gp = ["git" "push"];
+				};
+				revset-aliases = {
+					"closest_bookmark(to)" = "heads(::to & bookmarks())";
+					"closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
+					"mine()" = "author(\"christoph@schmatzler.com\")";
+					"wip()" = "mine() ~ immutable()";
+					"open()" = "mine() ~ ::trunk()";
+					"current()" = "@:: & mutable()";
+					"stack()" = "reachable(@, mutable())";
+				};
+				templates = {
+					draft_commit_description = ''
+						concat(
+						  coalesce(description, default_commit_description, "\n"),
+						  surround(
+						    "\nJJ: This commit contains the following changes:\n", "",
+						    indent("JJ:     ", diff.stat(72)),
+						  ),
+						  "\nJJ: ignore-rest\n",
+						  diff.git(),
+						)
+					'';
+				};
+			};
+		};
+
+		# Lazygit configuration
+		programs.lazygit = {
+			enable = true;
+			settings = {
+				git = {
+					commit.signOff = true;
+					pagers = [
+						{
+							delta = {
+								colorArg = "always";
+								pager = "DELTA_FEATURES=decorations delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
+							};
+						}
+					];
+				};
+
+				gui = {
+					authorColors = {
+						"*" = "#7287fd";
+					};
+					theme = {
+						activeBorderColor = [
+							"#8839ef"
+							"bold"
+						];
+						inactiveBorderColor = [
+							"#6c6f85"
+						];
+						optionsTextColor = [
+							"#1e66f5"
+						];
+						selectedLineBgColor = [
+							"#ccd0da"
+						];
+						cherryPickedCommitBgColor = [
+							"#bcc0cc"
+						];
+						cherryPickedCommitFgColor = [
+							"#8839ef"
+						];
+						defaultFgColor = [
+							"#4c4f69"
+						];
+						searchingActiveBorderColor = [
+							"#df8e1d"
+						];
+						unstagedChangesColor = [
+							"#d20f39"
+						];
+					};
+				};
+			};
+		};
+
+		# JJUI configuration
+		programs.jjui = {
+			enable = true;
+		};
+
+		# Direnv configuration
+		programs.direnv = {
+			enable = true;
+			nix-direnv.enable = true;
+		};
+
+		# Mise configuration
+		programs.mise = {
+			enable = true;
+			enableNushellIntegration = true;
+			globalConfig.settings = {
+				auto_install = false;
+			};
+		};
+	};
+}

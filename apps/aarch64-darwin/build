@@ -1,16 +1,19 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
-
-print_info "Building configuration for $HOSTNAME"
-
-nix build ".#darwinConfigurations.$HOSTNAME.system" --show-trace "${@:2}"
-
-if [[ -L ./result ]]; then
-    unlink ./result
-fi
-
-print_success "Build completed successfully"
+def main [hostname?: string, ...rest: string] {
+    let host = if ($hostname | is-empty) {
+        try { scutil --get LocalHostName | str trim } catch { hostname -s | str trim }
+    } else { $hostname }
+    
+    print_info $"Building configuration for ($host)"
+    
+    nix build $".#darwinConfigurations.($host).system" --show-trace ...$rest
+    
+    if ("./result" | path exists) {
+        rm ./result
+    }
+    
+    print_success "Build completed successfully"
+}

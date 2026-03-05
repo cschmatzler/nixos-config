@@ -1,0 +1,10 @@
+{
+  "active_plan": "/home/cschmatzler/nixos-config/.sisyphus/plans/dendritic-migration.md",
+  "started_at": "2026-03-05T10:57:53.044Z",
+  "session_ids": [
+    "ses_34287fe8effeSATHvHUmGqZ5Fp"
+  ],
+  "plan_name": "dendritic-migration",
+  "agent": "atlas",
+  "worktree_path": "/home/cschmatzler/nixos-config"
+}

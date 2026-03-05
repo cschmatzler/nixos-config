@@ -1,12 +1,15 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 
-set -euo pipefail
-source "$(dirname "$0")/../common.sh"
+use ../common.nu *
 
-HOSTNAME="${1:-$(scutil --get LocalHostName 2>/dev/null || hostname -s)}"
-
-print_info "Applying configuration for $HOSTNAME"
-
-nix run nix-darwin -- switch --flake ".#$HOSTNAME" "${@:2}"
-
-print_success "Configuration applied successfully"
+def main [hostname?: string, ...rest: string] {
+    let host = if ($hostname | is-empty) {
+        try { scutil --get LocalHostName | str trim } catch { hostname -s | str trim }
+    } else { $hostname }
+    
+    print_info $"Applying configuration for ($host)"
+    
+    nix run nix-darwin -- switch --flake $".#($host)" ...$rest
+    
+    print_success "Configuration applied successfully"
+}
