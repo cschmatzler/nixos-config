@@ -7,6 +7,7 @@
 		michael = {
 			hostname = "michael";
 			sshUser = "cschmatzler";
+			remoteBuild = true;
 			profiles.system = {
 				user = "root";
 				path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos config.flake.nixosConfigurations.michael;
@@ -15,6 +16,7 @@
 		tahani = {
 			hostname = "tahani";
 			sshUser = "cschmatzler";
+			remoteBuild = true;
 			profiles.system = {
 				user = "root";
 				path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos config.flake.nixosConfigurations.tahani;
