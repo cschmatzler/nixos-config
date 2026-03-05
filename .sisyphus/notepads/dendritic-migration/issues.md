@@ -1,3 +1,0 @@
-
-- Nushell `programs.nushell.extraConfig` duplication traced to Den applying the user aspect twice: it is included via host aspect `includes` (e.g. `den.aspects.tahani.includes = [ ... den.aspects.cschmatzler ... ]`) AND Den's HM integration already includes the user aspect via `den.ctx.user` (see Den `hm-integration.nix`). Result: user-aspect-provided HM config (like `den.aspects.shell.homeManager`) merges twice, so `extraConfig` contains two identical copies.
-- `dev-tools` nushell functions (e.g. `ggpull`) missing in `michael` is expected: `modules/michael.nix` does not include `den.aspects.dev-tools`.
