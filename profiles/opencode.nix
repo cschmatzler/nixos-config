@@ -79,6 +79,46 @@
 					commit_footer = false;
 					include_co_authored_by = false;
 				};
+				runtime_fallback = true;
+				agents = {
+					explore = {
+						model = "opencode-go/minimax-m2.5";
+						fallback_models = ["anthropic/claude-haiku-4-5"];
+					};
+					librarian = {
+						model = "opencode-go/minimax-m2.5";
+						fallback_models = ["opencode-go/glm-5"];
+					};
+					sisyphus = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/glm-5"];
+					};
+				};
+				categories = {
+					"visual-engineering" = {
+						fallback_models = ["opencode-go/glm-5" "opencode-go/kimi-k2.5"];
+					};
+					ultrabrain = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/glm-5"];
+					};
+					deep = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/glm-5"];
+					};
+					artistry = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/glm-5"];
+					};
+					quick = {
+						fallback_models = ["opencode-go/minimax-m2.5"];
+					};
+					"unspecified-low" = {
+						fallback_models = ["opencode-go/minimax-m2.5" "opencode-go/kimi-k2.5"];
+					};
+					"unspecified-high" = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/glm-5"];
+					};
+					writing = {
+						fallback_models = ["opencode-go/kimi-k2.5" "opencode-go/minimax-m2.5"];
+					};
+				};
 			};
 	};
 }
