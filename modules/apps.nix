@@ -9,6 +9,7 @@
 			build = "Build configuration";
 			build-switch = "Build and switch configuration";
 			rollback = "Rollback to previous generation";
+			update = "Update flake inputs and regenerate flake.nix";
 		};
 		mkApp = name: {
 			type = "app";
@@ -19,7 +20,7 @@
 				'')}/bin/${name}";
 			meta.description = descriptions.${name};
 		};
-		appNames = ["apply" "build" "build-switch" "rollback"];
+		appNames = ["apply" "build" "build-switch" "rollback" "update"];
 	in {
 		apps =
 			pkgs.lib.genAttrs appNames mkApp

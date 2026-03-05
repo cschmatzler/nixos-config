@@ -1,0 +1,21 @@
+#!/usr/bin/env nu
+
+use ../common.nu *
+
+def main [...inputs: string] {
+	if ($inputs | is-empty) {
+		print_info "Updating all flake inputs"
+		nix flake update
+	} else {
+		print_info $"Updating flake inputs: ($inputs | str join ', ')"
+		nix flake update ...$inputs
+	}
+
+	print_info "Regenerating flake.nix"
+	nix run .#write-flake
+
+	print_info "Formatting"
+	alejandra .
+
+	print_success "Flake updated"
+}
