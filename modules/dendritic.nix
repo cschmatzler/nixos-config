@@ -4,6 +4,17 @@
 		(inputs.flake-file.flakeModules.dendritic or {})
 	];
 
+	# Use alejandra with tabs for flake.nix formatting (matches alejandra.toml)
+	flake-file.formatter = pkgs:
+		pkgs.writeShellApplication {
+			name = "alejandra-tabs";
+			runtimeInputs = [pkgs.alejandra];
+			text = ''
+				echo 'indentation = "Tabs"' > alejandra.toml
+				alejandra "$@"
+			'';
+		};
+
 	# Declare all framework and module inputs via flake-file
 	flake-file.inputs = {
 		den.url = "github:vic/den";

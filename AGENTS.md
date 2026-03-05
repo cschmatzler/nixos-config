@@ -132,7 +132,8 @@ in {
 ### Secrets Management
 - Use SOPS for secrets (see `.sops.yaml`)
 - Never commit unencrypted secrets
-- Secret definitions in `modules/secrets.nix`
+- Secret definitions live in per-host modules (`modules/michael.nix`, `modules/tahani.nix`, etc.)
+- Shared SOPS defaults (module imports, key paths) in `modules/secrets.nix`
 
 ### Aspect Composition
 Use `den.aspects.<name>.includes` to compose aspects:
