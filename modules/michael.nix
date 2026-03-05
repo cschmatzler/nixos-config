@@ -20,7 +20,6 @@
 	}: {
 		imports = [
 			(modulesPath + "/installer/scan/not-detected.nix")
-			(modulesPath + "/profiles/qemu-guest.nix")
 			./_hosts/michael/disk-config.nix
 			./_hosts/michael/hardware-configuration.nix
 			inputs.disko.nixosModules.default
