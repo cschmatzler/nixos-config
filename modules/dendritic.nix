@@ -1,6 +1,6 @@
 {inputs, ...}: {
 	imports = [
-		inputs.den.flakeModule
+		(inputs.den.flakeModules.dendritic or {})
 		(inputs.flake-file.flakeModules.dendritic or {})
 	];
 
