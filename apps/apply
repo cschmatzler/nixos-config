@@ -18,7 +18,7 @@ def main [hostname?: string, ...rest: string] {
 	print_info $"Applying configuration for ($host)"
 
 	if $nu.os-info.name == "macos" {
-		sudo nix run nix-darwin -- switch --flake $".#($host)" ...$rest
+		sudo darwin-rebuild switch --flake $".#($host)" ...$rest
 	} else {
 		let euid = (id -u | str trim | into int)
 		if $euid != 0 {
