@@ -75,10 +75,10 @@
 
 		systemd.user.timers.opencode-inbox-triage = {
 			Unit = {
-				Description = "Run OpenCode inbox triage every 10 minutes";
+				Description = "Run OpenCode inbox triage every 12 hours";
 			};
 			Timer = {
-				OnCalendar = "*:0/10";
+				OnCalendar = "*-*-* 0/12:00:00";
 				Persistent = true;
 			};
 			Install = {
