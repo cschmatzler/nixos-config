@@ -63,6 +63,10 @@
 			url = "github:nix-community/naersk/master";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		nono = {
+			url = "github:always-further/nono";
+			flake = false;
+		};
 		# Secrets inputs
 		sops-nix = {
 			url = "github:Mic92/sops-nix";

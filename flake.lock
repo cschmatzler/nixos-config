@@ -750,6 +750,22 @@
         "type": "github"
       }
     },
+    "nono": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772780805,
+        "narHash": "sha256-U7ZC5WuoW8GkvIxZzAwzEQDJ2p9pgJ4QmsnPR4P34qE=",
+        "owner": "always-further",
+        "repo": "nono",
+        "rev": "92e2b5c4920bd31ddd87b10112ac8882769fa9e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "always-further",
+        "repo": "nono",
+        "type": "github"
+      }
+    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -790,6 +806,7 @@
           "nixpkgs"
         ],
         "nixvim": "nixvim",
+        "nono": "nono",
         "sops-nix": "sops-nix",
         "tuicr": "tuicr",
         "zjstatus": "zjstatus"

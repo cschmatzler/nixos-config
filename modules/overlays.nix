@@ -4,12 +4,36 @@
 		(final: prev: {
 				himalaya = inputs.himalaya.packages.${prev.stdenv.hostPlatform.system}.default;
 			})
-		# jj-ryu (uses build-rust-package helper)
-		(final: prev: {
+		# jj-ryu
+		(final: prev: let
+				naersk-lib = prev.callPackage inputs.naersk {};
+				manifest = (prev.lib.importTOML "${inputs.jj-ryu}/Cargo.toml").package;
+			in {
 				jj-ryu =
-					import ./_lib/build-rust-package.nix {
-						inherit inputs prev;
-						input = inputs.jj-ryu;
+					naersk-lib.buildPackage {
+						pname = manifest.name;
+						version = manifest.version;
+						src = inputs.jj-ryu;
+						nativeBuildInputs = [prev.pkg-config];
+						buildInputs = [prev.openssl];
+						OPENSSL_NO_VENDOR = 1;
+						doCheck = false;
+					};
+			})
+		# nono (AI agent sandbox CLI — Cargo workspace)
+		(final: prev: let
+				naersk-lib = prev.callPackage inputs.naersk {};
+				manifest = (prev.lib.importTOML "${inputs.nono}/crates/nono-cli/Cargo.toml").package;
+			in {
+				nono =
+					naersk-lib.buildPackage {
+						pname = manifest.name;
+						version = manifest.version;
+						src = inputs.nono;
+						nativeBuildInputs = [prev.pkg-config prev.cmake prev.perl];
+						buildInputs = [prev.openssl] ++ prev.lib.optionals prev.stdenv.isLinux [prev.dbus];
+						OPENSSL_NO_VENDOR = 1;
+						doCheck = false;
 					};
 			})
 		# jj-starship (passes through upstream overlay)

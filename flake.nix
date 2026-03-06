@@ -48,6 +48,10 @@
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
+		nono = {
+			flake = false;
+			url = "github:always-further/nono";
+		};
 		sops-nix = {
 			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:Mic92/sops-nix";

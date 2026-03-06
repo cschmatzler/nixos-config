@@ -52,6 +52,7 @@
 
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
+			pkgs.nono
 		];
 
 		xdg.configFile = {
