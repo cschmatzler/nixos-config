@@ -1,0 +1,32 @@
+#!/usr/bin/env nu
+
+use ./common.nu *
+
+def get-hostname [] {
+	if $nu.os-info.name == "macos" {
+		try { ^scutil --get LocalHostName | str trim } catch { ^hostname -s | str trim }
+	} else {
+		^hostname | str trim
+	}
+}
+
+def main [hostname?: string, ...rest: string] {
+	let host = if ($hostname | is-empty) {
+		get-hostname
+	} else { $hostname }
+
+	print_info $"Applying configuration for ($host)"
+
+	if $nu.os-info.name == "macos" {
+		sudo nix run nix-darwin -- switch --flake $".#($host)" ...$rest
+	} else {
+		let euid = (id -u | str trim | into int)
+		if $euid != 0 {
+			sudo nixos-rebuild switch --flake $".#($host)" ...$rest
+		} else {
+			nixos-rebuild switch --flake $".#($host)" ...$rest
+		}
+	}
+
+	print_success "Configuration applied successfully"
+}

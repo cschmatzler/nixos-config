@@ -7,23 +7,31 @@
 		descriptions = {
 			apply = "Build and apply configuration";
 			build = "Build configuration";
-			build-switch = "Build and switch configuration";
 			rollback = "Rollback to previous generation";
 			update = "Update flake inputs and regenerate flake.nix";
 		};
-		mkApp = name: {
+		mkPlatformApp = name: {
 			type = "app";
 			program = "${(pkgs.writeShellScriptBin name ''
 					PATH=${pkgs.git}/bin:$PATH
-					echo "Running ${name} for ${system}"
 					exec ${inputs.self}/apps/${system}/${name} "$@"
 				'')}/bin/${name}";
 			meta.description = descriptions.${name};
 		};
-		appNames = ["apply" "build" "build-switch" "rollback" "update"];
+		mkSharedApp = name: {
+			type = "app";
+			program = "${(pkgs.writeShellScriptBin name ''
+					PATH=${pkgs.git}/bin:$PATH
+					exec ${inputs.self}/apps/${name} "$@"
+				'')}/bin/${name}";
+			meta.description = descriptions.${name};
+		};
+		platformAppNames = ["build" "rollback" "update"];
+		sharedAppNames = ["apply"];
 	in {
 		apps =
-			pkgs.lib.genAttrs appNames mkApp
+			pkgs.lib.genAttrs platformAppNames mkPlatformApp
+			// pkgs.lib.genAttrs sharedAppNames mkSharedApp
 			// {
 				deploy = {
 					type = "app";
