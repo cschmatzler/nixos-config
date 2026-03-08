@@ -57,7 +57,12 @@
 		# Auto-start zellij in nushell on tahani (headless server)
 		programs.nushell.extraConfig = ''
 			if $nu.is-interactive and ('SSH_CONNECTION' in ($env | columns)) and ('ZELLIJ' not-in ($env | columns)) {
-				exec zellij attach -c
+				try {
+					zellij attach -c main
+					exit
+				} catch {
+					print "zellij auto-start failed; staying in shell"
+				}
 			}
 		'';
 
