@@ -11,7 +11,7 @@
 				model = "anthropic/claude-opus-4-6";
 				small_model = "anthropic/claude-haiku-4-5";
 				theme = "catppuccin";
-				plugin = ["oh-my-opencode@latest" "opencode-anthropic-auth@latest"];
+				plugin = ["oh-my-openagent@latest" "opencode-anthropic-auth@latest"];
 				permission = {
 					read = {
 						"*" = "allow";
@@ -85,7 +85,7 @@
 				builtins.toJSON {
 					"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
 					disabled_skills = ["playwright" "dev-browser" "git-master"];
-					disabled_hooks = ["keyword-detector"];
+					disabled_hooks = ["keyword-detector" "todo-continuation-enforcer"];
 					git_master = {
 						commit_footer = false;
 						include_co_authored_by = false;
