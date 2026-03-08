@@ -50,6 +50,10 @@
 			};
 		};
 
+		home.shellAliases = {
+			noc = "nono run -s --allow-cwd --profile opencode --network-profile developer -- opencode";
+		};
+
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
 			pkgs.nono
