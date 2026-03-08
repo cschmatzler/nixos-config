@@ -8,12 +8,9 @@
 	den.aspects.cschmatzler.homeManager = {
 		lib,
 		pkgs,
-		inputs',
 		...
 	}: {
 		programs.home-manager.enable = true;
-
-		home.packages = pkgs.callPackage ./_lib/packages.nix {inputs = inputs';};
 
 		home.activation =
 			lib.mkIf pkgs.stdenv.isDarwin {

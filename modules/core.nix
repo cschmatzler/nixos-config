@@ -1,5 +1,9 @@
 {...}: {
-	den.aspects.core.os = {pkgs, ...}: {
+	den.aspects.core.os = {
+		pkgs,
+		lib,
+		...
+	}: {
 		programs.fish.enable = true;
 		environment.shells = [pkgs.nushell];
 
@@ -29,5 +33,11 @@
 				experimental-features = nix-command flakes
 			'';
 		};
+
+		# System utilities
+		environment.systemPackages =
+			lib.optionals pkgs.stdenv.isLinux [
+				pkgs.lm_sensors
+			];
 	};
 }

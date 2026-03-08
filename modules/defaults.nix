@@ -29,6 +29,7 @@
 			desktop = ./desktop.nix;
 			dev-tools = ./dev-tools.nix;
 			email = ./email.nix;
+			finance = ./finance.nix;
 			neovim = ./neovim.nix;
 			network = ./network.nix;
 			nixos-system = ./nixos-system.nix;

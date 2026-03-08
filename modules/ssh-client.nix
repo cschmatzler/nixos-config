@@ -23,5 +23,7 @@
 				};
 			};
 		};
+
+		home.packages = [pkgs.openssh];
 	};
 }

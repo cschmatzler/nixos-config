@@ -1,5 +1,9 @@
 {...}: {
-	den.aspects.desktop.homeManager = {...}: {
+	den.aspects.desktop.homeManager = {
+		pkgs,
+		lib,
+		...
+	}: {
 		programs.aerospace = {
 			enable = true;
 			launchd.enable = true;
@@ -140,5 +144,11 @@
 				};
 			};
 		};
+
+		home.packages = with pkgs;
+			lib.optionals stdenv.isDarwin [
+				_1password-gui
+				raycast
+			];
 	};
 }

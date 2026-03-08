@@ -1,5 +1,9 @@
 {...}: {
-	den.aspects.dev-tools.homeManager = {...}: let
+	den.aspects.dev-tools.homeManager = {
+		pkgs,
+		lib,
+		...
+	}: let
 		name = "Christoph Schmatzler";
 	in {
 		# Git configuration
@@ -367,5 +371,37 @@
 				auto_install = false;
 			};
 		};
+
+		home.packages = with pkgs;
+			[
+				alejandra
+				ast-grep
+				bun
+				delta
+				devenv
+				docker
+				docker-compose
+				gh
+				git
+				gnumake
+				hyperfine
+				jj-ryu
+				jj-starship
+				nodejs_24
+				nurl
+				pnpm
+				postgresql_17
+				serie
+				sqlite
+				tea
+				tokei
+				tree-sitter
+			]
+			++ lib.optionals stdenv.isDarwin [
+				xcodes
+			]
+			++ lib.optionals stdenv.isLinux [
+				gcc15
+			];
 	};
 }

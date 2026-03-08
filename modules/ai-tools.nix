@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{
 	den.aspects.ai-tools.homeManager = {
 		pkgs,
 		inputs',

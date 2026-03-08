@@ -137,5 +137,12 @@
 				"tidal"
 			];
 		};
+
+		# Darwin system utilities
+		environment.systemPackages = with pkgs; [
+			alcove
+			dockutil
+			mas
+		];
 	};
 }

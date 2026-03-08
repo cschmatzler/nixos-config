@@ -12,4 +12,13 @@
 		sops.age.sshKeyPaths = [];
 		sops.gnupg.sshKeyPaths = [];
 	};
+
+	# Encryption/secrets tools
+	den.aspects.secrets.homeManager = {pkgs, ...}: {
+		home.packages = with pkgs; [
+			age
+			gnupg
+			sops
+		];
+	};
 }

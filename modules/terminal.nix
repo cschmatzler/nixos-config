@@ -1,5 +1,9 @@
 {...}: {
-	den.aspects.terminal.homeManager = {pkgs, ...}: {
+	den.aspects.terminal.homeManager = {
+		pkgs,
+		lib,
+		...
+	}: {
 		xdg.configFile."ghostty/config".text = ''
 			command = ${pkgs.nushell}/bin/nu
 			theme = Catppuccin Latte
@@ -125,5 +129,25 @@
 				};
 			};
 		};
+
+		home.packages = with pkgs;
+			[
+				dust
+				fastfetch
+				fd
+				glow
+				htop
+				jq
+				killall
+				lsof
+				ouch
+				ov
+				sd
+				tree
+				tuicr
+			]
+			++ lib.optionals stdenv.isLinux [
+				ghostty.terminfo
+			];
 	};
 }

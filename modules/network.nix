@@ -64,4 +64,19 @@
 			enable = true;
 		};
 	};
+
+	# Network tools
+	den.aspects.network.homeManager = {
+		pkgs,
+		lib,
+		...
+	}: {
+		home.packages = with pkgs;
+			[
+				dig
+			]
+			++ lib.optionals stdenv.isDarwin [
+				tailscale
+			];
+	};
 }
