@@ -51,7 +51,7 @@
 		};
 
 		home.shellAliases = {
-			noc = "nono run -s --allow-cwd --profile opencode --network-profile developer -- opencode";
+			noc = "RUST_LOG=error nono -s wrap --allow-cwd --profile opencode -- opencode";
 		};
 
 		home.packages = [
@@ -85,6 +85,7 @@
 				builtins.toJSON {
 					"$schema" = "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json";
 					disabled_skills = ["playwright" "dev-browser" "git-master"];
+					disabled_hooks = ["keyword-detector"];
 					git_master = {
 						commit_footer = false;
 						include_co_authored_by = false;

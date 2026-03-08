@@ -50,4 +50,10 @@
 in {
 	den.default.nixos.nixpkgs.overlays = overlays;
 	den.default.darwin.nixpkgs.overlays = overlays;
+
+	flake.overlays.default = final: prev:
+		builtins.foldl' (
+			acc: overlay: acc // (overlay final (prev // acc))
+		) {}
+		overlays;
 }
