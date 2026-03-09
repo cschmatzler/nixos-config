@@ -44,14 +44,14 @@
 					opensrc = {
 						enabled = true;
 						type = "local";
-						command = ["bunx" "opensrc-mcp"];
+						command = ["node" "/home/cschmatzler/.bun/bin/opensrc-mcp"];
 					};
 				};
 			};
 		};
 
 		home.shellAliases = {
-			noc = "RUST_LOG=error nono -s wrap --allow-cwd --profile opencode -- opencode";
+			noc = "nono run -s --allow-cwd --profile opencode --network-profile developer --allow ~/.bun --allow ~/.local/share/opensrc --allow ~/.claude --proxy-allow models.dev --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai -- opencode";
 		};
 
 		home.packages = [
