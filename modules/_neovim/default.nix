@@ -5,6 +5,7 @@
 		./options.nix
 		./plugins/blink-cmp.nix
 		./plugins/conform.nix
+		./plugins/fff.nix
 		./plugins/grug-far.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
@@ -12,6 +13,7 @@
 		./plugins/lsp.nix
 		./plugins/mini.nix
 		./plugins/oil.nix
+		./plugins/opencode.nix
 		./plugins/toggleterm.nix
 		./plugins/treesitter.nix
 		./plugins/zk.nix

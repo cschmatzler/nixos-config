@@ -61,13 +61,28 @@
 		};
 
 		home.shellAliases = {
-			noc = "nono run -s --allow-cwd --profile opencode --network-profile developer --allow ~/.bun --allow ~/.local/share/opensrc --proxy-allow models.dev --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai -- opencode";
+			noc = "nono run -s --allow-cwd --profile opencode --allow ~/.bun --allow ~/.local/share/opensrc --allow ~/.config/jj --network-profile developer --proxy-allow models.dev --proxy-allow chatgpt.com --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai -- opencode";
 		};
 
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
 			pkgs.nono
 		];
+
+		systemd.user.services.opencode-server = {
+			Unit = {
+				Description = "OpenCode AI server";
+				After = ["default.target"];
+			};
+			Service = {
+				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822";
+				Restart = "on-failure";
+				RestartSec = 5;
+			};
+			Install = {
+				WantedBy = ["default.target"];
+			};
+		};
 
 		xdg.configFile = {
 			"opencode/agent" = {
