@@ -96,7 +96,10 @@
 					allowApplePersonalizedAdvertising = false;
 				};
 				"com.apple.Spotlight" = {
-					MenuItemHidden = true;
+					"NSStatusItem Visible Item-0" = false;
+				};
+				"com.apple.TextInputMenu" = {
+					visible = false;
 				};
 			};
 		};

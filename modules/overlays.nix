@@ -6,9 +6,10 @@
 			})
 		# ast-grep (test_scan_invalid_rule_id fails on darwin in sandbox)
 		(final: prev: {
-				ast-grep = prev.ast-grep.overrideAttrs (old: {
-					doCheck = false;
-				});
+				ast-grep =
+					prev.ast-grep.overrideAttrs (old: {
+							doCheck = false;
+						});
 			})
 		# jj-ryu
 		(final: prev: let
