@@ -129,9 +129,6 @@ in {
 						icons = {
 							preset = 'nerdfonts',
 						},
-						questions = {
-							use_vim_ui_select = true,
-						},
 					},
 				})
 
