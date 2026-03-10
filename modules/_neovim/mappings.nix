@@ -143,8 +143,12 @@
 		{
 			mode = "n";
 			key = "<leader>vD";
-			action = ":DiffviewOpen<CR>";
-			options.desc = "Diffview (all changes)";
+			action.__raw = ''
+				function()
+					require('jj.diff').show_revision({})
+				end
+			'';
+			options.desc = "Diff (all changes)";
 		}
 		{
 			mode = "n";
@@ -175,14 +179,12 @@
 		{
 			mode = "n";
 			key = "<leader>vh";
-			action = ":DiffviewFileHistory %<CR>";
-			options.desc = "File history";
-		}
-		{
-			mode = "n";
-			key = "<leader>vH";
-			action = ":DiffviewFileHistory<CR>";
-			options.desc = "Branch history";
+			action.__raw = ''
+				function()
+					require('jj.diff').show_revision({ rev = '@-' })
+				end
+			'';
+			options.desc = "Diff parent revision";
 		}
 		{
 			mode = "n";
@@ -219,8 +221,12 @@
 		{
 			mode = "n";
 			key = "<leader>vR";
-			action = ":DiffviewOpen origin/main...HEAD --imply-local<CR>";
-			options.desc = "Review bookmark";
+			action.__raw = ''
+				function()
+					require('jj.diff').diff_revisions({ left = 'trunk()', right = '@' })
+				end
+			'';
+			options.desc = "Review bookmark (trunk..@)";
 		}
 		{
 			mode = "n";
