@@ -120,6 +120,11 @@ in {
 						port = 18822,
 						auto_kill = false,
 					},
+					input = {
+						text = {
+							wrap = true,
+						},
+					},
 					ui = {
 						icons = {
 							preset = 'nerdfonts',

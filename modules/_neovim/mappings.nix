@@ -218,6 +218,12 @@
 		}
 		{
 			mode = "n";
+			key = "<leader>vR";
+			action = ":DiffviewOpen origin/main...HEAD --imply-local<CR>";
+			options.desc = "Review bookmark";
+		}
+		{
+			mode = "n";
 			key = "<leader>vs";
 			action.__raw = ''
 				function()
