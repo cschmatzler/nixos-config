@@ -1,5 +1,6 @@
 {
 	den.aspects.ai-tools.homeManager = {
+		config,
 		pkgs,
 		inputs',
 		...
@@ -78,6 +79,7 @@
 				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822";
 				Restart = "on-failure";
 				RestartSec = 5;
+				Environment = "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
 			};
 			Install = {
 				WantedBy = ["default.target"];
