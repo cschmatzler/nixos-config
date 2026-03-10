@@ -9,6 +9,9 @@
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
 		./plugins/jj-diffconflicts.nix
+		./plugins/jj-nvim.nix
+		./plugins/code-review.nix
+		./plugins/diffview.nix
 		./plugins/lsp.nix
 		./plugins/mini.nix
 		./plugins/oil.nix

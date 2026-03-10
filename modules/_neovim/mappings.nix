@@ -117,22 +117,169 @@
 			action = ":Pick visit_paths<CR>";
 			options.desc = "Visit paths (cwd)";
 		}
-		# g - git
+		# v - vcs
 		{
 			mode = "n";
-			key = "<leader>gc";
+			key = "<leader>va";
+			action = ":J annotate<CR>";
+			options.desc = "Annotate (blame)";
+		}
+		{
+			mode = "n";
+			key = "<leader>vc";
 			action = ":JJDiffConflicts<CR>";
 			options.desc = "Resolve conflicts";
 		}
 		{
 			mode = "n";
-			key = "<leader>gg";
+			key = "<leader>vd";
 			action.__raw = ''
-						function()
-				require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
-						end
+				function()
+					require('jj.cmd').diff()
+				end
+			'';
+			options.desc = "Diff (current file)";
+		}
+		{
+			mode = "n";
+			key = "<leader>vD";
+			action = ":DiffviewOpen<CR>";
+			options.desc = "Diffview (all changes)";
+		}
+		{
+			mode = "n";
+			key = "<leader>ve";
+			action.__raw = ''
+				function()
+					require('jj.cmd').describe()
+				end
+			'';
+			options.desc = "Describe (edit message)";
+		}
+		{
+			mode = "n";
+			key = "<leader>vf";
+			action = ":J fetch<CR>";
+			options.desc = "Fetch";
+		}
+		{
+			mode = "n";
+			key = "<leader>vv";
+			action.__raw = ''
+				function()
+					require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
+				end
 			'';
 			options.desc = "jjui";
+		}
+		{
+			mode = "n";
+			key = "<leader>vh";
+			action = ":DiffviewFileHistory %<CR>";
+			options.desc = "File history";
+		}
+		{
+			mode = "n";
+			key = "<leader>vH";
+			action = ":DiffviewFileHistory<CR>";
+			options.desc = "Branch history";
+		}
+		{
+			mode = "n";
+			key = "<leader>vl";
+			action.__raw = ''
+				function()
+					require('jj.cmd').log()
+				end
+			'';
+			options.desc = "Log";
+		}
+		{
+			mode = "n";
+			key = "<leader>vn";
+			action.__raw = ''
+				function()
+					require('jj.cmd').new()
+				end
+			'';
+			options.desc = "New change";
+		}
+		{
+			mode = "n";
+			key = "<leader>vp";
+			action = ":J git push<CR>";
+			options.desc = "Push";
+		}
+		{
+			mode = "n";
+			key = "<leader>vq";
+			action = ":DiffviewClose<CR>";
+			options.desc = "Close diffview";
+		}
+		{
+			mode = "n";
+			key = "<leader>vs";
+			action.__raw = ''
+				function()
+					require('jj.cmd').status()
+				end
+			'';
+			options.desc = "Status";
+		}
+		# r - review
+		{
+			mode = ["n" "v"];
+			key = "<leader>rc";
+			action = ":CodeReviewComment<CR>";
+			options.desc = "Add comment";
+		}
+		{
+			mode = "n";
+			key = "<leader>rd";
+			action = ":CodeReviewDeleteComment<CR>";
+			options.desc = "Delete comment";
+		}
+		{
+			mode = "n";
+			key = "<leader>rl";
+			action = ":CodeReviewList<CR>";
+			options.desc = "List comments";
+		}
+		{
+			mode = "n";
+			key = "<leader>ro";
+			action = ":CodeReviewResolve<CR>";
+			options.desc = "Resolve thread";
+		}
+		{
+			mode = "n";
+			key = "<leader>rp";
+			action = ":CodeReviewPreview<CR>";
+			options.desc = "Preview review";
+		}
+		{
+			mode = "n";
+			key = "<leader>rr";
+			action = ":CodeReviewReply<CR>";
+			options.desc = "Reply to comment";
+		}
+		{
+			mode = "n";
+			key = "<leader>rs";
+			action = ":CodeReviewShowComment<CR>";
+			options.desc = "Show comment";
+		}
+		{
+			mode = "n";
+			key = "<leader>rx";
+			action = ":CodeReviewClear<CR>";
+			options.desc = "Clear all comments";
+		}
+		{
+			mode = "n";
+			key = "<leader>ry";
+			action = ":CodeReviewCopy<CR>";
+			options.desc = "Copy review to clipboard";
 		}
 		# l - lsp/formatter
 		{
