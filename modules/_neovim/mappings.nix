@@ -66,13 +66,13 @@
 		{
 			mode = "n";
 			key = "<leader>ff";
-			action.__raw = "function() require('fff').find_files() end";
+			action = ":Pick files<CR>";
 			options.desc = "Search files";
 		}
 		{
 			mode = "n";
 			key = "<leader>fg";
-			action.__raw = "function() require('fff').live_grep() end";
+			action = ":Pick grep_live<CR>";
 			options.desc = "Grep";
 		}
 		{
