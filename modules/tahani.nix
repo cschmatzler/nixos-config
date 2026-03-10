@@ -73,7 +73,7 @@
 			};
 			Service = {
 				Type = "oneshot";
-				ExecStart = "${opencode}/bin/opencode run --command inbox-triage";
+				ExecStart = "${opencode}/bin/opencode run --command inbox-triage --model opencode-go/kimi-k2.5";
 				Environment = "PATH=${pkgs.himalaya}/bin:${opencode}/bin:${pkgs.coreutils}/bin";
 			};
 		};
