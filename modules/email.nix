@@ -25,7 +25,7 @@
 				address = "christoph@schmatzler.com";
 				userName = "christoph.schmatzler@icloud.com";
 				realName = "Christoph Schmatzler";
-				passwordCommand = ["cat" "/run/secrets/tahani-email-password"];
+				passwordCommand = ["${pkgs.coreutils}/bin/cat" "/run/secrets/tahani-email-password"];
 				folders = {
 					inbox = "INBOX";
 					drafts = "Drafts";
