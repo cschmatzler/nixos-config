@@ -321,13 +321,13 @@
 		{
 			mode = "n";
 			key = "<leader>lj";
-			action = ":lua vim.diagnostic.goto_next()<CR>";
+			action = ":lua vim.diagnostic.jump({ count = 1 })<CR>";
 			options.desc = "Next diagnostic";
 		}
 		{
 			mode = "n";
 			key = "<leader>lk";
-			action = ":lua vim.diagnostic.goto_prev()<CR>";
+			action = ":lua vim.diagnostic.jump({ count = -1 })<CR>";
 			options.desc = "Prev diagnostic";
 		}
 		{

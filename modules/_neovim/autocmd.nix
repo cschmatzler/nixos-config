@@ -26,7 +26,7 @@
 			{
 				event = "FileType";
 				group = "Christoph";
-				pattern = "*.ex,*.exs,*.heex";
+				pattern = "elixir,eelixir,heex";
 				command = "setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2";
 			}
 		];

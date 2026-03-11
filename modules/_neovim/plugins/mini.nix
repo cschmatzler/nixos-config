@@ -131,6 +131,15 @@
 			diff = {};
 			extra = {};
 			git = {};
+			hipatterns = {
+				highlighters = {
+					fixme.__raw = "{ pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' }";
+					hack.__raw = "{ pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' }";
+					todo.__raw = "{ pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' }";
+					note.__raw = "{ pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' }";
+					hex_color.__raw = "require('mini.hipatterns').gen_highlighter.hex_color()";
+				};
+			};
 			icons = {};
 			indentscope = {
 				settings = {
@@ -149,8 +158,10 @@
 				};
 			};
 			move = {};
+			notify = {};
 			pairs = {};
 			pick = {};
+			splitjoin = {};
 			starter = {};
 			statusline = {};
 			surround = {};

@@ -10,8 +10,10 @@
 			list = false;
 			mouse = "";
 			relativenumber = true;
+			scrolloff = 8;
 			shiftwidth = 2;
 			smartcase = true;
+			undofile = true;
 		};
 	};
 }
