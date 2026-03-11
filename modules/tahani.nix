@@ -28,11 +28,13 @@
 			tahani-paperless-password = {
 				sopsFile = ../secrets/tahani-paperless-password;
 				format = "binary";
+				path = "/run/secrets/tahani-paperless-password";
 			};
 			tahani-email-password = {
 				sopsFile = ../secrets/tahani-email-password;
 				format = "binary";
 				owner = "cschmatzler";
+				path = "/run/secrets/tahani-email-password";
 			};
 		};
 		virtualisation.docker.enable = true;

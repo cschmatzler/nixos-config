@@ -378,21 +378,23 @@
 				ast-grep
 				bun
 				delta
+				deadnix
 				devenv
 				docker
 				docker-compose
 				gh
-				git
 				gnumake
 				hyperfine
 				jj-ryu
 				jj-starship
+				nil
 				nodejs_24
 				nurl
 				pnpm
 				postgresql_17
 				serie
 				sqlite
+				statix
 				tea
 				tokei
 				tree-sitter

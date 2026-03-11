@@ -23,16 +23,19 @@
 
 	config = {
 		flake.flakeModules = {
+			# Shared system foundations
+			core = ./core.nix;
+			network = ./network.nix;
+			nixos-system = ./nixos-system.nix;
+
+			# User environment
 			ai-tools = ./ai-tools.nix;
 			atuin = ./atuin.nix;
-			core = ./core.nix;
 			desktop = ./desktop.nix;
 			dev-tools = ./dev-tools.nix;
 			email = ./email.nix;
 			finance = ./finance.nix;
 			neovim = ./neovim.nix;
-			network = ./network.nix;
-			nixos-system = ./nixos-system.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
 			terminal = ./terminal.nix;

@@ -45,7 +45,7 @@ in {
 						{path = "/System/Applications/Music.app/";}
 						{path = "/System/Applications/System Settings.app/";}
 						{
-							path = "${config.users.users.cschmatzler.home}/Downloads";
+							path = "/Users/cschmatzler/Downloads";
 							section = "others";
 							options = "--sort name --view grid --display stack";
 						}

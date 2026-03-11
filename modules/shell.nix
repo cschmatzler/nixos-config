@@ -284,7 +284,6 @@
 
 		home.packages = with pkgs; [
 			vivid
-			(callPackage ./_lib/open-project.nix {})
 		];
 	};
 }

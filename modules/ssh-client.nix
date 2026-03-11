@@ -1,29 +1,30 @@
 {...}: {
 	den.aspects.ssh-client.homeManager = {
 		config,
-		lib,
 		pkgs,
 		...
-	}: {
+	}: let
+		homeDir = "${
+			if pkgs.stdenv.hostPlatform.isDarwin
+			then "/Users"
+			else "/home"
+		}/${config.home.username}";
+	in {
 		programs.ssh = {
 			enable = true;
 			enableDefaultConfig = false;
 			includes = [
-				(lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${config.home.username}/.ssh/config_external")
-				(lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${config.home.username}/.ssh/config_external")
+				"${homeDir}/.ssh/config_external"
 			];
 			matchBlocks = {
 				"*" = {};
 				"github.com" = {
 					identitiesOnly = true;
 					identityFile = [
-						(lib.mkIf pkgs.stdenv.hostPlatform.isLinux "/home/${config.home.username}/.ssh/id_ed25519")
-						(lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "/Users/${config.home.username}/.ssh/id_ed25519")
+						"${homeDir}/.ssh/id_ed25519"
 					];
 				};
 			};
 		};
-
-		home.packages = [pkgs.openssh];
 	};
 }

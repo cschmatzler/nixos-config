@@ -25,8 +25,11 @@
 	virtualisation.oci-containers = {
 		backend = "docker";
 		containers.paperless-ai = {
-			image = "clusterzx/paperless-ai:latest";
+			image = "clusterzx/paperless-ai:v3.0.9";
 			autoStart = true;
+			ports = [
+				"127.0.0.1:3000:3000"
+			];
 			volumes = [
 				"paperless-ai-data:/app/data"
 			];
@@ -36,11 +39,10 @@
 				PAPERLESS_AI_PORT = "3000";
 				# Initial setup wizard will configure the rest
 				PAPERLESS_AI_INITIAL_SETUP = "yes";
-				# Paperless-ngx API URL accessible from container (using host network)
-				PAPERLESS_API_URL = "http://127.0.0.1:${toString config.services.paperless.port}/api";
+				PAPERLESS_API_URL = "http://host.docker.internal:${toString config.services.paperless.port}/api";
 			};
 			extraOptions = [
-				"--network=host"
+				"--add-host=host.docker.internal:host-gateway"
 			];
 		};
 	};
@@ -57,7 +59,7 @@
 
 	services.paperless = {
 		enable = true;
-		address = "0.0.0.0";
+		address = "127.0.0.1";
 		passwordFile = config.sops.secrets.tahani-paperless-password.path;
 		settings = {
 			PAPERLESS_DBENGINE = "sqlite";

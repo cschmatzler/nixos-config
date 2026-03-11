@@ -1,7 +1,7 @@
-{
+{config, ...}: {
 	services.adguardhome = {
 		enable = true;
-		host = "0.0.0.0";
+		host = "127.0.0.1";
 		port = 10000;
 		settings = {
 			dhcp = {
@@ -56,5 +56,14 @@
 				}
 			];
 		};
+	};
+
+	services.caddy.virtualHosts."adguard.manticore-hippocampus.ts.net" = {
+		extraConfig = ''
+			tls {
+				get_certificate tailscale
+			}
+			reverse_proxy localhost:${toString config.services.adguardhome.port}
+		'';
 	};
 }

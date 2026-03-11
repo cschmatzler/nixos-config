@@ -105,7 +105,7 @@
 		};
 
 		nix = {
-			settings.trusted-users = ["@admin" "cschmatzler"];
+			settings.trusted-users = ["cschmatzler"];
 			gc.interval = {
 				Weekday = 0;
 				Hour = 2;
