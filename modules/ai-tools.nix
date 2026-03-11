@@ -79,7 +79,7 @@
 				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822";
 				Restart = "on-failure";
 				RestartSec = 5;
-				Environment = "PATH=${pkgs.lib.makeBinPath [inputs'.llm-agents.packages.opencode pkgs.coreutils pkgs.nodejs_24 pkgs.nushell]}:/run/current-system/sw/bin";
+				Environment = "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
 			};
 			Install = {
 				WantedBy = ["default.target"];

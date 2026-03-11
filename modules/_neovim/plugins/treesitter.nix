@@ -35,6 +35,26 @@
 					end, { force = true, all = true })
 				end
 			end
+
+			-- Fix grammar-bundled treesitter queries that use #match? with Lua pattern
+			-- syntax (e.g. %d) instead of Vim regex. Neovim 0.11 picks the first
+			-- non-extending query file in the rtp as the base, so the grammar-bundled
+			-- (buggy) queries take precedence over the corrected site-level queries.
+			-- Override affected languages with the site-level version.
+			do
+				local langs = { "sql" }
+				for _, lang in ipairs(langs) do
+					local files = vim.api.nvim_get_runtime_file(
+						"queries/" .. lang .. "/highlights.scm", true)
+					if #files > 1 then
+						local f = io.open(files[#files])
+						if f then
+							vim.treesitter.query.set(lang, "highlights", f:read("*all"))
+							f:close()
+						end
+					end
+				end
+			end
 		'';
 	};
 }
