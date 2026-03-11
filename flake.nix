@@ -5,56 +5,56 @@
 
 	inputs = {
 		darwin = {
-			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:LnL7/nix-darwin/master";
+			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		den.url = "github:vic/den";
 		deploy-rs.url = "github:serokell/deploy-rs";
 		disko = {
-			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:nix-community/disko";
+			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		flake-aspects.url = "github:vic/flake-aspects";
 		flake-file.url = "github:vic/flake-file";
 		flake-parts = {
-			inputs.nixpkgs-lib.follows = "nixpkgs";
 			url = "github:hercules-ci/flake-parts";
+			inputs.nixpkgs-lib.follows = "nixpkgs";
 		};
 		himalaya.url = "github:pimalaya/himalaya";
 		home-manager = {
-			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:nix-community/home-manager";
+			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		homebrew-cask = {
-			flake = false;
 			url = "github:homebrew/homebrew-cask";
+			flake = false;
 		};
 		homebrew-core = {
-			flake = false;
 			url = "github:homebrew/homebrew-core";
+			flake = false;
 		};
 		import-tree.url = "github:vic/import-tree";
 		jj-ryu = {
-			flake = false;
 			url = "github:dmmulroy/jj-ryu";
+			flake = false;
 		};
 		jj-starship.url = "github:dmmulroy/jj-starship";
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		naersk = {
-			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:nix-community/naersk/master";
+			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
 		nono = {
-			flake = false;
 			url = "github:always-further/nono";
+			flake = false;
 		};
 		sops-nix = {
-			inputs.nixpkgs.follows = "nixpkgs";
 			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		tuicr.url = "github:agavra/tuicr";
 		zjstatus.url = "github:dj95/zjstatus";
