@@ -27,7 +27,7 @@
 
 			extraEnv =
 				''
-					$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate catppuccin-latte)
+					$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate rose-pine-dawn)
 				''
 				+ lib.optionalString pkgs.stdenv.isDarwin ''
 					# Nushell on Darwin doesn't source /etc/zprofile or path_helper,
@@ -36,65 +36,55 @@
 				'';
 
 			extraConfig = ''
-				# --- Catppuccin Latte Theme ---
+				# --- Rosé Pine Dawn Theme ---
 				let theme = {
-					rosewater: "#dc8a78"
-					flamingo: "#dd7878"
-					pink: "#ea76cb"
-					mauve: "#8839ef"
-					red: "#d20f39"
-					maroon: "#e64553"
-					peach: "#fe640b"
-					yellow: "#df8e1d"
-					green: "#40a02b"
-					teal: "#179299"
-					sky: "#04a5e5"
-					sapphire: "#209fb5"
-					blue: "#1e66f5"
-					lavender: "#7287fd"
-					text: "#4c4f69"
-					subtext1: "#5c5f77"
-					subtext0: "#6c6f85"
-					overlay2: "#7c7f93"
-					overlay1: "#8c8fa1"
-					overlay0: "#9ca0b0"
-					surface2: "#acb0be"
-					surface1: "#bcc0cc"
-					surface0: "#ccd0da"
-					base: "#eff1f5"
-					mantle: "#e6e9ef"
-					crust: "#dce0e8"
+					love: "#b4637a"
+					gold: "#ea9d34"
+					rose: "#d7827e"
+					pine: "#286983"
+					foam: "#56949f"
+					iris: "#907aa9"
+					leaf: "#6d8f89"
+					text: "#575279"
+					subtle: "#797593"
+					muted: "#9893a5"
+					highlight_high: "#cecacd"
+					highlight_med: "#dfdad9"
+					highlight_low: "#f4ede8"
+					overlay: "#f2e9e1"
+					surface: "#fffaf3"
+					base: "#faf4ed"
 				}
 
 				let scheme = {
-					recognized_command: $theme.blue
+					recognized_command: $theme.pine
 					unrecognized_command: $theme.text
-					constant: $theme.peach
-					punctuation: $theme.overlay2
-					operator: $theme.sky
-					string: $theme.green
-					virtual_text: $theme.surface2
-					variable: { fg: $theme.flamingo attr: i }
-					filepath: $theme.yellow
+					constant: $theme.gold
+					punctuation: $theme.muted
+					operator: $theme.subtle
+					string: $theme.gold
+					virtual_text: $theme.highlight_high
+					variable: { fg: $theme.rose attr: i }
+					filepath: $theme.iris
 				}
 
 				$env.config.color_config = {
-					separator: { fg: $theme.surface2 attr: b }
-					leading_trailing_space_bg: { fg: $theme.lavender attr: u }
+					separator: { fg: $theme.highlight_high attr: b }
+					leading_trailing_space_bg: { fg: $theme.iris attr: u }
 					header: { fg: $theme.text attr: b }
 					row_index: $scheme.virtual_text
 					record: $theme.text
 					list: $theme.text
 					hints: $scheme.virtual_text
-					search_result: { fg: $theme.base bg: $theme.yellow }
-					shape_closure: $theme.teal
-					closure: $theme.teal
-					shape_flag: { fg: $theme.maroon attr: i }
+					search_result: { fg: $theme.base bg: $theme.gold }
+					shape_closure: $theme.foam
+					closure: $theme.foam
+					shape_flag: { fg: $theme.love attr: i }
 					shape_matching_brackets: { attr: u }
-					shape_garbage: $theme.red
-					shape_keyword: $theme.mauve
-					shape_match_pattern: $theme.green
-					shape_signature: $theme.teal
+					shape_garbage: $theme.love
+					shape_keyword: $theme.iris
+					shape_match_pattern: $theme.leaf
+					shape_signature: $theme.foam
 					shape_table: $scheme.punctuation
 					cell-path: $scheme.punctuation
 					shape_list: $scheme.punctuation
@@ -104,53 +94,53 @@
 					empty: { attr: n }
 					filesize: {||
 						if $in < 1kb {
-							$theme.teal
+							$theme.foam
 						} else if $in < 10kb {
-							$theme.green
+							$theme.leaf
 						} else if $in < 100kb {
-							$theme.yellow
+							$theme.gold
 						} else if $in < 10mb {
-							$theme.peach
+							$theme.rose
 						} else if $in < 100mb {
-							$theme.maroon
+							$theme.love
 						} else if $in < 1gb {
-							$theme.red
+							$theme.love
 						} else {
-							$theme.mauve
+							$theme.iris
 						}
 					}
 					duration: {||
 						if $in < 1day {
-							$theme.teal
+							$theme.foam
 						} else if $in < 1wk {
-							$theme.green
+							$theme.leaf
 						} else if $in < 4wk {
-							$theme.yellow
+							$theme.gold
 						} else if $in < 12wk {
-							$theme.peach
+							$theme.rose
 						} else if $in < 24wk {
-							$theme.maroon
+							$theme.love
 						} else if $in < 52wk {
-							$theme.red
+							$theme.love
 						} else {
-							$theme.mauve
+							$theme.iris
 						}
 					}
 					datetime: {|| (date now) - $in |
 						if $in < 1day {
-							$theme.teal
+							$theme.foam
 						} else if $in < 1wk {
-							$theme.green
+							$theme.leaf
 						} else if $in < 4wk {
-							$theme.yellow
+							$theme.gold
 						} else if $in < 12wk {
-							$theme.peach
+							$theme.rose
 						} else if $in < 24wk {
-							$theme.maroon
+							$theme.love
 						} else if $in < 52wk {
-							$theme.red
+							$theme.love
 						} else {
-							$theme.mauve
+							$theme.iris
 						}
 					}
 					shape_external: $scheme.unrecognized_command
@@ -158,11 +148,11 @@
 					shape_external_resolved: $scheme.recognized_command
 					shape_block: $scheme.recognized_command
 					block: $scheme.recognized_command
-					shape_custom: $theme.pink
-					custom: $theme.pink
+					shape_custom: $theme.rose
+					custom: $theme.rose
 					background: $theme.base
 					foreground: $theme.text
-					cursor: { bg: $theme.rosewater fg: $theme.base }
+					cursor: { bg: $theme.text fg: $theme.base }
 					shape_range: $scheme.operator
 					range: $scheme.operator
 					shape_pipe: $scheme.operator
@@ -187,51 +177,51 @@
 					shape_literal: $scheme.constant
 					string: $scheme.string
 					shape_string: $scheme.string
-					shape_string_interpolation: $theme.flamingo
+					shape_string_interpolation: $theme.rose
 					shape_raw_string: $scheme.string
 					shape_externalarg: $scheme.string
 				}
 				$env.config.highlight_resolved_externals = true
 				$env.config.explore = {
-					status_bar_background: { fg: $theme.text, bg: $theme.mantle },
+					status_bar_background: { fg: $theme.text, bg: $theme.surface },
 					command_bar_text: { fg: $theme.text },
-					highlight: { fg: $theme.base, bg: $theme.yellow },
+					highlight: { fg: $theme.base, bg: $theme.gold },
 					status: {
-						error: $theme.red,
-						warn: $theme.yellow,
-						info: $theme.blue,
+						error: $theme.love,
+						warn: $theme.gold,
+						info: $theme.pine,
 					},
-					selected_cell: { bg: $theme.blue fg: $theme.base },
+					selected_cell: { bg: $theme.pine fg: $theme.base },
 				}
 
-				# --- Custom Commands ---
-				def --env open_project [] {
-					let base = ($env.HOME | path join "Projects")
-					let choice = (
-						${pkgs.fd}/bin/fd -t d -d 1 -a . ($base | path join "Personal") ($base | path join "Work")
-						| lines
-						| each {|p| $p | str replace $"($base)/" "" }
-						| str join "\n"
-						| ${pkgs.fzf}/bin/fzf --prompt "project > "
-					)
-					if ($choice | str trim | is-not-empty) {
-						cd ($base | path join ($choice | str trim))
-					}
-				}
-
-				# --- Keybinding: Ctrl+O for open_project ---
-				$env.config.keybindings = ($env.config.keybindings | append [
-					{
-						name: open_project
-						modifier: control
-						keycode: char_o
-						mode: [emacs vi_insert vi_normal]
-						event: {
-							send: executehostcommand
-							cmd: "open_project"
+					# --- Custom Commands ---
+					def --env open_project [] {
+						let base = ($env.HOME | path join "Projects")
+						let choice = (
+							${pkgs.fd}/bin/fd -t d -d 1 -a . ($base | path join "Personal") ($base | path join "Work")
+							| lines
+							| each {|p| $p | str replace $"($base)/" "" }
+							| str join "\n"
+							| ${pkgs.fzf}/bin/fzf --prompt "project > "
+						)
+						if ($choice | str trim | is-not-empty) {
+							cd ($base | path join ($choice | str trim))
 						}
 					}
-				])
+
+					# --- Keybinding: Ctrl+O for open_project ---
+					$env.config.keybindings = ($env.config.keybindings | append [
+						{
+							name: open_project
+							modifier: control
+							keycode: char_o
+							mode: [emacs vi_insert vi_normal]
+							event: {
+								send: executehostcommand
+								cmd: "open_project"
+							}
+						}
+					])
 			'';
 		};
 

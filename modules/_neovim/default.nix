@@ -25,10 +25,10 @@
 		enable = true;
 		defaultEditor = true;
 		luaLoader.enable = true;
-		colorschemes.catppuccin = {
+		colorschemes.rose-pine = {
 			enable = true;
 			settings = {
-				flavour = "latte";
+				variant = "dawn";
 			};
 		};
 		extraConfigLua = ''

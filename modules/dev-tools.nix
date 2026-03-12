@@ -316,36 +316,36 @@
 
 				gui = {
 					authorColors = {
-						"*" = "#7287fd";
+						"*" = "#907aa9";
 					};
 					theme = {
 						activeBorderColor = [
-							"#8839ef"
+							"#907aa9"
 							"bold"
 						];
 						inactiveBorderColor = [
-							"#6c6f85"
+							"#9893a5"
 						];
 						optionsTextColor = [
-							"#1e66f5"
+							"#286983"
 						];
 						selectedLineBgColor = [
-							"#ccd0da"
+							"#f2e9e1"
 						];
 						cherryPickedCommitBgColor = [
-							"#bcc0cc"
+							"#dfdad9"
 						];
 						cherryPickedCommitFgColor = [
-							"#8839ef"
+							"#907aa9"
 						];
 						defaultFgColor = [
-							"#4c4f69"
+							"#575279"
 						];
 						searchingActiveBorderColor = [
-							"#df8e1d"
+							"#ea9d34"
 						];
 						unstagedChangesColor = [
-							"#d20f39"
+							"#b4637a"
 						];
 					};
 				};

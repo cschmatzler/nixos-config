@@ -11,7 +11,7 @@
 			settings = {
 				model = "anthropic/claude-opus-4-6";
 				small_model = "anthropic/claude-haiku-4-5";
-				theme = "catppuccin";
+				theme = "rosepine";
 				plugin = ["opencode-anthropic-auth@latest"];
 				permission = {
 					read = {

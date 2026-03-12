@@ -28,20 +28,20 @@ in {
 			}
 
 			local palette = {
-				base = '#eff1f5',
-				mantle = '#e6e9ef',
-				surface0 = '#ccd0da',
-				surface1 = '#bcc0cc',
-				text = '#4c4f69',
-				subtext0 = '#6c6f85',
-				overlay0 = '#9ca0b0',
-				blue = '#1e66f5',
-				lavender = '#7287fd',
-				sapphire = '#209fb5',
-				teal = '#179299',
-				green = '#40a02b',
-				mauve = '#8839ef',
-				peach = '#fe640b',
+				base = '#faf4ed',
+				surface = '#fffaf3',
+				overlay = '#f2e9e1',
+				highlight_med = '#dfdad9',
+				text = '#575279',
+				subtle = '#797593',
+				muted = '#9893a5',
+				pine = '#286983',
+				iris = '#907aa9',
+				foam = '#56949f',
+				leaf = '#6d8f89',
+				gold = '#ea9d34',
+				rose = '#d7827e',
+				love = '#b4637a',
 			}
 
 			local function set_highlights(highlights)
@@ -145,15 +145,15 @@ in {
 			})
 
 			set_highlights({
-				RenderMarkdownCode = { bg = palette.mantle },
-				RenderMarkdownCodeBorder = { fg = palette.surface0, bg = palette.mantle },
-				RenderMarkdownCodeInline = { bg = palette.mantle },
-				RenderMarkdownH1 = { fg = palette.blue, bold = true },
-				RenderMarkdownH2 = { fg = palette.mauve, bold = true },
-				RenderMarkdownH3 = { fg = palette.teal, bold = true },
-				RenderMarkdownH4 = { fg = palette.peach, bold = true },
-				OpencodeInputLegend = { fg = palette.subtext0, bold = true },
-				OpencodeAgentBuild = { bg = palette.overlay0, fg = palette.base, bold = true },
+				RenderMarkdownCode = { bg = palette.surface },
+				RenderMarkdownCodeBorder = { fg = palette.highlight_med, bg = palette.surface },
+				RenderMarkdownCodeInline = { bg = palette.surface },
+				RenderMarkdownH1 = { fg = palette.pine, bold = true },
+				RenderMarkdownH2 = { fg = palette.iris, bold = true },
+				RenderMarkdownH3 = { fg = palette.foam, bold = true },
+				RenderMarkdownH4 = { fg = palette.gold, bold = true },
+				OpencodeInputLegend = { fg = palette.subtle, bold = true },
+				OpencodeAgentBuild = { bg = palette.muted, fg = palette.base, bold = true },
 			})
 
 			local render_markdown_config = {
