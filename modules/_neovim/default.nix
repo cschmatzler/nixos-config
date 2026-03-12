@@ -31,8 +31,10 @@
 			enable = true;
 			settings = {
 				variant = "dawn";
+				extend_background_behind_borders = false;
 			};
 		};
+
 	};
 
 	home.shellAliases = {

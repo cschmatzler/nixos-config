@@ -14,6 +14,19 @@
 		};
 in {
 	programs.nixvim = {
+		autoCmd = [
+			{
+				event = "FileType";
+				group = "Christoph";
+				pattern = "opencode,opencode_output";
+				callback.__raw = ''
+					function()
+						vim.b.ministatusline_disable = true
+					end
+				'';
+			}
+		];
+
 		extraPlugins = [
 			opencode-nvim
 		];
