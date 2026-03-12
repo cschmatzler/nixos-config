@@ -44,6 +44,10 @@
 			url = "github:nix-community/naersk/master";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		neovim-nightly-overlay = {
+			url = "github:nix-community/neovim-nightly-overlay";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";

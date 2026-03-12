@@ -5,9 +5,8 @@
 			format_on_save = {};
 			formatters_by_ft = {
 				nix = ["alejandra"];
-				javascript = ["prettier"];
-				typescript = ["prettier"];
-				vue = ["prettier"];
+				javascript = ["oxfmt"];
+				typescript = ["oxfmt"];
 			};
 		};
 	};

@@ -49,6 +49,10 @@
 			flake = false;
 		};
 		nixvim.url = "github:nix-community/nixvim";
+		neovim-nightly-overlay = {
+			url = "github:nix-community/neovim-nightly-overlay";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";

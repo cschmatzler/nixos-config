@@ -1,21 +1,22 @@
-{
+{inputs', ...}: {
 	imports = [
 		./autocmd.nix
 		./mappings.nix
 		./options.nix
 		./plugins/blink-cmp.nix
+		./plugins/code-review.nix
 		./plugins/conform.nix
+		./plugins/diffview.nix
 		./plugins/grug-far.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
 		./plugins/jj-diffconflicts.nix
 		./plugins/jj-nvim.nix
-		./plugins/code-review.nix
-		./plugins/diffview.nix
 		./plugins/lsp.nix
 		./plugins/mini.nix
 		./plugins/oil.nix
 		./plugins/opencode.nix
+		./plugins/render-markdown.nix
 		./plugins/toggleterm.nix
 		./plugins/treesitter.nix
 		./plugins/zk.nix
@@ -24,6 +25,7 @@
 	programs.nixvim = {
 		enable = true;
 		defaultEditor = true;
+		package = inputs'.neovim-nightly-overlay.packages.default;
 		luaLoader.enable = true;
 		colorschemes.rose-pine = {
 			enable = true;
@@ -31,9 +33,6 @@
 				variant = "dawn";
 			};
 		};
-		extraConfigLua = ''
-			vim.ui.select = MiniPick.ui_select
-		'';
 	};
 
 	home.shellAliases = {

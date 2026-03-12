@@ -30,7 +30,6 @@ in {
 						close_on_edit = false,
 					},
 				},
-				-- Disable default keymaps — we set our own in mappings.nix
 				ui = {
 					log = {
 						keymaps = true,
