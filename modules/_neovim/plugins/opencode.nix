@@ -47,9 +47,10 @@ in {
 				},
 			})
 
-				local hl = vim.api.nvim_set_hl
-				hl(0, "OpencodeBorder", { fg = "#9893a5" })
-				hl(0, "OpencodeToolBorder", { fg = "#cecacd" })
+			local hl = vim.api.nvim_set_hl
+			hl(0, "OpencodeBorder", { fg = "#9893a5" })
+			hl(0, "OpencodeMessageRoleUser", { fg = "#faf4ed" })
+			hl(0, "OpencodeToolBorder", { fg = "#faf4ed" })
 				hl(0, "OpencodeDiffAdd", { bg = "#dfeadf" })
 				hl(0, "OpencodeDiffDelete", { bg = "#f2dde2" })
 				hl(0, "OpencodeAgentPlan", { bg = "#907aa9", fg = "#fffaf3" })
