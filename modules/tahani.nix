@@ -10,9 +10,9 @@
 		den.aspects.dev-tools
 		den.aspects.neovim
 		den.aspects.ai-tools
+		den.aspects.secrets
 		den.aspects.zellij
 		den.aspects.zk
-		den.aspects.secrets
 	];
 
 	den.aspects.tahani.nixos = {...}: {
