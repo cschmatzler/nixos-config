@@ -16,7 +16,7 @@
 			window-padding-x = 12
 			window-padding-y = 3
 			window-padding-balance = true
-			font-family = Iosevka Nerd Font Mono
+			font-family = Iosevka Nerd Font
 			font-size = 17.5
 			cursor-style = block
 			mouse-hide-while-typing = true
