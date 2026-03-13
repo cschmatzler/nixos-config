@@ -16,6 +16,7 @@
 				devenv
 				docker
 				docker-compose
+				lazydocker
 				gh
 				gnumake
 				hyperfine
