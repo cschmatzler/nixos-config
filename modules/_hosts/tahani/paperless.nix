@@ -61,6 +61,7 @@
 	services.paperless = {
 		enable = true;
 		address = "127.0.0.1";
+		consumptionDir = "/var/lib/paperless/consume";
 		passwordFile = config.sops.secrets.tahani-paperless-password.path;
 		settings = {
 			PAPERLESS_DBENGINE = "sqlite";
@@ -69,6 +70,9 @@
 				".DS_STORE/*"
 				"desktop.ini"
 			];
+			PAPERLESS_CONSUMER_POLLING = 30;
+			PAPERLESS_CONSUMER_RECURSIVE = true;
+			PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = true;
 			PAPERLESS_OCR_LANGUAGE = "deu+eng";
 			PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://docs.manticore-hippocampus.ts.net";
 		};

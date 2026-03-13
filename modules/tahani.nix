@@ -38,7 +38,12 @@
 			};
 		};
 		virtualisation.docker.enable = true;
-		users.users.cschmatzler.extraGroups = ["docker"];
+		users.users.cschmatzler.extraGroups = ["docker" "paperless"];
+
+		systemd.tmpfiles.rules = [
+			"d /var/lib/paperless/consume 2775 paperless paperless -"
+			"d /var/lib/paperless/consume/inbox-triage 2775 paperless paperless -"
+		];
 		swapDevices = [
 			{
 				device = "/swapfile";

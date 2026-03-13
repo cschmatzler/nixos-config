@@ -10,6 +10,7 @@ Hard requirements:
 - Do not use pattern-matching commands or searches (`grep`, `rg`, `awk`, `sed`, `himalaya envelope list` query filters, etc.).
 - Always inspect current folders first, then triage.
 - Treat this as a single deterministic run over a snapshot of message IDs discovered during this run.
+- Ingest valuable document attachments into Paperless (see Document Ingestion section below).
 
 Workflow:
 1. Run `himalaya folder list` first and use those folders as the primary taxonomy.
@@ -35,8 +36,9 @@ Workflow:
 5. For each single envelope ID, do all checks before any move/delete:
     - Check envelope flags from the JSON listing (seen/answered/flagged) before reading.
     - Read the message: `himalaya message read -f "<source>" <id>`.
-    - If needed for classification, inspect attachments: `himalaya attachment download -f "<source>" <id> --dir /tmp/himalaya-triage`.
-    - If attachments are downloaded, inspect them and `rm` the downloaded files from `/tmp/himalaya-triage` after use.
+    - If needed for classification or ingestion, download attachments: `himalaya attachment download -f "<source>" <id> --dir /tmp/himalaya-triage`.
+    - If the message qualifies for document ingestion (see Document Ingestion below), copy eligible attachments to the Paperless consume directory before cleanup.
+    - Always `rm` downloaded files from `/tmp/himalaya-triage` after processing (whether ingested or not).
     - Move: `himalaya message move -f "<source>" "<destination>" <id>`.
     - Delete: `himalaya message delete -f "<source>" <id>`.
 6. Classification precedence (higher rule wins on conflict):
@@ -58,6 +60,30 @@ Workflow:
    - Naming constraints: concise topic name, avoid duplicates, and avoid broad catch-all names.
    - Command: `himalaya folder add "<new-folder>"`.
 
+Document Ingestion (Paperless):
+- **Purpose**: Automatically archive valuable document attachments into Paperless via its consumption directory.
+- **Ingestion path**: `/var/lib/paperless/consume/inbox-triage/`
+- **When to ingest**: Only for messages whose attachments have long-term archival value. Eligible categories:
+  - Invoices, receipts, and billing statements (messages going to `Orders and Invoices` or `Payments`)
+  - Contracts, agreements, and legal documents
+  - Tax documents, account statements, and financial summaries
+  - Insurance documents and policy papers
+  - Official correspondence with document attachments (government, institutions)
+- **When NOT to ingest**:
+  - Marketing emails, newsletters, promotional material
+  - Shipping/tracking notifications without invoice attachments
+  - OTP codes, login alerts, password resets, ephemeral notifications
+  - Subscription renewal reminders without actual invoices
+  - Duplicate documents already seen in this run
+  - Inline images, email signatures, logos, and non-document attachments
+- **Eligible file types**: PDF, PNG, JPG/JPEG, TIFF, WEBP (documents and scans only). Skip archive files (ZIP, etc.), calendar invites (ICS), and other non-document formats.
+- **Procedure**:
+  1. After downloading attachments to `/tmp/himalaya-triage`, check if any are eligible documents.
+  2. Copy eligible files: `cp /tmp/himalaya-triage/<filename> /var/lib/paperless/consume/inbox-triage/`
+  3. If multiple messages could produce filename collisions, prefix the filename with the message ID: `<id>-<filename>`.
+  4. Log each ingested file in the action log at the end of the run.
+- **Conservative rule**: When in doubt whether an attachment is worth archiving, skip it. Paperless storage is cheap, but noise degrades searchability. Prefer false negatives over false positives for marketing material, but prefer false positives over false negatives for anything that looks like a financial or legal document.
+
 Execution rules:
 - Never perform bulk operations. One message ID per `read`, `move`, `delete`, and attachment command.
 - Always use page size 20 for envelope listing (`-s 20`).
@@ -74,6 +100,7 @@ Execution rules:
   - counts by action (untouched/moved-to-folder/deleted),
   - per-destination-folder counts,
   - created folders,
+  - documents ingested to Paperless (count and filenames),
   - short rationale for non-obvious classifications.
 
 <user-request>
