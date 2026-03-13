@@ -62,6 +62,9 @@
 	in {
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 
+		# LLM typo guard
+		home.shellAliases.himayala = "himalaya";
+
 		# Allow inbox-triage to access attachment staging and paperless ingestion dirs
 		programs.opencode.settings.permission.external_directory = {
 			"/tmp/himalaya-triage/*" = "allow";
