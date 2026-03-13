@@ -35,18 +35,28 @@ in {
 				debug = {
 					show_ids = false,
 				},
+				ui = {
+					icons = {
+						preset = "text",
+					},
+					input = {
+						text = {
+							wrap = true,
+						},
+					},
+				},
 			})
 
-			local hl = vim.api.nvim_set_hl
-			hl(0, "OpencodeBorder", { fg = "#9893a5" })
-			hl(0, "OpencodeToolBorder", { fg = "#cecacd" })
-			hl(0, "OpencodeDiffAdd", { bg = "#dfeadf" })
-			hl(0, "OpencodeDiffDelete", { bg = "#f2dde2" })
-			hl(0, "OpencodeAgentPlan", { bg = "#907aa9", fg = "#fffaf3" })
-			hl(0, "OpencodeAgentBuild", { bg = "#56949f", fg = "#fffaf3" })
-			hl(0, "OpencodeAgentCustom", { bg = "#ea9d34", fg = "#fffaf3" })
-			hl(0, "OpencodeContestualAction", { bg = "#dfdad9" })
-			hl(0, "OpencodeInputLegend", { bg = "#f2e9e1", fg = "#797593" })
+				local hl = vim.api.nvim_set_hl
+				hl(0, "OpencodeBorder", { fg = "#9893a5" })
+				hl(0, "OpencodeToolBorder", { fg = "#cecacd" })
+				hl(0, "OpencodeDiffAdd", { bg = "#dfeadf" })
+				hl(0, "OpencodeDiffDelete", { bg = "#f2dde2" })
+				hl(0, "OpencodeAgentPlan", { bg = "#907aa9", fg = "#fffaf3" })
+				hl(0, "OpencodeAgentBuild", { bg = "#56949f", fg = "#fffaf3" })
+				hl(0, "OpencodeAgentCustom", { bg = "#ea9d34", fg = "#fffaf3" })
+				hl(0, "OpencodeContestualAction", { bg = "#dfdad9" })
+				hl(0, "OpencodeInputLegend", { bg = "#f2e9e1", fg = "#797593" })
 		'';
 	};
 }

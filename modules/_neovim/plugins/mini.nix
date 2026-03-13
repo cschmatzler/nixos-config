@@ -35,6 +35,8 @@
 							{ mode = 'x', keys = '<Leader>o', desc = '+OpenCode' },
 							{ mode = 'n', keys = '<Leader>r', desc = '+Review' },
 							{ mode = 'v', keys = '<Leader>r', desc = '+Review' },
+							{ mode = 'n', keys = '<Leader>t', desc = '+Tab' },
+							{ mode = 'n', keys = '<Leader>w', desc = '+Window' },
 						  require("mini.clue").gen_clues.builtin_completion(),
 						  require("mini.clue").gen_clues.g(),
 						  require("mini.clue").gen_clues.marks(),

@@ -9,6 +9,7 @@
 
 			settings = {
 				show_banner = false;
+				edit_mode = "vi";
 				completions = {
 					algorithm = "fuzzy";
 					case_sensitive = false;

@@ -348,6 +348,98 @@
 			action = ":lua vim.lsp.buf.definition()<CR>";
 			options.desc = "Source definition";
 		}
+		# t - tab
+		{
+			mode = "n";
+			key = "<leader>tc";
+			action = ":tabclose<CR>";
+			options.desc = "Close tab";
+		}
+		{
+			mode = "n";
+			key = "<leader>tn";
+			action = ":tabnew<CR>";
+			options.desc = "New tab";
+		}
+		{
+			mode = "n";
+			key = "<leader>to";
+			action = ":tabonly<CR>";
+			options.desc = "Close other tabs";
+		}
+		{
+			mode = "n";
+			key = "<leader>th";
+			action = ":tabprevious<CR>";
+			options.desc = "Previous tab";
+		}
+		{
+			mode = "n";
+			key = "<leader>tl";
+			action = ":tabnext<CR>";
+			options.desc = "Next tab";
+		}
+		# w - window
+		{
+			mode = "n";
+			key = "<leader>wh";
+			action = "<C-w>h";
+			options.desc = "Go left";
+		}
+		{
+			mode = "n";
+			key = "<leader>wj";
+			action = "<C-w>j";
+			options.desc = "Go down";
+		}
+		{
+			mode = "n";
+			key = "<leader>wk";
+			action = "<C-w>k";
+			options.desc = "Go up";
+		}
+		{
+			mode = "n";
+			key = "<leader>wl";
+			action = "<C-w>l";
+			options.desc = "Go right";
+		}
+		{
+			mode = "n";
+			key = "<leader>ws";
+			action = ":split<CR>";
+			options.desc = "Split horizontal";
+		}
+		{
+			mode = "n";
+			key = "<leader>wv";
+			action = ":vsplit<CR>";
+			options.desc = "Split vertical";
+		}
+		{
+			mode = "n";
+			key = "<leader>wc";
+			action = ":close<CR>";
+			options.desc = "Close window";
+		}
+		{
+			mode = "n";
+			key = "<leader>wq";
+			action = ":q<CR>";
+			options.desc = "Quit window";
+		}
+		{
+			mode = "n";
+			key = "<leader>wo";
+			action = ":only<CR>";
+			options.desc = "Close other windows";
+		}
+		{
+			mode = "n";
+			key = "<leader>w=";
+			action = "<C-w>=";
+			options.desc = "Equalize windows";
+		}
 		# other
 		{
 			mode = "n";

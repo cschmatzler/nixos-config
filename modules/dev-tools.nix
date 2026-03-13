@@ -355,6 +355,80 @@
 		# JJUI configuration
 		programs.jjui = {
 			enable = true;
+			settings.ui.colors = {
+				text = {fg = "#575279";};
+				dimmed = {fg = "#9893a5";};
+				selected = {
+					bg = "#f2e9e1";
+					fg = "#575279";
+					bold = true;
+				};
+				border = {fg = "#9893a5";};
+				title = {
+					fg = "#907aa9";
+					bold = true;
+				};
+				shortcut = {
+					fg = "#286983";
+					bold = true;
+				};
+				matched = {
+					fg = "#ea9d34";
+					bold = true;
+				};
+				"revisions selected" = {
+					bg = "#f2e9e1";
+					fg = "#575279";
+					bold = true;
+				};
+				"status" = {bg = "#f2e9e1";};
+				"status title" = {
+					bg = "#907aa9";
+					fg = "#faf4ed";
+					bold = true;
+				};
+				"status shortcut" = {fg = "#286983";};
+				"status dimmed" = {fg = "#9893a5";};
+				"menu" = {bg = "#faf4ed";};
+				"menu selected" = {
+					bg = "#f2e9e1";
+					fg = "#575279";
+					bold = true;
+				};
+				"menu border" = {fg = "#9893a5";};
+				"menu title" = {
+					fg = "#907aa9";
+					bold = true;
+				};
+				"menu shortcut" = {fg = "#286983";};
+				"menu matched" = {
+					fg = "#ea9d34";
+					bold = true;
+				};
+				"preview border" = {fg = "#9893a5";};
+				"help" = {bg = "#faf4ed";};
+				"help border" = {fg = "#9893a5";};
+				"help title" = {
+					fg = "#907aa9";
+					bold = true;
+				};
+				"confirmation" = {bg = "#faf4ed";};
+				"confirmation border" = {fg = "#9893a5";};
+				"confirmation selected" = {
+					bg = "#f2e9e1";
+					fg = "#575279";
+					bold = true;
+				};
+				"confirmation dimmed" = {fg = "#9893a5";};
+				source_marker = {
+					fg = "#56949f";
+					bold = true;
+				};
+				target_marker = {
+					fg = "#d7827e";
+					bold = true;
+				};
+			};
 		};
 
 		# Direnv configuration
