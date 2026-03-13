@@ -222,8 +222,20 @@
 								cmd: "open_project"
 							}
 						}
-					])
-			'';
+				])
+
+				# Vi mode prompt indicators (Starship can't detect vi mode in nushell,
+				# so we handle the character here instead of in the character module)
+				$env.PROMPT_INDICATOR = {|| $"(ansi green_bold)󰘧(ansi reset) " }
+				$env.PROMPT_INDICATOR_VI_INSERT = {||
+					if $env.LAST_EXIT_CODE == 0 {
+						$"(ansi green_bold)󰘧(ansi reset) "
+					} else {
+						$"(ansi red_bold)󰘧(ansi reset) "
+					}
+				}
+				$env.PROMPT_INDICATOR_VI_NORMAL = {|| $"(ansi {attr: b, fg: '#286983'})󰘧(ansi reset) " }
+		'';
 		};
 
 		programs.zsh = {
@@ -234,13 +246,12 @@
 			enable = true;
 			enableNushellIntegration = true;
 			settings = {
-				format = "$directory\${custom.scm}$hostname$line_break$character";
+				format = "$directory\${custom.scm}$hostname$line_break";
 				buf = {
 					disabled = true;
 				};
 				character = {
-					error_symbol = "[󰘧](bold red)";
-					success_symbol = "[󰘧](bold green)";
+					disabled = true;
 				};
 				directory = {
 					truncate_to_repo = false;

@@ -8,6 +8,7 @@
 		./plugins/conform.nix
 		./plugins/diffview.nix
 		./plugins/grug-far.nix
+		./plugins/hardtime.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
 		./plugins/jj-diffconflicts.nix
