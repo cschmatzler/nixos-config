@@ -1,4 +1,5 @@
 keys:
+  - &user_cschmatzler age1xate984yhl9qk9d4q99pyxmzz48sq56nfhu8weyzkgum4ed5tc5shjmrs7
   - &host_tahani age1njjegjjdqzfnrr54f536yl4lduqgna3wuv7ef6vtl9jw5cju0grsgy62tm
   - &host_michael age187jl7e4k9n4guygkmpuqzeh0wenefwrfkpvuyhvwjrjwxqpzassqq3x67j
   - &host_jason age1ez6j3r5wdp0tjy7n5qzv5vfakdc2nh2zeu388zu7a80l0thv052syxq5e2
@@ -7,6 +8,7 @@ creation_rules:
   - path_regex: secrets/[^/]+$
     key_groups:
       - age:
+        - *user_cschmatzler
         - *host_tahani
         - *host_michael
         - *host_jason

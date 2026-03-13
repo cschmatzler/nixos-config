@@ -11,6 +11,7 @@
 		den.aspects.ai-tools
 		den.aspects.zellij
 		den.aspects.zk
+		den.aspects.secrets
 	];
 
 	den.aspects.jason.darwin = {...}: {
