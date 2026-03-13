@@ -26,7 +26,7 @@
 	virtualisation.oci-containers = {
 		backend = "docker";
 		containers.paperless-ai = {
-			image = "clusterzx/paperless-ai:v3.0.9";
+			image = "clusterzx/paperless-ai:3.0.9";
 			autoStart = true;
 			ports = [
 				"127.0.0.1:3000:3000"
