@@ -62,6 +62,12 @@
 	in {
 		programs.git.settings.user.email = "christoph@schmatzler.com";
 
+		# Allow inbox-triage to access attachment staging and paperless ingestion dirs
+		programs.opencode.settings.permission.external_directory = {
+			"/tmp/himalaya-triage/*" = "allow";
+			"/var/lib/paperless/consume/inbox-triage/*" = "allow";
+		};
+
 		# Auto-start zellij in nushell on tahani (headless server)
 		programs.nushell.extraConfig = ''
 			if $nu.is-interactive and ('SSH_CONNECTION' in ($env | columns)) and ('ZELLIJ' not-in ($env | columns)) {
