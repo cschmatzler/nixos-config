@@ -76,7 +76,7 @@
 				After = ["default.target"];
 			};
 			Service = {
-				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822 --host 100.64.0.1";
+				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822 --hostname 0.0.0.0";
 				Restart = "on-failure";
 				RestartSec = 5;
 				Environment = "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
