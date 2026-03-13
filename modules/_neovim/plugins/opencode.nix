@@ -46,13 +46,6 @@ in {
 					show_ids = false,
 				},
 				ui = {
-					icons = {
-						preset = "text",
-						overrides = {
-							header_user = "● ",
-							header_assistant = "» ",
-						},
-					},
 					input = {
 						text = {
 							wrap = true,

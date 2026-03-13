@@ -1,4 +1,10 @@
 {...}: {
+	den.aspects.terminal.darwin = {pkgs, ...}: {
+		fonts.packages = [
+			pkgs.nerd-fonts.iosevka
+		];
+	};
+
 	den.aspects.terminal.homeManager = {
 		pkgs,
 		lib,
@@ -10,7 +16,7 @@
 			window-padding-x = 12
 			window-padding-y = 3
 			window-padding-balance = true
-			font-family = TX-02
+			font-family = Iosevka Nerd Font Mono
 			font-size = 16.5
 			cursor-style = block
 			mouse-hide-while-typing = true
