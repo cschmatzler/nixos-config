@@ -6,6 +6,40 @@
 	}: let
 		name = "Christoph Schmatzler";
 	in {
+		home.packages = with pkgs;
+			[
+				alejandra
+				ast-grep
+				bun
+				delta
+				deadnix
+				devenv
+				docker
+				docker-compose
+				gh
+				gnumake
+				hyperfine
+				jj-ryu
+				jj-starship
+				nil
+				nodejs_24
+				nurl
+				pnpm
+				postgresql_17
+				serie
+				sqlite
+				statix
+				tea
+				tokei
+				tree-sitter
+			]
+			++ lib.optionals stdenv.isDarwin [
+				xcodes
+			]
+			++ lib.optionals stdenv.isLinux [
+				gcc15
+			];
+
 		# Git configuration
 		programs.git = {
 			enable = true;
@@ -197,39 +231,5 @@
 				auto_install = false;
 			};
 		};
-
-		home.packages = with pkgs;
-			[
-				alejandra
-				ast-grep
-				bun
-				delta
-				deadnix
-				devenv
-				docker
-				docker-compose
-				gh
-				gnumake
-				hyperfine
-				jj-ryu
-				jj-starship
-				nil
-				nodejs_24
-				nurl
-				pnpm
-				postgresql_17
-				serie
-				sqlite
-				statix
-				tea
-				tokei
-				tree-sitter
-			]
-			++ lib.optionals stdenv.isDarwin [
-				xcodes
-			]
-			++ lib.optionals stdenv.isLinux [
-				gcc15
-			];
 	};
 }

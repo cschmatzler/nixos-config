@@ -4,6 +4,10 @@
 		pkgs,
 		...
 	}: {
+		home.packages = with pkgs; [
+			vivid
+		];
+
 		programs.nushell = {
 			enable = true;
 
@@ -277,9 +281,5 @@
 				};
 			};
 		};
-
-		home.packages = with pkgs; [
-			vivid
-		];
 	};
 }

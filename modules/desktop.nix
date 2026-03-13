@@ -4,6 +4,12 @@
 		lib,
 		...
 	}: {
+		home.packages = with pkgs;
+			lib.optionals stdenv.isDarwin [
+				_1password-gui
+				raycast
+			];
+
 		programs.aerospace = {
 			enable = true;
 			launchd.enable = true;
@@ -144,11 +150,5 @@
 				};
 			};
 		};
-
-		home.packages = with pkgs;
-			lib.optionals stdenv.isDarwin [
-				_1password-gui
-				raycast
-			];
 	};
 }

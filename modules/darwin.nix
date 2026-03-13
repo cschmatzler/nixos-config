@@ -8,6 +8,13 @@
 
 		system.primaryUser = "cschmatzler";
 
+		# Darwin system utilities
+		environment.systemPackages = with pkgs; [
+			alcove
+			dockutil
+			mas
+		];
+
 		system.defaults = {
 			NSGlobalDomain = {
 				AppleInterfaceStyle = null;
@@ -140,12 +147,5 @@
 				"tidal"
 			];
 		};
-
-		# Darwin system utilities
-		environment.systemPackages = with pkgs; [
-			alcove
-			dockutil
-			mas
-		];
 	};
 }

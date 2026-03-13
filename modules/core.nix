@@ -4,6 +4,12 @@
 		lib,
 		...
 	}: {
+		# System utilities
+		environment.systemPackages =
+			lib.optionals pkgs.stdenv.isLinux [
+				pkgs.lm_sensors
+			];
+
 		programs.fish.enable = true;
 		environment.shells = [pkgs.nushell];
 
@@ -33,11 +39,5 @@
 				experimental-features = nix-command flakes
 			'';
 		};
-
-		# System utilities
-		environment.systemPackages =
-			lib.optionals pkgs.stdenv.isLinux [
-				pkgs.lm_sensors
-			];
 	};
 }

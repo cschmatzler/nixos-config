@@ -10,6 +10,44 @@
 		lib,
 		...
 	}: {
+		home.packages = with pkgs;
+			[
+				dust
+				fastfetch
+				fd
+				glow
+				htop
+				jq
+				killall
+				lsof
+				ouch
+				ov
+				sd
+				tree
+				tuicr
+			]
+			++ lib.optionals stdenv.isLinux [
+				ghostty.terminfo
+			];
+
+		home.sessionVariables = {
+			FZF_DEFAULT_OPTS = ''
+				--bind=alt-k:up,alt-j:down
+				--expect=tab,enter
+				--layout=reverse
+				--delimiter='\t'
+				--with-nth=1
+				--preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
+				--separator='─' --scrollbar='┃' --layout='reverse'
+
+				--color=bg+:#f2e9e1,bg:#faf4ed,spinner:#ea9d34,hl:#d7827e
+				--color=fg:#797593,header:#286983,info:#56949f,pointer:#907aa9
+				--color=marker:#b4637a,fg+:#575279,prompt:#797593,hl+:#d7827e
+				--color=selected-bg:#f2e9e1
+				--color=border:#dfdad9,label:#575279
+			'';
+		};
+
 		xdg.configFile."ghostty/config".text = ''
 			command = ${pkgs.nushell}/bin/nu
 			theme = Rose Pine Dawn
@@ -49,24 +87,6 @@
 
 		programs.fzf = {
 			enable = true;
-		};
-
-		home.sessionVariables = {
-			FZF_DEFAULT_OPTS = ''
-				--bind=alt-k:up,alt-j:down
-				--expect=tab,enter
-				--layout=reverse
-				--delimiter='\t'
-				--with-nth=1
-				--preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
-				--separator='─' --scrollbar='┃' --layout='reverse'
-
-				--color=bg+:#f2e9e1,bg:#faf4ed,spinner:#ea9d34,hl:#d7827e
-				--color=fg:#797593,header:#286983,info:#56949f,pointer:#907aa9
-				--color=marker:#b4637a,fg+:#575279,prompt:#797593,hl+:#d7827e
-				--color=selected-bg:#f2e9e1
-				--color=border:#dfdad9,label:#575279
-			'';
 		};
 
 		programs.ripgrep = {
@@ -135,25 +155,5 @@
 				};
 			};
 		};
-
-		home.packages = with pkgs;
-			[
-				dust
-				fastfetch
-				fd
-				glow
-				htop
-				jq
-				killall
-				lsof
-				ouch
-				ov
-				sd
-				tree
-				tuicr
-			]
-			++ lib.optionals stdenv.isLinux [
-				ghostty.terminfo
-			];
 	};
 }
