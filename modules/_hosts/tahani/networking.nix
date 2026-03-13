@@ -13,7 +13,7 @@
 		nameservers = ["1.1.1.1"];
 		firewall = {
 			enable = true;
-			trustedInterfaces = ["eno1" "tailscale0"];
+			trustedInterfaces = ["eno1" "tailscale0" "docker0"];
 			allowedUDPPorts = [
 				53
 				config.services.tailscale.port

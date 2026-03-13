@@ -18,30 +18,35 @@
 				tls {
 					get_certificate tailscale
 				}
-				reverse_proxy localhost:3000
+				reverse_proxy localhost:8080
 			'';
 		};
 	};
 
 	virtualisation.oci-containers = {
 		backend = "docker";
-		containers.paperless-ai = {
-			image = "clusterzx/paperless-ai:3.0.9";
+		containers.paperless-gpt = {
+			image = "icereed/paperless-gpt:latest";
 			autoStart = true;
 			ports = [
-				"127.0.0.1:3000:3000"
+				"127.0.0.1:8080:8080"
 			];
 			volumes = [
-				"paperless-ai-data:/app/data"
+				"paperless-gpt-data:/app/data"
+				"paperless-gpt-prompts:/app/prompts"
 			];
 			environment = {
-				PUID = "1000";
-				PGID = "1000";
-				PAPERLESS_AI_PORT = "3000";
-				# Initial setup wizard will configure the rest
-				PAPERLESS_AI_INITIAL_SETUP = "yes";
-				PAPERLESS_API_URL = "http://host.docker.internal:${toString config.services.paperless.port}/api";
+				PAPERLESS_BASE_URL = "http://host.docker.internal:${toString config.services.paperless.port}";
+				LLM_PROVIDER = "openai";
+				LLM_MODEL = "gpt-5.4";
+				LLM_LANGUAGE = "German";
+				VISION_LLM_PROVIDER = "openai";
+				VISION_LLM_MODEL = "gpt-5.4";
+				LOG_LEVEL = "info";
 			};
+			environmentFiles = [
+				config.sops.secrets.tahani-paperless-gpt-env.path
+			];
 			extraOptions = [
 				"--add-host=host.docker.internal:host-gateway"
 			];
@@ -60,7 +65,7 @@
 
 	services.paperless = {
 		enable = true;
-		address = "127.0.0.1";
+		address = "0.0.0.0";
 		consumptionDir = "/var/lib/paperless/consume";
 		passwordFile = config.sops.secrets.tahani-paperless-password.path;
 		settings = {

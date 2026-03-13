@@ -12,6 +12,7 @@
 		den.aspects.ai-tools
 		den.aspects.zellij
 		den.aspects.zk
+		den.aspects.secrets
 	];
 
 	den.aspects.tahani.nixos = {...}: {
@@ -29,6 +30,11 @@
 				sopsFile = ../secrets/tahani-paperless-password;
 				format = "binary";
 				path = "/run/secrets/tahani-paperless-password";
+			};
+			tahani-paperless-gpt-env = {
+				sopsFile = ../secrets/tahani-paperless-gpt-env;
+				format = "binary";
+				path = "/run/secrets/tahani-paperless-gpt-env";
 			};
 			tahani-email-password = {
 				sopsFile = ../secrets/tahani-email-password;
