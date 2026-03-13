@@ -34,7 +34,6 @@
 				extend_background_behind_borders = false;
 			};
 		};
-
 	};
 
 	home.shellAliases = {
