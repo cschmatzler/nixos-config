@@ -48,6 +48,7 @@
 	};
 
 	den.aspects.tahani.homeManager = {
+		config,
 		pkgs,
 		inputs',
 		...
@@ -76,7 +77,7 @@
 			Service = {
 				Type = "oneshot";
 				ExecStart = "${opencode}/bin/opencode run --command inbox-triage --model opencode-go/glm-5";
-				Environment = "PATH=${pkgs.himalaya}/bin:${opencode}/bin:${pkgs.coreutils}/bin";
+				Environment = "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
 			};
 		};
 
