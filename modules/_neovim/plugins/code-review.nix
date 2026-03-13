@@ -20,6 +20,16 @@ in {
 		extraConfigLua = ''
 			require('code-review').setup({
 				keymaps = false,
+				ui = {
+					input_window = {
+						border = "single",
+					},
+					preview = {
+						float = {
+							border = "single",
+						},
+					},
+				},
 			})
 		'';
 	};
