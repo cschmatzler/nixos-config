@@ -1,15 +1,13 @@
-{pkgs, ...}: let
+{
+	pkgs,
+	nvim-plugin-sources,
+	...
+}: let
 	opencode-nvim =
 		pkgs.vimUtils.buildVimPlugin {
 			pname = "opencode-nvim";
-			version = "unstable-2026-03-12";
-			src =
-				pkgs.fetchFromGitHub {
-					owner = "sudo-tee";
-					repo = "opencode.nvim";
-					rev = "800c4f891f5d940f2805780a39872a0207b5a446";
-					hash = "sha256-3xyZux5S8ThBsi7AC4AWnd2h2LEI5L+I5Am2PNWKu64=";
-				};
+			version = "unstable";
+			src = nvim-plugin-sources.opencode-nvim;
 			doCheck = false;
 			postPatch = ''
 				# Widen sign column and move border further left for more padding

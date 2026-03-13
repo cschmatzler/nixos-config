@@ -4,6 +4,10 @@
 	outputs = inputs: inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./modules);
 
 	inputs = {
+		code-review-nvim = {
+			url = "github:choplin/code-review.nvim";
+			flake = false;
+		};
 		darwin = {
 			url = "github:LnL7/nix-darwin/master";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -12,6 +16,10 @@
 		deploy-rs.url = "github:serokell/deploy-rs";
 		disko = {
 			url = "github:nix-community/disko";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+		fenix = {
+			url = "github:nix-community/fenix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		flake-aspects.url = "github:vic/flake-aspects";
@@ -34,6 +42,14 @@
 			flake = false;
 		};
 		import-tree.url = "github:vic/import-tree";
+		jj-diffconflicts = {
+			url = "github:rafikdraoui/jj-diffconflicts";
+			flake = false;
+		};
+		jj-nvim = {
+			url = "github:NicolasGB/jj.nvim";
+			flake = false;
+		};
 		jj-ryu = {
 			url = "github:dmmulroy/jj-ryu";
 			flake = false;
@@ -54,6 +70,10 @@
 		nixvim.url = "github:nix-community/nixvim";
 		nono = {
 			url = "github:always-further/nono";
+			flake = false;
+		};
+		opencode-nvim = {
+			url = "github:sudo-tee/opencode.nvim";
 			flake = false;
 		};
 		sops-nix = {

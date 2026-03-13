@@ -75,8 +75,21 @@
 			url = "github:always-further/nono";
 			flake = false;
 		};
-		vite-plus = {
-			url = "github:voidzero-dev/vite-plus/v0.1.11";
+		# Neovim plugin inputs
+		opencode-nvim = {
+			url = "github:sudo-tee/opencode.nvim";
+			flake = false;
+		};
+		code-review-nvim = {
+			url = "github:choplin/code-review.nvim";
+			flake = false;
+		};
+		jj-nvim = {
+			url = "github:NicolasGB/jj.nvim";
+			flake = false;
+		};
+		jj-diffconflicts = {
+			url = "github:rafikdraoui/jj-diffconflicts";
 			flake = false;
 		};
 		# Secrets inputs

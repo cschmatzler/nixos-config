@@ -76,6 +76,22 @@
         "type": "github"
       }
     },
+    "code-review-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765543014,
+        "narHash": "sha256-WpbQswkUpB4Nblos8+5UE5I/PHUQOi+RQ+hj4CCdL4o=",
+        "owner": "choplin",
+        "repo": "code-review.nvim",
+        "rev": "ed91462e20bd08c3be71efb11a4a7d00459f0b47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "choplin",
+        "repo": "code-review.nvim",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1765739568,
@@ -170,10 +186,31 @@
     "fenix": {
       "inputs": {
         "nixpkgs": [
-          "himalaya",
           "nixpkgs"
         ],
         "rust-analyzer-src": "rust-analyzer-src"
+      },
+      "locked": {
+        "lastModified": 1773385614,
+        "narHash": "sha256-1+i0VQqlGLcWWwZLexCnyN6lm2dKRQzYm1cW7V9Nckk=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "812445139cfdcf6824b1bce1d8e67361fc4e472b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
+    "fenix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "himalaya",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src_2"
       },
       "locked": {
         "lastModified": 1767250179,
@@ -190,13 +227,13 @@
         "type": "github"
       }
     },
-    "fenix_2": {
+    "fenix_3": {
       "inputs": {
         "nixpkgs": [
           "naersk",
           "nixpkgs"
         ],
-        "rust-analyzer-src": "rust-analyzer-src_2"
+        "rust-analyzer-src": "rust-analyzer-src_3"
       },
       "locked": {
         "lastModified": 1752475459,
@@ -212,14 +249,14 @@
         "type": "github"
       }
     },
-    "fenix_3": {
+    "fenix_4": {
       "inputs": {
         "nixpkgs": [
           "tuicr",
           "naersk",
           "nixpkgs"
         ],
-        "rust-analyzer-src": "rust-analyzer-src_3"
+        "rust-analyzer-src": "rust-analyzer-src_4"
       },
       "locked": {
         "lastModified": 1752475459,
@@ -402,7 +439,7 @@
     },
     "himalaya": {
       "inputs": {
-        "fenix": "fenix",
+        "fenix": "fenix_2",
         "nixpkgs": "nixpkgs_2",
         "pimalaya": "pimalaya"
       },
@@ -502,6 +539,38 @@
         "type": "github"
       }
     },
+    "jj-diffconflicts": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772304648,
+        "narHash": "sha256-nzjRWHrE2jIcaDoPbixzpvflrtLhPZrihOEQWwqqU0s=",
+        "owner": "rafikdraoui",
+        "repo": "jj-diffconflicts",
+        "rev": "2b8431c014bbf764e97b82567e30da52e3b00c1f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rafikdraoui",
+        "repo": "jj-diffconflicts",
+        "type": "github"
+      }
+    },
+    "jj-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773335406,
+        "narHash": "sha256-GaiDUDTwPANbFtvIcrs1VOqTlSIBI+vnB7nOGBQxjW0=",
+        "owner": "NicolasGB",
+        "repo": "jj.nvim",
+        "rev": "d471a03685836faedbe952ab3794fdca65c4af60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NicolasGB",
+        "repo": "jj.nvim",
+        "type": "github"
+      }
+    },
     "jj-ryu": {
       "flake": false,
       "locked": {
@@ -562,7 +631,7 @@
     },
     "naersk": {
       "inputs": {
-        "fenix": "fenix_2",
+        "fenix": "fenix_3",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -584,7 +653,7 @@
     },
     "naersk_2": {
       "inputs": {
-        "fenix": "fenix_3",
+        "fenix": "fenix_4",
         "nixpkgs": [
           "tuicr",
           "nixpkgs"
@@ -825,6 +894,22 @@
         "type": "github"
       }
     },
+    "opencode-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773400860,
+        "narHash": "sha256-+ijlFNKwPrnv+/PAjlJqd7GKcD43nSjr2a984jfjN5U=",
+        "owner": "sudo-tee",
+        "repo": "opencode.nvim",
+        "rev": "e95905bee7feb6175f0f783f18ef3f83c201e93e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sudo-tee",
+        "repo": "opencode.nvim",
+        "type": "github"
+      }
+    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -843,10 +928,12 @@
     },
     "root": {
       "inputs": {
+        "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
+        "fenix": "fenix",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
@@ -855,6 +942,8 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "import-tree": "import-tree",
+        "jj-diffconflicts": "jj-diffconflicts",
+        "jj-nvim": "jj-nvim",
         "jj-ryu": "jj-ryu",
         "jj-starship": "jj-starship",
         "llm-agents": "llm-agents",
@@ -867,12 +956,30 @@
         ],
         "nixvim": "nixvim",
         "nono": "nono",
+        "opencode-nvim": "opencode-nvim",
         "sops-nix": "sops-nix",
         "tuicr": "tuicr",
         "zjstatus": "zjstatus"
       }
     },
     "rust-analyzer-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773326183,
+        "narHash": "sha256-tj3piRd9RnnP36HwHmQD4O4XZeowsH/rvMeyp9Pmot0=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "6254616e97f358e67b70dfc0463687f5f7911c1a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-analyzer-src_2": {
       "flake": false,
       "locked": {
         "lastModified": 1767191410,
@@ -889,7 +996,7 @@
         "type": "github"
       }
     },
-    "rust-analyzer-src_2": {
+    "rust-analyzer-src_3": {
       "flake": false,
       "locked": {
         "lastModified": 1752428706,
@@ -906,7 +1013,7 @@
         "type": "github"
       }
     },
-    "rust-analyzer-src_3": {
+    "rust-analyzer-src_4": {
       "flake": false,
       "locked": {
         "lastModified": 1752428706,

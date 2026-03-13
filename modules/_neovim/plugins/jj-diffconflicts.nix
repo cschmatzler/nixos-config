@@ -1,14 +1,12 @@
-{pkgs, ...}: {
+{
+	pkgs,
+	nvim-plugin-sources,
+	...
+}: {
 	programs.nixvim.extraPlugins = [
 		(pkgs.vimUtils.buildVimPlugin {
 				name = "jj-diffconflicts";
-				src =
-					pkgs.fetchFromGitHub {
-						owner = "rafikdraoui";
-						repo = "jj-diffconflicts";
-						rev = "main";
-						hash = "sha256-nzjRWHrE2jIcaDoPbixzpvflrtLhPZrihOEQWwqqU0s=";
-					};
+				src = nvim-plugin-sources.jj-diffconflicts;
 			})
 	];
 }

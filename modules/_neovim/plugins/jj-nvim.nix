@@ -1,15 +1,13 @@
-{pkgs, ...}: let
+{
+	pkgs,
+	nvim-plugin-sources,
+	...
+}: let
 	jj-nvim =
 		pkgs.vimUtils.buildVimPlugin {
 			pname = "jj-nvim";
-			version = "unstable-2026-03-10";
-			src =
-				pkgs.fetchFromGitHub {
-					owner = "NicolasGB";
-					repo = "jj.nvim";
-					rev = "bbba4051c862473637e98277f284d12b050588ca";
-					hash = "sha256-nokftWcAmmHX6UcH6O79xkLwbUpq1W8N9lf1e+NyGqE=";
-				};
+			version = "unstable";
+			src = nvim-plugin-sources.jj-nvim;
 			doCheck = false;
 		};
 in {
