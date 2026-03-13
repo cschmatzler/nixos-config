@@ -11,12 +11,15 @@
 				pattern = "*";
 				callback.__raw = ''
 					function()
-						local base = require("rose-pine.palette").base
-						local foam = require("rose-pine.palette").foam
-						vim.api.nvim_set_hl(0, "NormalFloat", { bg = base })
-						vim.api.nvim_set_hl(0, "FloatTitle", { fg = foam, bg = base, bold = true })
-						vim.api.nvim_set_hl(0, "MiniPickPrompt", { bg = base, bold = true })
-						vim.api.nvim_set_hl(0, "MiniPickBorderText", { bg = base })
+						local p = require("rose-pine.palette")
+						vim.api.nvim_set_hl(0, "NormalFloat", { bg = p.base })
+						vim.api.nvim_set_hl(0, "FloatTitle", { fg = p.foam, bg = p.base, bold = true })
+						vim.api.nvim_set_hl(0, "Pmenu", { fg = p.subtle, bg = p.base })
+						vim.api.nvim_set_hl(0, "PmenuExtra", { fg = p.muted, bg = p.base })
+						vim.api.nvim_set_hl(0, "PmenuKind", { fg = p.foam, bg = p.base })
+						vim.api.nvim_set_hl(0, "PmenuSbar", { bg = p.base })
+						vim.api.nvim_set_hl(0, "MiniPickPrompt", { bg = p.base, bold = true })
+						vim.api.nvim_set_hl(0, "MiniPickBorderText", { bg = p.base })
 					end
 				'';
 			}
