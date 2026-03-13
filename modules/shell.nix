@@ -224,18 +224,11 @@
 						}
 				])
 
-				# Vi mode prompt indicators (Starship can't detect vi mode in nushell,
-				# so we handle the character here instead of in the character module)
-				$env.PROMPT_INDICATOR = {|| $"(ansi green_bold)󰘧(ansi reset) " }
-				$env.PROMPT_INDICATOR_VI_INSERT = {||
-					if $env.LAST_EXIT_CODE == 0 {
-						$"(ansi green_bold)󰘧(ansi reset) "
-					} else {
-						$"(ansi red_bold)󰘧(ansi reset) "
-					}
-				}
-				$env.PROMPT_INDICATOR_VI_NORMAL = {|| $"(ansi {attr: b, fg: '#286983'})󰘧(ansi reset) " }
-		'';
+				# Vi mode indicators — Starship handles the character (green/red for
+				# success/error), nushell adds a dot for normal mode.
+				$env.PROMPT_INDICATOR_VI_INSERT = "· "
+				$env.PROMPT_INDICATOR_VI_NORMAL = "\e[1;38;2;40;105;131m·\e[0m "
+			'';
 		};
 
 		programs.zsh = {
@@ -246,12 +239,13 @@
 			enable = true;
 			enableNushellIntegration = true;
 			settings = {
-				format = "$directory\${custom.scm}$hostname$line_break";
+				format = "$directory\${custom.scm}$hostname$line_break$character";
 				buf = {
 					disabled = true;
 				};
 				character = {
-					disabled = true;
+					error_symbol = "[󰘧](bold red)";
+					success_symbol = "[󰘧](bold green)";
 				};
 				directory = {
 					truncate_to_repo = false;

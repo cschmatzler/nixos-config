@@ -440,6 +440,19 @@
 			action = "<C-w>=";
 			options.desc = "Equalize windows";
 		}
+		# scrolling
+		{
+			mode = "n";
+			key = "<C-d>";
+			action = "<C-d>zz";
+			options.desc = "Scroll down and center";
+		}
+		{
+			mode = "n";
+			key = "<C-u>";
+			action = "<C-u>zz";
+			options.desc = "Scroll up and center";
+		}
 		# other
 		{
 			mode = "n";
