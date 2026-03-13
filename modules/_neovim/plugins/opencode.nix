@@ -40,6 +40,10 @@ in {
 		];
 		extraConfigLua = ''
 			require("opencode").setup({
+				server = {
+					url = "localhost",
+					port = 18822;
+				},
 				debug = {
 					show_ids = false,
 				},
