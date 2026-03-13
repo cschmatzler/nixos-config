@@ -34,6 +34,8 @@
 			volumes = [
 				"paperless-gpt-data:/app/data"
 				"paperless-gpt-prompts:/app/prompts"
+				"${./paperless-gpt-prompts/tag_prompt.tmpl}:/app/prompts/tag_prompt.tmpl:ro"
+				"${./paperless-gpt-prompts/title_prompt.tmpl}:/app/prompts/title_prompt.tmpl:ro"
 			];
 			environment = {
 				PAPERLESS_BASE_URL = "http://host.docker.internal:${toString config.services.paperless.port}";
