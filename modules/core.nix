@@ -22,6 +22,7 @@
 		nix = {
 			package = pkgs.nix;
 			settings = {
+				cores = 4;
 				substituters = [
 					"https://nix-community.cachix.org"
 					"https://cache.nixos.org"
