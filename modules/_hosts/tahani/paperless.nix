@@ -18,7 +18,7 @@
 				tls {
 					get_certificate tailscale
 				}
-				reverse_proxy localhost:8080
+				reverse_proxy localhost:8081
 			'';
 		};
 	};
@@ -29,7 +29,7 @@
 			image = "icereed/paperless-gpt:latest";
 			autoStart = true;
 			ports = [
-				"127.0.0.1:8080:8080"
+				"127.0.0.1:8081:8080"
 			];
 			volumes = [
 				"paperless-gpt-data:/app/data"
