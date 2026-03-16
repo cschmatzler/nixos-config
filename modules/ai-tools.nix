@@ -11,7 +11,7 @@
 		];
 
 		home.shellAliases = {
-			noc = "nono run -s --allow-cwd --profile opencode --allow ~/.bun --allow ~/.local/share/opensrc --allow ~/.config/jj --network-profile developer --proxy-allow models.dev --proxy-allow chatgpt.com --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai -- opencode";
+			noc = "nono run -s --allow-cwd --profile opencode --allow ~/.bun --allow ~/.local/share/opensrc --allow ~/.config/jj --network-profile developer --proxy-allow models.dev --proxy-allow chatgpt.com --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai --proxy-allow mcp.sentry.dev -- opencode";
 		};
 
 		programs.opencode = {
@@ -61,11 +61,17 @@
 						type = "remote";
 						url = "https://mcp.context7.com/mcp";
 					};
-					grep_app = {
-						enabled = true;
-						type = "remote";
-						url = "https://mcp.grep.app";
-					};
+				grep_app = {
+					enabled = true;
+					type = "remote";
+					url = "https://mcp.grep.app";
+				};
+				sentry = {
+					enabled = true;
+					type = "remote";
+					url = "https://mcp.sentry.dev/mcp";
+					oauth = {};
+				};
 				};
 			};
 		};
