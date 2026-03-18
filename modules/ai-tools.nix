@@ -7,6 +7,7 @@
 	}: {
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
+			pkgs.cog-cli
 			pkgs.nono
 		];
 
