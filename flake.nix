@@ -68,10 +68,6 @@
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
-		nono = {
-			url = "github:always-further/nono";
-			flake = false;
-		};
 		opencode-nvim = {
 			url = "github:sudo-tee/opencode.nvim";
 			flake = false;
@@ -80,7 +76,6 @@
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		tuicr.url = "github:agavra/tuicr";
 		zjstatus.url = "github:dj95/zjstatus";
 	};
 }

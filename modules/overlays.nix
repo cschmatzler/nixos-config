@@ -27,22 +27,7 @@
 						doCheck = false;
 					};
 			})
-		# nono (AI agent sandbox CLI — Cargo workspace)
-		(final: prev: let
-				naersk-lib = prev.callPackage inputs.naersk {};
-				manifest = (prev.lib.importTOML "${inputs.nono}/crates/nono-cli/Cargo.toml").package;
-			in {
-				nono =
-					naersk-lib.buildPackage {
-						pname = manifest.name;
-						version = manifest.version;
-						src = inputs.nono;
-						nativeBuildInputs = [prev.pkg-config prev.cmake prev.perl];
-						buildInputs = [prev.openssl] ++ prev.lib.optionals prev.stdenv.isLinux [prev.dbus];
-						OPENSSL_NO_VENDOR = 1;
-						doCheck = false;
-					};
-			})
+
 		# cog-cli
 		(final: prev: let
 				version = "0.20.0";
@@ -67,11 +52,13 @@
 							srcs.${prev.stdenv.hostPlatform.system}
 						or (throw "Unsupported system for cog-cli: ${prev.stdenv.hostPlatform.system}");
 
+						dontUnpack = true;
 						dontConfigure = true;
 						dontBuild = true;
 
 						installPhase = ''
 							runHook preInstall
+							tar -xzf "$src"
 							install -Dm755 cog "$out/bin/cog"
 							runHook postInstall
 						'';
@@ -91,10 +78,6 @@
 		# zjstatus
 		(final: prev: {
 				zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-			})
-		# tuicr
-		(final: prev: {
-				tuicr = inputs.tuicr.defaultPackage.${prev.stdenv.hostPlatform.system};
 			})
 	];
 in {

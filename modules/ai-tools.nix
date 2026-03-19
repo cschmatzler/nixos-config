@@ -8,12 +8,7 @@
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
 			pkgs.cog-cli
-			pkgs.nono
 		];
-
-		home.shellAliases = {
-			noc = "nono run -s --allow-cwd --profile opencode --allow ~/.bun --allow ~/.local/share/opensrc --allow ~/.config/jj --network-profile developer --proxy-allow models.dev --proxy-allow chatgpt.com --proxy-allow mcp.grep.app --proxy-allow mcp.context7.com --proxy-allow mcp.exa.ai --proxy-allow mcp.sentry.dev -- opencode";
-		};
 
 		programs.opencode = {
 			enable = true;

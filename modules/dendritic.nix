@@ -62,7 +62,6 @@
 		};
 		jj-starship.url = "github:dmmulroy/jj-starship";
 		zjstatus.url = "github:dj95/zjstatus";
-		tuicr.url = "github:agavra/tuicr";
 		fenix = {
 			url = "github:nix-community/fenix";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -70,10 +69,6 @@
 		naersk = {
 			url = "github:nix-community/naersk/master";
 			inputs.nixpkgs.follows = "nixpkgs";
-		};
-		nono = {
-			url = "github:always-further/nono";
-			flake = false;
 		};
 		# Neovim plugin inputs
 		opencode-nvim = {

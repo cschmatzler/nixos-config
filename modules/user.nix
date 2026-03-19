@@ -1,9 +1,6 @@
-{
-	den,
-	lib,
-	...
-}: {
+{den, ...}: {
 	den.aspects.cschmatzler.includes = [
+		den._.bidirectional
 		den.provides.primary-user
 		den.aspects.shell
 		den.aspects.ssh-client
@@ -16,10 +13,6 @@
 		den.aspects.secrets
 		den.aspects.zellij
 		den.aspects.zk
-		({host, ...}:
-				lib.optionalAttrs (host.class == "darwin") {
-					includes = [den.aspects.desktop];
-				})
 	];
 
 	den.aspects.cschmatzler.homeManager = {

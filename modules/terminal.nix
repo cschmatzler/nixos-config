@@ -24,7 +24,6 @@
 				ov
 				sd
 				tree
-				tuicr
 			]
 			++ lib.optionals stdenv.isLinux [
 				ghostty.terminfo

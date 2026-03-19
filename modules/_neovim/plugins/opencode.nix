@@ -9,16 +9,6 @@
 			version = "unstable";
 			src = nvim-plugin-sources.opencode-nvim;
 			doCheck = false;
-			postPatch = ''
-				# Widen sign column and move border further left for more padding
-				sed -i "s/signcolumn', 'yes'/signcolumn', 'yes:2'/" lua/opencode/ui/output_window.lua
-				sed -i "s/, -3)/, -5)/g" lua/opencode/ui/formatter.lua
-				sed -i "s/win_col = -3/win_col = -5/g" lua/opencode/ui/formatter.lua
-				# Fix off-by-one: user border starts 1 line too early (bleeds into header empty line)
-				sed -i 's/start_line = output:get_line_count() *$/start_line = output:get_line_count() + 1/' lua/opencode/ui/formatter.lua
-				# Fix file mention border starting 1 line too early
-				sed -i 's/file_line - 1, file_line/file_line, file_line/' lua/opencode/ui/formatter.lua
-			'';
 		};
 in {
 	programs.nixvim = {
