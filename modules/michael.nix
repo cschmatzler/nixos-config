@@ -3,6 +3,16 @@
 	inputs,
 	...
 }: {
+	den.hosts.x86_64-linux.michael.users.cschmatzler.aspect = "michael-cschmatzler";
+
+	den.aspects.michael-cschmatzler = {
+		includes = [den.aspects.shell];
+
+		homeManager = {...}: {
+			programs.home-manager.enable = true;
+		};
+	};
+
 	den.aspects.michael.includes = [
 		(den.lib.perHost {
 				includes = [

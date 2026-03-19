@@ -39,7 +39,6 @@
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
 			terminal = ./terminal.nix;
-			user = ./user.nix;
 			zellij = ./zellij.nix;
 			zk = ./zk.nix;
 		};
