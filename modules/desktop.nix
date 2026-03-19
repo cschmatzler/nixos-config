@@ -1,7 +1,7 @@
 {...}: {
 	den.aspects.desktop.homeManager = {
-		pkgs,
 		lib,
+		pkgs,
 		...
 	}: {
 		home.packages = with pkgs;

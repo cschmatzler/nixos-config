@@ -141,6 +141,8 @@
 		homebrew = {
 			enable = true;
 			casks = [
+				"alcove"
+				"aqua-voice"
 				"ghostty@tip"
 				"helium-browser"
 				"tidal"
