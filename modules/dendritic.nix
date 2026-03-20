@@ -71,10 +71,6 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		# Neovim plugin inputs
-		opencode-nvim = {
-			url = "github:sudo-tee/opencode.nvim";
-			flake = false;
-		};
 		code-review-nvim = {
 			url = "github:choplin/code-review.nvim";
 			flake = false;
