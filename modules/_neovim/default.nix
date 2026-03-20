@@ -16,7 +16,6 @@
 		./plugins/lsp.nix
 		./plugins/mini.nix
 		./plugins/oil.nix
-		./plugins/opencode.nix
 		./plugins/render-markdown.nix
 		./plugins/toggleterm.nix
 		./plugins/treesitter.nix
