@@ -30,17 +30,17 @@
 
 		# cog-cli
 		(final: prev: let
-				version = "0.20.0";
+				version = "0.21.0";
 				srcs = {
 					x86_64-linux =
 						prev.fetchurl {
 							url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-linux-x86_64.tar.gz";
-							hash = "sha256-tsuL2VntvG5AsWh8+CMAWtJqDJiaKu/pQ+xY516eiOY=";
+							hash = "sha256-3+VygNnj9mEaAFDAJp1KvDOyGglec4MRBlejbcbp4rI=";
 						};
 					aarch64-darwin =
 						prev.fetchurl {
 							url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-darwin-arm64.tar.gz";
-							hash = "sha256-k6HsTQS6/MVduT9WstD77X+xPHPj3XlFIoS3qjfblZw=";
+							hash = "sha256-kUihpA+kjrDt18t4nkLWW2yRzz76A0CvxE4NNaldLH4=";
 						};
 				};
 			in {
