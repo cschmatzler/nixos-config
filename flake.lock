@@ -816,6 +816,54 @@
         "type": "github"
       }
     },
+    "pi-agent-stuff": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774049302,
+        "narHash": "sha256-kPmbJzS2f8bpKVnBfJ09gcHewHFhFpt6DmKuDHeZD1k=",
+        "owner": "mitsuhiko",
+        "repo": "agent-stuff",
+        "rev": "929d59696696210b403d2fbf9a82259b0078794d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mitsuhiko",
+        "repo": "agent-stuff",
+        "type": "github"
+      }
+    },
+    "pi-elixir": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772900407,
+        "narHash": "sha256-QoCPVdN5CYGe5288cJQmB10ds/UOucHIyG9z9E/4hsw=",
+        "owner": "dannote",
+        "repo": "pi-elixir",
+        "rev": "3b8f667beb696ce6ed456e762bfcf61e7326f5c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dannote",
+        "repo": "pi-elixir",
+        "type": "github"
+      }
+    },
+    "pi-rose-pine": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770936151,
+        "narHash": "sha256-6TzuWJPAn8zz+lUjZ3slFCNdPVd/Z2C+WoXFsLopk1g=",
+        "owner": "zenobi-us",
+        "repo": "pi-rose-pine",
+        "rev": "9b342f6e16d6b28c00c2f888ba2f050273981bdb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zenobi-us",
+        "repo": "pi-rose-pine",
+        "type": "github"
+      }
+    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -861,6 +909,9 @@
           "nixpkgs"
         ],
         "nixvim": "nixvim",
+        "pi-agent-stuff": "pi-agent-stuff",
+        "pi-elixir": "pi-elixir",
+        "pi-rose-pine": "pi-rose-pine",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }

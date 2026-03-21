@@ -36,7 +36,6 @@ alejandra .                   # Format all Nix files
   - `_lib/` - Utility functions (underscore = ignored by import-tree)
   - `_darwin/` - Darwin-specific sub-modules
   - `_neovim/` - Neovim plugin configs
-  - `_opencode/` - OpenCode agent/command/skill configs
   - `_hosts/` - Host-specific sub-files (disk-config, hardware, etc.)
 - **Apps**: `apps/` - Per-system app scripts (Nushell)
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)

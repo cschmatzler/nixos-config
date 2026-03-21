@@ -31,8 +31,6 @@
 						  { mode = 'n', keys = '<Leader>v', desc = '+VCS' },
 							{ mode = 'n', keys = '<Leader>l', desc = '+LSP' },
 							{ mode = 'x', keys = '<Leader>l', desc = '+LSP' },
-							{ mode = 'n', keys = '<Leader>o', desc = '+OpenCode' },
-							{ mode = 'x', keys = '<Leader>o', desc = '+OpenCode' },
 							{ mode = 'n', keys = '<Leader>r', desc = '+Review' },
 							{ mode = 'v', keys = '<Leader>r', desc = '+Review' },
 							{ mode = 'n', keys = '<Leader>t', desc = '+Tab' },
