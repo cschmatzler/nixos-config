@@ -20,6 +20,7 @@
 				source = "${pkgs.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
 				recursive = true;
 			};
+			".pi/agent/extensions/review.ts".source = ./_ai-tools/review.ts;
 			".pi/agent/skills/elixir-dev" = {
 				source = "${inputs.pi-elixir}/skills/elixir-dev";
 				recursive = true;
@@ -98,7 +99,6 @@
 								"pi-extensions/answer.ts"
 								"pi-extensions/context.ts"
 								"pi-extensions/multi-edit.ts"
-								"pi-extensions/review.ts"
 								"pi-extensions/todos.ts"
 							];
 							skills = [];
