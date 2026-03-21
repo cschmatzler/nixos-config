@@ -18,6 +18,11 @@ in {
 		extraConfigLua = ''
 			require('code-review').setup({
 				keymaps = false,
+				comment = {
+					storage = {
+						backend = "file",
+					},
+				},
 				ui = {
 					input_window = {
 						border = "single",
