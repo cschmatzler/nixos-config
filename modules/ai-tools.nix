@@ -23,6 +23,7 @@
 			".pi/agent/extensions/no-git.ts".source = ./_ai-tools/no-git.ts;
 			".pi/agent/extensions/no-scripting.ts".source = ./_ai-tools/no-scripting.ts;
 			".pi/agent/extensions/review.ts".source = ./_ai-tools/review.ts;
+			".pi/agent/extensions/session-name.ts".source = ./_ai-tools/session-name.ts;
 			".pi/agent/skills/elixir-dev" = {
 				source = "${inputs.pi-elixir}/skills/elixir-dev";
 				recursive = true;
@@ -47,6 +48,13 @@
 								"pi-extensions/multi-edit.ts"
 								"pi-extensions/todos.ts"
 							];
+							skills = [];
+							prompts = [];
+							themes = [];
+						}
+						{
+							source = "${inputs.pi-harness}";
+							extensions = ["extensions/breadcrumbs/index.ts"];
 							skills = [];
 							prompts = [];
 							themes = [];

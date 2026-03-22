@@ -76,6 +76,10 @@
 			url = "github:dannote/pi-elixir";
 			flake = false;
 		};
+		pi-harness = {
+			url = "github:aliou/pi-harness";
+			flake = false;
+		};
 		pi-rose-pine = {
 			url = "github:zenobi-us/pi-rose-pine";
 			flake = false;

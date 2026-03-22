@@ -66,6 +66,10 @@
 			url = "github:zenobi-us/pi-rose-pine";
 			flake = false;
 		};
+		pi-harness = {
+			url = "github:aliou/pi-harness";
+			flake = false;
+		};
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
 		jj-ryu = {

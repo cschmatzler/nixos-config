@@ -848,6 +848,22 @@
         "type": "github"
       }
     },
+    "pi-harness": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774210293,
+        "narHash": "sha256-YzQn5r5KAORu6FI7dIkKWTU5f/HYinYu7i8QwPKCYik=",
+        "owner": "aliou",
+        "repo": "pi-harness",
+        "rev": "720db4f57cafd732953fae14ecb5eb50ff4d808c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aliou",
+        "repo": "pi-harness",
+        "type": "github"
+      }
+    },
     "pi-rose-pine": {
       "flake": false,
       "locked": {
@@ -911,6 +927,7 @@
         "nixvim": "nixvim",
         "pi-agent-stuff": "pi-agent-stuff",
         "pi-elixir": "pi-elixir",
+        "pi-harness": "pi-harness",
         "pi-rose-pine": "pi-rose-pine",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
