@@ -1,112 +1,23 @@
 {inputs, ...}: let
 	overlays = [
 		# himalaya
-		(final: prev: {
-				himalaya = inputs.himalaya.packages.${prev.stdenv.hostPlatform.system}.default;
-			})
+		(import ./_overlays/himalaya.nix {inherit inputs;})
 		# ast-grep (test_scan_invalid_rule_id fails on darwin in sandbox)
-		(final: prev: {
-				ast-grep =
-					prev.ast-grep.overrideAttrs (old: {
-							doCheck = false;
-						});
-			})
+		(import ./_overlays/ast-grep.nix {inherit inputs;})
 		# jj-ryu
-		(final: prev: let
-				naersk-lib = prev.callPackage inputs.naersk {};
-				manifest = (prev.lib.importTOML "${inputs.jj-ryu}/Cargo.toml").package;
-			in {
-				jj-ryu =
-					naersk-lib.buildPackage {
-						pname = manifest.name;
-						version = manifest.version;
-						src = inputs.jj-ryu;
-						nativeBuildInputs = [prev.pkg-config];
-						buildInputs = [prev.openssl];
-						OPENSSL_NO_VENDOR = 1;
-						doCheck = false;
-					};
-			})
-
+		(import ./_overlays/jj-ryu.nix {inherit inputs;})
 		# cog-cli
-		(final: prev: let
-				version = "0.22.1";
-				srcs = {
-					x86_64-linux =
-						prev.fetchurl {
-							url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-linux-x86_64.tar.gz";
-							hash = "sha256-ET+sNXisUrHShR1gxqdumegXycXcxGzJcQOdTr5005w=";
-						};
-					aarch64-darwin =
-						prev.fetchurl {
-							url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-darwin-arm64.tar.gz";
-							hash = "sha256-jcN+DtOqr3or5C71jp7AIAz0wh73FYybCC4FRBykKO4=";
-						};
-				};
-			in {
-				cog-cli =
-					prev.stdenvNoCC.mkDerivation {
-						pname = "cog-cli";
-						inherit version;
-						src =
-							srcs.${prev.stdenv.hostPlatform.system}
-						or (throw "Unsupported system for cog-cli: ${prev.stdenv.hostPlatform.system}");
-
-						dontUnpack = true;
-						dontConfigure = true;
-						dontBuild = true;
-
-						installPhase = ''
-							runHook preInstall
-							tar -xzf "$src"
-							install -Dm755 cog "$out/bin/cog"
-							runHook postInstall
-						'';
-
-						meta = with prev.lib; {
-							description = "Memory, code intelligence, and debugging for AI agents";
-							homepage = "https://github.com/trycog/cog-cli";
-							license = licenses.mit;
-							mainProgram = "cog";
-							platforms = builtins.attrNames srcs;
-							sourceProvenance = [sourceTypes.binaryNativeCode];
-						};
-					};
-			})
+		(import ./_overlays/cog-cli.nix {inherit inputs;})
 		# pi-agent-stuff (mitsuhiko)
-		(final: prev: {
-				pi-agent-stuff =
-					prev.buildNpmPackage {
-						pname = "pi-agent-stuff";
-						version = "1.5.0";
-						src = inputs.pi-agent-stuff;
-						npmDepsHash = "sha256-pyXMNdlie8vAkhz2f3GUGT3CCYuwt+xkWnsijBajXIo=";
-						dontNpmBuild = true;
-					};
-			})
+		(import ./_overlays/pi-agent-stuff.nix {inherit inputs;})
+		# pi-harness (aliou)
+		(import ./_overlays/pi-harness.nix {inherit inputs;})
 		# pi-mcp-adapter
-		(final: prev: {
-				pi-mcp-adapter =
-					prev.buildNpmPackage {
-						pname = "pi-mcp-adapter";
-						version = "2.2.0";
-						src =
-							prev.fetchFromGitHub {
-								owner = "nicobailon";
-								repo = "pi-mcp-adapter";
-								rev = "v2.2.0";
-								hash = "sha256-E6Kf+OyTN/pF8pKADJO0B1+buAPqNcXnZl9ssZwSP8U=";
-							};
-						npmDepsHash = "sha256-myJ9h/zC/KDddt8NOVvJjjqbnkdEN4ZR+okCR5nu7hM=";
-						dontNpmBuild = true;
-					};
-			})
+		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
 		# jj-starship (passes through upstream overlay)
-		inputs.jj-starship.overlays.default
+		(import ./_overlays/jj-starship.nix {inherit inputs;})
 		# zjstatus
-		(final: prev: {
-				zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-			})
+		(import ./_overlays/zjstatus.nix {inherit inputs;})
 	];
 in {
 	den.default.nixos.nixpkgs.overlays = overlays;
