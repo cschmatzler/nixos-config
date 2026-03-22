@@ -20,6 +20,8 @@
 				source = "${pkgs.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
 				recursive = true;
 			};
+			".pi/agent/extensions/no-git.ts".source = ./_ai-tools/no-git.ts;
+			".pi/agent/extensions/no-scripting.ts".source = ./_ai-tools/no-scripting.ts;
 			".pi/agent/extensions/review.ts".source = ./_ai-tools/review.ts;
 			".pi/agent/skills/elixir-dev" = {
 				source = "${inputs.pi-elixir}/skills/elixir-dev";
@@ -29,68 +31,12 @@
 				source = "${inputs.pi-rose-pine}/themes";
 				recursive = true;
 			};
-			".pi/agent/extensions/no-git.ts".text = ''
-				/**
-				 * No Git Extension
-				 *
-				 * Blocks git commands and tells the LLM to use jj (Jujutsu) instead.
-				 */
-
-				import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-				import { isToolCallEventType } from "@mariozechner/pi-coding-agent";
-
-				export default function (pi: ExtensionAPI) {
-					pi.on("tool_call", async (event, _ctx) => {
-						if (!isToolCallEventType("bash", event)) return;
-
-						const command = event.input.command.trim();
-
-						if (/\bgit\b/.test(command) && !/\bjj\s+git\b/.test(command)) {
-							return {
-								block: true,
-								reason: "git is not used in this project. Use jj (Jujutsu) instead.",
-							};
-						}
-					});
-				}
-			'';
-			".pi/agent/extensions/no-scripting.ts".text = ''
-				/**
-				 * No Scripting Extension
-				 *
-				 * Blocks python, perl, ruby, php, lua, and inline bash/sh scripts.
-				 * Tells the LLM to use `nu -c` instead.
-				 */
-
-				import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-				import { isToolCallEventType } from "@mariozechner/pi-coding-agent";
-
-				const SCRIPTING_PATTERN =
-					/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\(\s*|`\s*)(?:python[23]?|perl|ruby|php|lua|bash\s+-c|sh\s+-c)\s/;
-
-				export default function (pi: ExtensionAPI) {
-					pi.on("tool_call", async (event, _ctx) => {
-						if (!isToolCallEventType("bash", event)) return;
-
-						const command = event.input.command.trim();
-
-						if (SCRIPTING_PATTERN.test(command)) {
-							return {
-								block: true,
-								reason:
-									"Do not use python, perl, ruby, php, lua, or inline bash/sh for scripting. Use `nu -c` instead.",
-							};
-						}
-					});
-				}
-			'';
 			".pi/agent/settings.json".text =
 				builtins.toJSON {
-					lastChangelogVersion = "0.61.1";
 					theme = "rose-pine-dawn";
 					hideThinkingBlock = true;
-					defaultProvider = "anthropic";
-					defaultModel = "claude-opus-4-6";
+					defaultProvider = "openai-codex";
+					defaultModel = "gpt-5.4";
 					defaultThinkingLevel = "high";
 					packages = [
 						{
