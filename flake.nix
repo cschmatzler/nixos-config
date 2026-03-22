@@ -80,6 +80,10 @@
 			url = "github:aliou/pi-harness";
 			flake = false;
 		};
+		pi-mcp-adapter = {
+			url = "github:nicobailon/pi-mcp-adapter/v2.2.0";
+			flake = false;
+		};
 		pi-rose-pine = {
 			url = "github:zenobi-us/pi-rose-pine";
 			flake = false;

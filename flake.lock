@@ -864,6 +864,23 @@
         "type": "github"
       }
     },
+    "pi-mcp-adapter": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773642170,
+        "narHash": "sha256-E6Kf+OyTN/pF8pKADJO0B1+buAPqNcXnZl9ssZwSP8U=",
+        "owner": "nicobailon",
+        "repo": "pi-mcp-adapter",
+        "rev": "01ba9a4e86bd16d895db319b913d73754a473acb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicobailon",
+        "ref": "v2.2.0",
+        "repo": "pi-mcp-adapter",
+        "type": "github"
+      }
+    },
     "pi-rose-pine": {
       "flake": false,
       "locked": {
@@ -928,6 +945,7 @@
         "pi-agent-stuff": "pi-agent-stuff",
         "pi-elixir": "pi-elixir",
         "pi-harness": "pi-harness",
+        "pi-mcp-adapter": "pi-mcp-adapter",
         "pi-rose-pine": "pi-rose-pine",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"

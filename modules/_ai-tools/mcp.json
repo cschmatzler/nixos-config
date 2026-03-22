@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "opensrc": {
+      "command": "npx",
+      "args": ["-y", "opensrc-mcp"],
+      "directTools": true
+    },
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "directTools": true
+    },
+    "grep_app": {
+      "url": "https://mcp.grep.app",
+      "directTools": true
+    },
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp",
+      "auth": "oauth"
+    }
+  }
+}
