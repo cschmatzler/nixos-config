@@ -13,7 +13,7 @@
 		(den.lib.perHost {
 				includes = [den.aspects.host-darwin-base];
 
-				darwin = {pkgs, ...}: {
+				darwin = {...}: {
 					networking.hostName = "chidi";
 					networking.computerName = "chidi";
 
@@ -24,8 +24,8 @@
 						path = "/run/secrets/opencode-api-key";
 					};
 
-					environment.systemPackages = with pkgs; [
-						slack
+					homebrew.casks = [
+						"slack"
 					];
 				};
 			})
