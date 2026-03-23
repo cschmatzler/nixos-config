@@ -12,6 +12,7 @@
 		];
 
 		home.file = {
+			"AGENTS.md".source = ./_ai-tools/AGENTS.md;
 			".pi/agent/extensions/pi-elixir" = {
 				source = inputs.pi-elixir;
 				recursive = true;
