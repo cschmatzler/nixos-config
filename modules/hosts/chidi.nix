@@ -17,6 +17,13 @@
 					networking.hostName = "chidi";
 					networking.computerName = "chidi";
 
+					sops.secrets.opencode-api-key = {
+						sopsFile = ../../secrets/opencode-api-key;
+						format = "binary";
+						owner = "cschmatzler";
+						path = "/run/secrets/opencode-api-key";
+					};
+
 					environment.systemPackages = with pkgs; [
 						slack
 					];

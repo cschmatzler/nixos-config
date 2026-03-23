@@ -15,6 +15,13 @@
 				darwin = {...}: {
 					networking.hostName = "jason";
 					networking.computerName = "jason";
+
+					sops.secrets.opencode-api-key = {
+						sopsFile = ../../secrets/opencode-api-key;
+						format = "binary";
+						owner = "cschmatzler";
+						path = "/run/secrets/opencode-api-key";
+					};
 				};
 			})
 	];

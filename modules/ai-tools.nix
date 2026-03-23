@@ -1,15 +1,25 @@
 {inputs, ...}: {
 	den.aspects.ai-tools.homeManager = {
+		lib,
 		pkgs,
 		inputs',
 		...
-	}: {
+	}: let
+		opencodeSecretPath = "/run/secrets/opencode-api-key";
+	in {
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
 			inputs'.llm-agents.packages.pi
 			inputs'.llm-agents.packages.codex
 			pkgs.cog-cli
 		];
+
+		programs.nushell.extraEnv =
+			lib.mkAfter ''
+				if ("${opencodeSecretPath}" | path exists) {
+					$env.OPENCODE_API_KEY = (open --raw "${opencodeSecretPath}" | str trim)
+				}
+			'';
 
 		home.file = {
 			"AGENTS.md".source = ./_ai-tools/AGENTS.md;

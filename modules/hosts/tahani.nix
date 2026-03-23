@@ -37,6 +37,12 @@
 					networking.hostName = "tahani";
 
 					sops.secrets = {
+						opencode-api-key = {
+							sopsFile = ../../secrets/opencode-api-key;
+							format = "binary";
+							owner = "cschmatzler";
+							path = "/run/secrets/opencode-api-key";
+						};
 						tahani-paperless-password = {
 							sopsFile = ../../secrets/tahani-paperless-password;
 							format = "binary";
