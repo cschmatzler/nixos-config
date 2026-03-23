@@ -8,9 +8,7 @@
 		opencodeSecretPath = "/run/secrets/opencode-api-key";
 	in {
 		home.packages = [
-			inputs'.llm-agents.packages.claude-code
 			inputs'.llm-agents.packages.pi
-			inputs'.llm-agents.packages.codex
 			pkgs.cog-cli
 		];
 
