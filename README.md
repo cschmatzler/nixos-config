@@ -10,7 +10,9 @@ Personal Nix flake for four machines:
 ## Repository Map
 
 - `modules/` - flake-parts modules, auto-imported via `import-tree`
-- `modules/_hosts/` - host-specific submodules like hardware, disks, and services
+- `modules/hosts/` - per-host composition modules
+- `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and services
+- `modules/profiles/` - shared host and user profile bundles
 - `modules/_lib/` - local helper functions
 - `apps/` - Nushell apps exposed through the flake
 - `secrets/` - SOPS-encrypted secrets
@@ -21,9 +23,11 @@ Personal Nix flake for four machines:
 
 This repo uses `den` and organizes configuration around aspects instead of putting everything directly in host files.
 
-- shared behavior lives in `den.aspects.<name>.<class>` modules
-- hosts are declared in `modules/hosts.nix`
-- host composition happens in `modules/<host>.nix`
+- shared behavior lives in `den.aspects.<name>.<class>` modules under `modules/*.nix`
+- the machine inventory lives in `modules/inventory.nix`
+- shared bundles live in `modules/profiles/{host,user}/`
+- host composition happens in `modules/hosts/<host>.nix`
+- host-private imports live in `modules/hosts/_parts/<host>/`
 - user-level config mostly lives in Home Manager aspects
 
 Common examples:
@@ -31,8 +35,9 @@ Common examples:
 - `modules/core.nix` - shared Nix and shell foundation
 - `modules/dev-tools.nix` - VCS, language, and developer tooling
 - `modules/network.nix` - SSH, fail2ban, and tailscale aspects
-- `modules/michael.nix` - server composition for `michael`
-- `modules/tahani.nix` - server/workstation composition for `tahani`
+- `modules/profiles/user/workstation.nix` - shared developer workstation user bundle
+- `modules/hosts/michael.nix` - server composition for `michael`
+- `modules/hosts/tahani.nix` - server/workstation composition for `tahani`
 
 ## Common Commands
 

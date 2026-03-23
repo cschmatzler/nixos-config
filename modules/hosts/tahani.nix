@@ -3,23 +3,12 @@
 
 	den.aspects.tahani-cschmatzler = {
 		includes = [
-			den.aspects.shell
-			den.aspects.ssh-client
-			den.aspects.terminal
-			den.aspects.atuin
-			den.aspects.dev-tools
-			den.aspects.neovim
-			den.aspects.ai-tools
-			den.aspects.secrets
-			den.aspects.zellij
-			den.aspects.zk
+			den.aspects.user-workstation
+			den.aspects.user-personal
 			den.aspects.email
 		];
 
 		homeManager = {
-			programs.home-manager.enable = true;
-			programs.git.settings.user.email = "christoph@schmatzler.com";
-
 			programs.nushell.extraConfig = ''
 				if $nu.is-interactive and ('SSH_CONNECTION' in ($env | columns)) and ('ZELLIJ' not-in ($env | columns)) {
 					try {
@@ -35,36 +24,31 @@
 
 	den.aspects.tahani.includes = [
 		(den.lib.perHost {
-				includes = [
-					den.aspects.nixos-system
-					den.aspects.core
-					den.aspects.openssh
-					den.aspects.tailscale
-				];
+				includes = [den.aspects.host-nixos-base];
 
 				nixos = {...}: {
 					imports = [
-						./_hosts/tahani/adguardhome.nix
-						./_hosts/tahani/cache.nix
-						./_hosts/tahani/networking.nix
-						./_hosts/tahani/paperless.nix
+						./_parts/tahani/adguardhome.nix
+						./_parts/tahani/cache.nix
+						./_parts/tahani/networking.nix
+						./_parts/tahani/paperless.nix
 					];
 
 					networking.hostName = "tahani";
 
 					sops.secrets = {
 						tahani-paperless-password = {
-							sopsFile = ../secrets/tahani-paperless-password;
+							sopsFile = ../../secrets/tahani-paperless-password;
 							format = "binary";
 							path = "/run/secrets/tahani-paperless-password";
 						};
 						tahani-paperless-gpt-env = {
-							sopsFile = ../secrets/tahani-paperless-gpt-env;
+							sopsFile = ../../secrets/tahani-paperless-gpt-env;
 							format = "binary";
 							path = "/run/secrets/tahani-paperless-gpt-env";
 						};
 						tahani-email-password = {
-							sopsFile = ../secrets/tahani-email-password;
+							sopsFile = ../../secrets/tahani-email-password;
 							format = "binary";
 							owner = "cschmatzler";
 							path = "/run/secrets/tahani-email-password";

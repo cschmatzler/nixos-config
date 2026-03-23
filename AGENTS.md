@@ -33,10 +33,12 @@ alejandra .                   # Format all Nix files
 
 ### File Structure
 - **Modules**: `modules/` - All configuration (flake-parts modules, auto-imported by import-tree)
+  - `hosts/` - Per-host composition modules
+  - `profiles/` - Shared host and user profile bundles
   - `_lib/` - Utility functions (underscore = ignored by import-tree)
   - `_darwin/` - Darwin-specific sub-modules
   - `_neovim/` - Neovim plugin configs
-  - `_hosts/` - Host-specific sub-files (disk-config, hardware, etc.)
+  - `hosts/_parts/` - Host-specific leaf files (disk-config, hardware, service fragments, etc.)
 - **Apps**: `apps/` - Per-system app scripts (Nushell)
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)
 
@@ -52,7 +54,9 @@ alejandra .                   # Format all Nix files
 - `homeManager` - Home Manager configuration
 - `os` - Applies to both NixOS and darwin
 
-**Hosts**: `den.hosts.<system>.<name>` defined in `modules/hosts.nix`
+**Hosts**: `den.hosts.<system>.<name>` declared in `modules/inventory.nix`
+
+**Profiles**: shared bundles live under `modules/profiles/{host,user}` and are exposed as `den.aspects.host-*` and `den.aspects.user-*`
 
 **Defaults**: `den.default.*` defined in `modules/defaults.nix`
 
@@ -131,7 +135,7 @@ in {
 ### Secrets Management
 - Use SOPS for secrets (see `.sops.yaml`)
 - Never commit unencrypted secrets
-- Secret definitions live in per-host modules (`modules/michael.nix`, `modules/tahani.nix`, etc.)
+- Secret definitions live in per-host modules (`modules/hosts/michael.nix`, `modules/hosts/tahani.nix`, etc.)
 - Shared SOPS defaults (module imports, key paths) in `modules/secrets.nix`
 
 ### Aspect Composition

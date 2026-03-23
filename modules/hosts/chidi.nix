@@ -2,34 +2,16 @@
 	den.hosts.aarch64-darwin.chidi.users.cschmatzler.aspect = "chidi-cschmatzler";
 
 	den.aspects.chidi-cschmatzler = {
-		includes = [
-			den.aspects.shell
-			den.aspects.ssh-client
-			den.aspects.terminal
-			den.aspects.atuin
-			den.aspects.dev-tools
-			den.aspects.neovim
-			den.aspects.ai-tools
-			den.aspects.secrets
-			den.aspects.zellij
-			den.aspects.zk
-			den.aspects.desktop
-		];
+		includes = [den.aspects.user-darwin-laptop];
 
 		homeManager = {...}: {
-			programs.home-manager.enable = true;
-			fonts.fontconfig.enable = true;
 			programs.git.settings.user.email = "christoph@tuist.dev";
 		};
 	};
 
 	den.aspects.chidi.includes = [
 		(den.lib.perHost {
-				includes = [
-					den.aspects.darwin-system
-					den.aspects.core
-					den.aspects.tailscale
-				];
+				includes = [den.aspects.host-darwin-base];
 
 				darwin = {pkgs, ...}: {
 					networking.hostName = "chidi";

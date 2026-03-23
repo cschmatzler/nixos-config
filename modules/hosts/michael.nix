@@ -6,30 +6,20 @@
 	den.hosts.x86_64-linux.michael.users.cschmatzler.aspect = "michael-cschmatzler";
 
 	den.aspects.michael-cschmatzler = {
-		includes = [den.aspects.shell];
-
-		homeManager = {...}: {
-			programs.home-manager.enable = true;
-		};
+		includes = [den.aspects.user-minimal];
 	};
 
 	den.aspects.michael.includes = [
 		(den.lib.perHost {
-				includes = [
-					den.aspects.nixos-system
-					den.aspects.core
-					den.aspects.openssh
-					den.aspects.fail2ban
-					den.aspects.tailscale
-				];
+				includes = [den.aspects.host-public-server];
 
 				nixos = {modulesPath, ...}: {
 					imports = [
 						(modulesPath + "/installer/scan/not-detected.nix")
-						./_hosts/michael/backups.nix
-						./_hosts/michael/disk-config.nix
-						./_hosts/michael/gitea.nix
-						./_hosts/michael/hardware-configuration.nix
+						./_parts/michael/backups.nix
+						./_parts/michael/disk-config.nix
+						./_parts/michael/gitea.nix
+						./_parts/michael/hardware-configuration.nix
 						inputs.disko.nixosModules.default
 					];
 
