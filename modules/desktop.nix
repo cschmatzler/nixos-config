@@ -8,7 +8,14 @@
 	in {
 		programs.aerospace = {
 			enable = true;
-			package = pkgs.emptyDirectory;
+			package =
+				pkgs.emptyDirectory.overrideAttrs (old: {
+						meta =
+							(old.meta or {})
+							// {
+								mainProgram = "aerospace";
+							};
+					});
 			launchd.enable = true;
 			settings = {
 				start-at-login = true;
