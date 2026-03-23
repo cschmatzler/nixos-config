@@ -2,17 +2,18 @@
 	overlays = [
 		# himalaya
 		(import ./_overlays/himalaya.nix {inherit inputs;})
-		# direnv (darwin upstream makefile forces external linking)
-		(final: prev: {
-				direnv =
-					prev.direnv.overrideAttrs (old: {
-							env =
-								(old.env or {})
-								// final.lib.optionalAttrs final.stdenv.isDarwin {
-									CGO_ENABLED = 1;
-								};
-						});
-			})
+		# direnv (Go 1.26 on darwin disables cgo, but direnv forces external linking)
+		(final: prev:
+				prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+					direnv =
+						prev.direnv.overrideAttrs (old: {
+								env =
+									(old.env or {})
+									// {
+										CGO_ENABLED = 1;
+									};
+							});
+				})
 		# ast-grep (test_scan_invalid_rule_id fails on darwin in sandbox)
 		(import ./_overlays/ast-grep.nix {inherit inputs;})
 		# jj-ryu
