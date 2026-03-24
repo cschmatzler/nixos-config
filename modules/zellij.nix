@@ -1,18 +1,15 @@
 {...}: {
 	den.aspects.zellij.homeManager = {pkgs, ...}: {
-		programs.zellij = {
-			enable = true;
-			settings = {
-				theme = "rose-pine-dawn";
-				default_layout = "default";
-				default_shell = "${pkgs.nushell}/bin/nu";
-				pane_frames = false;
-				show_startup_tips = false;
-				show_release_notes = false;
-			};
-		};
+		programs.zellij.enable = true;
 
-		xdg.configFile."zellij/themes/rose-pine-dawn.kdl".text = ''
+		xdg.configFile."zellij/config.kdl".text = ''
+			default_layout "default"
+			default_shell "${pkgs.nushell}/bin/nu"
+			pane_frames false
+			show_release_notes false
+			show_startup_tips false
+			theme "rose-pine-dawn"
+
 			themes {
 			  rose-pine-dawn {
 			    text_unselected {
