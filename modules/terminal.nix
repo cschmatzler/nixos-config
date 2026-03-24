@@ -66,18 +66,20 @@
 		'';
 
 		xdg.configFile = {
-			"glow/glow.yml".text = ''
-				# style name or JSON path (default "auto")
-				style: "${config.xdg.configHome}/glow/rose-pine-dawn.json"
-				# mouse support (TUI-mode only)
-				mouse: false
-				# use pager to display markdown
-				pager: false
-				# word-wrap at width
-				width: 80
-				# show all files, including hidden and ignored.
-				all: false
-			'';
+			"glow/glow.yml".text =
+				lib.concatStringsSep "\n" [
+					"# style name or JSON path (default \"auto\")"
+					"style: \"${config.xdg.configHome}/glow/rose-pine-dawn.json\""
+					"# mouse support (TUI-mode only)"
+					"mouse: false"
+					"# use pager to display markdown"
+					"pager: false"
+					"# word-wrap at width"
+					"width: 80"
+					"# show all files, including hidden and ignored."
+					"all: false"
+					""
+				];
 			"glow/rose-pine-dawn.json".source = ./_terminal/rose-pine-dawn-glow.json;
 		};
 
