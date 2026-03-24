@@ -143,7 +143,6 @@
 			casks = [
 				"1password"
 				"alcove"
-				"aerospace"
 				"aqua-voice"
 				"ghostty@tip"
 				"helium-browser"

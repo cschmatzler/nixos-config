@@ -3,19 +3,9 @@
 		lib,
 		pkgs,
 		...
-	}: let
-		aerospaceApp = "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace";
-	in {
+	}: {
 		programs.aerospace = {
 			enable = true;
-			package =
-				pkgs.emptyDirectory.overrideAttrs (old: {
-						meta =
-							(old.meta or {})
-							// {
-								mainProgram = "aerospace";
-							};
-					});
 			launchd.enable = true;
 			settings = {
 				start-at-login = true;
@@ -154,15 +144,5 @@
 				};
 			};
 		};
-
-		home.file.".aerospace.toml".onChange =
-			lib.mkForce ''
-				if [ -x "${aerospaceApp}" ]; then
-					echo "AeroSpace config changed, reloading..."
-					"${aerospaceApp}" reload-config || true
-				fi
-			'';
-
-		launchd.agents.aerospace.config.Program = lib.mkForce aerospaceApp;
 	};
 }
