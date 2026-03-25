@@ -12,7 +12,7 @@
 					src = inputs.pi-harness;
 					pnpm = prev.pnpm_10;
 					fetcherVersion = 1;
-					hash = "sha256-FgtJnmJ0/udz2A9N2DQns+a2CspMDEDk0DPUAxmCVY4=";
+					hash = "sha256-dXctaspB+efF0o88AB+1JPyWg36ZT90VeagPEBHlF20=";
 				};
 
 			nativeBuildInputs = [
