@@ -31,6 +31,7 @@
 						./_parts/tahani/adguardhome.nix
 						./_parts/tahani/cache.nix
 						./_parts/tahani/networking.nix
+						./_parts/tahani/notability.nix
 						./_parts/tahani/paperless.nix
 					];
 

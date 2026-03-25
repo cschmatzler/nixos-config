@@ -31,13 +31,20 @@
 			};
 			".pi/agent/extensions/no-git.ts".source = ./_ai-tools/extensions/no-git.ts;
 			".pi/agent/extensions/no-scripting.ts".source = ./_ai-tools/extensions/no-scripting.ts;
+			".pi/agent/extensions/note-ingest.ts".source = ./_ai-tools/extensions/note-ingest.ts;
 			".pi/agent/extensions/review.ts".source = ./_ai-tools/extensions/review.ts;
 			".pi/agent/extensions/session-name.ts".source = ./_ai-tools/extensions/session-name.ts;
+			".pi/agent/notability" = {
+				source = ./hosts/_parts/tahani/notability;
+				recursive = true;
+			};
 			".pi/agent/skills/elixir-dev" = {
 				source = "${inputs.pi-elixir}/skills/elixir-dev";
 				recursive = true;
 			};
 			".pi/agent/skills/jujutsu/SKILL.md".source = ./_ai-tools/skills/jujutsu/SKILL.md;
+			".pi/agent/skills/notability-transcribe/SKILL.md".source = ./_ai-tools/skills/notability-transcribe/SKILL.md;
+			".pi/agent/skills/notability-normalize/SKILL.md".source = ./_ai-tools/skills/notability-normalize/SKILL.md;
 			".pi/agent/themes" = {
 				source = "${inputs.pi-rose-pine}/themes";
 				recursive = true;

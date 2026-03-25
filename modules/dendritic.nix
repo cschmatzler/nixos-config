@@ -74,6 +74,7 @@
 			url = "github:nicobailon/pi-mcp-adapter/v2.2.0";
 			flake = false;
 		};
+		qmd.url = "github:tobi/qmd";
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
 		jj-ryu = {

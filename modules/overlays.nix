@@ -26,6 +26,8 @@
 		(import ./_overlays/pi-harness.nix {inherit inputs;})
 		# pi-mcp-adapter
 		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
+		# qmd
+		(import ./_overlays/qmd.nix {inherit inputs;})
 		# jj-starship (passes through upstream overlay)
 		(import ./_overlays/jj-starship.nix {inherit inputs;})
 		# zjstatus
