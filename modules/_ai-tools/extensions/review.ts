@@ -359,7 +359,7 @@ type BookmarkRef = {
 type ReviewTarget =
 	| { type: "workingCopy" }
 	| { type: "baseBookmark"; bookmark: string; remote?: string }
-	| { type: "change"; sha: string; title?: string }
+	| { type: "change"; changeId: string; title?: string }
 	| { type: "pullRequest"; prNumber: number; baseBookmark: string; baseRemote?: string; title: string }
 	| { type: "folder"; paths: string[] };
 
@@ -377,9 +377,9 @@ const BASE_BOOKMARK_PROMPT_FALLBACK =
 	"Review the code changes against the base bookmark '{bookmark}'. Start by finding the merge-base revision between the working copy and {bookmark}, then run `jj diff --from <merge-base> --to @` to see what changes would land on the {bookmark} bookmark. Provide prioritized, actionable findings.";
 
 const CHANGE_PROMPT_WITH_TITLE =
-	'Review the code changes introduced by change {sha} ("{title}"). Provide prioritized, actionable findings.';
+	'Review the code changes introduced by change {changeId} ("{title}"). Provide prioritized, actionable findings.';
 
-const CHANGE_PROMPT = "Review the code changes introduced by change {sha}. Provide prioritized, actionable findings.";
+const CHANGE_PROMPT = "Review the code changes introduced by change {changeId}. Provide prioritized, actionable findings.";
 
 const PULL_REQUEST_PROMPT =
 	'Review pull request #{prNumber} ("{title}") against the base bookmark \'{baseBookmark}\'. The merge-base revision for this comparison is {mergeBaseSha}. Run `jj diff --from {mergeBaseSha} --to @` to inspect the changes that would be merged. Provide prioritized, actionable findings.';
@@ -748,22 +748,22 @@ async function getMergeBase(
 /**
  * Get list of recent changes
  */
-async function getRecentChanges(pi: ExtensionAPI, limit: number = 10): Promise<Array<{ sha: string; title: string }>> {
+async function getRecentChanges(pi: ExtensionAPI, limit: number = 10): Promise<Array<{ changeId: string; title: string }>> {
 	const { stdout, code } = await pi.exec("jj", [
 		"log",
 		"-n",
 		`${limit}`,
 		"--no-graph",
 		"-T",
-		'commit_id ++ "\\t" ++ description.first_line() ++ "\\n"',
+		'change_id.shortest(8) ++ "\\t" ++ description.first_line() ++ "\\n"',
 	]);
 	if (code !== 0) return [];
 
 	return parseNonEmptyLines(stdout)
 		.filter((line) => line.trim())
 		.map((line) => {
-			const [sha, ...rest] = line.trim().split("\t");
-			return { sha, title: rest.join(" ") };
+			const [changeId, ...rest] = line.trim().split("\t");
+			return { changeId, title: rest.join(" ") };
 		});
 }
 
@@ -979,9 +979,9 @@ async function buildReviewPrompt(
 
 		case "change":
 			if (target.title) {
-				return CHANGE_PROMPT_WITH_TITLE.replace("{sha}", target.sha).replace("{title}", target.title);
+				return CHANGE_PROMPT_WITH_TITLE.replace("{changeId}", target.changeId).replace("{title}", target.title);
 			}
-			return CHANGE_PROMPT.replace("{sha}", target.sha);
+			return CHANGE_PROMPT.replace("{changeId}", target.changeId);
 
 		case "pullRequest": {
 			const baseBookmarkLabel = bookmarkRefToLabel({ name: target.baseBookmark, remote: target.baseRemote });
@@ -1014,8 +1014,7 @@ function getUserFacingHint(target: ReviewTarget): string {
 		case "baseBookmark":
 			return `changes against '${bookmarkRefToLabel({ name: target.bookmark, remote: target.remote })}'`;
 		case "change": {
-			const shortSha = target.sha.slice(0, 7);
-			return target.title ? `change ${shortSha}: ${target.title}` : `change ${shortSha}`;
+			return target.title ? `change ${target.changeId}: ${target.title}` : `change ${target.changeId}`;
 		}
 
 		case "pullRequest": {
@@ -1441,12 +1440,12 @@ export default function reviewExtension(pi: ExtensionAPI) {
 		}
 
 		const items: SelectItem[] = changes.map((change) => ({
-			value: change.sha,
-			label: `${change.sha.slice(0, 7)} ${change.title}`,
+			value: change.changeId,
+			label: `${change.changeId} ${change.title}`,
 			description: "",
 		}));
 
-		const result = await ctx.ui.custom<{ sha: string; title: string } | null>((tui, theme, keybindings, done) => {
+		const result = await ctx.ui.custom<{ changeId: string; title: string } | null>((tui, theme, keybindings, done) => {
 			const container = new Container();
 			container.addChild(new DynamicBorder((str) => theme.fg("accent", str)));
 			container.addChild(new Text(theme.fg("accent", theme.bold("Select change to review"))));
@@ -1480,7 +1479,7 @@ export default function reviewExtension(pi: ExtensionAPI) {
 				});
 
 				selectList.onSelect = (item) => {
-					const change = changes.find((c) => c.sha === item.value);
+					const change = changes.find((c) => c.changeId === item.value);
 					if (change) {
 						done(change);
 					} else {
@@ -1532,7 +1531,7 @@ export default function reviewExtension(pi: ExtensionAPI) {
 		});
 
 		if (!result) return null;
-		return { type: "change", sha: result.sha, title: result.title };
+		return { type: "change", changeId: result.changeId, title: result.title };
 	}
 
 
@@ -1822,10 +1821,10 @@ export default function reviewExtension(pi: ExtensionAPI) {
 			}
 
 			case "change": {
-				const sha = parts[1];
-				if (!sha) return { target: null, extraInstruction };
+				const changeId = parts[1];
+				if (!changeId) return { target: null, extraInstruction };
 				const title = parts.slice(2).join(" ") || undefined;
-				return { target: { type: "change", sha, title }, extraInstruction };
+				return { target: { type: "change", changeId, title }, extraInstruction };
 			}
 
 
