@@ -479,7 +479,7 @@ def drain-queued-jobs [] {
 }
 
 
-def main [--drain] {
+export def worker-run [--drain] {
     ensure-layout
     recover-running-jobs
     if $drain {
@@ -498,4 +498,9 @@ def main [--drain] {
         process-job $job
         maybe-update-qmd
     }
+}
+
+
+def main [--drain] {
+    worker-run --drain=$drain
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
 use ./lib.nu *
+use ./jobs.nu [archive-and-version, enqueue-job]
 
 const settle_window = 45sec
 const delete_grace = 15min
@@ -23,142 +24,13 @@ def is-settled [source_mtime: string] {
 }
 
 
-def active-job-exists [note_id: string, source_hash: string] {
-    let rows = (sql-json $"
-        select job_id
-        from jobs
-        where note_id = (sql-quote $note_id)
-          and source_hash = (sql-quote $source_hash)
-          and status != 'done'
-          and status != 'failed'
-        limit 1;
-    ")
-    not ($rows | is-empty)
-}
-
-
-def enqueue-job [note: record, operation: string, archive_path: string, source_hash: string, title: string, force_overwrite_generated: bool = false] {
-    if (active-job-exists $note.note_id $source_hash) {
-        return null
-    }
-
-    let job_id = (new-job-id)
-    let requested_at = (now-iso)
-    let manifest_path = (manifest-path-for $job_id 'queued')
-    let result_path = (result-path-for $job_id)
-    let transcript_path = (transcript-path-for $note.note_id $job_id)
-    let session_dir = ([(sessions-root) $note.note_id $job_id] | path join)
-    mkdir $session_dir
-
-	let manifest = {
-        version: 1
-        job_id: $job_id
-        note_id: $note.note_id
-        operation: $operation
-        requested_at: $requested_at
-        title: $title
-        source_relpath: $note.source_relpath
-        source_path: $note.source_path
-        input_path: $archive_path
-        archive_path: $archive_path
-        output_path: $note.output_path
-        transcript_path: $transcript_path
-        result_path: $result_path
-        session_dir: $session_dir
-        source_hash: $source_hash
-        last_generated_output_hash: ($note.last_generated_output_hash? | default null)
-        force_overwrite_generated: $force_overwrite_generated
-        source_transport: 'webdav'
-	}
-
-	($manifest | to json --indent 2) | save -f $manifest_path
-	let job_id_q = (sql-quote $job_id)
-	let note_id_q = (sql-quote $note.note_id)
-	let operation_q = (sql-quote $operation)
-	let requested_at_q = (sql-quote $requested_at)
-	let source_hash_q = (sql-quote $source_hash)
-	let manifest_path_q = (sql-quote $manifest_path)
-	let result_path_q = (sql-quote $result_path)
-	let sql = ([
-		"insert into jobs (job_id, note_id, operation, status, requested_at, source_hash, job_manifest_path, result_path) values ("
-		$job_id_q
-		", "
-		$note_id_q
-		", "
-		$operation_q
-		", 'queued', "
-		$requested_at_q
-		", "
-		$source_hash_q
-		", "
-		$manifest_path_q
-		", "
-		$result_path_q
-		");"
-	] | str join '')
-	sql-run $sql | ignore
-
-    log-event $note.note_id 'job-enqueued' {
+def log-job-enqueued [note_id: string, job_id: string, operation: string, source_hash: string, archive_path: string] {
+    log-event $note_id 'job-enqueued' {
         job_id: $job_id
         operation: $operation
         source_hash: $source_hash
         archive_path: $archive_path
     }
-
-    $job_id
-}
-
-
-def archive-and-version [note_id: string, source_path: path, source_relpath: string, source_size: any, source_mtime: string, source_hash: string] {
-	let source_size_int = ($source_size | into int)
-	let archive_path = (archive-path-for $note_id $source_hash $source_relpath)
-	cp $source_path $archive_path
-
-	let version_id = (new-version-id)
-	let seen_at = (now-iso)
-	let version_id_q = (sql-quote $version_id)
-	let note_id_q = (sql-quote $note_id)
-	let seen_at_q = (sql-quote $seen_at)
-	let archive_path_q = (sql-quote $archive_path)
-	let source_hash_q = (sql-quote $source_hash)
-	let source_mtime_q = (sql-quote $source_mtime)
-	let source_relpath_q = (sql-quote $source_relpath)
-	let sql = ([
-		"insert into versions (version_id, note_id, seen_at, archive_path, source_hash, source_size, source_mtime, source_relpath, ingest_result, session_path) values ("
-		$version_id_q
-		", "
-		$note_id_q
-		", "
-		$seen_at_q
-		", "
-		$archive_path_q
-		", "
-		$source_hash_q
-		", "
-		($source_size_int | into string)
-		", "
-		$source_mtime_q
-		", "
-		$source_relpath_q
-		", 'pending', null);"
-	] | str join '')
-	sql-run $sql | ignore
-
-    {
-        version_id: $version_id
-        seen_at: $seen_at
-        archive_path: $archive_path
-    }
-}
-
-
-def find-note-by-source [source_relpath: string] {
-    sql-json $"
-        select *
-        from notes
-        where source_relpath = (sql-quote $source_relpath)
-        limit 1;
-    "
 }
 
 
@@ -270,15 +142,16 @@ def process-existing [note: record, source: record] {
         }
 
         let runtime_note = ($note | upsert source_path $source.source_path | upsert source_relpath $source.source_relpath | upsert output_path $note.output_path | upsert last_generated_output_hash ($note.last_generated_output_hash? | default null))
-        let retry_job_id = (enqueue-job $runtime_note 'upsert' $archive_path $source_hash $title)
-        if $retry_job_id != null {
+        let retry_job = (enqueue-job $runtime_note 'upsert' $archive_path $archive_path $source_hash $title)
+        if $retry_job != null {
+            log-job-enqueued $note_id $retry_job.job_id 'upsert' $source_hash $archive_path
             let reason = if $note_status == 'failed' {
                 'retry-failed-note'
             } else {
                 'missing-generated-output'
             }
             log-event $note_id 'job-reenqueued' {
-                job_id: $retry_job_id
+                job_id: $retry_job.job_id
                 reason: $reason
                 source_hash: $source_hash
                 archive_path: $archive_path
@@ -313,7 +186,10 @@ def process-existing [note: record, source: record] {
     | ignore
 
     let runtime_note = ($note | upsert source_path $source.source_path | upsert source_relpath $source.source_relpath | upsert output_path $note.output_path | upsert last_generated_output_hash ($note.last_generated_output_hash? | default null))
-    let _ = (enqueue-job $runtime_note 'upsert' $version.archive_path $source_hash $title)
+    let job = (enqueue-job $runtime_note 'upsert' $version.archive_path $version.archive_path $source_hash $title)
+    if $job != null {
+        log-job-enqueued $note_id $job.job_id 'upsert' $source_hash $version.archive_path
+    }
 
     log-event $note_id 'source-updated' {
         source_relpath: $source.source_relpath
@@ -405,7 +281,10 @@ def process-new [source: record] {
         output_path: $output_path
         last_generated_output_hash: null
     }
-    let _ = (enqueue-job $note 'upsert' $version.archive_path $source_hash $source.title)
+    let job = (enqueue-job $note 'upsert' $version.archive_path $version.archive_path $source_hash $source.title)
+    if $job != null {
+        log-job-enqueued $note_id $job.job_id 'upsert' $source_hash $version.archive_path
+    }
 
     log-event $note_id 'source-discovered' {
         source_relpath: $source.source_relpath
@@ -462,7 +341,7 @@ def mark-missing [seen_relpaths: list<string>] {
 }
 
 
-def main [] {
+export def reconcile-run [] {
     ensure-layout
     mut sources = (scan-source-files)
 
@@ -500,4 +379,9 @@ def main [] {
     }
 
     mark-missing ($sources | get source_relpath)
+}
+
+
+def main [] {
+    reconcile-run
 }

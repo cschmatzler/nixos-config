@@ -1,27 +1,36 @@
 #!/usr/bin/env nu
 
 use ./lib.nu *
+use ./reconcile.nu [reconcile-run]
+use ./worker.nu [worker-run]
 
-const script_dir = (path self | path dirname)
+
+def error-message [error: any] {
+    let msg = (($error.msg? | default '') | into string)
+    if $msg == '' {
+        $error | to nuon
+    } else {
+        $msg
+    }
+}
 
 
 def run-worker [] {
-    let worker_script = ([ $script_dir 'worker.nu' ] | path join)
-    let worker_result = (^nu $worker_script --drain | complete)
-    if $worker_result.exit_code != 0 {
-        print $"worker failed: ($worker_result.stderr | str trim)"
+    try {
+        worker-run --drain
+    } catch {|error|
+        print $"worker failed: (error-message $error)"
     }
 }
 
 
 def run-sync [] {
-    let reconcile_script = ([ $script_dir 'reconcile.nu' ] | path join)
-
     run-worker
 
-    let reconcile_result = (^nu $reconcile_script | complete)
-    if $reconcile_result.exit_code != 0 {
-        print $"reconcile failed: ($reconcile_result.stderr | str trim)"
+    try {
+        reconcile-run
+    } catch {|error|
+        print $"reconcile failed: (error-message $error)"
         return
     }
 
