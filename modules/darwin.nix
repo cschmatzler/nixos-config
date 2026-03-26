@@ -41,7 +41,7 @@
 				autohide = true;
 				show-recents = false;
 				launchanim = true;
-				orientation = "bottom";
+				orientation = "left";
 				tilesize = 60;
 				minimize-to-application = true;
 				mru-spaces = false;
