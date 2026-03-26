@@ -371,7 +371,7 @@ const LOCAL_CHANGES_REVIEW_INSTRUCTIONS =
 	"Also include local working-copy changes (including new files) on top of this bookmark. Use `jj status`, `jj diff --summary`, and `jj diff` so local fixes are part of this review cycle.";
 
 const BASE_BOOKMARK_PROMPT_WITH_MERGE_BASE =
-	"Review the code changes against the base bookmark '{baseBookmark}'. The merge-base revision for this comparison is {mergeBaseSha}. Run `jj diff --from {mergeBaseSha} --to @` to inspect the changes relative to {baseBookmark}. Provide prioritized, actionable findings.";
+	"Review the code changes against the base bookmark '{baseBookmark}'. The merge-base change for this comparison is {mergeBaseChangeId}. Run `jj diff --from {mergeBaseChangeId} --to @` to inspect the changes relative to {baseBookmark}. Provide prioritized, actionable findings.";
 
 const BASE_BOOKMARK_PROMPT_FALLBACK =
 	"Review the code changes against the base bookmark '{bookmark}'. Start by finding the merge-base revision between the working copy and {bookmark}, then run `jj diff --from <merge-base> --to @` to see what changes would land on the {bookmark} bookmark. Provide prioritized, actionable findings.";
@@ -382,7 +382,7 @@ const CHANGE_PROMPT_WITH_TITLE =
 const CHANGE_PROMPT = "Review the code changes introduced by change {changeId}. Provide prioritized, actionable findings.";
 
 const PULL_REQUEST_PROMPT =
-	'Review pull request #{prNumber} ("{title}") against the base bookmark \'{baseBookmark}\'. The merge-base revision for this comparison is {mergeBaseSha}. Run `jj diff --from {mergeBaseSha} --to @` to inspect the changes that would be merged. Provide prioritized, actionable findings.';
+	'Review pull request #{prNumber} ("{title}") against the base bookmark \'{baseBookmark}\'. The merge-base change for this comparison is {mergeBaseChangeId}. Run `jj diff --from {mergeBaseChangeId} --to @` to inspect the changes that would be merged. Provide prioritized, actionable findings.';
 
 const PULL_REQUEST_PROMPT_FALLBACK =
 	'Review pull request #{prNumber} ("{title}") against the base bookmark \'{baseBookmark}\'. Start by finding the merge-base revision between the working copy and {baseBookmark}, then run `jj diff --from <merge-base> --to @` to see the changes that would be merged. Provide prioritized, actionable findings.';
@@ -630,6 +630,20 @@ async function getSingleRevisionId(pi: ExtensionAPI, revset: string): Promise<st
 	return revisions[0];
 }
 
+async function getSingleChangeId(pi: ExtensionAPI, revset: string): Promise<string | null> {
+	const { stdout, code } = await pi.exec("jj", ["log", "-r", revset, "--no-graph", "-T", 'change_id.shortest(8) ++ "\\n"']);
+	if (code !== 0) {
+		return null;
+	}
+
+	const revisions = parseNonEmptyLines(stdout);
+	if (revisions.length !== 1) {
+		return null;
+	}
+
+	return revisions[0];
+}
+
 async function getDefaultRemoteName(pi: ExtensionAPI): Promise<string | null> {
 	const remotes = await getJjRemotes(pi);
 	if (remotes.length === 0) {
@@ -739,7 +753,7 @@ async function getMergeBase(
 			return null;
 		}
 
-		return getSingleRevisionId(pi, `heads(::@ & ::${bookmarkRefToRevset(bookmarkRef)})`);
+		return getSingleChangeId(pi, `heads(::@ & ::${bookmarkRefToRevset(bookmarkRef)})`);
 	} catch {
 		return null;
 	}
@@ -972,7 +986,7 @@ async function buildReviewPrompt(
 			const basePrompt = mergeBase
 				? BASE_BOOKMARK_PROMPT_WITH_MERGE_BASE
 						.replace(/{baseBookmark}/g, bookmarkLabel)
-						.replace(/{mergeBaseSha}/g, mergeBase)
+						.replace(/{mergeBaseChangeId}/g, mergeBase)
 				: BASE_BOOKMARK_PROMPT_FALLBACK.replace(/{bookmark}/g, bookmarkLabel);
 			return includeLocalChanges ? `${basePrompt} ${LOCAL_CHANGES_REVIEW_INSTRUCTIONS}` : basePrompt;
 		}
@@ -991,7 +1005,7 @@ async function buildReviewPrompt(
 						.replace(/{prNumber}/g, String(target.prNumber))
 						.replace(/{title}/g, target.title)
 						.replace(/{baseBookmark}/g, baseBookmarkLabel)
-						.replace(/{mergeBaseSha}/g, mergeBase)
+						.replace(/{mergeBaseChangeId}/g, mergeBase)
 				: PULL_REQUEST_PROMPT_FALLBACK
 						.replace(/{prNumber}/g, String(target.prNumber))
 						.replace(/{title}/g, target.title)
