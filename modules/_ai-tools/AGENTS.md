@@ -15,6 +15,7 @@
 ## Workflow
 
 - Always complete the requested work.
+- If there is any ambiguity about what to do next, do NOT make a decision yourself. Stop your work and ask.
 - Do not end with “If you want me to…” or “I can…”; take the next necessary step and finish the job without waiting for additional confirmation.
 - Do not future-proof things. Stick to the original plan.
 - Do not add fallbacks or backward compatibility unless explicitly required by the user. By default, replace the previous implementation with the new one entirely.
