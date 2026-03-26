@@ -152,7 +152,7 @@
 				"ghostty@tip"
 				"helium-browser"
 				"raycast"
-				"tidal"
+				"spotify"
 			];
 		};
 	};
