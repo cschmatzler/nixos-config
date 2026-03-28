@@ -1,20 +1,20 @@
 {den, ...}: {
-	den.hosts.aarch64-darwin.jason.users.cschmatzler.aspect = "jason-cschmatzler";
+	den.hosts.aarch64-darwin.janet.users.cschmatzler.aspect = "janet-cschmatzler";
 
-	den.aspects.jason-cschmatzler = {
+	den.aspects.janet-cschmatzler = {
 		includes = [
 			den.aspects.user-darwin-laptop
 			den.aspects.user-personal
 		];
 	};
 
-	den.aspects.jason.includes = [
+	den.aspects.janet.includes = [
 		(den.lib.perHost {
 				includes = [den.aspects.host-darwin-base];
 
 				darwin = {...}: {
-					networking.hostName = "jason";
-					networking.computerName = "jason";
+					networking.hostName = "janet";
+					networking.computerName = "janet";
 
 					sops.secrets.opencode-api-key = {
 						sopsFile = ../../secrets/opencode-api-key;

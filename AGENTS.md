@@ -5,7 +5,7 @@
 ### Local Development
 ```bash
 nix run .#build               # Build current host config
-nix run .#build -- <hostname> # Build specific host (chidi, jason, michael, tahani)
+nix run .#build -- <hostname> # Build specific host (chidi, janet, michael, tahani)
 nix run .#apply               # Build and apply locally (darwin-rebuild/nixos-rebuild switch)
 nix flake check               # Validate flake
 ```
@@ -62,7 +62,7 @@ alejandra .                   # Format all Nix files
 
 **Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `_darwin/`, etc.) are excluded from auto-import
 
-**Deployment**: deploy-rs for NixOS hosts (michael, tahani); darwin hosts (chidi, jason) are local-only
+**Deployment**: deploy-rs for NixOS hosts (michael, tahani); darwin hosts (chidi, janet) are local-only
 
 ### Nix Language Conventions
 
@@ -129,7 +129,7 @@ in {
 
 ### Naming Conventions
 - **Aspect names**: `den.aspects.<name>.<class>` for feature configuration
-- **Hostnames**: Lowercase, descriptive (e.g., `michael`, `tahani`, `chidi`, `jason`)
+- **Hostnames**: Lowercase, descriptive (e.g., `michael`, `tahani`, `chidi`, `janet`)
 - **Module files**: Descriptive, lowercase with hyphens (e.g., `neovim-config.nix`)
 
 ### Secrets Management

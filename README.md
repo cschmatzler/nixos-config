@@ -5,7 +5,7 @@ Personal Nix flake for four machines:
 - `michael` - x86_64 Linux server
 - `tahani` - x86_64 Linux home server / workstation
 - `chidi` - aarch64 Darwin work laptop
-- `jason` - aarch64 Darwin personal laptop
+- `janet` - aarch64 Darwin personal laptop
 
 ## Repository Map
 
