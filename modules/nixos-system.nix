@@ -1,6 +1,6 @@
 {inputs, ...}: let
 	local = import ./_lib/local.nix;
-	userHome = local.mkHome local.hosts.michael.system;
+	userHome = "/home/${local.user.name}";
 in {
 	den.aspects.nixos-system.nixos = {pkgs, ...}: {
 		imports = [inputs.home-manager.nixosModules.home-manager];

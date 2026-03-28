@@ -10,7 +10,7 @@ in {
 
 	# Configure Darwin SOPS defaults
 	den.default.darwin = {
-		sops.age.keyFile = "${local.mkHome local.hosts.chidi.system}/.config/sops/age/keys.txt";
+		sops.age.keyFile = "/Users/${local.user.name}/.config/sops/age/keys.txt";
 		sops.age.sshKeyPaths = [];
 		sops.gnupg.sshKeyPaths = [];
 	};

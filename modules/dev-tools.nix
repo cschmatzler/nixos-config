@@ -1,5 +1,6 @@
 {...}: let
 	local = import ./_lib/local.nix;
+	palette = (import ./_lib/theme.nix).rosePineDawn.hex;
 in {
 	den.aspects.dev-tools.homeManager = {
 		pkgs,
@@ -145,76 +146,76 @@ in {
 		programs.jjui = {
 			enable = true;
 			settings.ui.colors = {
-				text = {fg = "#575279";};
-				dimmed = {fg = "#9893a5";};
+				text = {fg = palette.text;};
+				dimmed = {fg = palette.muted;};
 				selected = {
-					bg = "#f2e9e1";
-					fg = "#575279";
+					bg = palette.overlay;
+					fg = palette.text;
 					bold = true;
 				};
-				border = {fg = "#9893a5";};
+				border = {fg = palette.muted;};
 				title = {
-					fg = "#907aa9";
+					fg = palette.iris;
 					bold = true;
 				};
 				shortcut = {
-					fg = "#286983";
+					fg = palette.pine;
 					bold = true;
 				};
 				matched = {
-					fg = "#ea9d34";
+					fg = palette.gold;
 					bold = true;
 				};
 				"revisions selected" = {
-					bg = "#f2e9e1";
-					fg = "#575279";
+					bg = palette.overlay;
+					fg = palette.text;
 					bold = true;
 				};
-				"status" = {bg = "#f2e9e1";};
+				"status" = {bg = palette.overlay;};
 				"status title" = {
-					bg = "#907aa9";
-					fg = "#faf4ed";
+					bg = palette.iris;
+					fg = palette.base;
 					bold = true;
 				};
-				"status shortcut" = {fg = "#286983";};
-				"status dimmed" = {fg = "#9893a5";};
-				"menu" = {bg = "#faf4ed";};
+				"status shortcut" = {fg = palette.pine;};
+				"status dimmed" = {fg = palette.muted;};
+				"menu" = {bg = palette.base;};
 				"menu selected" = {
-					bg = "#f2e9e1";
-					fg = "#575279";
+					bg = palette.overlay;
+					fg = palette.text;
 					bold = true;
 				};
-				"menu border" = {fg = "#9893a5";};
+				"menu border" = {fg = palette.muted;};
 				"menu title" = {
-					fg = "#907aa9";
+					fg = palette.iris;
 					bold = true;
 				};
-				"menu shortcut" = {fg = "#286983";};
+				"menu shortcut" = {fg = palette.pine;};
 				"menu matched" = {
-					fg = "#ea9d34";
+					fg = palette.gold;
 					bold = true;
 				};
-				"preview border" = {fg = "#9893a5";};
-				"help" = {bg = "#faf4ed";};
-				"help border" = {fg = "#9893a5";};
+				"preview border" = {fg = palette.muted;};
+				"help" = {bg = palette.base;};
+				"help border" = {fg = palette.muted;};
 				"help title" = {
-					fg = "#907aa9";
+					fg = palette.iris;
 					bold = true;
 				};
-				"confirmation" = {bg = "#faf4ed";};
-				"confirmation border" = {fg = "#9893a5";};
+				"confirmation" = {bg = palette.base;};
+				"confirmation border" = {fg = palette.muted;};
 				"confirmation selected" = {
-					bg = "#f2e9e1";
-					fg = "#575279";
+					bg = palette.overlay;
+					fg = palette.text;
 					bold = true;
 				};
-				"confirmation dimmed" = {fg = "#9893a5";};
+				"confirmation dimmed" = {fg = palette.muted;};
 				source_marker = {
-					fg = "#56949f";
+					fg = palette.foam;
 					bold = true;
 				};
 				target_marker = {
-					fg = "#d7827e";
+					fg = palette.rose;
 					bold = true;
 				};
 			};

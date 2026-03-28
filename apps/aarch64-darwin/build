@@ -3,17 +3,5 @@
 use ../common.nu *
 
 def main [hostname?: string, ...rest: string] {
-    let host = if ($hostname | is-empty) {
-        try { scutil --get LocalHostName | str trim } catch { hostname -s | str trim }
-    } else { $hostname }
-    
-    print_info $"Building configuration for ($host)"
-    
-    nix build $".#darwinConfigurations.($host).system" --show-trace ...$rest
-    
-    if ("./result" | path exists) {
-        rm ./result
-    }
-    
-    print_success "Build completed successfully"
+	build-config "darwin" $hostname ...$rest
 }

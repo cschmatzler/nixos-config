@@ -1,0 +1,7 @@
+#!/usr/bin/env nu
+
+use ./common.nu *
+
+def main [...inputs: string] {
+	update-flake $inputs
+}

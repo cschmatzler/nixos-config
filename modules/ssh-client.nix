@@ -1,27 +1,17 @@
 {...}: {
-	den.aspects.ssh-client.homeManager = {
-		config,
-		pkgs,
-		...
-	}: let
-		homeDir = "${
-			if pkgs.stdenv.hostPlatform.isDarwin
-			then "/Users"
-			else "/home"
-		}/${config.home.username}";
-	in {
+	den.aspects.ssh-client.homeManager = {config, ...}: {
 		programs.ssh = {
 			enable = true;
 			enableDefaultConfig = false;
 			includes = [
-				"${homeDir}/.ssh/config_external"
+				"${config.home.homeDirectory}/.ssh/config_external"
 			];
 			matchBlocks = {
 				"*" = {};
 				"github.com" = {
 					identitiesOnly = true;
 					identityFile = [
-						"${homeDir}/.ssh/id_ed25519"
+						"${config.home.homeDirectory}/.ssh/id_ed25519"
 					];
 				};
 			};

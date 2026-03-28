@@ -3,17 +3,5 @@
 use ../common.nu *
 
 def main [hostname?: string, ...rest: string] {
-    let host = if ($hostname | is-empty) {
-        hostname | str trim
-    } else { $hostname }
-    
-    print_info $"Building configuration for ($host)"
-    
-    nix build $".#nixosConfigurations.($host).config.system.build.toplevel" --show-trace ...$rest
-    
-    if ("./result" | path exists) {
-        rm ./result
-    }
-    
-    print_success "Build completed successfully"
+	build-config "nixos" $hostname ...$rest
 }

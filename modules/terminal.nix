@@ -1,4 +1,7 @@
-{...}: {
+{...}: let
+	theme = (import ./_lib/theme.nix).rosePineDawn;
+	palette = theme.hex;
+in {
 	den.aspects.terminal.darwin = {pkgs, ...}: {
 		fonts.packages = [
 			pkgs.nerd-fonts.iosevka
@@ -40,17 +43,17 @@
 				--preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
 				--separator='─' --scrollbar='┃' --layout='reverse'
 
-				--color=bg+:#f2e9e1,bg:#faf4ed,spinner:#ea9d34,hl:#d7827e
-				--color=fg:#797593,header:#286983,info:#56949f,pointer:#907aa9
-				--color=marker:#b4637a,fg+:#575279,prompt:#797593,hl+:#d7827e
-				--color=selected-bg:#f2e9e1
-				--color=border:#dfdad9,label:#575279
+				--color=bg+:${palette.overlay},bg:${palette.base},spinner:${palette.gold},hl:${palette.rose}
+				--color=fg:${palette.subtle},header:${palette.pine},info:${palette.foam},pointer:${palette.iris}
+				--color=marker:${palette.love},fg+:${palette.text},prompt:${palette.subtle},hl+:${palette.rose}
+				--color=selected-bg:${palette.overlay}
+				--color=border:${palette.highlightMed},label:${palette.text}
 			'';
 		};
 
 		xdg.configFile."ghostty/config".text = ''
 			command = ${pkgs.nushell}/bin/nu
-			theme = Rose Pine Dawn
+			theme = ${theme.ghosttyName}
 			window-padding-x = 12
 			window-padding-y = 3
 			window-padding-balance = true
@@ -69,7 +72,7 @@
 			"glow/glow.yml".text =
 				lib.concatStringsSep "\n" [
 					"# style name or JSON path (default \"auto\")"
-					"style: \"${config.xdg.configHome}/glow/rose-pine-dawn.json\""
+					"style: \"${config.xdg.configHome}/glow/${theme.slug}.json\""
 					"# mouse support (TUI-mode only)"
 					"mouse: false"
 					"# use pager to display markdown"
@@ -80,17 +83,17 @@
 					"all: false"
 					""
 				];
-			"glow/rose-pine-dawn.json".source = ./_terminal/rose-pine-dawn-glow.json;
+			"glow/${theme.slug}.json".source = ./_terminal/rose-pine-dawn-glow.json;
 		};
 
 		programs.bat = {
 			enable = true;
 			config = {
-				theme = "Rosé Pine Dawn";
+				theme = theme.displayName;
 				pager = "ov";
 			};
 			themes = {
-				"Rosé Pine Dawn" = {
+				"${theme.displayName}" = {
 					src =
 						pkgs.fetchFromGitHub {
 							owner = "rose-pine";
@@ -98,7 +101,7 @@
 							rev = "23bb25b9c421cdc9ea89ff3ad3825840cd19d65d";
 							hash = "sha256-GUFdv5V5OZ2PG+gfsbiohMT23LWsrZda34ReHBr2Xy0=";
 						};
-					file = "dist/rose-pine-dawn.tmTheme";
+					file = "dist/${theme.slug}.tmTheme";
 				};
 			};
 		};

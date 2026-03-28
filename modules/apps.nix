@@ -26,8 +26,8 @@
 				'')}/bin/${name}";
 			meta.description = descriptions.${name};
 		};
-		platformAppNames = ["build" "rollback" "update"];
-		sharedAppNames = ["apply"];
+		platformAppNames = ["build" "rollback"];
+		sharedAppNames = ["apply" "update"];
 	in {
 		apps =
 			pkgs.lib.genAttrs platformAppNames mkPlatformApp

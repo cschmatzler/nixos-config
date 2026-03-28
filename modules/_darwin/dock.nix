@@ -8,7 +8,7 @@ with lib; let
 	cfg = config.local.dock;
 	inherit (pkgs) dockutil stdenv;
 	local = import ../_lib/local.nix;
-	userHome = local.mkHome local.hosts.chidi.system;
+	userHome = "/Users/${local.user.name}";
 in {
 	options = {
 		local.dock = {

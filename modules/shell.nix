@@ -1,4 +1,9 @@
-{...}: {
+{...}: let
+	local = import ./_lib/local.nix;
+	theme = (import ./_lib/theme.nix).rosePineDawn;
+	palette = theme.hex;
+	pineAnsi = builtins.replaceStrings [" "] [";"] theme.rgb.pine;
+in {
 	den.aspects.shell.homeManager = {
 		lib,
 		pkgs,
@@ -32,7 +37,7 @@
 
 			extraEnv =
 				''
-					$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate rose-pine-dawn)
+					$env.LS_COLORS = (${pkgs.vivid}/bin/vivid generate ${theme.slug})
 				''
 				+ lib.optionalString pkgs.stdenv.isDarwin ''
 					# Nushell on Darwin doesn't source /etc/zprofile or path_helper,
@@ -43,22 +48,22 @@
 			extraConfig = ''
 				# --- Rosé Pine Dawn Theme ---
 				let theme = {
-					love: "#b4637a"
-					gold: "#ea9d34"
-					rose: "#d7827e"
-					pine: "#286983"
-					foam: "#56949f"
-					iris: "#907aa9"
-					leaf: "#6d8f89"
-					text: "#575279"
-					subtle: "#797593"
-					muted: "#9893a5"
-					highlight_high: "#cecacd"
-					highlight_med: "#dfdad9"
-					highlight_low: "#f4ede8"
-					overlay: "#f2e9e1"
-					surface: "#fffaf3"
-					base: "#faf4ed"
+					love: "${palette.love}"
+					gold: "${palette.gold}"
+					rose: "${palette.rose}"
+					pine: "${palette.pine}"
+					foam: "${palette.foam}"
+					iris: "${palette.iris}"
+					leaf: "${palette.leaf}"
+					text: "${palette.text}"
+					subtle: "${palette.subtle}"
+					muted: "${palette.muted}"
+					highlight_high: "${palette.highlightHigh}"
+					highlight_med: "${palette.highlightMed}"
+					highlight_low: "${palette.highlightLow}"
+					overlay: "${palette.overlay}"
+					surface: "${palette.surface}"
+					base: "${palette.base}"
 				}
 
 				let scheme = {
@@ -231,7 +236,7 @@
 				# Vi mode indicators — Starship handles the character (green/red for
 				# success/error), nushell adds a dot for normal mode.
 				$env.PROMPT_INDICATOR_VI_INSERT = "· "
-				$env.PROMPT_INDICATOR_VI_NORMAL = "\e[1;38;2;40;105;131m·\e[0m "
+				$env.PROMPT_INDICATOR_VI_NORMAL = "\e[1;38;2;${pineAnsi}m·\e[0m "
 			'';
 		};
 
@@ -268,9 +273,7 @@
 				git_state = {
 					disabled = true;
 				};
-				custom.scm = let
-					local = import ./_lib/local.nix;
-				in {
+				custom.scm = {
 					when = "jj-starship detect";
 					shell = ["jj-starship" "--strip-bookmark-prefix" "${local.user.name}/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
 					format = "$output ";

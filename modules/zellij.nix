@@ -1,4 +1,8 @@
-{...}: {
+{...}: let
+	theme = (import ./_lib/theme.nix).rosePineDawn;
+	palette = theme.hex;
+	rgb = theme.rgb;
+in {
 	den.aspects.zellij.homeManager = {pkgs, ...}: {
 		programs.zellij.enable = true;
 
@@ -8,125 +12,125 @@
 			pane_frames false
 			show_release_notes false
 			show_startup_tips false
-			theme "rose-pine-dawn"
+			theme "${theme.slug}"
 
 			themes {
-			  rose-pine-dawn {
+			  ${theme.slug} {
 			    text_unselected {
-			      base 87 82 121
-			      background 244 237 232
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightLow}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    text_selected {
-			      base 87 82 121
-			      background 223 218 217
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightMed}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    ribbon_selected {
-			      base 244 237 232
-			      background 40 105 131
-			      emphasis_0 234 157 52
-			      emphasis_1 215 130 126
-			      emphasis_2 144 122 169
-			      emphasis_3 86 148 159
+			      base ${rgb.highlightLow}
+			      background ${rgb.pine}
+			      emphasis_0 ${rgb.gold}
+			      emphasis_1 ${rgb.rose}
+			      emphasis_2 ${rgb.iris}
+			      emphasis_3 ${rgb.foam}
 			    }
 			    ribbon_unselected {
-			      base 250 244 237
-			      background 87 82 121
-			      emphasis_0 234 157 52
-			      emphasis_1 215 130 126
-			      emphasis_2 144 122 169
-			      emphasis_3 86 148 159
+			      base ${rgb.base}
+			      background ${rgb.text}
+			      emphasis_0 ${rgb.gold}
+			      emphasis_1 ${rgb.rose}
+			      emphasis_2 ${rgb.iris}
+			      emphasis_3 ${rgb.foam}
 			    }
 			    table_title {
-			      base 40 105 131
-			      background 0 0 0
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.pine}
+			      background ${rgb.black}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    table_cell_selected {
-			      base 87 82 121
-			      background 223 218 217
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightMed}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    table_cell_unselected {
-			      base 87 82 121
-			      background 244 237 232
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightLow}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    list_selected {
-			      base 87 82 121
-			      background 223 218 217
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightMed}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    list_unselected {
-			      base 87 82 121
-			      background 244 237 232
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 40 105 131
-			      emphasis_3 144 122 169
+			      base ${rgb.text}
+			      background ${rgb.highlightLow}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.pine}
+			      emphasis_3 ${rgb.iris}
 			    }
 			    frame_selected {
-			      base 40 105 131
-			      background 0 0 0
-			      emphasis_0 215 130 126
-			      emphasis_1 86 148 159
-			      emphasis_2 144 122 169
-			      emphasis_3 0 0 0
+			      base ${rgb.pine}
+			      background ${rgb.black}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.foam}
+			      emphasis_2 ${rgb.iris}
+			      emphasis_3 ${rgb.black}
 			    }
 			    frame_highlight {
-			      base 215 130 126
-			      background 0 0 0
-			      emphasis_0 215 130 126
-			      emphasis_1 215 130 126
-			      emphasis_2 215 130 126
-			      emphasis_3 215 130 126
+			      base ${rgb.rose}
+			      background ${rgb.black}
+			      emphasis_0 ${rgb.rose}
+			      emphasis_1 ${rgb.rose}
+			      emphasis_2 ${rgb.rose}
+			      emphasis_3 ${rgb.rose}
 			    }
 			    exit_code_success {
-			      base 40 105 131
-			      background 0 0 0
-			      emphasis_0 86 148 159
-			      emphasis_1 244 237 232
-			      emphasis_2 144 122 169
-			      emphasis_3 40 105 131
+			      base ${rgb.pine}
+			      background ${rgb.black}
+			      emphasis_0 ${rgb.foam}
+			      emphasis_1 ${rgb.highlightLow}
+			      emphasis_2 ${rgb.iris}
+			      emphasis_3 ${rgb.pine}
 			    }
 			    exit_code_error {
-			      base 180 99 122
-			      background 0 0 0
-			      emphasis_0 234 157 52
-			      emphasis_1 0 0 0
-			      emphasis_2 0 0 0
-			      emphasis_3 0 0 0
+			      base ${rgb.love}
+			      background ${rgb.black}
+			      emphasis_0 ${rgb.gold}
+			      emphasis_1 ${rgb.black}
+			      emphasis_2 ${rgb.black}
+			      emphasis_3 ${rgb.black}
 			    }
 			    multiplayer_user_colors {
-			      player_1 144 122 169
-			      player_2 40 105 131
-			      player_3 215 130 126
-			      player_4 234 157 52
-			      player_5 86 148 159
-			      player_6 180 99 122
-			      player_7 0 0 0
-			      player_8 0 0 0
-			      player_9 0 0 0
-			      player_10 0 0 0
+			      player_1 ${rgb.iris}
+			      player_2 ${rgb.pine}
+			      player_3 ${rgb.rose}
+			      player_4 ${rgb.gold}
+			      player_5 ${rgb.foam}
+			      player_6 ${rgb.love}
+			      player_7 ${rgb.black}
+			      player_8 ${rgb.black}
+			      player_9 ${rgb.black}
+			      player_10 ${rgb.black}
 			    }
 			  }
 			}
@@ -143,26 +147,26 @@
 			      plugin location="file:${pkgs.zjstatus}/bin/zjstatus.wasm" {
 			        hide_frame_for_single_pane "true"
 
-			        format_left  "{mode}#[fg=#286983,bg=#faf4ed,bold] {session}#[bg=#faf4ed] {tabs}"
+			        format_left  "{mode}#[fg=${palette.pine},bg=${palette.base},bold] {session}#[bg=${palette.base}] {tabs}"
 			        format_right "{datetime}"
-			        format_space "#[bg=#faf4ed]"
+			        format_space "#[bg=${palette.base}]"
 
-			        mode_normal          "#[fg=#faf4ed,bg=#286983] "
-			        mode_locked          "#[fg=#faf4ed,bg=#ea9d34] L "
-			        mode_tab             "#[fg=#faf4ed,bg=#6d8f89] T "
-			        mode_pane            "#[fg=#faf4ed,bg=#907aa9] P "
-			        mode_session         "#[fg=#faf4ed,bg=#56949f] S "
-			        mode_resize          "#[fg=#faf4ed,bg=#ea9d34] R "
-			        mode_move            "#[fg=#faf4ed,bg=#d7827e] M "
-			        mode_search          "#[fg=#faf4ed,bg=#b4637a] S "
+			        mode_normal          "#[fg=${palette.base},bg=${palette.pine}] "
+			        mode_locked          "#[fg=${palette.base},bg=${palette.gold}] L "
+			        mode_tab             "#[fg=${palette.base},bg=${palette.leaf}] T "
+			        mode_pane            "#[fg=${palette.base},bg=${palette.iris}] P "
+			        mode_session         "#[fg=${palette.base},bg=${palette.foam}] S "
+			        mode_resize          "#[fg=${palette.base},bg=${palette.gold}] R "
+			        mode_move            "#[fg=${palette.base},bg=${palette.rose}] M "
+			        mode_search          "#[fg=${palette.base},bg=${palette.love}] S "
 
-			        tab_normal               "#[fg=#9893a5,bg=#faf4ed] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-			        tab_active               "#[fg=#faf4ed,bg=#286983,bold,underline] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+			        tab_normal               "#[fg=${palette.muted},bg=${palette.base}] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+			        tab_active               "#[fg=${palette.base},bg=${palette.pine},bold,underline] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
 			        tab_fullscreen_indicator "󰊓 "
 			        tab_sync_indicator       "󰓦 "
 			        tab_floating_indicator   "󰉈 "
 
-			        datetime          "#[fg=#575279,bg=#faf4ed] {format} "
+			        datetime          "#[fg=${palette.text},bg=${palette.base}] {format} "
 			        datetime_format   "%A, %d %b %Y %H:%M"
 			        datetime_timezone "Europe/Berlin"
 			      }
