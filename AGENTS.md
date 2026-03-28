@@ -70,7 +70,7 @@ alejandra .                   # Format all Nix files
 ```nix
 {inputs, pkgs, lib, ...}:
 ```
-Destructure arguments on separate lines. Use `...` to capture remaining args.
+Use `...` to capture remaining args. Let Alejandra control the exact layout.
 
 **Attribute Sets**:
 ```nix
@@ -111,7 +111,6 @@ in {
   };
 }
 ```
-- Destructure args on separate lines
 - Use `with lib;` for brevity with NixOS lib functions
 - Define `cfg` for config options
 - Use `mkIf`, `mkForce`, `mkDefault` appropriately
