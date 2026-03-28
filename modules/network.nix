@@ -21,24 +21,20 @@
 				overalljails = true;
 			};
 			jails = {
-				sshd = {
-					settings = {
-						enabled = true;
-						port = "ssh";
-						filter = "sshd";
-						maxretry = 3;
-					};
+				sshd.settings = {
+					enabled = true;
+					port = "ssh";
+					filter = "sshd";
+					maxretry = 3;
 				};
-				gitea = {
-					settings = {
-						enabled = true;
-						filter = "gitea";
-						logpath = "/var/lib/gitea/log/gitea.log";
-						maxretry = 10;
-						findtime = 3600;
-						bantime = 900;
-						action = "iptables-allports";
-					};
+				gitea.settings = {
+					enabled = true;
+					filter = "gitea";
+					logpath = "/var/lib/gitea/log/gitea.log";
+					maxretry = 10;
+					findtime = 3600;
+					bantime = 900;
+					action = "iptables-allports";
 				};
 			};
 		};
@@ -60,23 +56,6 @@
 	};
 
 	den.aspects.tailscale.darwin = {
-		services.tailscale = {
-			enable = true;
-		};
-	};
-
-	# Network tools
-	den.aspects.network.homeManager = {
-		pkgs,
-		lib,
-		...
-	}: {
-		home.packages = with pkgs;
-			[
-				dig
-			]
-			++ lib.optionals stdenv.isDarwin [
-				tailscale
-			];
+		services.tailscale.enable = true;
 	};
 }

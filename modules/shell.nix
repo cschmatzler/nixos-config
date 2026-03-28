@@ -268,9 +268,11 @@
 				git_state = {
 					disabled = true;
 				};
-				custom.scm = {
+				custom.scm = let
+					local = import ./_lib/local.nix;
+				in {
 					when = "jj-starship detect";
-					shell = ["jj-starship" "--strip-bookmark-prefix" "cschmatzler/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
+					shell = ["jj-starship" "--strip-bookmark-prefix" "${local.user.name}/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
 					format = "$output ";
 				};
 				lua = {

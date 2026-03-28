@@ -1,4 +1,7 @@
-{inputs, ...}: {
+{inputs, ...}: let
+	local = import ./_lib/local.nix;
+	userHome = local.mkHome local.hosts.chidi.system;
+in {
 	den.aspects.darwin-system.darwin = {pkgs, ...}: {
 		imports = [
 			inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -6,7 +9,7 @@
 			./_darwin/dock.nix
 		];
 
-		system.primaryUser = "cschmatzler";
+		system.primaryUser = local.user.name;
 
 		# Darwin system utilities
 		environment.systemPackages = with pkgs; [
@@ -111,7 +114,7 @@
 		};
 
 		nix = {
-			settings.trusted-users = ["cschmatzler"];
+			settings.trusted-users = [local.user.name];
 			gc.interval = {
 				Weekday = 0;
 				Hour = 2;
@@ -119,18 +122,16 @@
 			};
 		};
 
-		users.users.cschmatzler = {
-			name = "cschmatzler";
-			home = "/Users/cschmatzler";
+		users.users.${local.user.name} = {
+			name = local.user.name;
+			home = userHome;
 			isHidden = false;
 			shell = pkgs.nushell;
 		};
 
-		home-manager.useGlobalPkgs = true;
-
 		nix-homebrew = {
 			enable = true;
-			user = "cschmatzler";
+			user = local.user.name;
 			mutableTaps = true;
 			taps = {
 				"homebrew/homebrew-core" = inputs.homebrew-core;

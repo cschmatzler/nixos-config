@@ -1,30 +1,34 @@
 {
 	den,
 	inputs,
+	lib,
 	...
-}: {
-	den.hosts.x86_64-linux.michael.users.cschmatzler.aspect = "michael-cschmatzler";
-
-	den.aspects.michael-cschmatzler = {
+}: let
+	hostLib = import ../_lib/hosts.nix {inherit den lib;};
+	local = import ../_lib/local.nix;
+	host = "michael";
+	hostMeta = local.hosts.michael;
+in
+	hostLib.mkUserHost {
+		system = hostMeta.system;
+		inherit host;
+		user = local.user.name;
 		includes = [den.aspects.user-minimal];
-	};
+	}
+	// hostLib.mkPerHostAspect {
+		inherit host;
+		includes = [
+			den.aspects.host-public-server
+			den.aspects.gitea
+		];
+		nixos = {modulesPath, ...}: {
+			imports = [
+				(modulesPath + "/installer/scan/not-detected.nix")
+				./_parts/michael/disk-config.nix
+				./_parts/michael/hardware-configuration.nix
+				inputs.disko.nixosModules.default
+			];
 
-	den.aspects.michael.includes = [
-		(den.lib.perHost {
-				includes = [den.aspects.host-public-server];
-
-				nixos = {modulesPath, ...}: {
-					imports = [
-						(modulesPath + "/installer/scan/not-detected.nix")
-						./_parts/michael/backups.nix
-						./_parts/michael/disk-config.nix
-						./_parts/michael/gitea.nix
-						./_parts/michael/hardware-configuration.nix
-						inputs.disko.nixosModules.default
-					];
-
-					networking.hostName = "michael";
-				};
-			})
-	];
-}
+			networking.hostName = host;
+		};
+	}

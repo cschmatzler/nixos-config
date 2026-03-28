@@ -1,11 +1,14 @@
-{inputs, ...}: {
+{inputs, ...}: let
+	local = import ./_lib/local.nix;
+	userHome = local.mkHome local.hosts.michael.system;
+in {
 	den.aspects.nixos-system.nixos = {pkgs, ...}: {
 		imports = [inputs.home-manager.nixosModules.home-manager];
 
 		security.sudo.enable = true;
 		security.sudo.extraRules = [
 			{
-				users = ["cschmatzler"];
+				users = [local.user.name];
 				commands = [
 					{
 						command = "/run/current-system/sw/bin/nix-env";
@@ -46,9 +49,9 @@
 		time.timeZone = "UTC";
 
 		nix = {
-			settings.trusted-users = ["cschmatzler"];
+			settings.trusted-users = [local.user.name];
 			gc.dates = "weekly";
-			nixPath = ["nixos-config=/home/cschmatzler/.local/share/src/nixos-config:/etc/nixos"];
+			nixPath = ["nixos-config=${userHome}/.local/share/src/nixos-config:/etc/nixos"];
 		};
 
 		boot = {
@@ -71,9 +74,9 @@
 		};
 
 		users.users = {
-			cschmatzler = {
+			${local.user.name} = {
 				isNormalUser = true;
-				home = "/home/cschmatzler";
+				home = userHome;
 				extraGroups = [
 					"wheel"
 					"sudo"
@@ -93,7 +96,5 @@
 				];
 			};
 		};
-
-		home-manager.useGlobalPkgs = true;
 	};
 }

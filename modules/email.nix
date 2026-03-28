@@ -1,4 +1,6 @@
-{...}: {
+{...}: let
+	local = import ./_lib/local.nix;
+in {
 	den.aspects.email.homeManager = {pkgs, ...}: {
 		programs.himalaya = {
 			enable = true;
@@ -19,13 +21,13 @@
 		};
 
 		accounts.email = {
-			accounts."christoph@schmatzler.com" = {
+			accounts.${local.user.emails.personal} = {
 				primary = true;
-				maildir.path = "christoph@schmatzler.com";
-				address = "christoph@schmatzler.com";
-				userName = "christoph.schmatzler@icloud.com";
-				realName = "Christoph Schmatzler";
-				passwordCommand = ["${pkgs.coreutils}/bin/cat" "/run/secrets/tahani-email-password"];
+				maildir.path = local.user.emails.personal;
+				address = local.user.emails.personal;
+				userName = local.user.emails.icloud;
+				realName = local.user.fullName;
+				passwordCommand = ["${pkgs.coreutils}/bin/cat" (local.secretPath "tahani-email-password")];
 				folders = {
 					inbox = "INBOX";
 					drafts = "Drafts";

@@ -1,12 +1,14 @@
-{inputs, ...}: {
+{inputs, ...}: let
+	local = import ./_lib/local.nix;
+	inherit (local) secretPath;
+	opencodeSecretPath = secretPath "opencode-api-key";
+in {
 	den.aspects.ai-tools.homeManager = {
 		lib,
 		pkgs,
 		inputs',
 		...
-	}: let
-		opencodeSecretPath = "/run/secrets/opencode-api-key";
-	in {
+	}: {
 		home.packages = [
 			inputs'.llm-agents.packages.pi
 			pkgs.cog-cli
@@ -35,7 +37,7 @@
 			".pi/agent/extensions/review.ts".source = ./_ai-tools/extensions/review.ts;
 			".pi/agent/extensions/session-name.ts".source = ./_ai-tools/extensions/session-name.ts;
 			".pi/agent/notability" = {
-				source = ./hosts/_parts/tahani/notability;
+				source = ./_notability;
 				recursive = true;
 			};
 			".pi/agent/skills/elixir-dev" = {

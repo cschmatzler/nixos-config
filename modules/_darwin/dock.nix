@@ -6,7 +6,9 @@
 }:
 with lib; let
 	cfg = config.local.dock;
-	inherit (pkgs) stdenv dockutil;
+	inherit (pkgs) dockutil stdenv;
+	local = import ../_lib/local.nix;
+	userHome = local.mkHome local.hosts.chidi.system;
 in {
 	options = {
 		local.dock = {
@@ -45,7 +47,7 @@ in {
 						{path = "/System/Applications/Music.app/";}
 						{path = "/System/Applications/System Settings.app/";}
 						{
-							path = "/Users/cschmatzler/Downloads";
+							path = "${userHome}/Downloads";
 							section = "others";
 							options = "--sort name --view grid --display stack";
 						}
@@ -56,7 +58,7 @@ in {
 				mkOption {
 					description = "Username to apply the dock settings to";
 					type = types.str;
-					default = "cschmatzler";
+					default = local.user.name;
 				};
 		};
 	};

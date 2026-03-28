@@ -1,6 +1,10 @@
-{...}: {
-	den.hosts.aarch64-darwin.chidi.users.cschmatzler = {};
-	den.hosts.aarch64-darwin.janet.users.cschmatzler = {};
-	den.hosts.x86_64-linux.michael.users.cschmatzler = {};
-	den.hosts.x86_64-linux.tahani.users.cschmatzler = {};
-}
+{lib, ...}: let
+	local = import ./_lib/local.nix;
+in
+	lib.foldl' lib.recursiveUpdate {} (
+		lib.mapAttrsToList (
+			host: hostMeta:
+				lib.setAttrByPath ["den" "hosts" hostMeta.system host "users" local.user.name] {}
+		)
+		local.hosts
+	)

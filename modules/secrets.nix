@@ -1,4 +1,6 @@
-{inputs, ...}: {
+{inputs, ...}: let
+	local = import ./_lib/local.nix;
+in {
 	# Import sops-nix modules into den.default per-class
 	den.default.nixos.imports = [inputs.sops-nix.nixosModules.sops];
 	den.default.darwin.imports = [inputs.sops-nix.darwinModules.sops];
@@ -8,7 +10,7 @@
 
 	# Configure Darwin SOPS defaults
 	den.default.darwin = {
-		sops.age.keyFile = "/Users/cschmatzler/.config/sops/age/keys.txt";
+		sops.age.keyFile = "${local.mkHome local.hosts.chidi.system}/.config/sops/age/keys.txt";
 		sops.age.sshKeyPaths = [];
 		sops.gnupg.sshKeyPaths = [];
 	};

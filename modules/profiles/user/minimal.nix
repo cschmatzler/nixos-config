@@ -1,11 +1,5 @@
 {den, ...}: {
-	den.aspects.user-minimal = {
-		includes = [
-			den.aspects.shell
-		];
-
-		homeManager = {
-			programs.home-manager.enable = true;
-		};
-	};
+	den.aspects.user-minimal.includes = [
+		den.aspects.shell
+	];
 }

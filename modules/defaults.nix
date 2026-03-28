@@ -25,8 +25,19 @@
 		flake.flakeModules = {
 			# Shared system foundations
 			core = ./core.nix;
+			darwin = ./darwin.nix;
 			network = ./network.nix;
 			nixos-system = ./nixos-system.nix;
+			overlays = ./overlays.nix;
+			secrets = ./secrets.nix;
+
+			# Shared host features
+			adguardhome = ./adguardhome.nix;
+			cache = ./cache.nix;
+			gitea = ./gitea.nix;
+			notability = ./notability.nix;
+			opencode = ./opencode.nix;
+			paperless = ./paperless.nix;
 
 			# User environment
 			ai-tools = ./ai-tools.nix;
@@ -34,7 +45,6 @@
 			desktop = ./desktop.nix;
 			dev-tools = ./dev-tools.nix;
 			email = ./email.nix;
-			finance = ./finance.nix;
 			neovim = ./neovim.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
@@ -44,7 +54,12 @@
 		};
 		den.default.nixos.system.stateVersion = "25.11";
 		den.default.darwin.system.stateVersion = 6;
-		den.default.homeManager.home.stateVersion = "25.11";
+		den.default.homeManager = {
+			home.stateVersion = "25.11";
+			programs.home-manager.enable = true;
+		};
+		den.default.nixos.home-manager.useGlobalPkgs = true;
+		den.default.darwin.home-manager.useGlobalPkgs = true;
 
 		den.default.includes = [
 			den.provides.define-user

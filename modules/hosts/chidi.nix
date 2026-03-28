@@ -1,33 +1,34 @@
-{den, ...}: {
-	den.hosts.aarch64-darwin.chidi.users.cschmatzler.aspect = "chidi-cschmatzler";
-
-	den.aspects.chidi-cschmatzler = {
+{
+	den,
+	lib,
+	...
+}: let
+	hostLib = import ../_lib/hosts.nix {inherit den lib;};
+	local = import ../_lib/local.nix;
+	host = "chidi";
+	hostMeta = local.hosts.chidi;
+in
+	hostLib.mkUserHost {
+		system = hostMeta.system;
+		inherit host;
+		user = local.user.name;
 		includes = [den.aspects.user-darwin-laptop];
-
 		homeManager = {...}: {
-			programs.git.settings.user.email = "christoph@tuist.dev";
+			programs.git.settings.user.email = local.user.emails.work;
 		};
-	};
+	}
+	// hostLib.mkPerHostAspect {
+		inherit host;
+		includes = [
+			den.aspects.host-darwin-base
+			den.aspects.opencode-api-key
+		];
+		darwin = {...}: {
+			networking.hostName = host;
+			networking.computerName = host;
 
-	den.aspects.chidi.includes = [
-		(den.lib.perHost {
-				includes = [den.aspects.host-darwin-base];
-
-				darwin = {...}: {
-					networking.hostName = "chidi";
-					networking.computerName = "chidi";
-
-					sops.secrets.opencode-api-key = {
-						sopsFile = ../../secrets/opencode-api-key;
-						format = "binary";
-						owner = "cschmatzler";
-						path = "/run/secrets/opencode-api-key";
-					};
-
-					homebrew.casks = [
-						"slack"
-					];
-				};
-			})
-	];
-}
+			homebrew.casks = [
+				"slack"
+			];
+		};
+	}

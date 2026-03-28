@@ -1,10 +1,12 @@
-{...}: {
+{...}: let
+	local = import ./_lib/local.nix;
+in {
 	den.aspects.dev-tools.homeManager = {
 		pkgs,
 		lib,
 		...
 	}: let
-		name = "Christoph Schmatzler";
+		name = local.user.fullName;
 	in {
 		home.packages = with pkgs;
 			[
@@ -85,7 +87,7 @@
 			settings = {
 				user = {
 					name = name;
-					email = "christoph@schmatzler.com";
+					email = local.user.emails.personal;
 				};
 				git = {
 					sign-on-push = true;
@@ -117,7 +119,7 @@
 				revset-aliases = {
 					"closest_bookmark(to)" = "heads(::to & bookmarks())";
 					"closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
-					"mine()" = "author(\"christoph@schmatzler.com\")";
+					"mine()" = "author(\"${local.user.emails.personal}\")";
 					"wip()" = "mine() ~ immutable()";
 					"open()" = "mine() ~ ::trunk()";
 					"current()" = "@:: & mutable()";
