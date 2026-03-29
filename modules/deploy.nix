@@ -4,24 +4,34 @@
 	...
 }: let
 	local = import ./_lib/local.nix;
+	acceptNewHostKeys = [
+		"-o"
+		"StrictHostKeyChecking=accept-new"
+	];
+	mkSystemNode = {
+		hostname,
+		host,
+	}: {
+		inherit hostname;
+		sshUser = local.user.name;
+		sshOpts = acceptNewHostKeys;
+		profiles.system = {
+			user = "root";
+			path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos config.flake.nixosConfigurations.${host};
+		};
+	};
 in {
 	flake.deploy.nodes = {
-		michael = {
-			hostname = "michael";
-			sshUser = local.user.name;
-			profiles.system = {
-				user = "root";
-				path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos config.flake.nixosConfigurations.michael;
+		michael =
+			mkSystemNode {
+				hostname = "git.schmatzler.com";
+				host = "michael";
 			};
-		};
-		tahani = {
-			hostname = "tahani";
-			sshUser = local.user.name;
-			profiles.system = {
-				user = "root";
-				path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos config.flake.nixosConfigurations.tahani;
+		tahani =
+			mkSystemNode {
+				hostname = "127.0.0.1";
+				host = "tahani";
 			};
-		};
 	};
 
 	flake.checks.x86_64-linux = inputs.deploy-rs.lib.x86_64-linux.deployChecks config.flake.deploy;

@@ -4,7 +4,8 @@
 			pname = "qmd";
 			version = "2.0.1";
 			src = inputs.qmd;
-			npmDepsHash = "sha256-ODpDkCQwkjqf9X5EfKmnCP4z4AjC6O/lS/zJKBs/46I=";
+			npmDepsFetcherVersion = 2;
+			npmDepsHash = "sha256-sAyCG43p3JELQ2lazwRrsdmW9Q4cOy45X6ZagBmitGU=";
 
 			nativeBuildInputs = [
 				prev.makeWrapper
