@@ -151,10 +151,12 @@ in {
 				"alcove"
 				"aqua-voice"
 				"ghostty@tip"
-				"helium-browser"
 				"raycast"
 				"spotify"
 			];
+			masApps = {
+				"Wipr 2" = 1662217862;
+			};
 		};
 	};
 }

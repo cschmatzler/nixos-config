@@ -1,7 +1,9 @@
 {
 	den,
 	lib,
-}: {
+}: let
+	merge = lib.recursiveUpdate;
+in {
 	mkUserHost = {
 		system,
 		host,
@@ -10,8 +12,9 @@
 		includes ? [],
 		homeManager ? null,
 	}:
+		merge
 		(lib.setAttrByPath ["den" "hosts" system host "users" user "aspect"] userAspect)
-		// (lib.setAttrByPath ["den" "aspects" userAspect] ({inherit includes;}
+		(lib.setAttrByPath ["den" "aspects" userAspect] ({inherit includes;}
 				// lib.optionalAttrs (homeManager != null) {
 					inherit homeManager;
 				}));

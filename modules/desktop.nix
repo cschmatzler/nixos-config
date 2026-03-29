@@ -56,7 +56,7 @@
 					}
 					{
 						"if" = {
-							"app-id" = "net.imput.helium";
+							"app-id" = "com.apple.Safari";
 						};
 						run = "move-node-to-workspace 2";
 					}

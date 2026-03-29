@@ -39,7 +39,7 @@ in {
 								};
 							});
 					default = [
-						{path = "/Applications/Helium.app/";}
+						{path = "/Applications/Safari.app/";}
 						{path = "/Applications/Ghostty.app/";}
 						{path = "/System/Applications/Calendar.app/";}
 						{path = "/System/Applications/Mail.app/";}
