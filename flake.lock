@@ -130,11 +130,11 @@
     },
     "den": {
       "locked": {
-        "lastModified": 1774757819,
-        "narHash": "sha256-cBKL/e02iqzLYeJKS3g2UZjQ9zi0Nm58lEjPaqbwQzk=",
+        "lastModified": 1774806415,
+        "narHash": "sha256-39wLrZ36BJrj31TF04RzdYkOk+8BYbw5+XKnY6p1bN8=",
         "owner": "vic",
         "repo": "den",
-        "rev": "8b0bfb375eca7a7b80295cdb657f64478974fc5a",
+        "rev": "25b8303f45d719f7052473d98907091bae9dd679",
         "type": "github"
       },
       "original": {
@@ -475,11 +475,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1774771146,
-        "narHash": "sha256-H6dacw/6HK769tQqOVgEtvjDAPqcY0wje82TSzh5QRI=",
+        "lastModified": 1774803484,
+        "narHash": "sha256-D9rjYsI9pvWYMXUG4HcF2zxLSpwDUl5YVRSEwQGs8z4=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "0067a88c0f3d765ec1e8ea70d1968472378eb376",
+        "rev": "2d36600de3dfb5da1c88bae7c2130615033f605e",
         "type": "github"
       },
       "original": {
@@ -491,11 +491,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1774789651,
-        "narHash": "sha256-/pK1yfOUMJxhrKFKXLhvpM+NJEbaOj1K2Pfy+ahucn8=",
+        "lastModified": 1774806566,
+        "narHash": "sha256-8tEiyTqJGcmR1wHsfkZReqMl/Vk+Uz0NdpsOPoeS/o4=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "2148db621f819de937b3eb6093ff582956433008",
+        "rev": "0215c9b45ea483da06e0c026fa54d81c59001f6d",
         "type": "github"
       },
       "original": {
@@ -611,11 +611,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1774757629,
-        "narHash": "sha256-rSqtpeflKF1tT1D1TTRhzI+xpQaGGvGKEXaPXOAKMgA=",
+        "lastModified": 1774806813,
+        "narHash": "sha256-fTa4qUu/ARkL+1aH8JYGe6l3LByzTNDJDACKcbTRnIk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "dd6f4e82dc8b11c61fb22ee994a55bae4f126cfd",
+        "rev": "defffa94a67a4cdbc18ae5650f0b69e4b92391c8",
         "type": "github"
       },
       "original": {
@@ -752,11 +752,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1774273680,
-        "narHash": "sha256-a++tZ1RQsDb1I0NHrFwdGuRlR5TORvCEUksM459wKUA=",
+        "lastModified": 1774610258,
+        "narHash": "sha256-HaThtroVD9wRdx7KQk0B75JmFcXlMUoEdDFNOMOlsOs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "fdc7b8f7b30fdbedec91b71ed82f36e1637483ed",
+        "rev": "832efc09b4caf6b4569fbf9dc01bec3082a00611",
         "type": "github"
       },
       "original": {
@@ -768,11 +768,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1774789958,
-        "narHash": "sha256-pMkih8KCWRsgJYwnO+UyW8/+KX9rcEzClnP1OOnZ23E=",
+        "lastModified": 1774807110,
+        "narHash": "sha256-YR+T4/iT/UYB8dZ38Hb9n+qCBlYYx3wGSSiue6DFcRQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "91849ded6ed12d309e6697bea17e0bda5fdc7ad3",
+        "rev": "f39098836a87b4c554137aa462759762a6de6d86",
         "type": "github"
       },
       "original": {
@@ -837,11 +837,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1774612943,
-        "narHash": "sha256-hRhq5cpDyBm/ZQyuzI+/YzQEVt35d/M6ko7ADfodw9s=",
+        "lastModified": 1774802402,
+        "narHash": "sha256-L1UJ/zxKTyyaGGmytH6OYlgQ0HGSMhvPkvU+iz4Mkb8=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "2b9f8e1d659d1c7664e1b85ab1620c219672696c",
+        "rev": "cbd8536a05d1aae2593cb5c9ace1010c8c5845cb",
         "type": "github"
       },
       "original": {
@@ -885,11 +885,11 @@
     "pi-harness": {
       "flake": false,
       "locked": {
-        "lastModified": 1774630989,
-        "narHash": "sha256-pXyH8DgatD/sKInypABMstGrVz+m+qFju8OUYZin7VY=",
+        "lastModified": 1774794426,
+        "narHash": "sha256-pm1pfWAzDgRbgkdZwMMUOrlTXdcyRu/bUMrFeToPNEA=",
         "owner": "aliou",
         "repo": "pi-harness",
-        "rev": "17aba308d4781d043adb32ee4aeb2eeb54fe2680",
+        "rev": "5f4836a60ae6f562fe1f0b69c2ab5a8edc1bdc0b",
         "type": "github"
       },
       "original": {

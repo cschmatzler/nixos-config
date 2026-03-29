@@ -71,7 +71,7 @@
 			flake = false;
 		};
 		pi-mcp-adapter = {
-			url = "github:nicobailon/pi-mcp-adapter/v2.2.0";
+			url = "github:nicobailon/pi-mcp-adapter";
 			flake = false;
 		};
 		qmd.url = "github:tobi/qmd";
