@@ -146,6 +146,9 @@ in {
 				cleanup = "uninstall";
 				upgrade = true;
 			};
+			taps = [
+				"homebrew/cask"
+			];
 			casks = [
 				"1password"
 				"alcove"
