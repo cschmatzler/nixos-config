@@ -11,8 +11,8 @@
 					version = "0.0.0";
 					src = inputs.pi-harness;
 					pnpm = prev.pnpm_10;
-					fetcherVersion = 1;
-					hash = "sha256-l85j3MH/uott+6Cbo9r3w8jojdlikjGf26l4Q1qa43g=";
+					fetcherVersion = 3;
+					hash = "sha256-lNcZRCmmwq9t05UjVWcuGq+ZzRHuHNmqKQIVPh6DoxQ=";
 				};
 
 			nativeBuildInputs = [
