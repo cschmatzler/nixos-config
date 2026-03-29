@@ -1,15 +1,15 @@
 {inputs, ...}: final: prev: let
-	version = "0.24.0";
+	version = "0.24.1";
 	srcs = {
 		x86_64-linux =
 			prev.fetchurl {
 				url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-linux-x86_64.tar.gz";
-				hash = "sha256-9Ka7rPIlWtLVxRg9yNQCNz16AE4j0zGf2TW7xBXrksM=";
+				hash = "sha256-/ioEuM58F3ppO0wlc5nw7ZNHunoweOXL/Gda65r0Ig4=";
 			};
 		aarch64-darwin =
 			prev.fetchurl {
 				url = "https://github.com/trycog/cog-cli/releases/download/v${version}/cog-darwin-arm64.tar.gz";
-				hash = "sha256-YNONHRmPGDhJeF+7rcWmrjqktYpi4b6bLl+M7IEFDtU=";
+				hash = "sha256-o/A2hVU3Jzmlzx5RbGLFCpfGAghcLGTD8Bm+bVR5OkQ=";
 			};
 	};
 in {
