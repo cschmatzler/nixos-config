@@ -154,9 +154,6 @@ in {
 				"raycast"
 				"spotify"
 			];
-			masApps = {
-				"Wipr 2" = 1662217862;
-			};
 		};
 	};
 }
