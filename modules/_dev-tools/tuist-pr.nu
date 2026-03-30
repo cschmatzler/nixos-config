@@ -56,7 +56,7 @@ def main [pr_number?: int] {
 	^mkdir -p $base
 
 	print $"Cloning ($repo) PR #($pr.number): ($pr.title)"
-	gh repo clone $repo $dest
+	jj git clone $"https://github.com/($repo).git" $dest
 
 	do {
 		cd $dest
