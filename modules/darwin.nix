@@ -153,6 +153,7 @@ in {
 				"1password"
 				"alcove"
 				"aqua-voice"
+				"chatgpt"
 				"ghostty@tip"
 				"raycast"
 				"spotify"
