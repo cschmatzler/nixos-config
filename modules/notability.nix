@@ -26,7 +26,6 @@ in {
 		];
 		commonPath = with pkgs;
 			[
-				inputs'.llm-agents.packages.pi
 				coreutils
 				inotify-tools
 				nushell

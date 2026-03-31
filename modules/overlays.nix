@@ -20,12 +20,6 @@
 		(import ./_overlays/jj-ryu.nix {inherit inputs;})
 		# cog-cli
 		(import ./_overlays/cog-cli.nix {inherit inputs;})
-		# pi-agent-stuff (mitsuhiko)
-		(import ./_overlays/pi-agent-stuff.nix {inherit inputs;})
-		# pi-harness (aliou)
-		(import ./_overlays/pi-harness.nix {inherit inputs;})
-		# pi-mcp-adapter
-		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
 		# qmd
 		(import ./_overlays/qmd.nix {inherit inputs;})
 		# jj-starship (passes through upstream overlay)
