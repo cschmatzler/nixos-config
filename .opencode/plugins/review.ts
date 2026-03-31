@@ -1,5 +1,6 @@
 import type {
 	TuiPlugin,
+	TuiPluginModule,
 	TuiDialogSelectOption,
 } from "@opencode-ai/plugin/tui"
 
@@ -91,7 +92,7 @@ function sanitizeRemoteName(value: string): string {
 	)
 }
 
-export const tui: TuiPlugin = async (api) => {
+const plugin: TuiPlugin = async (api) => {
 	const cwd = api.state.path.directory
 
 	// -- shell helpers -------------------------------------------------------
@@ -702,3 +703,8 @@ export const tui: TuiPlugin = async (api) => {
 			: [],
 	)
 }
+
+export default {
+	id: "jj-review",
+	tui: plugin,
+} satisfies TuiPluginModule
