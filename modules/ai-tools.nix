@@ -11,7 +11,7 @@ in {
 		...
 	}: {
 		home.packages = [
-			inputs'.llm-agents.packages.pi
+			inputs'.llm-agents.packages.claude-code
 			pkgs.cog-cli
 		];
 
@@ -29,7 +29,7 @@ in {
 				model = "anthropic/claude-opus-4-6";
 				small_model = "anthropic/claude-haiku-4-5";
 				theme = "rosepine";
-				plugin = ["opencode-anthropic-auth@latest"];
+				plugin = ["opencode-claude-auth"];
 				permission = {
 					read = {
 						"*" = "allow";
