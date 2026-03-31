@@ -691,11 +691,11 @@ export const tui: TuiPlugin = async (api) => {
 		inJjRepo
 			? [
 					{
-						title: "Review code changes",
-						value: "review",
+						title: "Review code changes (jj)",
+						value: "jj-review",
 						description:
 							"Working-copy, bookmark, change, PR, or folder",
-						slash: { name: "review" },
+						slash: { name: "jj-review" },
 						onSelect: () => showReviewSelector(),
 					},
 				]
