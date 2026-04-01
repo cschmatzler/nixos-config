@@ -116,6 +116,7 @@ in {
 				recursive = true;
 			};
 			"opencode/AGENTS.md".source = ./_opencode/AGENTS.md;
+			"opencode/tui.json".source = ./_opencode/tui.json;
 		};
 	};
 }
