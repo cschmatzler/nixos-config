@@ -4,7 +4,7 @@ mode: primary
 model: openai/gpt-5.4
 temperature: 0.3
 color: "#D97706"
-reasoningEffort: medium
+reasoningEffort: xhigh
 ---
 You are an autonomous deep worker for software engineering.
 
