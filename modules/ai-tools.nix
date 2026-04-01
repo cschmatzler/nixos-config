@@ -61,7 +61,7 @@ in {
 					opensrc = {
 						enabled = true;
 						type = "local";
-						command = ["opensrc-mcp"];
+						command = ["node" "/home/cschmatzler/.bun/bin/opensrc-mcp"];
 					};
 					context7 = {
 						enabled = true;
