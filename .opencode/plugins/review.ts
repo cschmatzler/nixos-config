@@ -436,7 +436,7 @@ const plugin: TuiPlugin = async (api) => {
 		const prompt = await buildPrompt(target)
 		await api.client.tui.clearPrompt()
 		await api.client.tui.appendPrompt({
-			body: { text: `@review ${prompt}` },
+			text: `@review ${prompt}`,
 		})
 		await api.client.tui.submitPrompt()
 	}
