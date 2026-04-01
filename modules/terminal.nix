@@ -24,6 +24,7 @@ in {
 				jq
 				killall
 				lsof
+				mosh
 				ouch
 				ov
 				sd

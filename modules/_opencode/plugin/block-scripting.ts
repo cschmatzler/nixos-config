@@ -1,7 +1,7 @@
 import type { Plugin } from "@opencode-ai/plugin";
 
 const SCRIPTING_PATTERN =
-	/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\(\s*|`\s*)(?:python[23]?|perl|ruby|php|lua|bash\s+-c|sh\s+-c)\s/;
+	/(?:^|[;&|]\s*|&&\s*|\|\|\s*|\$\(\s*|`\s*)(?:python[23]?|perl|ruby|php|lua|node\s+-e|bash\s+-c|sh\s+-c)\s/;
 
 export const BlockScriptingPlugin: Plugin = async () => {
 	return {

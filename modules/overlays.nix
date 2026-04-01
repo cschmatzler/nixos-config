@@ -20,8 +20,6 @@
 		(import ./_overlays/jj-ryu.nix {inherit inputs;})
 		# cog-cli
 		(import ./_overlays/cog-cli.nix {inherit inputs;})
-		# qmd
-		(import ./_overlays/qmd.nix {inherit inputs;})
 		# jj-starship (passes through upstream overlay)
 		(import ./_overlays/jj-starship.nix {inherit inputs;})
 		# zjstatus

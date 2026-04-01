@@ -10,7 +10,9 @@ export const DirenvPlugin: Plugin = async ({ $ }) => {
 					.json();
 
 				Object.assign(output.env, exported);
-			} catch {}
+			} catch (error) {
+				console.warn("[direnv] failed to export env:", error);
+			}
 		},
 	};
 };

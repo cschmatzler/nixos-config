@@ -54,7 +54,6 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		llm-agents.url = "github:numtide/llm-agents.nix";
-		qmd.url = "github:tobi/qmd";
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
 		jj-ryu = {

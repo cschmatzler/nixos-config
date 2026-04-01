@@ -4,7 +4,6 @@
 	opencodeSecretPath = secretPath "opencode-api-key";
 in {
 	den.aspects.ai-tools.homeManager = {
-		config,
 		lib,
 		pkgs,
 		inputs',
@@ -62,7 +61,7 @@ in {
 					opensrc = {
 						enabled = true;
 						type = "local";
-						command = ["node" "/home/cschmatzler/.bun/bin/opensrc-mcp"];
+						command = ["opensrc-mcp"];
 					};
 					context7 = {
 						enabled = true;
@@ -75,22 +74,6 @@ in {
 						url = "https://mcp.grep.app";
 					};
 				};
-			};
-		};
-
-		systemd.user.services.opencode-server = {
-			Unit = {
-				Description = "OpenCode AI server";
-				After = ["default.target"];
-			};
-			Service = {
-				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822 --hostname 0.0.0.0";
-				Restart = "on-failure";
-				RestartSec = 5;
-				Environment = "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin";
-			};
-			Install = {
-				WantedBy = ["default.target"];
 			};
 		};
 

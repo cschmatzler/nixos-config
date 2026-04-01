@@ -68,7 +68,6 @@
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
-		qmd.url = "github:tobi/qmd";
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";

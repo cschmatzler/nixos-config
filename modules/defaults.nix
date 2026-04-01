@@ -35,7 +35,6 @@
 			adguardhome = ./adguardhome.nix;
 			cache = ./cache.nix;
 			gitea = ./gitea.nix;
-			notability = ./notability.nix;
 			opencode = ./opencode.nix;
 			paperless = ./paperless.nix;
 

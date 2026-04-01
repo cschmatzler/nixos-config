@@ -74,7 +74,6 @@ in
 				den.aspects.opencode-api-key
 				den.aspects.adguardhome
 				den.aspects.cache
-				den.aspects.notability
 				den.aspects.paperless
 			];
 			nixos = {...}: {

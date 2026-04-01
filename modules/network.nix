@@ -49,10 +49,25 @@
 	den.aspects.tailscale.nixos = {
 		services.tailscale = {
 			enable = true;
+			extraSetFlags = ["--ssh"];
 			openFirewall = true;
 			permitCertUid = "caddy";
 			useRoutingFeatures = "server";
 		};
+	};
+
+	den.aspects.mosh.nixos = {
+		programs.mosh = {
+			enable = true;
+			openFirewall = false;
+		};
+
+		networking.firewall.interfaces.tailscale0.allowedUDPPortRanges = [
+			{
+				from = 60000;
+				to = 61000;
+			}
+		];
 	};
 
 	den.aspects.tailscale.darwin = {
