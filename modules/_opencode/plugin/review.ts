@@ -430,15 +430,62 @@ const plugin: TuiPlugin = async (api) => {
 		}
 	}
 
+	async function buildReviewPrompt(target: ReviewTarget): Promise<string> {
+		const task = await buildPrompt(target)
+		return [
+			"You are acting as a code reviewer. Do not make code changes. Provide actionable feedback on code changes.",
+			"",
+			"Diffs alone are not enough. Read the full file(s) being modified to understand context. Code that looks wrong in isolation may be correct given surrounding logic.",
+			"",
+			"What to look for:",
+			"",
+			"Bugs — primary focus:",
+			"- Logic errors, off-by-one mistakes, incorrect conditionals",
+			"- Missing guards, unreachable code paths, broken error handling",
+			"- Edge cases: null/empty inputs, race conditions",
+			"- Security: injection, auth bypass, data exposure",
+			"",
+			"Structure:",
+			"- Does the code fit the codebase's patterns and conventions?",
+			"- Does it use established abstractions?",
+			"- Is there excessive nesting that should be flattened?",
+			"",
+			"Performance:",
+			"- Only flag obvious issues like O(n^2) on unbounded data, N+1 queries, or blocking I/O on hot paths.",
+			"",
+			"Before you flag something:",
+			"- Be certain. Investigate first if unsure.",
+			"- Do not invent hypothetical problems.",
+			"- Do not be a zealot about style.",
+			"- Only review the requested changes, not unrelated pre-existing issues.",
+			"",
+			"Output:",
+			"- Be direct about bugs and why they are bugs",
+			"- Communicate severity honestly",
+			"- Include file paths and line numbers",
+			"- Suggest fixes when appropriate",
+			"- Use a matter-of-fact tone, no flattery",
+			"",
+			"Task:",
+			task,
+		].join("\n")
+	}
+
 	// -- review execution ----------------------------------------------------
 
 	async function startReview(target: ReviewTarget): Promise<void> {
-		const prompt = await buildPrompt(target)
-		await api.client.tui.clearPrompt()
-		await api.client.tui.appendPrompt({
-			text: `@review ${prompt}`,
+		const prompt = await buildReviewPrompt(target)
+		const cleared = await api.client.tui.clearPrompt()
+		const appended = await api.client.tui.appendPrompt({
+			text: prompt,
 		})
-		await api.client.tui.submitPrompt()
+
+		if (!cleared || !appended) {
+			api.ui.toast({
+				message: "Failed to draft review prompt",
+				variant: "error",
+			})
+		}
 	}
 
 	// -- dialogs -------------------------------------------------------------
@@ -498,7 +545,6 @@ const plugin: TuiPlugin = async (api) => {
 						}
 					},
 				}),
-			() => api.ui.dialog.clear(),
 		)
 	}
 
@@ -565,7 +611,6 @@ const plugin: TuiPlugin = async (api) => {
 						})
 					},
 				}),
-			() => api.ui.dialog.clear(),
 		)
 	}
 
@@ -598,7 +643,6 @@ const plugin: TuiPlugin = async (api) => {
 						})
 					},
 				}),
-			() => api.ui.dialog.clear(),
 		)
 	}
 
@@ -622,9 +666,7 @@ const plugin: TuiPlugin = async (api) => {
 						api.ui.dialog.clear()
 						void handlePrReview(prNumber)
 					},
-					onCancel: () => api.ui.dialog.clear(),
 				}),
-			() => api.ui.dialog.clear(),
 		)
 	}
 
@@ -676,9 +718,7 @@ const plugin: TuiPlugin = async (api) => {
 						api.ui.dialog.clear()
 						void startReview({ type: "folder", paths })
 					},
-					onCancel: () => api.ui.dialog.clear(),
 				}),
-			() => api.ui.dialog.clear(),
 		)
 	}
 
