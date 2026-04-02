@@ -32,6 +32,7 @@ type ReviewTarget =
 type ReviewSelectorValue = ReviewTarget["type"] | "toggleCustomInstructions"
 
 const CUSTOM_INSTRUCTIONS_KEY = "review.customInstructions"
+const MIN_CHANGE_REVIEW_OPTIONS = 10
 
 const WORKING_COPY_PROMPT =
 	"Review the current working-copy changes (including new files) and provide prioritized findings."
@@ -308,10 +309,13 @@ const plugin: TuiPlugin = async (api) => {
 	}
 
 	async function getRecentChanges(limit = 20): Promise<Change[]> {
+		const effectiveLimit = Math.max(limit, MIN_CHANGE_REVIEW_OPTIONS)
 		const r = await jj(
 			"log",
+			"-r",
+			"all()",
 			"-n",
-			String(limit),
+			String(effectiveLimit),
 			"--no-graph",
 			"-T",
 			'change_id.shortest(8) ++ "\\t" ++ description.first_line() ++ "\\n"',

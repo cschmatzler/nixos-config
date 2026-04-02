@@ -26,7 +26,7 @@ in {
 			package = inputs'.llm-agents.packages.opencode;
 			settings = {
 				model = "openai/gpt-5.4";
-				small_model = "openai/gpt-5.1-mini";
+				small_model = "openai/gpt-5.1-codex-mini";
 				theme = "rosepine";
 				plugin = [
 					"opencode-claude-auth"
@@ -125,7 +125,7 @@ in {
 					disable = true;
 				};
 				explore = {
-					model = "openai/gpt-5.1-mini";
+					model = "openai/gpt-5.1-codex-mini";
 				};
 			};
 				instructions = [
