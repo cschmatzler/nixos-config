@@ -25,8 +25,8 @@ in {
 			enable = true;
 			package = inputs'.llm-agents.packages.opencode;
 			settings = {
-				model = "anthropic/claude-opus-4-6";
-				small_model = "anthropic/claude-haiku-4-5";
+				model = "openai/gpt-5.4";
+				small_model = "openai/gpt-5.1-mini";
 				theme = "rosepine";
 				plugin = [
 					"opencode-claude-auth"
@@ -117,14 +117,17 @@ in {
 					websearch = "allow";
 					codesearch = "allow";
 				};
-				agent = {
-					plan = {
-						model = "anthropic/claude-opus-4-6";
-					};
-					explore = {
-						model = "anthropic/claude-haiku-4-5";
-					};
+			agent = {
+				build = {
+					disable = true;
 				};
+				plan = {
+					disable = true;
+				};
+				explore = {
+					model = "openai/gpt-5.1-mini";
+				};
+			};
 				instructions = [
 					"CLAUDE.md"
 					"AGENT.md"
