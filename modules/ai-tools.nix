@@ -117,17 +117,17 @@ in {
 					websearch = "allow";
 					codesearch = "allow";
 				};
-			agent = {
-				build = {
-					disable = true;
+				agent = {
+					build = {
+						disable = true;
+					};
+					plan = {
+						disable = true;
+					};
+					explore = {
+						model = "openai/gpt-5.1-codex-mini";
+					};
 				};
-				plan = {
-					disable = true;
-				};
-				explore = {
-					model = "openai/gpt-5.1-codex-mini";
-				};
-			};
 				instructions = [
 					"CLAUDE.md"
 					"AGENT.md"
