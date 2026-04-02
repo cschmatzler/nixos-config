@@ -15,6 +15,16 @@ import path from "node:path"
 type BookmarkRef = { name: string; remote?: string }
 type Change = { changeId: string; title: string }
 type JjRemote = { name: string; url: string }
+type PullRequestListItem = {
+	prNumber: number
+	title: string
+	updatedAt: string
+	reviewRequested: boolean
+	author?: string
+	baseRefName?: string
+	headRefName?: string
+	isManualEntry?: boolean
+}
 
 type ReviewTarget =
 	| { type: "workingCopy" }
@@ -33,6 +43,8 @@ type ReviewSelectorValue = ReviewTarget["type"] | "toggleCustomInstructions"
 
 const CUSTOM_INSTRUCTIONS_KEY = "review.customInstructions"
 const MIN_CHANGE_REVIEW_OPTIONS = 10
+const RECENT_PULL_REQUEST_LIMIT = 5
+const PULL_REQUEST_MAX_AGE_DAYS = 7
 
 const WORKING_COPY_PROMPT =
 	"Review the current working-copy changes (including new files) and provide prioritized findings."
@@ -164,6 +176,13 @@ Provide your findings in a clear, structured format:
 
 Output all findings the author would fix if they knew about them. If there are no qualifying findings, explicitly state the code looks good. Don't stop at the first finding - list every qualifying issue. Then append the required non-blocking callouts section.`
 
+function normalizeCustomInstructions(
+	value: string | undefined,
+): string | undefined {
+	const normalized = value?.trim()
+	return normalized ? normalized : undefined
+}
+
 function bookmarkLabel(b: BookmarkRef): string {
 	return b.remote ? `${b.name}@${b.remote}` : b.name
 }
@@ -229,6 +248,115 @@ function parsePrRef(ref: string): number | null {
 	return null
 }
 
+function formatRelativeTime(value: string): string | null {
+	const timestamp = Date.parse(value)
+	if (!Number.isFinite(timestamp)) return null
+
+	const deltaMs = Date.now() - timestamp
+	const future = deltaMs < 0
+	const absoluteSeconds = Math.round(Math.abs(deltaMs) / 1000)
+
+	if (absoluteSeconds < 60) return future ? "in <1m" : "just now"
+
+	const units = [
+		{ label: "y", seconds: 60 * 60 * 24 * 365 },
+		{ label: "mo", seconds: 60 * 60 * 24 * 30 },
+		{ label: "d", seconds: 60 * 60 * 24 },
+		{ label: "h", seconds: 60 * 60 },
+		{ label: "m", seconds: 60 },
+	]
+
+	for (const unit of units) {
+		if (absoluteSeconds >= unit.seconds) {
+			const count = Math.floor(absoluteSeconds / unit.seconds)
+			return future ? `in ${count}${unit.label}` : `${count}${unit.label} ago`
+		}
+	}
+
+	return future ? "soon" : "just now"
+}
+
+function getPullRequestUpdatedSinceDate(days: number): string {
+	const timestamp = Date.now() - days * 24 * 60 * 60 * 1000
+	return new Date(timestamp).toISOString().slice(0, 10)
+}
+
+function parsePullRequests(stdout: string): PullRequestListItem[] {
+	let parsed: unknown
+	try {
+		parsed = JSON.parse(stdout)
+	} catch {
+		return []
+	}
+
+	if (!Array.isArray(parsed)) return []
+
+	return parsed.flatMap((entry) => {
+		if (!entry || typeof entry !== "object") return []
+
+		const prNumber =
+			typeof entry.number === "number" && Number.isSafeInteger(entry.number)
+				? entry.number
+				: null
+		const title = typeof entry.title === "string" ? entry.title.trim() : ""
+		const updatedAt =
+			typeof entry.updatedAt === "string" ? entry.updatedAt.trim() : ""
+		if (!prNumber || !title || !updatedAt) return []
+
+		return [
+			{
+				prNumber,
+				title,
+				updatedAt,
+				reviewRequested: entry.reviewRequested === true,
+				author:
+					entry.author &&
+					typeof entry.author === "object" &&
+					typeof entry.author.login === "string"
+						? entry.author.login
+						: undefined,
+				baseRefName:
+					typeof entry.baseRefName === "string"
+						? entry.baseRefName.trim() || undefined
+						: undefined,
+				headRefName:
+					typeof entry.headRefName === "string"
+						? entry.headRefName.trim() || undefined
+						: undefined,
+			},
+		]
+	})
+}
+
+function dedupePullRequests(
+	pullRequests: PullRequestListItem[],
+): PullRequestListItem[] {
+	const seen = new Set<number>()
+	const result: PullRequestListItem[] = []
+
+	for (const pullRequest of pullRequests) {
+		if (seen.has(pullRequest.prNumber)) continue
+		seen.add(pullRequest.prNumber)
+		result.push(pullRequest)
+	}
+
+	return result
+}
+
+function buildPullRequestOptionDescription(pr: PullRequestListItem): string {
+	if (pr.isManualEntry) return "(enter PR number or URL)"
+
+	const parts = [pr.reviewRequested ? "review requested" : "recent"]
+	const relativeTime = formatRelativeTime(pr.updatedAt)
+	if (relativeTime) parts.push(`updated ${relativeTime}`)
+	if (pr.author) parts.push(`@${pr.author}`)
+	if (pr.baseRefName && pr.headRefName) {
+		parts.push(`${pr.headRefName} → ${pr.baseRefName}`)
+	}
+
+	return `(${parts.join(" · ")})`
+}
+
 function normalizeRemoteUrl(value: string): string {
 	return value
 		.trim()
@@ -255,14 +383,6 @@ function getRepositoryUrl(value: string): string | null {
 
 const plugin: TuiPlugin = async (api) => {
 	const cwd = api.state.path.directory
-	let reviewCustomInstructions = normalizeCustomInstructions(
-		api.kv.get<string | undefined>(CUSTOM_INSTRUCTIONS_KEY, undefined),
-	)
-
-	function setReviewCustomInstructions(value?: string): void {
-		reviewCustomInstructions = normalizeCustomInstructions(value)
-		api.kv.set(CUSTOM_INSTRUCTIONS_KEY, reviewCustomInstructions)
-	}
 
 	async function exec(
 		cmd: string,
@@ -303,6 +423,16 @@ const plugin: TuiPlugin = async (api) => {
 		return (await jj("root")).ok
 	}
 
+	const reviewCustomInstructionsKey = `${CUSTOM_INSTRUCTIONS_KEY}-${cwd}`
+	let reviewCustomInstructions = normalizeCustomInstructions(
+		api.kv.get<string | undefined>(reviewCustomInstructionsKey, undefined),
+	)
+
+	function setReviewCustomInstructions(value?: string): void {
+		reviewCustomInstructions = normalizeCustomInstructions(value)
+		api.kv.set(reviewCustomInstructionsKey, reviewCustomInstructions)
+	}
+
 	async function hasWorkingCopyChanges(): Promise<boolean> {
 		const r = await jj("diff", "--summary")
 		return r.ok && r.stdout.trim().length > 0
@@ -322,6 +452,53 @@ const plugin: TuiPlugin = async (api) => {
 		)
 		if (!r.ok) return []
 		return parseChanges(r.stdout)
+	}
+
+	async function getPullRequests(
+		args: string[],
+		reviewRequested: boolean,
+	): Promise<PullRequestListItem[]> {
+		const response = await gh(
+			"pr",
+			"list",
+			...args,
+			"--json",
+			"number,title,updatedAt,author,baseRefName,headRefName",
+		)
+		if (!response.ok) return []
+
+		return parsePullRequests(response.stdout).map((pr) => ({
+			...pr,
+			reviewRequested,
+		}))
+	}
+
+	async function getSelectablePullRequests(): Promise<PullRequestListItem[]> {
+		const updatedSince = getPullRequestUpdatedSinceDate(
+			PULL_REQUEST_MAX_AGE_DAYS,
+		)
+		const [reviewRequested, recent] = await Promise.all([
+			getPullRequests(
+				[
+					"--search",
+					`review-requested:@me updated:>=${updatedSince} sort:updated-desc`,
+					"--limit",
+					"50",
+				],
+				true,
+			),
+			getPullRequests(
+				[
+					"--search",
+					`updated:>=${updatedSince} sort:updated-desc`,
+					"--limit",
+					String(RECENT_PULL_REQUEST_LIMIT),
+				],
+				false,
+			),
+		])
+
+		return dedupePullRequests([...reviewRequested, ...recent])
 	}
 
 	async function getMergeBase(
@@ -481,13 +658,6 @@ const plugin: TuiPlugin = async (api) => {
 			remote: remoteName,
 			savedChangeId,
 		}
-	}
-
-	function normalizeCustomInstructions(
-		value: string | undefined,
-	): string | undefined {
-		const normalized = value?.trim()
-		return normalized ? normalized : undefined
 	}
 
 	function parseNonEmptyLines(stdout: string): string[] {
@@ -785,13 +955,10 @@ const plugin: TuiPlugin = async (api) => {
 				target.type !== "workingCopy" && (await hasWorkingCopyChanges()),
 		})
 		const projectGuidelines = await loadProjectReviewGuidelines()
-		const sharedInstructions = normalizeCustomInstructions(
-			reviewCustomInstructions,
-		)
 		let fullPrompt = `${REVIEW_RUBRIC}\n\n---\n\nPlease perform a code review with the following focus:\n\n${prompt}`
 
-		if (sharedInstructions) {
-			fullPrompt += `\n\nShared custom review instructions (applies to all reviews):\n\n${sharedInstructions}`
+		if (reviewCustomInstructions) {
+			fullPrompt += `\n\nCustom review instructions for this working directory (applies to all review modes here):\n\n${reviewCustomInstructions}`
 		}
 
 		if (projectGuidelines) {
@@ -910,8 +1077,8 @@ const plugin: TuiPlugin = async (api) => {
 					: "Add custom review instructions",
 				value: "toggleCustomInstructions",
 				description: reviewCustomInstructions
-					? "(currently set)"
-					: "(applies to all review modes)",
+					? "(set for this directory)"
+					: "(this directory, all review modes)",
 			},
 		]
 
@@ -934,7 +1101,7 @@ const plugin: TuiPlugin = async (api) => {
 								void showChangeSelector()
 								break
 							case "pullRequest":
-								void showPrInput()
+								void showPrSelector()
 								break
 							case "folder":
 								showFolderInput()
@@ -943,7 +1110,8 @@ const plugin: TuiPlugin = async (api) => {
 								if (reviewCustomInstructions) {
 									setReviewCustomInstructions(undefined)
 									api.ui.toast({
-										message: "Custom review instructions removed",
+										message:
+											"Custom review instructions removed for this directory",
 										variant: "info",
 									})
 									void showReviewSelector()
@@ -978,7 +1146,8 @@ const plugin: TuiPlugin = async (api) => {
 
 						setReviewCustomInstructions(next)
 						api.ui.toast({
-							message: "Custom review instructions saved",
+							message:
+								"Custom review instructions saved for this directory",
 							variant: "success",
 						})
 						void showReviewSelector()
@@ -1088,16 +1257,7 @@ const plugin: TuiPlugin = async (api) => {
 		)
 	}
 
-	async function showPrInput(): Promise<void> {
-		if (await hasWorkingCopyChanges()) {
-			api.ui.toast({
-				message:
-					"Cannot materialize PR: you have local jj changes. Please snapshot or discard them first.",
-				variant: "error",
-			})
-			return
-		}
-
+	function showPrManualInput(): void {
 		api.ui.dialog.replace(
 			() =>
 				api.ui.DialogPrompt({
@@ -1116,6 +1276,69 @@ const plugin: TuiPlugin = async (api) => {
 						}
 						api.ui.dialog.clear()
 						void handlePrReview(prNumber)
+					},
+					onCancel: () => {
+						api.ui.dialog.clear()
+						void showPrSelector()
+					},
+				}),
+		)
+	}
+
+	async function showPrSelector(): Promise<void> {
+		if (await hasWorkingCopyChanges()) {
+			api.ui.toast({
+				message:
+					"Cannot materialize PR: you have local jj changes. Please snapshot or discard them first.",
+				variant: "error",
+			})
+			return
+		}
+
+		api.ui.toast({ message: "Loading pull requests...", variant: "info" })
+
+		const pullRequests = await getSelectablePullRequests()
+		const options: TuiDialogSelectOption<PullRequestListItem>[] = [
+			{
+				title: "Enter a PR number or URL",
+				value: {
+					prNumber: -1,
+					title: "Manual entry",
+					updatedAt: "",
+					reviewRequested: false,
+					isManualEntry: true,
+				},
+				description: "(override the list)",
+			},
+			...pullRequests.map((pr) => ({
+				title: `#${pr.prNumber}  ${pr.title}`,
+				value: pr,
+				description: buildPullRequestOptionDescription(pr),
+			})),
+		]
+
+		if (pullRequests.length === 0) {
+			api.ui.toast({
+				message:
+					"No pull requests found from GitHub; you can still enter a PR number or URL.",
+				variant: "info",
+			})
+		}
+
+		api.ui.dialog.replace(
+			() =>
+				api.ui.DialogSelect({
+					title: "Select pull request to review",
+					placeholder: "Filter pull requests...",
+					options,
+					onSelect: (option) => {
+						api.ui.dialog.clear()
+						if (option.value.isManualEntry) {
+							showPrManualInput()
+							return
+						}
+
+						void handlePrReview(option.value.prNumber)
 					},
 				}),
 		)
