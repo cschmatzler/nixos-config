@@ -1,3 +1,9 @@
+// Substantially modified from:
+// https://github.com/mitsuhiko/agent-stuff/blob/80e1e96/pi-extensions/review.ts
+// Copyright Armin Ronacher and contributors
+// Licensed under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
 import type {
 	TuiPlugin,
 	TuiPluginModule,
@@ -8,6 +14,7 @@ import path from "node:path"
 
 type BookmarkRef = { name: string; remote?: string }
 type Change = { changeId: string; title: string }
+type JjRemote = { name: string; url: string }
 
 type ReviewTarget =
 	| { type: "workingCopy" }
@@ -205,19 +212,30 @@ function parseChanges(stdout: string): Change[] {
 
 function parsePrRef(ref: string): number | null {
 	const trimmed = ref.trim()
-	const num = parseInt(trimmed, 10)
-	if (!isNaN(num) && num > 0) return num
-	const urlMatch = trimmed.match(/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/)
-	if (urlMatch) return parseInt(urlMatch[1], 10)
+	if (/^\d+$/.test(trimmed)) {
+		const num = Number(trimmed)
+		return Number.isSafeInteger(num) && num > 0 ? num : null
+	}
+
+	const urlMatch = trimmed.match(
+		/^(?:https?:\/\/)?github\.com\/[^/]+\/[^/]+\/pull\/(\d+)(?:[/?#].*)?$/i,
+	)
+	if (urlMatch) {
+		const num = Number(urlMatch[1])
+		return Number.isSafeInteger(num) && num > 0 ? num : null
+	}
+
 	return null
 }
 
 function normalizeRemoteUrl(value: string): string {
 	return value
 		.trim()
-		.replace(/^git@github\.com:/, "https://github.com/")
-		.replace(/^ssh:\/\/git@github\.com\//, "https://github.com/")
+		.replace(/^git@([^:]+):/, "https://$1/")
+		.replace(/^ssh:\/\/git@([^/]+)\//, "https://$1/")
+		.replace(/^(https?:\/\/)[^/@]+@/i, "$1")
 		.replace(/\.git$/, "")
+		.replace(/\/+$/, "")
 		.toLowerCase()
 }
 
@@ -226,6 +244,12 @@ function sanitizeRemoteName(value: string): string {
 		value.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") ||
 		"gh-pr"
 	)
+}
+
+function getRepositoryUrl(value: string): string | null {
+	const match = normalizeRemoteUrl(value).match(/^https?:\/\/[^/]+\/[^/]+\/[^/]+/)
+	if (!match) return null
+	return match[0]
 }
 
 const plugin: TuiPlugin = async (api) => {
@@ -238,8 +262,6 @@ const plugin: TuiPlugin = async (api) => {
 		reviewCustomInstructions = normalizeCustomInstructions(value)
 		api.kv.set(CUSTOM_INSTRUCTIONS_KEY, reviewCustomInstructions)
 	}
-
-	// -- shell helpers -------------------------------------------------------
 
 	async function exec(
 		cmd: string,
@@ -276,8 +298,6 @@ const plugin: TuiPlugin = async (api) => {
 		return { stdout: r.stdout, ok: r.exitCode === 0, stderr: r.stderr }
 	}
 
-	// -- jj helpers ----------------------------------------------------------
-
 	async function isJjRepo(): Promise<boolean> {
 		return (await jj("root")).ok
 	}
@@ -285,56 +305,6 @@ const plugin: TuiPlugin = async (api) => {
 	async function hasWorkingCopyChanges(): Promise<boolean> {
 		const r = await jj("diff", "--summary")
 		return r.ok && r.stdout.trim().length > 0
-	}
-
-	async function getBookmarks(): Promise<BookmarkRef[]> {
-		const r = await jj(
-			"bookmark",
-			"list",
-			"--all-remotes",
-			"-T",
-			'name ++ "\\t" ++ remote ++ "\\n"',
-		)
-		if (!r.ok) return []
-		return parseBookmarks(r.stdout)
-	}
-
-	async function getCurrentBookmarks(): Promise<BookmarkRef[]> {
-		const headRevset = (await hasWorkingCopyChanges()) ? "@" : "@-"
-		const r = await jj(
-			"bookmark",
-			"list",
-			"--all-remotes",
-			"-r",
-			headRevset,
-			"-T",
-			'name ++ "\\t" ++ remote ++ "\\n"',
-		)
-		if (!r.ok) return []
-		return parseBookmarks(r.stdout)
-	}
-
-	async function getDefaultBookmark(): Promise<BookmarkRef | null> {
-		const trunkR = await jj(
-			"bookmark",
-			"list",
-			"--all-remotes",
-			"-r",
-			"trunk()",
-			"-T",
-			'name ++ "\\t" ++ remote ++ "\\n"',
-		)
-		if (trunkR.ok) {
-			const bookmarks = parseBookmarks(trunkR.stdout)
-			if (bookmarks.length > 0) return bookmarks[0]
-		}
-		const all = await getBookmarks()
-		return (
-			all.find((b) => !b.remote && b.name === "main") ??
-			all.find((b) => !b.remote && b.name === "master") ??
-			all[0] ??
-			null
-		)
 	}
 
 	async function getRecentChanges(limit = 20): Promise<Change[]> {
@@ -372,8 +342,6 @@ const plugin: TuiPlugin = async (api) => {
 		return lines.length === 1 ? lines[0].trim() : null
 	}
 
-	// -- PR materialization --------------------------------------------------
-
 	async function materializePr(prNumber: number): Promise<
 		| {
 				ok: true
@@ -393,24 +361,19 @@ const plugin: TuiPlugin = async (api) => {
 			}
 		}
 
-		const savedR = await jj(
-			"log",
-			"-r",
-			"@",
-			"--no-graph",
-			"-T",
-			"change_id.shortest(8)",
-		)
-		const savedChangeId = savedR.stdout.trim()
+		const savedChangeId = await getSingleChangeId("@")
+		if (!savedChangeId) {
+			return { ok: false, error: "Failed to determine the current change" }
+		}
 
-		const prR = await gh(
+		const prResponse = await gh(
 			"pr",
 			"view",
 			String(prNumber),
 			"--json",
-			"baseRefName,title,headRefName,isCrossRepository,headRepository,headRepositoryOwner",
+			"baseRefName,title,headRefName,isCrossRepository,headRepository,headRepositoryOwner,url",
 		)
-		if (!prR.ok) {
+		if (!prResponse.ok) {
 			return {
 				ok: false,
 				error: `Could not find PR #${prNumber}. Check gh auth and that the PR exists.`,
@@ -422,54 +385,36 @@ const plugin: TuiPlugin = async (api) => {
 			title: string
 			headRefName: string
 			isCrossRepository: boolean
+			url: string
 			headRepository?: { name: string; url: string }
 			headRepositoryOwner?: { login: string }
 		}
 		try {
-			prInfo = JSON.parse(prR.stdout)
+			prInfo = JSON.parse(prResponse.stdout)
 		} catch {
 			return { ok: false, error: "Failed to parse PR info" }
 		}
 
-		const remotesR = await jj("git", "remote", "list")
-		const remotes = remotesR.stdout
-			.trim()
-			.split("\n")
-			.filter(Boolean)
-			.map((line) => {
-				const [name, ...urlParts] = line.split(/\s+/)
-				return { name, url: urlParts.join(" ") }
-			})
-			.filter((r) => r.name && r.url)
-
-		const defaultRemote =
-			remotes.find((r) => r.name === "origin") ?? remotes[0]
+		const remotes = await getJjRemotes()
+		const defaultRemote = getDefaultRemote(remotes)
 		if (!defaultRemote) {
 			return { ok: false, error: "No jj remotes configured" }
 		}
+
+		const baseRepoUrl = getRepositoryUrl(prInfo.url)
+		const baseRemote = baseRepoUrl
+			? remotes.find((remote) => getRepositoryUrl(remote.url) === baseRepoUrl)
+			: undefined
 
 		let remoteName = defaultRemote.name
 		let addedTempRemote = false
 
 		if (prInfo.isCrossRepository) {
-			const repoSlug =
-				prInfo.headRepositoryOwner?.login && prInfo.headRepository?.name
-					? `${prInfo.headRepositoryOwner.login}/${prInfo.headRepository.name}`.toLowerCase()
-					: undefined
 			const forkUrl = prInfo.headRepository?.url
-
-			const existingRemote = remotes.find((r) => {
-				if (
-					forkUrl &&
-					normalizeRemoteUrl(r.url) === normalizeRemoteUrl(forkUrl)
-				)
-					return true
-				return repoSlug
-					? normalizeRemoteUrl(r.url).includes(
-							`github.com/${repoSlug}`,
-						)
-					: false
-			})
+			const forkRepoUrl = forkUrl ? getRepositoryUrl(forkUrl) : null
+			const existingRemote = forkRepoUrl
+				? remotes.find((remote) => getRepositoryUrl(remote.url) === forkRepoUrl)
+				: undefined
 
 			if (existingRemote) {
 				remoteName = existingRemote.name
@@ -483,21 +428,23 @@ const plugin: TuiPlugin = async (api) => {
 				while (names.has(remoteName)) {
 					remoteName = `${baseName}-${suffix++}`
 				}
-				const addR = await jj(
+				const addRemoteResult = await jj(
 					"git",
 					"remote",
 					"add",
 					remoteName,
 					forkUrl,
 				)
-				if (!addR.ok) return { ok: false, error: "Failed to add PR remote" }
+				if (!addRemoteResult.ok) {
+					return { ok: false, error: "Failed to add PR remote" }
+				}
 				addedTempRemote = true
 			} else {
 				return { ok: false, error: "PR fork URL is unavailable" }
 			}
 		}
 
-		const fetchR = await jj(
+		const fetchHeadResult = await jj(
 			"git",
 			"fetch",
 			"--remote",
@@ -505,15 +452,15 @@ const plugin: TuiPlugin = async (api) => {
 			"--branch",
 			prInfo.headRefName,
 		)
-		if (!fetchR.ok) {
+		if (!fetchHeadResult.ok) {
 			if (addedTempRemote)
 				await jj("git", "remote", "remove", remoteName)
 			return { ok: false, error: "Failed to fetch PR branch" }
 		}
 
 		const revset = `remote_bookmarks(exact:${JSON.stringify(prInfo.headRefName)}, exact:${JSON.stringify(remoteName)})`
-		const newR = await jj("new", revset)
-		if (!newR.ok) {
+		const createChangeResult = await jj("new", revset)
+		if (!createChangeResult.ok) {
 			if (addedTempRemote)
 				await jj("git", "remote", "remove", remoteName)
 			return { ok: false, error: "Failed to create change on PR branch" }
@@ -521,14 +468,11 @@ const plugin: TuiPlugin = async (api) => {
 
 		if (addedTempRemote) await jj("git", "remote", "remove", remoteName)
 
-		// Resolve base bookmark remote
-		const baseRef = await resolveBookmarkRef(prInfo.baseRefName)
-
 		return {
 			ok: true,
 			title: prInfo.title,
 			baseBookmark: prInfo.baseRefName,
-			baseRemote: baseRef?.remote,
+			baseRemote: baseRemote?.name,
 			headBookmark: prInfo.headRefName,
 			remote: remoteName,
 			savedChangeId,
@@ -552,19 +496,6 @@ const plugin: TuiPlugin = async (api) => {
 
 	function bookmarkRefsEqual(left: BookmarkRef, right: BookmarkRef): boolean {
 		return left.name === right.name && left.remote === right.remote
-	}
-
-	function parseBookmarkReference(value: string): BookmarkRef {
-		const trimmed = value.trim()
-		const separatorIndex = trimmed.lastIndexOf("@")
-		if (separatorIndex <= 0 || separatorIndex === trimmed.length - 1) {
-			return { name: trimmed }
-		}
-
-		return {
-			name: trimmed.slice(0, separatorIndex),
-			remote: trimmed.slice(separatorIndex + 1),
-		}
 	}
 
 	function dedupeBookmarkRefs(bookmarks: BookmarkRef[]): BookmarkRef[] {
@@ -625,7 +556,7 @@ const plugin: TuiPlugin = async (api) => {
 		return revisions.length === 1 ? revisions[0] : null
 	}
 
-	async function getJjRemotes(): Promise<Array<{ name: string; url: string }>> {
+	async function getJjRemotes(): Promise<JjRemote[]> {
 		const r = await jj("git", "remote", "list")
 		if (!r.ok) return []
 
@@ -637,10 +568,16 @@ const plugin: TuiPlugin = async (api) => {
 			.filter((remote) => remote.name && remote.url)
 	}
 
+	function getDefaultRemote(remotes: JjRemote[]): JjRemote | null {
+		return (
+			remotes.find((remote) => remote.name === "origin") ??
+			remotes[0] ??
+			null
+		)
+	}
+
 	async function getDefaultRemoteName(): Promise<string | null> {
-		const remotes = await getJjRemotes()
-		if (remotes.length === 0) return null
-		return remotes.find((remote) => remote.name === "origin")?.name ?? remotes[0].name
+		return getDefaultRemote(await getJjRemotes())?.name ?? null
 	}
 
 	function preferBookmarkRef(
@@ -759,8 +696,6 @@ const plugin: TuiPlugin = async (api) => {
 		}
 	}
 
-	// -- prompt building -----------------------------------------------------
-
 	async function buildTargetReviewPrompt(
 		target: ReviewTarget,
 		options?: { includeLocalChanges?: boolean },
@@ -841,7 +776,10 @@ const plugin: TuiPlugin = async (api) => {
 	}
 
 	async function buildReviewPrompt(target: ReviewTarget): Promise<string> {
-		const prompt = await buildTargetReviewPrompt(target)
+		const prompt = await buildTargetReviewPrompt(target, {
+			includeLocalChanges:
+				target.type !== "workingCopy" && (await hasWorkingCopyChanges()),
+		})
 		const projectGuidelines = await loadProjectReviewGuidelines()
 		const sharedInstructions = normalizeCustomInstructions(
 			reviewCustomInstructions,
@@ -910,17 +848,13 @@ const plugin: TuiPlugin = async (api) => {
 		}
 	}
 
-	// -- review execution ----------------------------------------------------
-
-	async function startReview(target: ReviewTarget): Promise<void> {
+	async function startReview(target: ReviewTarget): Promise<boolean> {
 		const prompt = await buildReviewPrompt(target)
 		const hint = getUserFacingHint(target)
 		const cleared = await api.client.tui.clearPrompt()
 		const appended = await api.client.tui.appendPrompt({
 			text: prompt,
 		})
-		// `prompt.submit` is ignored unless the prompt input is focused.
-		// When this runs from a dialog, focus returns on the next tick.
 		await sleep(50)
 		const submitted = await api.client.tui.submitPrompt()
 
@@ -929,16 +863,16 @@ const plugin: TuiPlugin = async (api) => {
 				message: "Failed to start review prompt automatically",
 				variant: "error",
 			})
-			return
+			return false
 		}
 
 		api.ui.toast({
 			message: `Starting review: ${hint}`,
 			variant: "info",
 		})
-	}
 
-	// -- dialogs -------------------------------------------------------------
+		return true
+	}
 
 	async function showReviewSelector(): Promise<void> {
 		const smartDefault = await getSmartDefault()
@@ -1206,12 +1140,21 @@ const plugin: TuiPlugin = async (api) => {
 			variant: "info",
 		})
 
-		await startReview({
+		const started = await startReview({
 			type: "pullRequest",
 			prNumber,
 			baseBookmark: result.baseBookmark,
 			baseRemote: result.baseRemote,
 			title: result.title,
+		})
+		if (started) return
+
+		const restored = await jj("edit", result.savedChangeId)
+		api.ui.toast({
+			message: restored.ok
+				? "Restored the previous change after the review prompt failed"
+				: `Review prompt failed and restoring the previous change also failed (${result.savedChangeId})`,
+			variant: restored.ok ? "info" : "error",
 		})
 	}
 
@@ -1240,11 +1183,7 @@ const plugin: TuiPlugin = async (api) => {
 		)
 	}
 
-	// -- jj repo check -------------------------------------------------------
-
 	const inJjRepo = await isJjRepo()
-
-	// -- command registration ------------------------------------------------
 
 	api.command.register(() =>
 		inJjRepo
