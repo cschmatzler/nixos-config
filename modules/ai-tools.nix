@@ -33,6 +33,7 @@ in {
 				small_model = "openai/gpt-5.1-codex-mini";
 				plugin = [
 					"opencode-claude-auth"
+					"opencode-supermemory"
 				];
 				permission = {
 					external_directory = {
