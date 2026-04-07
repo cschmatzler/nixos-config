@@ -24,10 +24,13 @@ in {
 		programs.opencode = {
 			enable = true;
 			package = inputs'.llm-agents.packages.opencode;
+			tui = {
+				theme = "rosepine";
+				plugin = ["./plugin/review.ts"];
+			};
 			settings = {
 				model = "openai/gpt-5.4";
 				small_model = "openai/gpt-5.1-codex-mini";
-				theme = "rosepine";
 				plugin = [
 					"opencode-claude-auth"
 				];
@@ -177,7 +180,6 @@ in {
 				recursive = true;
 			};
 			"opencode/AGENTS.md".source = ./_opencode/AGENTS.md;
-			"opencode/tui.json".source = ./_opencode/tui.json;
 		};
 	};
 }
