@@ -157,6 +157,8 @@ in {
 				"ghostty@tip"
 				"raycast"
 				"spotify"
+				"tailscale"
+				"whatsapp"
 			];
 		};
 	};
