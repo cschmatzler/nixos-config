@@ -2,6 +2,11 @@
 	local = import ./_lib/local.nix;
 in {
 	den.aspects.email.homeManager = {pkgs, ...}: {
+		programs.aerc = {
+			enable = true;
+			extraConfig.general.unsafe-accounts-conf = true;
+		};
+
 		programs.himalaya = {
 			enable = true;
 			package =
@@ -50,6 +55,7 @@ in {
 					port = 993;
 					tls.enable = true;
 				};
+				aerc.enable = true;
 			};
 		};
 	};

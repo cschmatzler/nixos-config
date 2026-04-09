@@ -122,12 +122,6 @@ in {
 					codesearch = "allow";
 				};
 				agent = {
-					build = {
-						disable = true;
-					};
-					plan = {
-						disable = true;
-					};
 					explore = {
 						model = "openai/gpt-5.1-codex-mini";
 					};
@@ -164,10 +158,10 @@ in {
 		};
 
 		xdg.configFile = {
-			"opencode/agent" = {
-				source = ./_opencode/agent;
-				recursive = true;
-			};
+			# "opencode/agent" = {
+			# 	source = ./_opencode/agent;
+			# 	recursive = true;
+			# };
 			"opencode/command" = {
 				source = ./_opencode/command;
 				recursive = true;
