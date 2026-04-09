@@ -145,8 +145,6 @@ in {
 
 			    pane size=1 borderless=true {
 			      plugin location="file:${pkgs.zjstatus}/bin/zjstatus.wasm" {
-			        hide_frame_for_single_pane "true"
-
 			        format_left  "{mode}#[fg=${palette.pine},bg=${palette.base},bold] {session}#[bg=${palette.base}] {tabs}"
 			        format_right "{datetime}"
 			        format_space "#[bg=${palette.base}]"
