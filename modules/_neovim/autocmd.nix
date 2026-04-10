@@ -20,6 +20,7 @@
 						vim.api.nvim_set_hl(0, "PmenuSbar", { bg = p.base })
 						vim.api.nvim_set_hl(0, "MiniPickPrompt", { bg = p.base, bold = true })
 						vim.api.nvim_set_hl(0, "MiniPickBorderText", { bg = p.base })
+						vim.api.nvim_set_hl(0, "OpencodeInputLegend", { fg = p.text, bg = p.highlight_med, bold = false })
 					end
 				'';
 			}

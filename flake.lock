@@ -816,6 +816,22 @@
         "type": "github"
       }
     },
+    "opencode-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775736637,
+        "narHash": "sha256-BVn6lSdxdN4MGi4sUkd9HpuUyAJ2RM4Y0fbOO1j0ITQ=",
+        "owner": "sudo-tee",
+        "repo": "opencode.nvim",
+        "rev": "a52636b47621d24b287ab6302088aa3d114fdcd0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sudo-tee",
+        "repo": "opencode.nvim",
+        "type": "github"
+      }
+    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -861,6 +877,7 @@
           "nixpkgs"
         ],
         "nixvim": "nixvim",
+        "opencode-nvim": "opencode-nvim",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }

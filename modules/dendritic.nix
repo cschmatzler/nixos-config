@@ -75,6 +75,10 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
+		opencode-nvim = {
+			url = "github:sudo-tee/opencode.nvim";
+			flake = false;
+		};
 		jj-nvim = {
 			url = "github:NicolasGB/jj.nvim";
 			flake = false;

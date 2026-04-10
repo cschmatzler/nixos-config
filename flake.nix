@@ -68,6 +68,10 @@
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
+		opencode-nvim = {
+			url = "github:sudo-tee/opencode.nvim";
+			flake = false;
+		};
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";

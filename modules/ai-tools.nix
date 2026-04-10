@@ -56,8 +56,6 @@ in {
 						"gh auth *" = "deny";
 						ssh = "ask";
 						"ssh *" = "ask";
-						mosh = "ask";
-						"mosh *" = "ask";
 						"cat *.env" = "deny";
 						"cat *.env.*" = "deny";
 						"cat **/.env" = "deny";
