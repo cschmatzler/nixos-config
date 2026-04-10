@@ -247,7 +247,7 @@
 		}
 		{
 			mode = "n";
-			key = "<leader>oR";
+			key = "<leader>rv";
 			action = ":OpencodeReview<CR>";
 			options.desc = "Review with Opencode";
 		}

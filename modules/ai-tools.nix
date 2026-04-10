@@ -26,7 +26,6 @@ in {
 			package = inputs'.llm-agents.packages.opencode;
 			tui = {
 				theme = "rosepine";
-				plugin = ["./plugin/review.ts"];
 			};
 			settings = {
 				model = "openai/gpt-5.4";

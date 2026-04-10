@@ -1,5 +1,7 @@
 local M = {}
 
+local list_unpack = unpack
+
 local CUSTOM_INSTRUCTIONS_KEY = 'review.customInstructions'
 local MIN_CHANGE_REVIEW_OPTIONS = 10
 local RECENT_PULL_REQUEST_LIMIT = 5
@@ -571,6 +573,9 @@ local function pick_one(title, items)
     source = {
       name = title,
       items = items,
+      choose = function()
+        return nil
+      end,
     },
   })
 end
@@ -628,7 +633,7 @@ function M.open()
       'number,title,updatedAt,author,baseRefName,headRefName',
     })
 
-    local response = gh(cwd, table.unpack(command))
+    local response = gh(cwd, list_unpack(command))
     if not response.ok then
       return {}
     end
@@ -693,7 +698,7 @@ function M.open()
     end
     vim.list_extend(args, { '-T', 'name ++ "\\t" ++ remote ++ "\\n"' })
 
-    local result = jj(cwd, table.unpack(args))
+    local result = jj(cwd, list_unpack(args))
     if not result.ok then
       return {}
     end
@@ -1030,55 +1035,49 @@ function M.open()
     return 'change'
   end
 
-  local function get_user_facing_hint(target)
-    if target.type == 'workingCopy' then
-      return 'working-copy changes'
-    end
-
-    if target.type == 'baseBookmark' then
-      return string.format("changes against '%s'", bookmark_label({
-        name = target.bookmark,
-        remote = target.remote,
-      }))
-    end
-
-    if target.type == 'change' then
-      if target.title then
-        return string.format('change %s: %s', target.changeId, target.title)
-      end
-
-      return string.format('change %s', target.changeId)
-    end
-
-    if target.type == 'pullRequest' then
-      local short_title = target.title
-      if #short_title > 30 then
-        short_title = short_title:sub(1, 27) .. '...'
-      end
-      return string.format('PR #%d: %s', target.prNumber, short_title)
-    end
-
-    local joined = table.concat(target.paths, ', ')
-    if #joined > 40 then
-      joined = joined:sub(1, 37) .. '...'
-    end
-    return 'folders: ' .. joined
-  end
-
-  local function start_review(target)
+  local function start_review(target, opts)
+    opts = opts or {}
     local prompt = build_review_prompt(target)
-    local hint = get_user_facing_hint(target)
-    local ok, err = pcall(function()
-      require('opencode.api').run_new_session(prompt, { focus = 'output' }):await()
-    end)
+    local promise = require('opencode.promise')
 
-    if not ok then
+    promise.spawn(function()
+      local state = require('opencode.state')
+      local context = require('opencode.context')
+      local core = require('opencode.core')
+      local session = require('opencode.session')
+      local opencode = require('opencode.api')
+
+      if not state.api_client then
+        error('Opencode API client is not initialized')
+      end
+
+      state.session.clear_active()
+      context.unload_attachments()
+
+      local mode_ready = core.ensure_current_mode():await()
+      if not mode_ready then
+        error('Failed to initialize opencode mode')
+      end
+
+      local created_session = state.api_client:create_session(false):await()
+      if not created_session or not created_session.id then
+        error('Failed to create new opencode session')
+      end
+
+      local hydrated_session = session.get_by_id(created_session.id):await() or created_session
+      hydrated_session.title = type(hydrated_session.title) == 'string' and hydrated_session.title or ''
+      state.session.set_active(hydrated_session)
+
+      local run_result = opencode.run(prompt, { focus = 'output' }):await()
+      if run_result == false then
+        error('Failed to send review prompt')
+      end
+    end):catch(function(err)
       notify('Failed to start review prompt automatically: ' .. tostring(err), vim.log.levels.ERROR)
-      return false
-    end
-
-    notify('Starting review: ' .. hint, vim.log.levels.INFO)
-    return true
+      if opts.onError then
+        opts.onError(err)
+      end
+    end)
   end
 
   local function materialize_pr(pr_number)
@@ -1250,8 +1249,6 @@ function M.open()
   end
 
   function show_bookmark_selector()
-    notify('Loading bookmarks...', vim.log.levels.INFO)
-
     local bookmarks = get_review_bookmarks()
     local current_bookmarks = get_current_review_bookmarks()
     local default_bookmark = get_default_bookmark_ref()
@@ -1317,8 +1314,6 @@ function M.open()
   end
 
   function show_change_selector()
-    notify('Loading changes...', vim.log.levels.INFO)
-
     local changes = get_recent_changes()
     if #changes == 0 then
       notify('No changes found', vim.log.levels.ERROR)
@@ -1371,8 +1366,6 @@ function M.open()
       return
     end
 
-    notify('Loading pull requests...', vim.log.levels.INFO)
-
     local pull_requests = get_selectable_pull_requests()
     local items = {
       make_pick_item('Enter a PR number or URL', {
@@ -1386,10 +1379,6 @@ function M.open()
 
     for _, pr in ipairs(pull_requests) do
       table.insert(items, make_pick_item(string.format('#%d  %s', pr.prNumber, pr.title), pr, build_pull_request_option_description(pr)))
-    end
-
-    if #pull_requests == 0 then
-      notify('No pull requests found from GitHub; you can still enter a PR number or URL.', vim.log.levels.INFO)
     end
 
     local choice = pick_one('Select pull request to review', items)
@@ -1406,38 +1395,32 @@ function M.open()
   end
 
   function handle_pr_review(pr_number)
-    notify(string.format('Fetching PR #%d info...', pr_number), vim.log.levels.INFO)
-    notify(string.format('Materializing PR #%d with jj...', pr_number), vim.log.levels.INFO)
-
     local result = materialize_pr(pr_number)
     if not result.ok then
       notify(result.error, vim.log.levels.ERROR)
       return
     end
 
-    notify(string.format('Materialized PR #%d (%s@%s)', pr_number, result.headBookmark, result.remote), vim.log.levels.INFO)
-
-    local started = start_review({
+    start_review({
       type = 'pullRequest',
       prNumber = pr_number,
       baseBookmark = result.baseBookmark,
       baseRemote = result.baseRemote,
       title = result.title,
+    }, {
+      onError = function()
+        local restored = jj(cwd, 'edit', result.savedChangeId)
+        if restored.ok then
+          notify('Restored the previous change after the review prompt failed', vim.log.levels.INFO)
+          return
+        end
+
+        notify(
+          string.format('Review prompt failed and restoring the previous change also failed (%s)', result.savedChangeId),
+          vim.log.levels.ERROR
+        )
+      end,
     })
-    if started then
-      return
-    end
-
-    local restored = jj(cwd, 'edit', result.savedChangeId)
-    if restored.ok then
-      notify('Restored the previous change after the review prompt failed', vim.log.levels.INFO)
-      return
-    end
-
-    notify(
-      string.format('Review prompt failed and restoring the previous change also failed (%s)', result.savedChangeId),
-      vim.log.levels.ERROR
-    )
   end
 
   function show_folder_input()
