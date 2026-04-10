@@ -523,11 +523,11 @@ local function load_project_review_guidelines(cwd)
   local current_dir = vim.fs.normalize(cwd)
 
   while current_dir do
-    local opencode_dir = vim.fs.joinpath(current_dir, '.opencode')
+    local pi_dir = vim.fs.joinpath(current_dir, '.pi')
     local guidelines_path = vim.fs.joinpath(current_dir, 'REVIEW_GUIDELINES.md')
 
-    local opencode_stats = vim.uv.fs_stat(opencode_dir)
-    if opencode_stats and opencode_stats.type == 'directory' then
+    local pi_stats = vim.uv.fs_stat(pi_dir)
+    if pi_stats and pi_stats.type == 'directory' then
       local guideline_stats = vim.uv.fs_stat(guidelines_path)
       if not guideline_stats or guideline_stats.type ~= 'file' then
         return nil
@@ -1036,7 +1036,7 @@ function M.open()
     local prompt = build_review_prompt(target)
     local ok, err = pcall(function()
       require('sidekick.cli').send({
-        name = 'opencode',
+        name = vim.g.sidekick_default_tool or 'pi',
         msg = prompt,
         submit = true,
         focus = true,

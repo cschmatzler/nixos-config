@@ -7,11 +7,13 @@
 		extraConfigLua = ''
 			require('sidekick').setup({
 				cli = {
-					mux = {
-						backend = 'zellij',
-						enabled = true,
-					},
 					picker = 'snacks',
+					win = {
+						keys = {
+							hide_ctrl_q = false,
+							stopinsert = { '<C-]>', 'stopinsert', mode = 't', desc = 'enter normal mode' },
+						},
+					},
 				},
 			})
 		'';

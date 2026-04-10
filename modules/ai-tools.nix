@@ -11,6 +11,7 @@ in {
 	}: {
 		home.packages = [
 			inputs'.llm-agents.packages.claude-code
+			inputs'.llm-agents.packages.pi
 			pkgs.cog-cli
 		];
 

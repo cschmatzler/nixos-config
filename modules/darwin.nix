@@ -11,7 +11,6 @@ in {
 
 		system.primaryUser = local.user.name;
 
-		# Darwin system utilities
 		environment.systemPackages = with pkgs; [
 			dockutil
 			mas

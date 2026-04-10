@@ -554,10 +554,10 @@
 			key = "<leader>so";
 			action.__raw = ''
 				function()
-					require('sidekick.cli').toggle({ name = 'opencode', focus = true })
+					require('sidekick.cli').toggle({ name = vim.g.sidekick_default_tool or 'pi', focus = true })
 				end
 			'';
-			options.desc = "Toggle OpenCode";
+			options.desc = "Toggle Pi";
 		}
 		{
 			mode = "n";
@@ -568,7 +568,7 @@
 						cb = function(_, text)
 							if text then
 								require('sidekick.cli').send({
-									name = 'opencode',
+									name = vim.g.sidekick_default_tool or 'pi',
 									text = text,
 									submit = true,
 									focus = true,
@@ -578,7 +578,7 @@
 					})
 				end
 			'';
-			options.desc = "Prompt OpenCode";
+			options.desc = "Prompt Pi";
 		}
 		{
 			mode = "n";
@@ -586,14 +586,14 @@
 			action.__raw = ''
 				function()
 					require('sidekick.cli').send({
-						name = 'opencode',
+						name = vim.g.sidekick_default_tool or 'pi',
 						msg = '{file}',
 						submit = true,
 						focus = true,
 					})
 				end
 			'';
-			options.desc = "Send file to OpenCode";
+			options.desc = "Send file to Pi";
 		}
 		{
 			mode = "n";
@@ -607,14 +607,14 @@
 			action.__raw = ''
 				function()
 					require('sidekick.cli').send({
-						name = 'opencode',
+						name = vim.g.sidekick_default_tool or 'pi',
 						msg = '{selection}',
 						submit = true,
 						focus = true,
 					})
 				end
 			'';
-			options.desc = "Send selection to OpenCode";
+			options.desc = "Send selection to Pi";
 		}
 		{
 			mode = "n";
