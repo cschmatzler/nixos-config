@@ -247,6 +247,12 @@
 		}
 		{
 			mode = "n";
+			key = "<leader>oR";
+			action = ":OpencodeReview<CR>";
+			options.desc = "Review with Opencode";
+		}
+		{
+			mode = "n";
 			key = "<leader>rd";
 			action = ":CodeReviewDeleteComment<CR>";
 			options.desc = "Delete comment";
