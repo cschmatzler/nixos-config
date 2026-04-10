@@ -4,6 +4,11 @@
 			enable = true;
 			inlayHints = true;
 			servers = {
+				copilot = {
+					enable = true;
+					package = null;
+					cmd = ["copilot-language-server" "--stdio"];
+				};
 				cssls.enable = true;
 				dockerls.enable = true;
 				jsonls.enable = true;

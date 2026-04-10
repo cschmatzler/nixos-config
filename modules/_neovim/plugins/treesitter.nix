@@ -4,6 +4,7 @@
 			enable = true;
 			nixGrammars = true;
 			grammarPackages = with pkgs.vimPlugins.nvim-treesitter-parsers; [
+				bash
 				css
 				elixir
 				javascript
@@ -11,11 +12,12 @@
 				markdown
 				markdown_inline
 				nix
+				regex
 				typescript
+				vim
 			];
 			settings = {
 				highlight.enable = true;
-				indent.enable = true;
 			};
 		};
 	};

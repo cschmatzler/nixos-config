@@ -455,7 +455,7 @@ local function has_modified_buffers()
 end
 
 local function get_state_file_path()
-  return vim.fs.joinpath(vim.fn.stdpath('state'), 'opencode-review.json')
+  return vim.fs.joinpath(vim.fn.stdpath('state'), 'sidekick-review.json')
 end
 
 local function load_plugin_state()
@@ -466,13 +466,13 @@ local function load_plugin_state()
 
   local ok, lines = pcall(vim.fn.readfile, state_path)
   if not ok then
-    notify('Failed to read opencode review state', vim.log.levels.WARN)
+    notify('Failed to read sidekick review state', vim.log.levels.WARN)
     return { [CUSTOM_INSTRUCTIONS_KEY] = {} }
   end
 
   local decoded = decode_json(table.concat(lines, '\n'))
   if type(decoded) ~= 'table' then
-    notify('Ignoring invalid opencode review state file', vim.log.levels.WARN)
+    notify('Ignoring invalid sidekick review state file', vim.log.levels.WARN)
     return { [CUSTOM_INSTRUCTIONS_KEY] = {} }
   end
 
@@ -487,13 +487,13 @@ local function save_plugin_state(state)
 
   local ok, encoded = pcall(vim.json.encode, state)
   if not ok then
-    notify('Failed to encode opencode review state', vim.log.levels.ERROR)
+    notify('Failed to encode sidekick review state', vim.log.levels.ERROR)
     return false
   end
 
   local write_ok, write_result = pcall(vim.fn.writefile, { encoded }, state_path)
   if not write_ok or write_result ~= 0 then
-    notify('Failed to persist opencode review state', vim.log.levels.ERROR)
+    notify('Failed to persist sidekick review state', vim.log.levels.ERROR)
     return false
   end
 
@@ -567,17 +567,13 @@ local function make_pick_item(label, value, description)
   }
 end
 
-local function pick_one(title, items)
-  local mini_pick = require('mini.pick')
-  return mini_pick.start({
-    source = {
-      name = title,
-      items = items,
-      choose = function()
-        return nil
-      end,
-    },
-  })
+local function pick_one(title, items, callback)
+  vim.ui.select(items, {
+    prompt = title,
+    format_item = function(item)
+      return item.text
+    end,
+  }, callback)
 end
 
 local function input(prompt, default, callback)
@@ -587,7 +583,7 @@ end
 function M.open()
   local cwd = get_cwd()
   if not is_jj_repo(cwd) then
-    notify('Opencode review only works inside a jj repository', vim.log.levels.ERROR)
+    notify('Sidekick review only works inside a jj repository', vim.log.levels.ERROR)
     return
   end
 
@@ -1038,46 +1034,58 @@ function M.open()
   local function start_review(target, opts)
     opts = opts or {}
     local prompt = build_review_prompt(target)
-    local promise = require('opencode.promise')
+    local ok, err = pcall(function()
+      local Session = require('sidekick.cli.session')
+      local State = require('sidekick.cli.state')
 
-    promise.spawn(function()
-      local state = require('opencode.state')
-      local context = require('opencode.context')
-      local core = require('opencode.core')
-      local session = require('opencode.session')
-      local opencode = require('opencode.api')
+      local session = Session.new({
+        tool = 'opencode',
+        cwd = cwd,
+        id = string.format('sidekick-review:%d', vim.uv.hrtime()),
+        backend = 'terminal',
+      })
 
-      if not state.api_client then
-        error('Opencode API client is not initialized')
+      session = Session.attach(session)
+
+      local state = State.get_state(session)
+      if state.terminal then
+        state.terminal:show()
+        state.terminal:focus()
       end
 
-      state.session.clear_active()
-      context.unload_attachments()
+      session:send(prompt .. '\n')
 
-      local mode_ready = core.ensure_current_mode():await()
-      if not mode_ready then
-        error('Failed to initialize opencode mode')
+      local attempts = 0
+
+      local function submit_when_ready()
+        attempts = attempts + 1
+
+        local states = State.get({
+          name = 'opencode',
+          external = true,
+          started = true,
+          cwd = true,
+        })
+
+        if states[1] and states[1].session then
+          states[1].session:submit()
+        elseif attempts < 100 then
+          vim.defer_fn(submit_when_ready, 50)
+        else
+          session:submit()
+        end
       end
 
-      local created_session = state.api_client:create_session(false):await()
-      if not created_session or not created_session.id then
-        error('Failed to create new opencode session')
-      end
+      vim.defer_fn(submit_when_ready, 100)
+    end)
 
-      local hydrated_session = session.get_by_id(created_session.id):await() or created_session
-      hydrated_session.title = type(hydrated_session.title) == 'string' and hydrated_session.title or ''
-      state.session.set_active(hydrated_session)
-
-      local run_result = opencode.run(prompt, { focus = 'output' }):await()
-      if run_result == false then
-        error('Failed to send review prompt')
-      end
-    end):catch(function(err)
+    if not ok then
+      local err = err
       notify('Failed to start review prompt automatically: ' .. tostring(err), vim.log.levels.ERROR)
       if opts.onError then
         opts.onError(err)
       end
-    end)
+    end
   end
 
   local function materialize_pr(pr_number)
@@ -1301,16 +1309,17 @@ function M.open()
       table.insert(items, make_pick_item(bookmark_label(bookmark), bookmark, description))
     end
 
-    local choice = pick_one('Select base bookmark', items)
-    if not choice then
-      return
-    end
+    pick_one('Select base bookmark', items, function(choice)
+      if not choice then
+        return
+      end
 
-    start_review({
-      type = 'baseBookmark',
-      bookmark = choice.value.name,
-      remote = choice.value.remote,
-    })
+      start_review({
+        type = 'baseBookmark',
+        bookmark = choice.value.name,
+        remote = choice.value.remote,
+      })
+    end)
   end
 
   function show_change_selector()
@@ -1325,16 +1334,17 @@ function M.open()
       table.insert(items, make_pick_item(string.format('%s  %s', change.changeId, change.title), change))
     end
 
-    local choice = pick_one('Select change to review', items)
-    if not choice then
-      return
-    end
+    pick_one('Select change to review', items, function(choice)
+      if not choice then
+        return
+      end
 
-    start_review({
-      type = 'change',
-      changeId = choice.value.changeId,
-      title = choice.value.title,
-    })
+      start_review({
+        type = 'change',
+        changeId = choice.value.changeId,
+        title = choice.value.title,
+      })
+    end)
   end
 
   function show_pr_manual_input()
@@ -1381,17 +1391,18 @@ function M.open()
       table.insert(items, make_pick_item(string.format('#%d  %s', pr.prNumber, pr.title), pr, build_pull_request_option_description(pr)))
     end
 
-    local choice = pick_one('Select pull request to review', items)
-    if not choice then
-      return
-    end
+    pick_one('Select pull request to review', items, function(choice)
+      if not choice then
+        return
+      end
 
-    if choice.value.isManualEntry then
-      show_pr_manual_input()
-      return
-    end
+      if choice.value.isManualEntry then
+        show_pr_manual_input()
+        return
+      end
 
-    handle_pr_review(choice.value.prNumber)
+      handle_pr_review(choice.value.prNumber)
+    end)
   end
 
   function handle_pr_review(pr_number)
@@ -1469,50 +1480,51 @@ function M.open()
       ),
     }
 
-    local choice = pick_one('Select a review preset', items)
-    if not choice then
-      return
-    end
+    pick_one('Select a review preset', items, function(choice)
+      if not choice then
+        return
+      end
 
-    if choice.value == 'workingCopy' then
-      start_review({ type = 'workingCopy' })
-      return
-    end
-    if choice.value == 'baseBookmark' then
-      show_bookmark_selector()
-      return
-    end
-    if choice.value == 'change' then
-      show_change_selector()
-      return
-    end
-    if choice.value == 'pullRequest' then
-      show_pr_selector()
-      return
-    end
-    if choice.value == 'folder' then
-      show_folder_input()
-      return
-    end
+      if choice.value == 'workingCopy' then
+        start_review({ type = 'workingCopy' })
+        return
+      end
+      if choice.value == 'baseBookmark' then
+        show_bookmark_selector()
+        return
+      end
+      if choice.value == 'change' then
+        show_change_selector()
+        return
+      end
+      if choice.value == 'pullRequest' then
+        show_pr_selector()
+        return
+      end
+      if choice.value == 'folder' then
+        show_folder_input()
+        return
+      end
 
-    if review_custom_instructions then
-      set_review_custom_instructions(nil)
-      notify('Custom review instructions removed for this directory', vim.log.levels.INFO)
-      show_review_selector()
-      return
-    end
+      if review_custom_instructions then
+        set_review_custom_instructions(nil)
+        notify('Custom review instructions removed for this directory', vim.log.levels.INFO)
+        show_review_selector()
+        return
+      end
 
-    show_custom_instructions_input()
+      show_custom_instructions_input()
+    end)
   end
 
   show_review_selector()
 end
 
 function M.setup()
-  vim.api.nvim_create_user_command('OpencodeReview', function()
+  vim.api.nvim_create_user_command('SidekickReview', function()
     M.open()
   end, {
-    desc = 'Review code changes with opencode.nvim',
+    desc = 'Review code changes with Sidekick',
   })
 end
 

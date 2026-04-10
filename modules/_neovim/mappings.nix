@@ -11,8 +11,12 @@
 		{
 			mode = "n";
 			key = "<leader>ef";
-			action = ":lua require('oil').open()<CR>";
-			options.desc = "File directory";
+			action.__raw = ''
+				function()
+					Snacks.explorer()
+				end
+			'';
+			options.desc = "Explorer";
 		}
 		{
 			mode = "n";
@@ -24,98 +28,169 @@
 		{
 			mode = "n";
 			key = "<leader>f/";
-			action = ":Pick history scope='/'<CR>";
-			options.desc = "'/' history";
+			action.__raw = ''
+				function()
+					Snacks.picker.search_history()
+				end
+			'';
+			options.desc = "Search history";
 		}
 		{
 			mode = "n";
 			key = "<leader>f:";
-			action = ":Pick history scope=':'<CR>";
-			options.desc = "':' history";
+			action.__raw = ''
+				function()
+					Snacks.picker.command_history()
+				end
+			'';
+			options.desc = "Command history";
 		}
 		{
 			mode = "n";
 			key = "<leader>fa";
-			action = ":Pick git_hunks scope='staged'<CR>";
-			options.desc = "Added hunks (all)";
+			action.__raw = ''
+				function()
+					Snacks.picker.git_diff({ staged = true })
+				end
+			'';
+			options.desc = "Staged hunks (all)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fA";
-			action = ":Pick git_hunks path='%' scope='staged'<CR>";
-			options.desc = "Added hunks (buffer)";
+			action.__raw = ''
+				function()
+					Snacks.picker.git_diff({
+						staged = true,
+						filter = { buf = true },
+					})
+				end
+			'';
+			options.desc = "Staged hunks (buffer)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fb";
-			action = ":Pick buffers<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.buffers()
+				end
+			'';
 			options.desc = "Buffers";
 		}
 		{
 			mode = "n";
 			key = "<leader>fd";
-			action = ":Pick diagnostic scope='all'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.diagnostics()
+				end
+			'';
 			options.desc = "Diagnostic (workspace)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fD";
-			action = ":Pick diagnostic scope='current'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.diagnostics_buffer()
+				end
+			'';
 			options.desc = "Diagnostic (buffer)";
 		}
 		{
 			mode = "n";
 			key = "<leader>ff";
-			action = ":Pick files<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.files()
+				end
+			'';
 			options.desc = "Search files";
 		}
 		{
 			mode = "n";
 			key = "<leader>fg";
-			action = ":Pick grep_live<CR>";
-			options.desc = "Grep";
+			action.__raw = ''
+				function()
+					Snacks.picker.grep()
+				end
+			'';
+			options.desc = "Live grep";
 		}
 		{
 			mode = "n";
 			key = "<leader>fm";
-			action = ":Pick git_hunks<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.git_diff()
+				end
+			'';
 			options.desc = "Modified hunks (all)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fM";
-			action = ":Pick git_hunks path='%'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.git_diff({
+						filter = { buf = true },
+					})
+				end
+			'';
 			options.desc = "Modified hunks (buffer)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fr";
-			action = ":Pick lsp scope='references'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.lsp_references()
+				end
+			'';
 			options.desc = "References (LSP)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fs";
-			action = ":Pick lsp scope='workspace_symbol'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.lsp_workspace_symbols()
+				end
+			'';
 			options.desc = "Symbols (LSP, workspace)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fS";
-			action = ":Pick lsp scope='document_symbol'<CR>";
+			action.__raw = ''
+				function()
+					Snacks.picker.lsp_symbols()
+				end
+			'';
 			options.desc = "Symbols (LSP, buffer)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fv";
-			action = ":Pick visit_paths cwd=\"\"<CR>";
-			options.desc = "Visit paths (all)";
+			action.__raw = ''
+				function()
+					Snacks.picker.recent()
+				end
+			'';
+			options.desc = "Recent files (all)";
 		}
 		{
 			mode = "n";
 			key = "<leader>fV";
-			action = ":Pick visit_paths<CR>";
-			options.desc = "Visit paths (cwd)";
+			action.__raw = ''
+				function()
+					Snacks.picker.recent({
+						filter = { cwd = true },
+					})
+				end
+			'';
+			options.desc = "Recent files (cwd)";
 		}
 		# v - vcs
 		{
@@ -244,12 +319,6 @@
 			key = "<leader>rc";
 			action = ":CodeReviewComment<CR>";
 			options.desc = "Add comment";
-		}
-		{
-			mode = "n";
-			key = "<leader>rv";
-			action = ":OpencodeReview<CR>";
-			options.desc = "Review with Opencode";
 		}
 		{
 			mode = "n";
@@ -461,9 +530,100 @@
 		}
 		# other
 		{
+			mode = ["n" "i" "t" "x"];
+			key = "<C-.>";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').focus()
+				end
+			'';
+			options.desc = "Focus Sidekick";
+		}
+		{
+			mode = "n";
+			key = "<leader>sa";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').select({ focus = true })
+				end
+			'';
+			options.desc = "Select AI CLI";
+		}
+		{
+			mode = "n";
+			key = "<leader>so";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').toggle({ name = 'opencode', focus = true })
+				end
+			'';
+			options.desc = "Toggle OpenCode";
+		}
+		{
+			mode = "n";
+			key = "<leader>sp";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').prompt({
+						cb = function(_, text)
+							if text then
+								require('sidekick.cli').send({
+									name = 'opencode',
+									text = text,
+									submit = true,
+									focus = true,
+								})
+							end
+						end,
+					})
+				end
+			'';
+			options.desc = "Prompt OpenCode";
+		}
+		{
+			mode = "n";
+			key = "<leader>sf";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').send({
+						name = 'opencode',
+						msg = '{file}',
+						submit = true,
+						focus = true,
+					})
+				end
+			'';
+			options.desc = "Send file to OpenCode";
+		}
+		{
+			mode = "n";
+			key = "<leader>sr";
+			action = ":SidekickReview<CR>";
+			options.desc = "Review with Sidekick";
+		}
+		{
+			mode = "x";
+			key = "<leader>sv";
+			action.__raw = ''
+				function()
+					require('sidekick.cli').send({
+						name = 'opencode',
+						msg = '{selection}',
+						submit = true,
+						focus = true,
+					})
+				end
+			'';
+			options.desc = "Send selection to OpenCode";
+		}
+		{
 			mode = "n";
 			key = "<leader>j";
-			action = ":lua require('mini.jump2d').start(require('mini.jump2d').builtin_opts.query)<CR>";
+			action.__raw = ''
+				function()
+					require('flash').jump()
+				end
+			'';
 			options.desc = "Jump to character";
 		}
 		{
