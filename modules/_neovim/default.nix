@@ -1,4 +1,8 @@
-{inputs', ...}: {
+{
+	inputs',
+	pkgs,
+	...
+}: {
 	imports = [
 		./autocmd.nix
 		./mappings.nix
@@ -27,6 +31,12 @@
 		defaultEditor = true;
 		package = inputs'.neovim-nightly-overlay.packages.default;
 		luaLoader.enable = true;
+		extraPlugins = with pkgs.vimPlugins; [
+			opencode-nvim
+		];
+		extraConfigLua = ''
+			require('opencode').setup({})
+		'';
 		colorschemes.rose-pine = {
 			enable = true;
 			settings = {
