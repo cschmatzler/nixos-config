@@ -2,6 +2,12 @@
 	overlays = [
 		# himalaya
 		(import ./_overlays/himalaya.nix {inherit inputs;})
+		# pi-agent-stuff
+		(import ./_overlays/pi-agent-stuff.nix {inherit inputs;})
+		# pi-harness
+		(import ./_overlays/pi-harness.nix {inherit inputs;})
+		# pi-mcp-adapter
+		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
 		# direnv (Go 1.26 on darwin disables cgo, but direnv forces external linking)
 		(final: prev:
 				prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {

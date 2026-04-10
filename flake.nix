@@ -68,6 +68,26 @@
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixpkgs-lib.follows = "nixpkgs";
 		nixvim.url = "github:nix-community/nixvim";
+		pi-agent-stuff = {
+			url = "github:mitsuhiko/agent-stuff";
+			flake = false;
+		};
+		pi-elixir = {
+			url = "github:dannote/pi-elixir";
+			flake = false;
+		};
+		pi-harness = {
+			url = "github:aliou/pi-harness";
+			flake = false;
+		};
+		pi-mcp-adapter = {
+			url = "github:nicobailon/pi-mcp-adapter";
+			flake = false;
+		};
+		pi-rose-pine = {
+			url = "github:zenobi-us/pi-rose-pine";
+			flake = false;
+		};
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";

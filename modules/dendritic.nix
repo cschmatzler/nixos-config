@@ -54,6 +54,26 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		llm-agents.url = "github:numtide/llm-agents.nix";
+		pi-agent-stuff = {
+			url = "github:mitsuhiko/agent-stuff";
+			flake = false;
+		};
+		pi-elixir = {
+			url = "github:dannote/pi-elixir";
+			flake = false;
+		};
+		pi-harness = {
+			url = "github:aliou/pi-harness";
+			flake = false;
+		};
+		pi-mcp-adapter = {
+			url = "github:nicobailon/pi-mcp-adapter";
+			flake = false;
+		};
+		pi-rose-pine = {
+			url = "github:zenobi-us/pi-rose-pine";
+			flake = false;
+		};
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
 		jj-ryu = {
