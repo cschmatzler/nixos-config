@@ -1,4 +1,4 @@
-{inputs, ...}: let
+let
 	local = import ./_lib/local.nix;
 	inherit (local) secretPath;
 	opencodeSecretPath = secretPath "opencode-api-key";
@@ -31,8 +31,7 @@ in {
 				model = "openai/gpt-5.4";
 				small_model = "openai/gpt-5.1-codex-mini";
 				plugin = [
-					"opencode-claude-auth"
-					"opencode-supermemory"
+					"opencode-supermemory@2.0.6"
 				];
 				permission = {
 					external_directory = {

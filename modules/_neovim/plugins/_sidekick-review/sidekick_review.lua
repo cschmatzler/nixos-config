@@ -1035,48 +1035,12 @@ function M.open()
     opts = opts or {}
     local prompt = build_review_prompt(target)
     local ok, err = pcall(function()
-      local Session = require('sidekick.cli.session')
-      local State = require('sidekick.cli.state')
-
-      local session = Session.new({
-        tool = 'opencode',
-        cwd = cwd,
-        id = string.format('sidekick-review:%d', vim.uv.hrtime()),
-        backend = 'terminal',
+      require('sidekick.cli').send({
+        name = 'opencode',
+        msg = prompt,
+        submit = true,
+        focus = true,
       })
-
-      session = Session.attach(session)
-
-      local state = State.get_state(session)
-      if state.terminal then
-        state.terminal:show()
-        state.terminal:focus()
-      end
-
-      session:send(prompt .. '\n')
-
-      local attempts = 0
-
-      local function submit_when_ready()
-        attempts = attempts + 1
-
-        local states = State.get({
-          name = 'opencode',
-          external = true,
-          started = true,
-          cwd = true,
-        })
-
-        if states[1] and states[1].session then
-          states[1].session:submit()
-        elseif attempts < 100 then
-          vim.defer_fn(submit_when_ready, 50)
-        else
-          session:submit()
-        end
-      end
-
-      vim.defer_fn(submit_when_ready, 100)
     end)
 
     if not ok then
@@ -1085,6 +1049,7 @@ function M.open()
       if opts.onError then
         opts.onError(err)
       end
+      return
     end
   end
 
