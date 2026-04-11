@@ -6,9 +6,6 @@
 				preset = "default";
 				"<Tab>" = [
 					"snippet_forward"
-					{
-						__raw = "function() return require('sidekick').nes_jump_or_apply() end";
-					}
 					"fallback"
 				];
 			};

@@ -20,8 +20,6 @@
 		./plugins/noice.nix
 		./plugins/oil.nix
 		./plugins/render-markdown.nix
-		./plugins/sidekick.nix
-		./plugins/sidekick-review.nix
 		./plugins/snacks.nix
 		./plugins/toggleterm.nix
 		./plugins/treesitter.nix

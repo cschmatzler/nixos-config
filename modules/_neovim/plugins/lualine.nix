@@ -13,9 +13,6 @@
 					left = "";
 					right = "";
 				};
-				disabled_filetypes.statusline = [
-					"sidekick_terminal"
-				];
 			};
 			sections = {
 				lualine_a = ["mode"];

@@ -5,10 +5,6 @@
 			./_neovim/default.nix
 		];
 
-		home.packages = with pkgs; [
-			copilot-language-server
-		];
-
 		_module.args.nvim-plugin-sources = {
 			code-review-nvim = inputs.code-review-nvim;
 			jj-nvim = inputs.jj-nvim;
