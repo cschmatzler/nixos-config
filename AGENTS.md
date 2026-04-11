@@ -10,6 +10,8 @@ nix run .#apply               # Build and apply locally (darwin-rebuild/nixos-re
 nix flake check               # Validate flake
 ```
 
+Do not run build or apply unless instructed to.
+
 ### Remote Deployment (NixOS only)
 ```bash
 nix run .#deploy              # Deploy to all NixOS hosts
