@@ -7,6 +7,7 @@
 	inherit (local) secretPath;
 	secretLib = import ./_lib/secrets.nix {inherit lib;};
 	opencodeSecretPath = secretPath "opencode-api-key";
+	ynabSecretPath = secretPath "ynab-api-key";
 in {
 	den.aspects.opencode-api-key.os = {
 		sops.secrets.opencode-api-key =
@@ -16,7 +17,16 @@ in {
 			};
 	};
 
+	den.aspects.ynab-api-key.os = {
+		sops.secrets.ynab-api-key =
+			secretLib.mkUserBinarySecret {
+				name = "ynab-api-key";
+				sopsFile = ../secrets/ynab-api-key;
+			};
+	};
+
 	den.aspects.ai-tools.homeManager = {
+		config,
 		lib,
 		pkgs,
 		inputs',
@@ -26,12 +36,19 @@ in {
 			inputs'.llm-agents.packages.claude-code
 			inputs'.llm-agents.packages.pi
 			pkgs.cog-cli
+			pkgs.uv
+			pkgs.python314
+			pkgs.python314Packages.greenlet
 		];
 
 		programs.nushell.extraEnv =
 			lib.mkAfter ''
 				if ("${opencodeSecretPath}" | path exists) {
 					$env.OPENCODE_API_KEY = (open --raw "${opencodeSecretPath}" | str trim)
+				}
+
+				if ("${ynabSecretPath}" | path exists) {
+					$env.YNAB_API_KEY = (open --raw "${ynabSecretPath}" | str trim)
 				}
 			'';
 
@@ -86,6 +103,7 @@ in {
 							prompts = [];
 							themes = [];
 						}
+						"${config.home.homeDirectory}/Projects/Personal/pi-supermemory"
 					];
 				};
 			".pi/agent/mcp.json".source = ./_pi/mcp.json;

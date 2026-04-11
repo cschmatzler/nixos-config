@@ -16,6 +16,11 @@
     "sentry": {
       "url": "https://mcp.sentry.dev/mcp",
       "auth": "oauth"
+    },
+    "ynab": {
+      "command": "uv",
+      "args": ["tool", "run", "mcp-ynab"],
+			"lifecycle": "eager"
     }
   }
 }
