@@ -8,24 +8,20 @@
 	host = "janet";
 	hostMeta = local.hosts.janet;
 in
-	lib.recursiveUpdate
-	(hostLib.mkUserHost {
-			system = hostMeta.system;
-			inherit host;
-			user = local.user.name;
-			includes = [
-				den.aspects.user-darwin-laptop
-				den.aspects.user-personal
-			];
-		})
-	(hostLib.mkPerHostAspect {
-			inherit host;
-			includes = [
-				den.aspects.host-darwin-base
-				den.aspects.opencode-api-key
-			];
-			darwin = {...}: {
-				networking.hostName = host;
-				networking.computerName = host;
-			};
-		})
+	hostLib.mkHostConfig {
+		system = hostMeta.system;
+		inherit host;
+		user = local.user.name;
+		userIncludes = [
+			den.aspects.user-darwin-laptop
+			den.aspects.user-personal
+		];
+		hostIncludes = [
+			den.aspects.host-darwin-base
+			den.aspects.opencode-api-key
+		];
+		darwin = {...}: {
+			networking.hostName = host;
+			networking.computerName = host;
+		};
+	}

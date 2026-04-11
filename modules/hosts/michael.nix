@@ -9,27 +9,21 @@
 	host = "michael";
 	hostMeta = local.hosts.michael;
 in
-	lib.recursiveUpdate
-	(hostLib.mkUserHost {
-			system = hostMeta.system;
-			inherit host;
-			user = local.user.name;
-			includes = [den.aspects.user-minimal];
-		})
-	(hostLib.mkPerHostAspect {
-			inherit host;
-			includes = [
-				den.aspects.host-public-server
-				den.aspects.gitea
+	hostLib.mkHostConfig {
+		system = hostMeta.system;
+		inherit host;
+		user = local.user.name;
+		userIncludes = [den.aspects.user-minimal];
+		hostIncludes = [
+			den.aspects.host-public-server
+			den.aspects.gitea
+		];
+		nixos = {modulesPath, ...}: {
+			imports = [
+				(modulesPath + "/installer/scan/not-detected.nix")
+				./_parts/michael/disk-config.nix
+				./_parts/michael/hardware-configuration.nix
+				inputs.disko.nixosModules.default
 			];
-			nixos = {modulesPath, ...}: {
-				imports = [
-					(modulesPath + "/installer/scan/not-detected.nix")
-					./_parts/michael/disk-config.nix
-					./_parts/michael/hardware-configuration.nix
-					inputs.disko.nixosModules.default
-				];
-
-				networking.hostName = host;
-			};
-		})
+		};
+	}

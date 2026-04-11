@@ -13,7 +13,21 @@ in {
 		pkgs,
 		lib,
 		...
-	}: {
+	}: let
+		ghosttySettings = import ./_terminal/ghostty.nix {inherit pkgs theme;};
+		glowFiles = import ./_terminal/glow.nix {inherit config theme;};
+		ghosttyConfig =
+			lib.generators.toKeyValue {
+				mkKeyValue = key: value: "${key} = ${
+					if lib.isBool value
+					then lib.boolToString value
+					else toString value
+				}";
+			}
+			ghosttySettings;
+		jsonFormat = pkgs.formats.json {};
+		yamlFormat = pkgs.formats.yaml {};
+	in {
 		home.packages = with pkgs;
 			[
 				dust
@@ -51,39 +65,14 @@ in {
 			'';
 		};
 
-		xdg.configFile."ghostty/config".text = ''
-			command = ${pkgs.nushell}/bin/nu
-			theme = ${theme.ghosttyName}
-			window-padding-x = 12
-			window-padding-y = 3
-			window-padding-balance = true
-			font-family = Iosevka Nerd Font
-			font-size = 17.5
-			cursor-style = block
-			mouse-hide-while-typing = true
-			mouse-scroll-multiplier = 1.25
-			shell-integration = none
-			shell-integration-features = no-cursor
-			clipboard-read = allow
-			clipboard-write = allow
-		'';
-
 		xdg.configFile = {
-			"glow/glow.yml".text =
-				lib.concatStringsSep "\n" [
-					"# style name or JSON path (default \"auto\")"
-					"style: \"${config.xdg.configHome}/glow/${theme.slug}.json\""
-					"# mouse support (TUI-mode only)"
-					"mouse: false"
-					"# use pager to display markdown"
-					"pager: false"
-					"# word-wrap at width"
-					"width: 80"
-					"# show all files, including hidden and ignored."
-					"all: false"
-					""
-				];
-			"glow/${theme.slug}.json".source = ./_terminal/rose-pine-dawn-glow.json;
+			"ghostty/config".text = ghosttyConfig;
+			"glow/glow.yml" = {
+				source = yamlFormat.generate "glow.yml" glowFiles.settings;
+			};
+			"glow/${theme.slug}.json" = {
+				source = jsonFormat.generate "${theme.slug}.json" glowFiles.theme;
+			};
 		};
 
 		programs.bat = {

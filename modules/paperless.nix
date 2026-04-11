@@ -4,7 +4,14 @@
 	secretLib = import ./_lib/secrets.nix {inherit lib;};
 	paperlessPrompts = ./_paperless;
 in {
-	den.aspects.paperless.nixos = {config, ...}: {
+	den.aspects.paperless.nixos = {config, ...}: let
+		paperlessRedisHost = "127.0.0.1";
+		paperlessRedisPort = 6379;
+		paperlessGptPort = 8081;
+		paperlessRedisUrl = "redis://${paperlessRedisHost}:${toString paperlessRedisPort}";
+		paperlessBaseUrl = "http://host.docker.internal:${toString config.services.paperless.port}";
+		docsHost = local.tailscaleHost "docs";
+	in {
 		sops.secrets = {
 			tahani-paperless-password =
 				secretLib.mkBinarySecret {
@@ -31,7 +38,7 @@ in {
 				}
 				// caddyLib.mkTailscaleVHost {
 					name = "docs-ai";
-					configText = "reverse_proxy localhost:8081";
+					configText = "reverse_proxy localhost:${toString paperlessGptPort}";
 				};
 		};
 
@@ -41,7 +48,7 @@ in {
 				image = "icereed/paperless-gpt:latest";
 				autoStart = true;
 				ports = [
-					"127.0.0.1:8081:8080"
+					"127.0.0.1:${toString paperlessGptPort}:8080"
 				];
 				volumes = [
 					"paperless-gpt-data:/app/data"
@@ -50,7 +57,7 @@ in {
 					"${paperlessPrompts}/title_prompt.tmpl:/app/prompts/title_prompt.tmpl:ro"
 				];
 				environment = {
-					PAPERLESS_BASE_URL = "http://host.docker.internal:${toString config.services.paperless.port}";
+					PAPERLESS_BASE_URL = paperlessBaseUrl;
 					LLM_PROVIDER = "openai";
 					LLM_MODEL = "gpt-5.4";
 					LLM_LANGUAGE = "German";
@@ -69,8 +76,8 @@ in {
 
 		services.redis.servers.paperless = {
 			enable = true;
-			port = 6379;
-			bind = "127.0.0.1";
+			port = paperlessRedisPort;
+			bind = paperlessRedisHost;
 			settings = {
 				maxmemory = "256mb";
 				maxmemory-policy = "allkeys-lru";
@@ -84,7 +91,7 @@ in {
 			passwordFile = config.sops.secrets.tahani-paperless-password.path;
 			settings = {
 				PAPERLESS_DBENGINE = "sqlite";
-				PAPERLESS_REDIS = "redis://127.0.0.1:6379";
+				PAPERLESS_REDIS = paperlessRedisUrl;
 				PAPERLESS_CONSUMER_IGNORE_PATTERN = [
 					".DS_STORE/*"
 					"desktop.ini"
@@ -93,7 +100,7 @@ in {
 				PAPERLESS_CONSUMER_RECURSIVE = true;
 				PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = true;
 				PAPERLESS_OCR_LANGUAGE = "deu+eng";
-				PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://${local.tailscaleHost "docs"}";
+				PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://${docsHost}";
 			};
 		};
 	};

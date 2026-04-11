@@ -3,7 +3,7 @@
 	lib,
 }: let
 	merge = lib.recursiveUpdate;
-in {
+in rec {
 	mkUserHost = {
 		system,
 		host,
@@ -34,4 +34,26 @@ in {
 						inherit nixos;
 					}))
 		];
+
+	mkHostConfig = {
+		system,
+		host,
+		user,
+		userAspect ? "${host}-${user}",
+		userIncludes ? [],
+		userHomeManager ? null,
+		hostIncludes ? [],
+		darwin ? null,
+		nixos ? null,
+	}:
+		merge
+		(mkUserHost {
+				inherit host system user userAspect;
+				includes = userIncludes;
+				homeManager = userHomeManager;
+			})
+		(mkPerHostAspect {
+				inherit darwin host nixos;
+				includes = hostIncludes;
+			});
 }

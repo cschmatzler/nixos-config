@@ -8,28 +8,24 @@
 	host = "chidi";
 	hostMeta = local.hosts.chidi;
 in
-	lib.recursiveUpdate
-	(hostLib.mkUserHost {
-			system = hostMeta.system;
-			inherit host;
-			user = local.user.name;
-			includes = [den.aspects.user-darwin-laptop];
-			homeManager = {...}: {
-				programs.git.settings.user.email = local.user.emails.work;
-			};
-		})
-	(hostLib.mkPerHostAspect {
-			inherit host;
-			includes = [
-				den.aspects.host-darwin-base
-				den.aspects.opencode-api-key
-			];
-			darwin = {...}: {
-				networking.hostName = host;
-				networking.computerName = host;
+	hostLib.mkHostConfig {
+		system = hostMeta.system;
+		inherit host;
+		user = local.user.name;
+		userIncludes = [den.aspects.user-darwin-laptop];
+		userHomeManager = {...}: {
+			programs.git.settings.user.email = local.user.emails.work;
+		};
+		hostIncludes = [
+			den.aspects.host-darwin-base
+			den.aspects.opencode-api-key
+		];
+		darwin = {...}: {
+			networking.hostName = host;
+			networking.computerName = host;
 
-				homebrew.casks = [
-					"slack"
-				];
-			};
-		})
+			homebrew.casks = [
+				"slack"
+			];
+		};
+	}

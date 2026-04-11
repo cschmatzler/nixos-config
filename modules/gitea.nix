@@ -1,5 +1,19 @@
 {lib, ...}: let
 	secretLib = import ./_lib/secrets.nix {inherit lib;};
+	serviceUser = "gitea";
+	stateDir = "/var/lib/${serviceUser}";
+	dataDir = "${stateDir}/data";
+	dbPath = "${dataDir}/gitea.db";
+	domain = "git.schmatzler.com";
+	rootUrl = "https://${domain}/";
+	httpAddr = "127.0.0.1";
+	httpPort = 3000;
+	redisHost = "127.0.0.1";
+	redisPort = 6380;
+	redisUrl = db: "redis://${redisHost}:${toString redisPort}/${toString db}?pool_size=100&idle_timeout=180s";
+	backblazeEndpoint = "s3.eu-central-003.backblazeb2.com";
+	litestreamBucket = "michael-gitea-litestream";
+	resticRepository = "s3:${backblazeEndpoint}/michael-gitea-repositories";
 in {
 	den.aspects.gitea.nixos = {
 		config,
@@ -11,19 +25,19 @@ in {
 			michael-gitea-litestream =
 				secretLib.mkServiceBinarySecret {
 					name = "michael-gitea-litestream";
-					serviceUser = "gitea";
+					inherit serviceUser;
 					sopsFile = ../secrets/michael-gitea-litestream;
 				};
 			michael-gitea-restic-password =
 				secretLib.mkServiceBinarySecret {
 					name = "michael-gitea-restic-password";
-					serviceUser = "gitea";
+					inherit serviceUser;
 					sopsFile = ../secrets/michael-gitea-restic-password;
 				};
 			michael-gitea-restic-env =
 				secretLib.mkServiceBinarySecret {
 					name = "michael-gitea-restic-env";
-					serviceUser = "gitea";
+					inherit serviceUser;
 					sopsFile = ../secrets/michael-gitea-restic-env;
 				};
 		};
@@ -32,8 +46,8 @@ in {
 
 		services.redis.servers.gitea = {
 			enable = true;
-			port = 6380;
-			bind = "127.0.0.1";
+			port = redisPort;
+			bind = redisHost;
 			settings = {
 				maxmemory = "64mb";
 				maxmemory-policy = "allkeys-lru";
@@ -44,21 +58,21 @@ in {
 			enable = true;
 			database = {
 				type = "sqlite3";
-				path = "/var/lib/gitea/data/gitea.db";
+				path = dbPath;
 			};
 			settings = {
 				server = {
-					ROOT_URL = "https://git.schmatzler.com/";
-					DOMAIN = "git.schmatzler.com";
-					HTTP_ADDR = "127.0.0.1";
-					HTTP_PORT = 3000;
+					ROOT_URL = rootUrl;
+					DOMAIN = domain;
+					HTTP_ADDR = httpAddr;
+					HTTP_PORT = httpPort;
 					LANDING_PAGE = "explore";
 				};
 				service.DISABLE_REGISTRATION = true;
 				security.INSTALL_LOCK = true;
 				cache = {
 					ADAPTER = "redis";
-					HOST = "redis://127.0.0.1:6380/0?pool_size=100&idle_timeout=180s";
+					HOST = redisUrl 0;
 					ITEM_TTL = "16h";
 				};
 				"cache.last_commit" = {
@@ -67,7 +81,7 @@ in {
 				};
 				session = {
 					PROVIDER = "redis";
-					PROVIDER_CONFIG = "redis://127.0.0.1:6380/1?pool_size=100&idle_timeout=180s";
+					PROVIDER_CONFIG = redisUrl 1;
 					COOKIE_SECURE = true;
 					SAME_SITE = "strict";
 				};
@@ -80,13 +94,13 @@ in {
 			environmentFile = config.sops.secrets.michael-gitea-litestream.path;
 			settings.dbs = [
 				{
-					path = "/var/lib/gitea/data/gitea.db";
+					path = dbPath;
 					replicas = [
 						{
 							type = "s3";
-							bucket = "michael-gitea-litestream";
-							path = "gitea";
-							endpoint = "s3.eu-central-003.backblazeb2.com";
+							bucket = litestreamBucket;
+							path = serviceUser;
+							endpoint = backblazeEndpoint;
 						}
 					];
 				}
@@ -94,31 +108,31 @@ in {
 		};
 
 		systemd.services.litestream.serviceConfig = {
-			User = lib.mkForce "gitea";
-			Group = lib.mkForce "gitea";
+			User = lib.mkForce serviceUser;
+			Group = lib.mkForce serviceUser;
 		};
 
 		services.caddy = {
 			enable = true;
-			virtualHosts."git.schmatzler.com".extraConfig = ''
+			virtualHosts.${domain}.extraConfig = ''
 				header {
 					Strict-Transport-Security "max-age=31536000; includeSubDomains"
 					X-Content-Type-Options "nosniff"
 					X-Frame-Options "DENY"
 					Referrer-Policy "strict-origin-when-cross-origin"
 				}
-				reverse_proxy localhost:3000
+				reverse_proxy localhost:${toString httpPort}
 			'';
 		};
 
 		services.restic.backups.gitea = {
-			repository = "s3:s3.eu-central-003.backblazeb2.com/michael-gitea-repositories";
-			paths = ["/var/lib/gitea"];
+			repository = resticRepository;
+			paths = [stateDir];
 			exclude = [
-				"/var/lib/gitea/log"
-				"/var/lib/gitea/data/gitea.db"
-				"/var/lib/gitea/data/gitea.db-shm"
-				"/var/lib/gitea/data/gitea.db-wal"
+				"${stateDir}/log"
+				dbPath
+				"${dbPath}-shm"
+				"${dbPath}-wal"
 			];
 			passwordFile = config.sops.secrets.michael-gitea-restic-password.path;
 			environmentFile = config.sops.secrets.michael-gitea-restic-env.path;
@@ -138,8 +152,8 @@ in {
 			wants = ["restic-init-gitea.service"];
 			after = ["restic-init-gitea.service"];
 			serviceConfig = {
-				User = lib.mkForce "gitea";
-				Group = lib.mkForce "gitea";
+				User = lib.mkForce serviceUser;
+				Group = lib.mkForce serviceUser;
 			};
 		};
 
@@ -151,15 +165,15 @@ in {
 			path = [pkgs.restic];
 			serviceConfig = {
 				Type = "oneshot";
-				User = "gitea";
-				Group = "gitea";
+				User = serviceUser;
+				Group = serviceUser;
 				RemainAfterExit = true;
 				EnvironmentFile = config.sops.secrets.michael-gitea-restic-env.path;
 			};
 			script = ''
 				export RESTIC_PASSWORD=$(cat ${config.sops.secrets.michael-gitea-restic-password.path})
-				restic -r s3:s3.eu-central-003.backblazeb2.com/michael-gitea-repositories snapshots &>/dev/null || \
-					restic -r s3:s3.eu-central-003.backblazeb2.com/michael-gitea-repositories init
+				restic -r ${resticRepository} snapshots &>/dev/null || \
+					restic -r ${resticRepository} init
 			'';
 		};
 	};

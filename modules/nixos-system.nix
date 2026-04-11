@@ -1,6 +1,6 @@
 {inputs, ...}: let
 	local = import ./_lib/local.nix;
-	userHome = "/home/${local.user.name}";
+	userHome = local.mkHome "x86_64-linux";
 in {
 	den.aspects.nixos-system.nixos = {pkgs, ...}: {
 		imports = [inputs.home-manager.nixosModules.home-manager];
@@ -84,16 +84,10 @@ in {
 					"systemd-journal"
 				];
 				shell = pkgs.nushell;
-				openssh.authorizedKeys.keys = [
-					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHfRZQ+7ejD3YHbyMTrV0gN1Gc0DxtGgl5CVZSupo5ws"
-					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL/I+/2QT47raegzMIyhwMEPKarJP/+Ox9ewA4ZFJwk/"
-				];
+				openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
 			};
 			root = {
-				openssh.authorizedKeys.keys = [
-					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHfRZQ+7ejD3YHbyMTrV0gN1Gc0DxtGgl5CVZSupo5ws"
-					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL/I+/2QT47raegzMIyhwMEPKarJP/+Ox9ewA4ZFJwk/"
-				];
+				openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
 			};
 		};
 	};

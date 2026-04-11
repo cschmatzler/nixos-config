@@ -1,6 +1,6 @@
 {inputs, ...}: let
 	local = import ./_lib/local.nix;
-	userHome = "/Users/${local.user.name}";
+	userHome = local.mkHome "aarch64-darwin";
 in {
 	den.aspects.darwin-system.darwin = {pkgs, ...}: {
 		imports = [

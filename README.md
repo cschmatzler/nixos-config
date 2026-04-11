@@ -14,7 +14,7 @@ Personal Nix flake for four machines:
 - `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and literal networking
 - `modules/profiles/` - shared host and user profile bundles
 - `modules/_lib/` - local helper functions
-- `modules/_notability/`, `modules/_paperless/` - feature-owned scripts and templates
+- `modules/_desktop/`, `modules/_paperless/`, `modules/_pi/`, `modules/_terminal/`, `modules/_zellij/` - feature-owned config data, templates, and rendered config sources
 - `apps/` - Nushell apps exposed through the flake
 - `secrets/` - SOPS-encrypted secrets
 - `flake.nix` - generated flake entrypoint
@@ -29,7 +29,8 @@ This repo uses `den` and organizes configuration around aspects instead of putti
 - shared bundles live in `modules/profiles/{host,user}/`
 - host composition happens in `modules/hosts/<host>.nix`
 - host-private imports live in `modules/hosts/_parts/<host>/` and stay limited to true machine leaf files
-- feature-owned services live in top-level modules like `modules/gitea.nix`, `modules/notability.nix`, and `modules/paperless.nix`
+- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix`, `modules/gitea.nix`, and `modules/paperless.nix`
+- large app config payloads live next to their feature under `_`-prefixed directories and get rendered from Nix data instead of mixing inline JSON/text blobs and checked-in generated files
 - user-level config mostly lives in Home Manager aspects
 
 Common examples:
@@ -38,7 +39,7 @@ Common examples:
 - `modules/dev-tools.nix` - VCS, language, and developer tooling
 - `modules/network.nix` - SSH, fail2ban, and tailscale aspects
 - `modules/gitea.nix` - Gitea, Litestream, and backup stack for `michael`
-- `modules/notability.nix` - Notability ingest services and user tooling for `tahani`
+- `modules/ai-tools.nix` - Pi, Claude Code, MCP, and agent extensions
 - `modules/profiles/user/workstation.nix` - shared developer workstation user bundle
 - `modules/hosts/michael.nix` - server composition for `michael`
 - `modules/hosts/tahani.nix` - server/workstation composition for `tahani`
