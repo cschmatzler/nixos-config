@@ -13,7 +13,7 @@ in {
 		homeManager ? null,
 	}:
 		merge
-		(lib.setAttrByPath ["den" "hosts" system host "users" user "aspect"] userAspect)
+		(lib.setAttrByPath ["den" "hosts" system host "users" user "aspect"] den.aspects.${userAspect})
 		(lib.setAttrByPath ["den" "aspects" userAspect] ({inherit includes;}
 				// lib.optionalAttrs (homeManager != null) {
 					inherit homeManager;
