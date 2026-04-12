@@ -53,6 +53,18 @@
 		}
 		{
 			"if" = {
+				"app-id" = "net.imput.helium";
+			};
+			run = "move-node-to-workspace 2";
+		}
+		{
+			"if" = {
+				"app-id" = "com.openai.chat";
+			};
+			run = "move-node-to-workspace 4";
+		}
+		{
+			"if" = {
 				"app-id" = "com.tinyspeck.slackmacgap";
 			};
 			run = "move-node-to-workspace 5";
@@ -62,6 +74,12 @@
 				"app-id" = "net.whatsapp.WhatsApp";
 			};
 			run = "move-node-to-workspace 5";
+		}
+		{
+			"if" = {
+				"app-id" = "com.spotify.client";
+			};
+			run = "move-node-to-workspace 6";
 		}
 		{
 			"if" = {

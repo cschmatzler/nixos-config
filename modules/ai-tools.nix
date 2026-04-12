@@ -52,6 +52,7 @@ in {
 			".pi/agent/extensions/no-scripting.ts".source = ./_pi/extensions/no-scripting.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
 			".pi/agent/extensions/session-name.ts".source = ./_pi/extensions/session-name.ts;
+			".pi/agent/extensions/strict-agentic.ts".source = ./_pi/extensions/strict-agentic.ts;
 		};
 		piSkills = {
 			".pi/agent/skills/elixir-dev" = {
