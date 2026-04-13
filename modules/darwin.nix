@@ -158,7 +158,6 @@ in {
 				"helium-browser"
 				"raycast"
 				"spotify"
-				"tailscale"
 				"whatsapp"
 			];
 		};

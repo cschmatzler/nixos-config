@@ -56,7 +56,7 @@
 		};
 	};
 
-	den.aspects.tailscale.darwin = {
-		services.tailscale.enable = true;
+	den.aspects.tailscale.darwin = {pkgs, ...}: {
+		environment.systemPackages = [pkgs.tailscale-gui];
 	};
 }
