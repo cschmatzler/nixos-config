@@ -34,10 +34,6 @@ in {
 	}: let
 		jsonFormat = pkgs.formats.json {};
 		piPackages = {
-			".pi/agent/extensions/pi-elixir" = {
-				source = inputs.pi-elixir;
-				recursive = true;
-			};
 			".pi/agent/extensions/pi-mcp-adapter" = {
 				source = "${pkgs.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
 				recursive = true;
@@ -52,13 +48,8 @@ in {
 			".pi/agent/extensions/no-scripting.ts".source = ./_pi/extensions/no-scripting.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
 			".pi/agent/extensions/session-name.ts".source = ./_pi/extensions/session-name.ts;
-			".pi/agent/extensions/strict-agentic.ts".source = ./_pi/extensions/strict-agentic.ts;
 		};
 		piSkills = {
-			".pi/agent/skills/elixir-dev" = {
-				source = "${inputs.pi-elixir}/skills/elixir-dev";
-				recursive = true;
-			};
 			".pi/agent/skills/jujutsu/SKILL.md".source = ./_pi/skills/jujutsu/SKILL.md;
 		};
 		piGeneratedConfigs = {

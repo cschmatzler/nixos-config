@@ -72,10 +72,6 @@
 			url = "github:mitsuhiko/agent-stuff";
 			flake = false;
 		};
-		pi-elixir = {
-			url = "github:dannote/pi-elixir";
-			flake = false;
-		};
 		pi-harness = {
 			url = "github:aliou/pi-harness";
 			flake = false;
