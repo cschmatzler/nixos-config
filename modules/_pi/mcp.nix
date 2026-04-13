@@ -9,6 +9,7 @@
 				"-y"
 				"opensrc-mcp"
 			];
+			directTools = true;
 			lifecycle = "eager";
 		};
 		sentry = {

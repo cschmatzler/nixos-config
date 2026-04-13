@@ -19,6 +19,8 @@ in
 			den.aspects.gitea
 		];
 		nixos = {modulesPath, ...}: {
+			networking.hostName = host;
+
 			imports = [
 				(modulesPath + "/installer/scan/not-detected.nix")
 				./_parts/michael/disk-config.nix

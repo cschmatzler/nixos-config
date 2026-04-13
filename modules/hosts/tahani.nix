@@ -39,6 +39,8 @@ in
 			den.aspects.paperless
 		];
 		nixos = {...}: {
+			networking.hostName = host;
+
 			imports = [
 				./_parts/tahani/networking.nix
 			];
