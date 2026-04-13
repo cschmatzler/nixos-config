@@ -5,14 +5,12 @@
 			version = "2.3.4";
 			src = inputs.pi-mcp-adapter;
 			postPatch = ''
-				substituteInPlace package.json \
-					--replace-fail '    "open": "^10.2.0",' "" \
-					--replace-fail '    "@types/bun": "^1.0.0",' "" \
-					--replace-fail '    "@types/open": "^6.2.1",' "" \
-					--replace-fail '    "tsx": "^4.21.0",' ""
+				# Upstream 2.3.4 ships a stale package-lock.json that omits runtime deps like
+				# `open`, so replace it with a lockfile regenerated from upstream package.json.
+				cp ${./pi-mcp-adapter-package-lock.json} package-lock.json
 			'';
 			npmDepsFetcherVersion = 2;
-			npmDepsHash = "sha256-NO86vWd5lSBo/PaRzzaW3fTJ3sSqI6XyIFUfM3GVtkM=";
+			npmDepsHash = "sha256-cX9uptTUe8EQnp9RzQnlk4Dz6mqre73nCrf/cNYR0ug=";
 			dontNpmBuild = true;
 		};
 }

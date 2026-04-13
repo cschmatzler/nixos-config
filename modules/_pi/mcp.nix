@@ -11,14 +11,6 @@
 			];
 			lifecycle = "eager";
 		};
-		context7 = {
-			url = "https://mcp.context7.com/mcp";
-			lifecycle = "eager";
-		};
-		grep_app = {
-			url = "https://mcp.grep.app";
-			lifecycle = "eager";
-		};
 		sentry = {
 			url = "https://mcp.sentry.dev/mcp";
 			auth = "oauth";
