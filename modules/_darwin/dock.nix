@@ -41,10 +41,10 @@ in {
 					default = [
 						{path = "/Applications/Helium.app/";}
 						{path = "/Applications/Ghostty.app/";}
+						{path = "/Applications/Spotify.app/";}
 						{path = "/System/Applications/Calendar.app/";}
 						{path = "/System/Applications/Mail.app/";}
 						{path = "/System/Applications/Notes.app/";}
-						{path = "/System/Applications/Safari.app/";}
 						{path = "/System/Applications/System Settings.app/";}
 						{
 							path = "${userHome}/Downloads";
