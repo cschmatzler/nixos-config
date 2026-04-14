@@ -32,8 +32,6 @@
 			secrets = ./secrets.nix;
 
 			# Shared host features
-			adguardhome = ./adguardhome.nix;
-			cache = ./cache.nix;
 			gitea = ./gitea.nix;
 			paperless = ./paperless.nix;
 

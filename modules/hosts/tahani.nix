@@ -34,8 +34,6 @@ in
 			den.aspects.host-nixos-base
 			den.aspects.opencode-api-key
 			den.aspects.ynab-api-key
-			den.aspects.adguardhome
-			den.aspects.cache
 			den.aspects.paperless
 		];
 		nixos = {...}: {
