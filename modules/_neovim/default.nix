@@ -30,7 +30,16 @@
 	programs.nixvim = {
 		enable = true;
 		defaultEditor = true;
-		package = inputs'.neovim-nightly-overlay.packages.default;
+		package =
+			inputs'.neovim-nightly-overlay.packages.default.overrideAttrs (old: {
+					postInstall =
+						(old.postInstall or "")
+						+ ''
+							if [ -e "$out/share/applications/org.neovim.nvim.desktop" ] && [ ! -e "$out/share/applications/nvim.desktop" ]; then
+								ln -s org.neovim.nvim.desktop $out/share/applications/nvim.desktop
+							fi
+						'';
+				});
 		luaLoader.enable = true;
 		colorschemes.rose-pine = {
 			enable = true;
