@@ -6,8 +6,8 @@
 	quietStartup = true;
 	hideThinkingBlock = true;
 	defaultProvider = "openai-codex";
-	defaultModel = "gpt-5.4";
-	defaultThinkingLevel = "high";
+	defaultModel = "gpt-5.3-codex";
+	defaultThinkingLevel = "xhigh";
 	packages = [
 		{
 			source = "${pkgs.pi-agent-stuff}/lib/node_modules/mitsupi";
