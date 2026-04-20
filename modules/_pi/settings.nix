@@ -27,6 +27,7 @@
 			prompts = [];
 			themes = [];
 		}
+		"https://github.com/ShpetimA/pi-fff"
 		"${config.home.homeDirectory}/Projects/Personal/pi-supermemory"
 	];
 }

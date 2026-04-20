@@ -103,17 +103,17 @@
 			key = "<leader>ff";
 			action.__raw = ''
 				function()
-					Snacks.picker.files()
+					require('fff').find_files()
 				end
 			'';
-			options.desc = "Search files";
+			options.desc = "Find files";
 		}
 		{
 			mode = "n";
 			key = "<leader>fg";
 			action.__raw = ''
 				function()
-					Snacks.picker.grep()
+					require('fff').live_grep()
 				end
 			'';
 			options.desc = "Live grep";
