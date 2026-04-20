@@ -38,6 +38,10 @@ in {
 				source = "${pkgs.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
 				recursive = true;
 			};
+			".pi/agent/extensions/pi-thinking-steps" = {
+				source = inputs.pi-thinking-steps;
+				recursive = true;
+			};
 			".pi/agent/themes" = {
 				source = "${inputs.pi-rose-pine}/themes";
 				recursive = true;

@@ -69,6 +69,10 @@
 			url = "github:zenobi-us/pi-rose-pine";
 			flake = false;
 		};
+		pi-thinking-steps = {
+			url = "github:fluxgear/pi-thinking-steps";
+			flake = false;
+		};
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
 		jj-ryu = {

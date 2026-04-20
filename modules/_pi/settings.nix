@@ -4,18 +4,17 @@
 }: {
 	theme = "rose-pine-dawn";
 	quietStartup = true;
-	hideThinkingBlock = true;
 	defaultProvider = "openai-codex";
-	defaultModel = "gpt-5.3-codex";
+	defaultModel = "gpt-5.4";
 	defaultThinkingLevel = "xhigh";
 	packages = [
 		{
 			source = "${pkgs.pi-agent-stuff}/lib/node_modules/mitsupi";
 			extensions = [
-				"pi-extensions/answer.ts"
-				"pi-extensions/context.ts"
-				"pi-extensions/multi-edit.ts"
-				"pi-extensions/todos.ts"
+				"extensions/answer.ts"
+				"extensions/context.ts"
+				"extensions/multi-edit.ts"
+				"extensions/todos.ts"
 			];
 			skills = [];
 			prompts = [];
