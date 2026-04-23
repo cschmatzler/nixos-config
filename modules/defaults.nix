@@ -32,7 +32,6 @@
 			secrets = ./secrets.nix;
 
 			# Shared host features
-			gitea = ./gitea.nix;
 			paperless = ./paperless.nix;
 
 			# User environment

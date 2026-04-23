@@ -1,8 +1,7 @@
 # NixOS Config
 
-Personal Nix flake for four machines:
+Personal Nix flake for three machines:
 
-- `michael` - x86_64 Linux server
 - `tahani` - x86_64 Linux home server / workstation
 - `chidi` - aarch64 Darwin work laptop
 - `janet` - aarch64 Darwin personal laptop
@@ -29,7 +28,7 @@ This repo uses `den` and organizes configuration around aspects instead of putti
 - shared bundles live in `modules/profiles/{host,user}/`
 - host composition happens in `modules/hosts/<host>.nix`
 - host-private imports live in `modules/hosts/_parts/<host>/` and stay limited to true machine leaf files
-- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix`, `modules/gitea.nix`, and `modules/paperless.nix`
+- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix`, `modules/network.nix`, and `modules/paperless.nix`
 - large app config payloads live next to their feature under `_`-prefixed directories and get rendered from Nix data instead of mixing inline JSON/text blobs and checked-in generated files
 - user-level config mostly lives in Home Manager aspects
 
@@ -37,18 +36,16 @@ Common examples:
 
 - `modules/core.nix` - shared Nix and shell foundation
 - `modules/dev-tools.nix` - VCS, language, and developer tooling
-- `modules/network.nix` - SSH, fail2ban, and tailscale aspects
-- `modules/gitea.nix` - Gitea, Litestream, and backup stack for `michael`
+- `modules/network.nix` - SSH and tailscale aspects
 - `modules/ai-tools.nix` - Pi, Claude Code, MCP, and agent extensions
 - `modules/profiles/user/workstation.nix` - shared developer workstation user bundle
-- `modules/hosts/michael.nix` - server composition for `michael`
 - `modules/hosts/tahani.nix` - server/workstation composition for `tahani`
 
 ## Common Commands
 
 ```bash
 nix run .#build
-nix run .#build -- michael
+nix run .#build -- tahani
 nix run .#apply
 nix run .#deploy -- .#tahani
 nix flake check

@@ -28,7 +28,6 @@ rec {
 	hosts = {
 		chidi = mkHost "aarch64-darwin";
 		janet = mkHost "aarch64-darwin";
-		michael = mkHost "x86_64-linux";
 		tahani = mkHost "x86_64-linux";
 	};
 

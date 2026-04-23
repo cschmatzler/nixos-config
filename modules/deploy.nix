@@ -22,11 +22,6 @@
 	};
 in {
 	flake.deploy.nodes = {
-		michael =
-			mkSystemNode {
-				hostname = "git.schmatzler.com";
-				host = "michael";
-			};
 		tahani =
 			mkSystemNode {
 				hostname = "127.0.0.1";
