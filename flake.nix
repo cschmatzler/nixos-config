@@ -83,10 +83,6 @@
 			url = "github:zenobi-us/pi-rose-pine";
 			flake = false;
 		};
-		pi-thinking-steps = {
-			url = "github:fluxgear/pi-thinking-steps";
-			flake = false;
-		};
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";

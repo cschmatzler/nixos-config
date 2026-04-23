@@ -881,22 +881,6 @@
         "type": "github"
       }
     },
-    "pi-thinking-steps": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1776618199,
-        "narHash": "sha256-VquzXgMThRBrl891y+4UPiAfYDSdnUHSxlGpoqs+wvg=",
-        "owner": "fluxgear",
-        "repo": "pi-thinking-steps",
-        "rev": "51133770905e2aeaab2a8ac78404d66110450010",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fluxgear",
-        "repo": "pi-thinking-steps",
-        "type": "github"
-      }
-    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -943,7 +927,6 @@
         "pi-harness": "pi-harness",
         "pi-mcp-adapter": "pi-mcp-adapter",
         "pi-rose-pine": "pi-rose-pine",
-        "pi-thinking-steps": "pi-thinking-steps",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }
