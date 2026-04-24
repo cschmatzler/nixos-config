@@ -36,8 +36,10 @@ in
 			den.aspects.ynab-api-key
 			den.aspects.paperless
 		];
-		nixos = {...}: {
+		nixos = {pkgs, ...}: {
 			networking.hostName = host;
+
+			environment.systemPackages = [pkgs._1password-cli];
 
 			imports = [
 				./_parts/tahani/networking.nix

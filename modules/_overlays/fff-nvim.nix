@@ -13,10 +13,14 @@
 								# which can emit instructions unsupported by this machine
 								# (observed as SIGILL in zlob_has_wildcards).
 								# Force the non-native path so it uses rust_target_to_zig(&target).
-								substituteInPlace $cargoDepsCopy/*/zlob-1.3.0/build.rs \
-									--replace-fail \
-										'if target == host && !target.contains("windows") {' \
-										'if false {'
+								for zlobBuild in $cargoDepsCopy/*/zlob-*/build.rs; do
+									if [[ -e "$zlobBuild" ]]; then
+										substituteInPlace "$zlobBuild" \
+											--replace-fail \
+												'if target == host && !target.contains("windows") && !in_ci {' \
+												'if false {'
+									fi
+								done
 							'';
 					}
 				);

@@ -5,7 +5,8 @@
 }: {
 	programs.nixvim.extraPlugins = [
 		(pkgs.vimUtils.buildVimPlugin {
-				name = "jj-diffconflicts";
+				pname = "jj-diffconflicts";
+				version = "unstable";
 				src = nvim-plugin-sources.jj-diffconflicts;
 			})
 	];

@@ -233,14 +233,5 @@ in {
 			enable = true;
 			nix-direnv.enable = true;
 		};
-
-		# Mise configuration
-		programs.mise = {
-			enable = true;
-			enableNushellIntegration = true;
-			globalConfig.settings = {
-				auto_install = false;
-			};
-		};
 	};
 }

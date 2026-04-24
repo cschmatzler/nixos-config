@@ -66,7 +66,10 @@
 		};
 		nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 		nixpkgs.url = "github:nixos/nixpkgs/master";
-		nixvim.url = "github:nix-community/nixvim";
+		nixvim = {
+			url = "github:nix-community/nixvim";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		pi-agent-stuff = {
 			url = "github:mitsuhiko/agent-stuff";
 			flake = false;
