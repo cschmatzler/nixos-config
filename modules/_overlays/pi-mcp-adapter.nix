@@ -2,10 +2,10 @@
 	pi-mcp-adapter =
 		prev.buildNpmPackage {
 			pname = "pi-mcp-adapter";
-			version = "2.5.1";
+			version = "2.5.2";
 			src = inputs.pi-mcp-adapter;
 			npmDepsFetcherVersion = 2;
-			npmDepsHash = "sha256-2JQzjxMy0+rtDq6bO2tpyZ1X+cZclRzsCDzDklC/bxc=";
+			npmDepsHash = "sha256-J8ogEjKmO3yYBGGJSpNVoaVKKgGFt9vjcEJUxVV9tq0=";
 			dontNpmBuild = true;
 		};
 }

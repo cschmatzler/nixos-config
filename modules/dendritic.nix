@@ -60,10 +60,6 @@
 			url = "github:mitsuhiko/agent-stuff";
 			flake = false;
 		};
-		pi-harness = {
-			url = "github:aliou/pi-harness";
-			flake = false;
-		};
 		pi-mcp-adapter = {
 			url = "github:nicobailon/pi-mcp-adapter";
 			flake = false;

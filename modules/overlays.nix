@@ -20,8 +20,6 @@
 				})
 		# ast-grep (test_scan_invalid_rule_id fails on darwin in sandbox)
 		(import ./_overlays/ast-grep.nix {inherit inputs;})
-		# fff.nvim/zlob (avoid host-native Zig codegen causing SIGILL on older CPUs)
-		(import ./_overlays/fff-nvim.nix {inherit inputs;})
 		# paperless-ngx frontend tests are flaky under Node/Jest in the sandbox (worker SIGSEGV)
 		(import ./_overlays/paperless-ngx.nix {})
 	];

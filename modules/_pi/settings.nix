@@ -20,14 +20,7 @@
 			prompts = [];
 			themes = [];
 		}
-		{
-			source = "${pkgs.pi-harness}/lib/node_modules/@aliou/pi-harness";
-			extensions = ["extensions/breadcrumbs/index.ts"];
-			skills = [];
-			prompts = [];
-			themes = [];
-		}
-		"https://github.com/ShpetimA/pi-fff"
+		"npm:@ff-labs/pi-fff"
 		"${config.home.homeDirectory}/Projects/Personal/codex-supermemory"
 	];
 }
