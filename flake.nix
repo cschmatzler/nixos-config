@@ -18,6 +18,10 @@
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		fallow = {
+			url = "github:fallow-rs/fallow";
+			flake = false;
+		};
 		fenix = {
 			url = "github:nix-community/fenix";
 			inputs.nixpkgs.follows = "nixpkgs";

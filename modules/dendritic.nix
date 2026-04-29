@@ -74,6 +74,10 @@
 		};
 		# Overlay inputs
 		himalaya.url = "github:pimalaya/himalaya";
+		fallow = {
+			url = "github:fallow-rs/fallow";
+			flake = false;
+		};
 		jj-ryu = {
 			url = "github:dmmulroy/jj-ryu";
 			flake = false;

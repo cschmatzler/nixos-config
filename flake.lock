@@ -183,6 +183,22 @@
         "type": "github"
       }
     },
+    "fallow": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777468876,
+        "narHash": "sha256-sf1mzqrjfZ4auukiDthnCNmRCezVB0uBdrvhc0zXuPc=",
+        "owner": "fallow-rs",
+        "repo": "fallow",
+        "rev": "cbd529d1aac3f6da11d2b73e575dd7427f33d985",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fallow-rs",
+        "repo": "fallow",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -874,6 +890,7 @@
         "den": "den",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
+        "fallow": "fallow",
         "fenix": "fenix",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
