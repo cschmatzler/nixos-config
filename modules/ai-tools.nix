@@ -1,8 +1,4 @@
-{
-	inputs,
-	lib,
-	...
-}: let
+{lib, ...}: let
 	local = import ./_lib/local.nix;
 	inherit (local) secretPath;
 	secretLib = import ./_lib/secrets.nix {inherit lib;};
@@ -33,16 +29,6 @@ in {
 		...
 	}: let
 		jsonFormat = pkgs.formats.json {};
-		piPackages = {
-			".pi/agent/extensions/pi-mcp-adapter" = {
-				force = true;
-				source = "${pkgs.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
-			};
-			".pi/agent/themes" = {
-				source = "${inputs.pi-rose-pine}/themes";
-				recursive = true;
-			};
-		};
 		piExtensions = {
 			".pi/agent/extensions/no-git.ts".source = ./_pi/extensions/no-git.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
@@ -74,7 +60,7 @@ in {
 		piGeneratedConfigs = {
 			".pi/agent/settings.json".source =
 				jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
-						inherit config pkgs;
+						inherit config;
 					});
 			".pi/agent/mcp.json".source =
 				jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
@@ -107,7 +93,6 @@ in {
 			{
 				"AGENTS.md".source = ./_pi/AGENTS.md;
 			}
-			// piPackages
 			// piExtensions
 			// piSkills
 			// piGeneratedConfigs;

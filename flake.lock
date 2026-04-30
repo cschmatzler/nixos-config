@@ -803,54 +803,6 @@
         "type": "github"
       }
     },
-    "pi-agent-stuff": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777480263,
-        "narHash": "sha256-jsAYm7CgXw6+ZeB/0ZCzsKUu/zNk8FLqU/TR2ZTjEtw=",
-        "owner": "mitsuhiko",
-        "repo": "agent-stuff",
-        "rev": "b861028c706edf3e3f983cde09dd8cc8549ec948",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mitsuhiko",
-        "repo": "agent-stuff",
-        "type": "github"
-      }
-    },
-    "pi-mcp-adapter": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777481367,
-        "narHash": "sha256-rjgpPqxHjXDRU8z5oAdmsa33unuSVF+kaLiMtgddKQI=",
-        "owner": "nicobailon",
-        "repo": "pi-mcp-adapter",
-        "rev": "4ca3799183710b459952655778f95b921e7985ad",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nicobailon",
-        "repo": "pi-mcp-adapter",
-        "type": "github"
-      }
-    },
-    "pi-rose-pine": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1770936151,
-        "narHash": "sha256-6TzuWJPAn8zz+lUjZ3slFCNdPVd/Z2C+WoXFsLopk1g=",
-        "owner": "zenobi-us",
-        "repo": "pi-rose-pine",
-        "rev": "9b342f6e16d6b28c00c2f888ba2f050273981bdb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "zenobi-us",
-        "repo": "pi-rose-pine",
-        "type": "github"
-      }
-    },
     "pimalaya": {
       "flake": false,
       "locked": {
@@ -894,9 +846,6 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_5",
         "nixvim": "nixvim",
-        "pi-agent-stuff": "pi-agent-stuff",
-        "pi-mcp-adapter": "pi-mcp-adapter",
-        "pi-rose-pine": "pi-rose-pine",
         "sops-nix": "sops-nix",
         "zjstatus": "zjstatus"
       }

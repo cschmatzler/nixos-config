@@ -1,7 +1,4 @@
-{
-	config,
-	pkgs,
-}: {
+{config}: {
 	theme = "rose-pine-dawn";
 	quietStartup = true;
 	defaultProvider = "openai-codex";
@@ -9,7 +6,7 @@
 	defaultThinkingLevel = "medium";
 	packages = [
 		{
-			source = "${pkgs.pi-agent-stuff}/lib/node_modules/mitsupi";
+			source = "npm:mitsupi";
 			extensions = [
 				"extensions/answer.ts"
 				"extensions/context.ts"
@@ -20,6 +17,8 @@
 			prompts = [];
 			themes = [];
 		}
+		"npm:pi-mcp-adapter"
+		"npm:@zenobius/pi-rose-pine"
 		"npm:@ff-labs/pi-fff"
 		"${config.home.homeDirectory}/Projects/Personal/codex-supermemory"
 	];

@@ -74,18 +74,6 @@
 			url = "github:nix-community/nixvim";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		pi-agent-stuff = {
-			url = "github:mitsuhiko/agent-stuff";
-			flake = false;
-		};
-		pi-mcp-adapter = {
-			url = "github:nicobailon/pi-mcp-adapter";
-			flake = false;
-		};
-		pi-rose-pine = {
-			url = "github:zenobi-us/pi-rose-pine";
-			flake = false;
-		};
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs";

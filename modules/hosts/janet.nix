@@ -19,6 +19,7 @@ in
 		hostIncludes = [
 			den.aspects.host-darwin-base
 			den.aspects.opencode-api-key
+			den.aspects.syncthing
 		];
 		darwin = {...}: {
 			networking.hostName = host;

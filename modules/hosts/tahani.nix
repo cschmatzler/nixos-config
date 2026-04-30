@@ -35,6 +35,7 @@ in
 			den.aspects.opencode-api-key
 			den.aspects.ynab-api-key
 			den.aspects.paperless
+			den.aspects.syncthing
 		];
 		nixos = {pkgs, ...}: {
 			networking.hostName = host;

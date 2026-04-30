@@ -1,9 +1,4 @@
 {inputs, ...}: let
-	piOverlays = [
-		(import ./_overlays/pi-agent-stuff.nix {inherit inputs;})
-		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
-	];
-
 	buildFixupOverlays = [
 		# direnv (Go 1.26 on darwin disables cgo, but direnv forces external linking)
 		(final: prev:
@@ -33,7 +28,7 @@
 		(import ./_overlays/zjstatus.nix {inherit inputs;})
 	];
 
-	overlays = piOverlays ++ buildFixupOverlays ++ toolOverlays;
+	overlays = buildFixupOverlays ++ toolOverlays;
 in {
 	den.default.nixos.nixpkgs.overlays = overlays;
 	den.default.darwin.nixpkgs.overlays = overlays;
