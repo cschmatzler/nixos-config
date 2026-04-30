@@ -154,6 +154,7 @@ in {
 				"aqua-voice"
 				"chatgpt"
 				"cleanshot"
+				"tailscale-app"
 				"ghostty@tip"
 				"helium-browser"
 				"raycast"
