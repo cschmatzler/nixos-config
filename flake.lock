@@ -819,22 +819,6 @@
         "type": "github"
       }
     },
-    "pi-harness": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777138854,
-        "narHash": "sha256-6vQnUu3OUm0DKfs1+c2oTEj1H0X5K1Q8rH/kXrdOfUE=",
-        "owner": "aliou",
-        "repo": "pi-harness",
-        "rev": "9a95e0d06a700a1e047b67239c7a83db7490ae80",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aliou",
-        "repo": "pi-harness",
-        "type": "github"
-      }
-    },
     "pi-mcp-adapter": {
       "flake": false,
       "locked": {
@@ -911,7 +895,6 @@
         "nixpkgs": "nixpkgs_5",
         "nixvim": "nixvim",
         "pi-agent-stuff": "pi-agent-stuff",
-        "pi-harness": "pi-harness",
         "pi-mcp-adapter": "pi-mcp-adapter",
         "pi-rose-pine": "pi-rose-pine",
         "sops-nix": "sops-nix",

@@ -1,7 +1,6 @@
 {inputs, ...}: let
 	piOverlays = [
 		(import ./_overlays/pi-agent-stuff.nix {inherit inputs;})
-		(import ./_overlays/pi-harness.nix {inherit inputs;})
 		(import ./_overlays/pi-mcp-adapter.nix {inherit inputs;})
 	];
 

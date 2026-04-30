@@ -92,6 +92,8 @@ in {
 
 		programs.nushell.extraEnv =
 			lib.mkAfter ''
+				$env.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global"
+
 				if ("${opencodeSecretPath}" | path exists) {
 					$env.OPENCODE_API_KEY = (open --raw "${opencodeSecretPath}" | str trim)
 				}
