@@ -1,9 +1,8 @@
 # NixOS Config
 
-Personal Nix flake for three machines:
+Personal Nix flake for two machines:
 
 - `tahani` - x86_64 Linux home server / workstation
-- `chidi` - aarch64 Darwin work laptop
 - `janet` - aarch64 Darwin personal laptop
 
 ## Repository Map

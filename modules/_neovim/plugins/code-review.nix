@@ -25,6 +25,8 @@ in {
 				},
 				ui = {
 					input_window = {
+						title = "Review",
+						height = 4,
 						border = "single",
 					},
 					preview = {
@@ -33,6 +35,9 @@ in {
 						},
 					},
 				},
+				output = {
+					format = 'minimal'
+				}
 			})
 		'';
 	};

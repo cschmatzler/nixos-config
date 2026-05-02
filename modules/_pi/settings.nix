@@ -4,6 +4,7 @@
 	defaultProvider = "openai-codex";
 	defaultModel = "gpt-5.5";
 	defaultThinkingLevel = "medium";
+	transport = "websocket-cached";
 	packages = [
 		{
 			source = "npm:mitsupi";
