@@ -1,20 +1,19 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bash
+set -euo pipefail
 
-use ../common.nu *
+source "$(dirname "${BASH_SOURCE[0]}")/../common.sh"
 
-def main [] {
-    print_info "Available generations:"
-    darwin-rebuild --list-generations
-    
-    let gen_num = input "Enter generation number to rollback to: "
-    
-    if ($gen_num | is-empty) {
-        print_error "No generation number provided"
-        exit 1
-    }
-    
-    print_warning $"Rolling back to generation ($gen_num)..."
-    darwin-rebuild switch --switch-generation $gen_num
-    
-    print_success $"Rollback to generation ($gen_num) complete"
-}
+print_info "Available generations:"
+darwin-rebuild --list-generations
+
+read -r -p "Enter generation number to rollback to: " gen_num
+
+if [[ -z "$gen_num" ]]; then
+	print_error "No generation number provided"
+	exit 1
+fi
+
+print_warning "Rolling back to generation ${gen_num}..."
+darwin-rebuild switch --switch-generation "$gen_num"
+
+print_success "Rollback to generation ${gen_num} complete"

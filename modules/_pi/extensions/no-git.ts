@@ -14,7 +14,7 @@ type ShellToken =
 
 const COMMAND_PREFIXES = new Set(["env", "command", "builtin", "time", "sudo", "nohup", "nice"]);
 const SHELL_KEYWORDS = new Set(["if", "then", "elif", "else", "do", "while", "until", "case", "in"]);
-const SHELL_INTERPRETERS = new Set(["bash", "sh", "zsh", "fish", "nu"]);
+const SHELL_INTERPRETERS = new Set(["bash", "sh", "zsh", "fish"]);
 
 function isAssignmentWord(value: string): boolean {
 	return /^[A-Za-z_][A-Za-z0-9_]*=.*/.test(value);

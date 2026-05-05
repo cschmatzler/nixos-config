@@ -11,7 +11,7 @@
 			];
 
 		programs.fish.enable = true;
-		environment.shells = [pkgs.nushell];
+		environment.shells = [pkgs.fish];
 
 		nixpkgs = {
 			config = {

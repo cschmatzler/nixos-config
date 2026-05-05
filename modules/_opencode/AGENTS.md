@@ -10,7 +10,7 @@
 
 ## Scripting
 
-- Use Nushell (`nu`) for scripting.
+- Use Fish (`fish`) for scripting.
 - Do not use Python, Perl, Lua, awk, or any other scripting language. You are programatically blocked from doing so.
 
 ## Workflow
@@ -25,4 +25,3 @@
 
 - Do not ignore failing tests or checks, even if they appear unrelated to your changes.
 - After completing and validating your work, the final step is to run the project's full validation and test commands and ensure they all pass.
-

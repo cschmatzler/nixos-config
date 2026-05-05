@@ -18,23 +18,19 @@ in
 			den.aspects.user-personal
 			den.aspects.email
 		];
-		userHomeManager = {...}: {
-			programs.nushell.extraConfig = ''
-				if $nu.is-interactive and ('SSH_CONNECTION' in ($env | columns)) and ('ZELLIJ' not-in ($env | columns)) {
-					try {
+		userHomeManager = {lib, ...}: {
+			programs.fish.interactiveShellInit =
+				lib.mkAfter ''
+					if set -q SSH_CONNECTION; and not set -q ZELLIJ
 						zellij attach -c main
-						exit
-					} catch {
-						print "zellij auto-start failed; staying in shell"
-					}
-				}
-			'';
+						or echo "zellij auto-start failed; staying in shell"
+					end
+				'';
 		};
 		hostIncludes = [
 			den.aspects.host-nixos-base
 			den.aspects.opencode-api-key
 			den.aspects.ynab-api-key
-			den.aspects.paperless
 			den.aspects.syncthing
 		];
 		nixos = {pkgs, ...}: {
@@ -55,12 +51,6 @@ in
 			virtualisation.docker.enable = true;
 			users.users.${local.user.name}.extraGroups = [
 				"docker"
-				"paperless"
-			];
-
-			systemd.tmpfiles.rules = [
-				"d /var/lib/paperless/consume 2775 paperless paperless -"
-				"d /var/lib/paperless/consume/inbox-triage 2775 paperless paperless -"
 			];
 			swapDevices = [
 				{

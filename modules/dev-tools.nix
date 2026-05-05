@@ -37,13 +37,6 @@ in {
 				tea
 				tokei
 				tree-sitter
-				(pkgs.writeShellApplication {
-						name = "tuist-pr";
-						runtimeInputs = with pkgs; [coreutils fzf gh git nushell];
-						text = ''
-							exec nu ${./_dev-tools/tuist-pr.nu} "$@"
-						'';
-					})
 			]
 			++ lib.optionals stdenv.isDarwin [
 				xcodes
@@ -232,6 +225,7 @@ in {
 		# Direnv configuration
 		programs.direnv = {
 			enable = true;
+			enableFishIntegration = true;
 			nix-direnv.enable = true;
 		};
 	};

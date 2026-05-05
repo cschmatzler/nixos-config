@@ -122,12 +122,12 @@ in {
 
 		programs.zoxide = {
 			enable = true;
-			enableNushellIntegration = true;
+			enableFishIntegration = true;
 		};
 
 		programs.yazi = {
 			enable = true;
-			enableNushellIntegration = true;
+			enableFishIntegration = true;
 			shellWrapperName = "y";
 			settings = {
 				manager = {

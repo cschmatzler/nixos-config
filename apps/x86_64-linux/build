@@ -1,7 +1,11 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bash
+set -euo pipefail
 
-use ../common.nu *
+source "$(dirname "${BASH_SOURCE[0]}")/../common.sh"
 
-def main [hostname?: string, ...rest: string] {
-	build-config "nixos" $hostname ...$rest
-}
+hostname="${1:-}"
+if [[ $# -gt 0 ]]; then
+	shift
+fi
+
+build_config "nixos" "$hostname" "$@"

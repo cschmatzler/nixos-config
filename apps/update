@@ -1,7 +1,6 @@
-#!/usr/bin/env nu
+#!/usr/bin/env bash
+set -euo pipefail
 
-use ./common.nu *
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-def main [...inputs: string] {
-	update-flake $inputs
-}
+update_flake "$@"

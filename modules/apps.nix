@@ -14,7 +14,7 @@
 			type = "app";
 			program = "${(pkgs.writeShellScriptBin name ''
 					PATH=${pkgs.git}/bin:$PATH
-					exec ${inputs.self}/apps/${system}/${name} "$@"
+					exec ${pkgs.bash}/bin/bash ${inputs.self}/apps/${system}/${name} "$@"
 				'')}/bin/${name}";
 			meta.description = descriptions.${name};
 		};
@@ -22,7 +22,7 @@
 			type = "app";
 			program = "${(pkgs.writeShellScriptBin name ''
 					PATH=${pkgs.git}/bin:$PATH
-					exec ${inputs.self}/apps/${name} "$@"
+					exec ${pkgs.bash}/bin/bash ${inputs.self}/apps/${name} "$@"
 				'')}/bin/${name}";
 			meta.description = descriptions.${name};
 		};

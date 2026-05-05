@@ -9,7 +9,7 @@
 
 ## Scripting
 
-- Use Nushell (`nu`) for scripting.
+- Use Fish (`fish`) for scripting.
 - Do not use Python, Perl, Lua, awk, or any other scripting language. You are programatically blocked from doing so.
 
 ## Workflow

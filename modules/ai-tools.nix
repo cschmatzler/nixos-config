@@ -73,22 +73,23 @@ in {
 			inputs'.llm-agents.packages.codex
 			inputs'.llm-agents.packages.pi
 			pkgs.cog-cli
+			pkgs.hunkdiff
 			pkgs.uv
 			pkgs.python314
 			pkgs.python314Packages.greenlet
 		];
 
-		programs.nushell.extraEnv =
+		programs.fish.shellInit =
 			lib.mkAfter ''
-				$env.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global"
+				set -gx NPM_CONFIG_PREFIX "${config.home.homeDirectory}/.npm-global"
 
-				if ("${opencodeSecretPath}" | path exists) {
-					$env.OPENCODE_API_KEY = (open --raw "${opencodeSecretPath}" | str trim)
-				}
+				if test -f "${opencodeSecretPath}"
+					set -gx OPENCODE_API_KEY (string trim -- (cat "${opencodeSecretPath}"))
+				end
 
-				if ("${ynabSecretPath}" | path exists) {
-					$env.YNAB_API_KEY = (open --raw "${ynabSecretPath}" | str trim)
-				}
+				if test -f "${ynabSecretPath}"
+					set -gx YNAB_API_KEY (string trim -- (cat "${ynabSecretPath}"))
+				end
 			'';
 
 		programs.opencode = {
@@ -227,7 +228,7 @@ in {
 				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822";
 				Restart = "on-failure";
 				RestartSec = 5;
-				Environment = "PATH=${pkgs.lib.makeBinPath [inputs'.llm-agents.packages.opencode pkgs.coreutils pkgs.nodejs_24 pkgs.nushell]}:/run/current-system/sw/bin";
+				Environment = "PATH=${pkgs.lib.makeBinPath [inputs'.llm-agents.packages.opencode pkgs.coreutils pkgs.nodejs_24 pkgs.fish]}:/run/current-system/sw/bin";
 			};
 			Install = {
 				WantedBy = ["default.target"];

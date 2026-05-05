@@ -12,7 +12,7 @@ Personal Nix flake for two machines:
 - `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and literal networking
 - `modules/profiles/` - shared host and user profile bundles
 - `modules/_lib/` - local helper functions
-- `modules/_desktop/`, `modules/_paperless/`, `modules/_pi/`, `modules/_terminal/`, `modules/_zellij/` - feature-owned config data, templates, and rendered config sources
+- `modules/_desktop/`, `modules/_pi/`, `modules/_terminal/`, `modules/_zellij/` - feature-owned config data, templates, and rendered config sources
 - `apps/` - Nushell apps exposed through the flake
 - `secrets/` - SOPS-encrypted secrets
 - `flake.nix` - generated flake entrypoint
@@ -27,7 +27,7 @@ This repo uses `den` and organizes configuration around aspects instead of putti
 - shared bundles live in `modules/profiles/{host,user}/`
 - host composition happens in `modules/hosts/<host>.nix`
 - host-private imports live in `modules/hosts/_parts/<host>/` and stay limited to true machine leaf files
-- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix`, `modules/network.nix`, and `modules/paperless.nix`
+- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix` and `modules/network.nix`
 - large app config payloads live next to their feature under `_`-prefixed directories and get rendered from Nix data instead of mixing inline JSON/text blobs and checked-in generated files
 - user-level config mostly lives in Home Manager aspects
 

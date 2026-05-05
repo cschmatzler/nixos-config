@@ -31,9 +31,6 @@
 			overlays = ./overlays.nix;
 			secrets = ./secrets.nix;
 
-			# Shared host features
-			paperless = ./paperless.nix;
-
 			# User environment
 			ai-tools = ./ai-tools.nix;
 			atuin = ./atuin.nix;

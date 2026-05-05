@@ -14,8 +14,6 @@
 				})
 		# ast-grep (test_scan_invalid_rule_id fails on darwin in sandbox)
 		(import ./_overlays/ast-grep.nix {inherit inputs;})
-		# paperless-ngx frontend tests are flaky under Node/Jest in the sandbox (worker SIGSEGV)
-		(import ./_overlays/paperless-ngx.nix {})
 	];
 
 	toolOverlays = [
@@ -23,6 +21,7 @@
 		(import ./_overlays/fallow.nix {inherit inputs;})
 		(import ./_overlays/jj-ryu.nix {inherit inputs;})
 		(import ./_overlays/cog-cli.nix {inherit inputs;})
+		(import ./_overlays/hunkdiff.nix {inherit inputs;})
 		# jj-starship passes through upstream overlay
 		(import ./_overlays/jj-starship.nix {inherit inputs;})
 		(import ./_overlays/zjstatus.nix {inherit inputs;})
