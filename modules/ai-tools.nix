@@ -72,7 +72,7 @@ in {
 				inputs'.llm-agents.packages.opencode
 				pkgs.coreutils
 				pkgs.nodejs_24
-				pkgs.fish
+				pkgs.nushell
 			];
 	in {
 		home.packages = [
@@ -85,17 +85,17 @@ in {
 			pkgs.python314Packages.greenlet
 		];
 
-		programs.fish.shellInit =
+		programs.nushell.extraEnv =
 			lib.mkAfter ''
-				set -gx NPM_CONFIG_PREFIX "${config.home.homeDirectory}/.npm-global"
+				$env.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global"
 
-				if test -f "${opencodeSecretPath}"
-					set -gx OPENCODE_API_KEY (string trim -- (cat "${opencodeSecretPath}"))
-				end
+				if ("${opencodeSecretPath}" | path exists) {
+					$env.OPENCODE_API_KEY = (open --raw "${opencodeSecretPath}" | str trim)
+				}
 
-				if test -f "${ynabSecretPath}"
-					set -gx YNAB_API_KEY (string trim -- (cat "${ynabSecretPath}"))
-				end
+				if ("${ynabSecretPath}" | path exists) {
+					$env.YNAB_API_KEY = (open --raw "${ynabSecretPath}" | str trim)
+				}
 			'';
 
 		programs.opencode = {
@@ -104,15 +104,6 @@ in {
 			settings = {
 				model = "openai/gpt-5.5";
 				small_model = "openai/gpt-5.4-mini";
-				shell = "${pkgs.writeTextFile {
-						name = "opencode-terminal-fish";
-						destination = "/bin/fish";
-						executable = true;
-						text = ''
-							#!${pkgs.fish}/bin/fish
-							exec ${pkgs.fish}/bin/fish -i $argv
-						'';
-					}}/bin/fish";
 				plugin = ["opencode-supermemory"];
 				permission = {
 					external_directory = {

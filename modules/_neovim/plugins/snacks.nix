@@ -30,32 +30,12 @@
 					}
 				];
 			};
-			explorer = {
-				enabled = true;
-				replace_netrw = true;
-			};
 			input.enabled = true;
 			notifier.enabled = true;
 			picker = {
 				enabled = true;
 				ui_select = true;
 				layout.layout.backdrop = false;
-				sources.explorer = {
-					actions.confirm.__raw = ''
-						function(picker, item, action)
-							if not item then
-								return
-							end
-
-							require("snacks.explorer.actions").confirm(picker, item, action)
-
-							if not picker.input.filter.meta.searching and not item.dir then
-								picker:close()
-							end
-						end
-					'';
-					formatters.file.icon_width = 3;
-				};
 			};
 			quickfile.enabled = true;
 			scope.enabled = true;

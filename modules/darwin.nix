@@ -125,7 +125,7 @@ in {
 			name = local.user.name;
 			home = userHome;
 			isHidden = false;
-			shell = pkgs.fish;
+			shell = pkgs.nushell;
 		};
 
 		nix-homebrew = {

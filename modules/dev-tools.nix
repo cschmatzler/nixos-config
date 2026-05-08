@@ -111,7 +111,6 @@ in {
 
 		programs.lazygit = {
 			enable = true;
-			enableFishIntegration = true;
 			settings = {
 				git = {
 					pagers = [
@@ -149,7 +148,6 @@ in {
 		# Direnv configuration
 		programs.direnv = {
 			enable = true;
-			enableFishIntegration = true;
 			nix-direnv.enable = true;
 		};
 	};

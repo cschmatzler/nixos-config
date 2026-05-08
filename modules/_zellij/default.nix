@@ -7,7 +7,7 @@
 in {
 	configKdl = ''
 		default_layout "default"
-		default_shell "${pkgs.fish}/bin/fish"
+		default_shell "${pkgs.nushell}/bin/nu"
 		pane_frames false
 		show_release_notes false
 		show_startup_tips false

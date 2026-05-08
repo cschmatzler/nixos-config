@@ -2,7 +2,7 @@
 	den.aspects.atuin.homeManager = {...}: {
 		programs.atuin = {
 			enable = true;
-			enableFishIntegration = true;
+			enableNushellIntegration = true;
 			flags = [
 				"--disable-up-arrow"
 			];

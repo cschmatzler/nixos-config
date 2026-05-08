@@ -18,14 +18,17 @@ in
 			den.aspects.user-personal
 			den.aspects.email
 		];
-		userHomeManager = {lib, ...}: {
-			programs.fish.interactiveShellInit =
-				lib.mkAfter ''
-					if set -q SSH_CONNECTION; and not set -q ZELLIJ
+		userHomeManager = {...}: {
+			programs.nushell.extraConfig = ''
+				if $nu.is-interactive and ('SSH_CONNECTION' in ($env | columns)) and ('ZELLIJ' not-in ($env | columns)) {
+					try {
 						zellij attach -c main
-						or echo "zellij auto-start failed; staying in shell"
-					end
-				'';
+						exit
+					} catch {
+						print "zellij auto-start failed; staying in shell"
+					}
+				}
+			'';
 		};
 		hostIncludes = [
 			den.aspects.host-nixos-base

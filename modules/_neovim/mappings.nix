@@ -13,10 +13,10 @@
 			key = "<leader>ef";
 			action.__raw = ''
 				function()
-					Snacks.explorer()
+					require("oil").open()
 				end
 			'';
-			options.desc = "Explorer";
+			options.desc = "Oil";
 		}
 		{
 			mode = "n";
