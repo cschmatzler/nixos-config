@@ -67,6 +67,13 @@ in {
 						inherit lib pkgs;
 					});
 		};
+		opencodeServerPath =
+			pkgs.lib.makeBinPath [
+				inputs'.llm-agents.packages.opencode
+				pkgs.coreutils
+				pkgs.nodejs_24
+				pkgs.fish
+			];
 	in {
 		home.packages = [
 			inputs'.llm-agents.packages.codex
@@ -97,6 +104,15 @@ in {
 			settings = {
 				model = "openai/gpt-5.5";
 				small_model = "openai/gpt-5.4-mini";
+				shell = "${pkgs.writeTextFile {
+						name = "opencode-terminal-fish";
+						destination = "/bin/fish";
+						executable = true;
+						text = ''
+							#!${pkgs.fish}/bin/fish
+							exec ${pkgs.fish}/bin/fish -i $argv
+						'';
+					}}/bin/fish";
 				plugin = ["opencode-supermemory"];
 				permission = {
 					external_directory = {
@@ -225,10 +241,10 @@ in {
 				After = ["default.target"];
 			};
 			Service = {
-				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --port 18822";
+				ExecStart = "${inputs'.llm-agents.packages.opencode}/bin/opencode serve --hostname 0.0.0.0 --port 18822";
 				Restart = "on-failure";
 				RestartSec = 5;
-				Environment = "PATH=${pkgs.lib.makeBinPath [inputs'.llm-agents.packages.opencode pkgs.coreutils pkgs.nodejs_24 pkgs.fish]}:/run/current-system/sw/bin";
+				Environment = "PATH=/run/current-system/sw/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:${opencodeServerPath}";
 			};
 			Install = {
 				WantedBy = ["default.target"];

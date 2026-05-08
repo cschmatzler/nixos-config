@@ -117,7 +117,7 @@ in {
 					pagers = [
 						{
 							colorArg = "always";
-							pager = "delta --dark --paging=never";
+							pager = "delta --paging=never";
 						}
 					];
 				};

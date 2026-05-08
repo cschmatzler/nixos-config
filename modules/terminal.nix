@@ -4,7 +4,7 @@
 in {
 	den.aspects.terminal.darwin = {pkgs, ...}: {
 		fonts.packages = [
-			pkgs.nerd-fonts.iosevka
+			pkgs.nerd-fonts.fira-code
 		];
 	};
 
