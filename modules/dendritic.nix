@@ -62,11 +62,6 @@
 			url = "github:fallow-rs/fallow";
 			flake = false;
 		};
-		jj-ryu = {
-			url = "github:dmmulroy/jj-ryu";
-			flake = false;
-		};
-		jj-starship.url = "github:dmmulroy/jj-starship";
 		zjstatus.url = "github:dj95/zjstatus";
 		fenix = {
 			url = "github:nix-community/fenix";
@@ -79,14 +74,6 @@
 		# Neovim plugin inputs
 		code-review-nvim = {
 			url = "github:choplin/code-review.nvim";
-			flake = false;
-		};
-		jj-nvim = {
-			url = "github:NicolasGB/jj.nvim";
-			flake = false;
-		};
-		jj-diffconflicts = {
-			url = "github:rafikdraoui/jj-diffconflicts";
 			flake = false;
 		};
 		# Secrets inputs

@@ -46,19 +46,6 @@
 			flake = false;
 		};
 		import-tree.url = "github:vic/import-tree";
-		jj-diffconflicts = {
-			url = "github:rafikdraoui/jj-diffconflicts";
-			flake = false;
-		};
-		jj-nvim = {
-			url = "github:NicolasGB/jj.nvim";
-			flake = false;
-		};
-		jj-ryu = {
-			url = "github:dmmulroy/jj-ryu";
-			flake = false;
-		};
-		jj-starship.url = "github:dmmulroy/jj-starship";
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		naersk = {
 			url = "github:nix-community/naersk/master";

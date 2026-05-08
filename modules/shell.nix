@@ -82,7 +82,7 @@ in {
 			enable = true;
 			enableFishIntegration = true;
 			settings = {
-				format = "$directory\${custom.scm}$hostname$line_break$character";
+				format = "$directory$git_branch$git_status$git_state$git_commit$hostname$line_break$character";
 				buf = {
 					disabled = true;
 				};
@@ -94,23 +94,18 @@ in {
 					truncate_to_repo = false;
 				};
 				git_branch = {
-					disabled = true;
+					disabled = false;
 					symbol = " ";
 					truncation_length = 18;
 				};
 				git_status = {
-					disabled = true;
+					disabled = false;
 				};
 				git_commit = {
-					disabled = true;
+					disabled = false;
 				};
 				git_state = {
-					disabled = true;
-				};
-				custom.scm = {
-					when = "jj-starship detect";
-					shell = ["jj-starship" "--strip-bookmark-prefix" "${local.user.name}/" "--truncate-name" "20" "--bookmarks-display-limit" "1"];
-					format = "$output ";
+					disabled = false;
 				};
 				lua = {
 					symbol = " ";

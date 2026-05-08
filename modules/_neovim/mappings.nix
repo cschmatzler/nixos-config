@@ -196,95 +196,61 @@
 		{
 			mode = "n";
 			key = "<leader>va";
-			action = ":J annotate<CR>";
+			action = ":vnew | terminal git blame -- %<CR>";
 			options.desc = "Annotate (blame)";
 		}
 		{
 			mode = "n";
-			key = "<leader>vc";
-			action = ":JJDiffConflicts<CR>";
-			options.desc = "Resolve conflicts";
-		}
-		{
-			mode = "n";
 			key = "<leader>vd";
-			action.__raw = ''
-				function()
-					require('jj.cmd').diff()
-				end
-			'';
+			action = ":DiffviewOpen -- %<CR>";
 			options.desc = "Diff (current file)";
 		}
 		{
 			mode = "n";
 			key = "<leader>vD";
-			action.__raw = ''
-				function()
-					require('jj.diff').show_revision({})
-				end
-			'';
+			action = ":DiffviewOpen<CR>";
 			options.desc = "Diff (all changes)";
 		}
 		{
 			mode = "n";
 			key = "<leader>ve";
-			action.__raw = ''
-				function()
-					require('jj.cmd').describe()
-				end
-			'';
-			options.desc = "Describe (edit message)";
+			action = ":Neogit commit<CR>";
+			options.desc = "Commit";
 		}
 		{
 			mode = "n";
 			key = "<leader>vf";
-			action = ":J fetch<CR>";
+			action = ":!git fetch --all --prune<CR>";
 			options.desc = "Fetch";
 		}
 		{
 			mode = "n";
 			key = "<leader>vv";
-			action.__raw = ''
-				function()
-					require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
-				end
-			'';
-			options.desc = "jjui";
+			action = ":Neogit<CR>";
+			options.desc = "Neogit";
 		}
 		{
 			mode = "n";
 			key = "<leader>vh";
-			action.__raw = ''
-				function()
-					require('jj.diff').show_revision({ rev = '@-' })
-				end
-			'';
+			action = ":DiffviewOpen HEAD~1..HEAD<CR>";
 			options.desc = "Diff parent revision";
 		}
 		{
 			mode = "n";
 			key = "<leader>vl";
-			action.__raw = ''
-				function()
-					require('jj.cmd').log()
-				end
-			'';
+			action = ":Neogit log<CR>";
 			options.desc = "Log";
 		}
 		{
 			mode = "n";
 			key = "<leader>vn";
-			action.__raw = ''
-				function()
-					require('jj.cmd').new()
-				end
-			'';
-			options.desc = "New change";
+			action = ":Neogit branch<CR>";
+			options.desc = "Branch";
 		}
 		{
 			mode = "n";
 			key = "<leader>vp";
-			action = ":J git push<CR>";
+			action = ":!git push<CR>";
 			options.desc = "Push";
 		}
 		{
@@ -296,21 +262,13 @@
 		{
 			mode = "n";
 			key = "<leader>vR";
-			action.__raw = ''
-				function()
-					require('jj.diff').diff_revisions({ left = 'trunk()', right = '@' })
-				end
-			'';
-			options.desc = "Review bookmark (trunk..@)";
+			action = ":DiffviewOpen origin/HEAD...HEAD<CR>";
+			options.desc = "Review branch";
 		}
 		{
 			mode = "n";
 			key = "<leader>vs";
-			action.__raw = ''
-				function()
-					require('jj.cmd').status()
-				end
-			'';
+			action = ":Neogit<CR>";
 			options.desc = "Status";
 		}
 		# r - review

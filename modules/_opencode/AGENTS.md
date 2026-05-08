@@ -2,11 +2,10 @@
 
 ## Version Control
 
-- Use `jj` for version control, not `git`.
-- `jj tug` is an alias for `jj bookmark move --from closest_bookmark(@-) --to @-`.
+- Use `git` for version control.
 - Never attempt historically destructive Git commands.
 - Make small, frequent commits.
-- "Commit" means `jj commit`, not `jj desc`; `desc` stays on the same working copy.
+- "Commit" means `git commit`.
 
 ## Scripting
 

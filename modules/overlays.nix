@@ -19,11 +19,8 @@
 	toolOverlays = [
 		(import ./_overlays/himalaya.nix {inherit inputs;})
 		(import ./_overlays/fallow.nix {inherit inputs;})
-		(import ./_overlays/jj-ryu.nix {inherit inputs;})
 		(import ./_overlays/cog-cli.nix {inherit inputs;})
 		(import ./_overlays/hunkdiff.nix {inherit inputs;})
-		# jj-starship passes through upstream overlay
-		(import ./_overlays/jj-starship.nix {inherit inputs;})
 		(import ./_overlays/zjstatus.nix {inherit inputs;})
 	];
 

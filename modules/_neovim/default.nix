@@ -13,11 +13,10 @@
 		./plugins/hardtime.nix
 		./plugins/harpoon.nix
 		./plugins/hunk.nix
-		./plugins/jj-diffconflicts.nix
-		./plugins/jj-nvim.nix
 		./plugins/lsp.nix
 		./plugins/lualine.nix
 		./plugins/mini.nix
+		./plugins/neogit.nix
 		./plugins/noice.nix
 		./plugins/oil.nix
 		./plugins/render-markdown.nix

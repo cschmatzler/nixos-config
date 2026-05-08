@@ -24,8 +24,6 @@ in {
 				gh
 				gnumake
 				hyperfine
-				jj-ryu
-				jj-starship
 				nil
 				nodejs_24
 				nurl
@@ -62,6 +60,34 @@ in {
 					"https://github.com".useHttpPath = true;
 					"https://gist.github.com".useHttpPath = true;
 				};
+				alias = {
+					st = "status --short --branch";
+					sw = "switch";
+					co = "checkout";
+					br = "branch";
+					ci = "commit";
+					cm = "commit -m";
+					ca = "commit --amend";
+					aa = "add --all";
+					unstage = "restore --staged";
+					last = "log -1 HEAD --stat";
+					lg = "log --graph --decorate --oneline --abbrev-commit";
+					graph = "log --graph --decorate --oneline --abbrev-commit --all";
+					rb = "rebase";
+					rbc = "rebase --continue";
+					rba = "rebase --abort";
+					pf = "push --force-with-lease";
+					please = "push --force-with-lease";
+					gone = "branch --merged";
+				};
+				fetch = {
+					prune = true;
+					pruneTags = true;
+				};
+				push = {
+					autoSetupRemote = true;
+					default = "current";
+				};
 				pull.rebase = true;
 				rebase.autoStash = true;
 				interactive.diffFilter = "delta --color-only";
@@ -83,141 +109,39 @@ in {
 			};
 		};
 
-		# Jujutsu configuration
-		programs.jujutsu = {
+		programs.lazygit = {
 			enable = true;
+			enableFishIntegration = true;
 			settings = {
-				user = {
-					name = name;
-					email = local.user.emails.personal;
-				};
 				git = {
-					sign-on-push = true;
-					subprocess = true;
-					write-change-id-header = true;
-					private-commits = "description(glob:'wip:*') | description(glob:'WIP:*') | description(exact:'')";
+					pagers = [
+						{
+							colorArg = "always";
+							pager = "delta --dark --paging=never";
+						}
+					];
 				};
-				fsmonitor = {
-					backend = "watchman";
-				};
-				ui = {
-					default-command = "status";
-					diff-formatter = ":git";
-					pager = ["delta" "--pager" "less -FRX"];
-					diff-editor = ["nvim" "-c" "DiffEditor $left $right $output"];
-					movement = {
-						edit = true;
+				gui = {
+					theme = {
+						lightTheme = true;
+						activeBorderColor = [palette.iris "bold"];
+						inactiveBorderColor = [palette.muted];
+						searchingActiveBorderColor = [palette.foam "bold"];
+						optionsTextColor = [palette.pine];
+						selectedLineBgColor = [palette.overlay];
+						inactiveViewSelectedLineBgColor = [palette.surface];
+						cherryPickedCommitFgColor = [palette.pine];
+						cherryPickedCommitBgColor = [palette.foam];
+						markedBaseCommitFgColor = [palette.rose];
+						markedBaseCommitBgColor = [palette.gold];
+						unstagedChangesColor = [palette.love];
+						defaultFgColor = [palette.text];
 					};
+					nerdFontsVersion = "3";
 				};
-				aliases = {
-					n = ["new"];
-					tug = ["bookmark" "move" "--from" "closest_bookmark(@-)" "--to" "@-"];
-					stack = ["log" "-r" "stack()"];
-					retrunk = ["rebase" "-d" "trunk()"];
-					bm = ["bookmark"];
-					gf = ["git" "fetch"];
-					gp = ["git" "push"];
-				};
-				revset-aliases = {
-					"closest_bookmark(to)" = "heads(::to & bookmarks())";
-					"closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
-					"mine()" = "author(\"${local.user.emails.personal}\")";
-					"wip()" = "mine() ~ immutable()";
-					"open()" = "mine() ~ ::trunk()";
-					"current()" = "@:: & mutable()";
-					"stack()" = "reachable(@, mutable())";
-				};
-				templates = {
-					draft_commit_description = ''
-						concat(
-						  coalesce(description, default_commit_description, "\n"),
-						  surround(
-						    "\nJJ: This commit contains the following changes:\n", "",
-						    indent("JJ:     ", diff.stat(72)),
-						  ),
-						  "\nJJ: ignore-rest\n",
-						  diff.git(),
-						)
-					'';
-				};
-			};
-		};
-
-		# JJUI configuration
-		programs.jjui = {
-			enable = true;
-			settings.ui.colors = {
-				text = {fg = palette.text;};
-				dimmed = {fg = palette.muted;};
-				selected = {
-					bg = palette.overlay;
-					fg = palette.text;
-					bold = true;
-				};
-				border = {fg = palette.muted;};
-				title = {
-					fg = palette.iris;
-					bold = true;
-				};
-				shortcut = {
-					fg = palette.pine;
-					bold = true;
-				};
-				matched = {
-					fg = palette.gold;
-					bold = true;
-				};
-				"revisions selected" = {
-					bg = palette.overlay;
-					fg = palette.text;
-					bold = true;
-				};
-				"status" = {bg = palette.overlay;};
-				"status title" = {
-					bg = palette.iris;
-					fg = palette.base;
-					bold = true;
-				};
-				"status shortcut" = {fg = palette.pine;};
-				"status dimmed" = {fg = palette.muted;};
-				"menu" = {bg = palette.base;};
-				"menu selected" = {
-					bg = palette.overlay;
-					fg = palette.text;
-					bold = true;
-				};
-				"menu border" = {fg = palette.muted;};
-				"menu title" = {
-					fg = palette.iris;
-					bold = true;
-				};
-				"menu shortcut" = {fg = palette.pine;};
-				"menu matched" = {
-					fg = palette.gold;
-					bold = true;
-				};
-				"preview border" = {fg = palette.muted;};
-				"help" = {bg = palette.base;};
-				"help border" = {fg = palette.muted;};
-				"help title" = {
-					fg = palette.iris;
-					bold = true;
-				};
-				"confirmation" = {bg = palette.base;};
-				"confirmation border" = {fg = palette.muted;};
-				"confirmation selected" = {
-					bg = palette.overlay;
-					fg = palette.text;
-					bold = true;
-				};
-				"confirmation dimmed" = {fg = palette.muted;};
-				source_marker = {
-					fg = palette.foam;
-					bold = true;
-				};
-				target_marker = {
-					fg = palette.rose;
-					bold = true;
+				os = {
+					editPreset = "nvim";
+					editInTerminal = true;
 				};
 			};
 		};

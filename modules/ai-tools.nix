@@ -36,7 +36,6 @@ in {
 			".pi/agent/extensions/session-name.ts".source = ./_pi/extensions/session-name.ts;
 		};
 		piSkills = {
-			".pi/agent/skills/jujutsu/SKILL.md".source = ./_pi/skills/jujutsu/SKILL.md;
 			".pi/agent/skills/wrdn-authz" = {
 				source = ./_pi/skills/warden-skills/wrdn-authz;
 				recursive = true;
@@ -98,6 +97,7 @@ in {
 			settings = {
 				model = "openai/gpt-5.5";
 				small_model = "openai/gpt-5.4-mini";
+				plugin = ["opencode-supermemory"];
 				permission = {
 					external_directory = {
 						"*" = "allow";
@@ -242,10 +242,6 @@ in {
 			};
 			"opencode/skill" = {
 				source = ./_opencode/skill;
-				recursive = true;
-			};
-			"opencode/plugin" = {
-				source = ./_opencode/plugin;
 				recursive = true;
 			};
 			"opencode/AGENTS.md".source = ./_opencode/AGENTS.md;

@@ -7,8 +7,6 @@
 
 		_module.args.nvim-plugin-sources = {
 			code-review-nvim = inputs.code-review-nvim;
-			jj-nvim = inputs.jj-nvim;
-			jj-diffconflicts = inputs.jj-diffconflicts;
 		};
 	};
 }
