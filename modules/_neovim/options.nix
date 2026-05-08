@@ -2,6 +2,8 @@
 	programs.nixvim = {
 		globals = {
 			clipboard = "osc52";
+			mapleader = " ";
+			maplocalleader = " ";
 		};
 		opts = {
 			winborder = "single";

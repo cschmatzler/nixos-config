@@ -9,13 +9,34 @@
 			disable_commit_confirmation = true;
 			integrations.diffview = true;
 			sections = {
-				untracked.folded = false;
-				unstaged.folded = false;
-				staged.folded = false;
-				stashes.folded = false;
-				unpulled.folded = false;
-				unmerged.folded = true;
-				recent.folded = true;
+				untracked = {
+					folded = false;
+					hidden = false;
+				};
+				unstaged = {
+					folded = false;
+					hidden = false;
+				};
+				staged = {
+					folded = false;
+					hidden = false;
+				};
+				stashes = {
+					folded = false;
+					hidden = false;
+				};
+				unpulled = {
+					folded = false;
+					hidden = false;
+				};
+				unmerged = {
+					folded = true;
+					hidden = false;
+				};
+				recent = {
+					folded = true;
+					hidden = false;
+				};
 			};
 		};
 	};
