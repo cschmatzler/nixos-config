@@ -31,7 +31,6 @@ in {
 		jsonFormat = pkgs.formats.json {};
 		piExtensions = {
 			".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-			".pi/agent/extensions/no-git.ts".source = ./_pi/extensions/no-git.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
 			".pi/agent/extensions/session-name.ts".source = ./_pi/extensions/session-name.ts;
 		};
@@ -76,7 +75,6 @@ in {
 			];
 	in {
 		home.packages = [
-			inputs'.llm-agents.packages.codex
 			inputs'.llm-agents.packages.pi
 			pkgs.cog-cli
 			pkgs.hunkdiff

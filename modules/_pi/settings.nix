@@ -6,21 +6,9 @@
 	defaultThinkingLevel = "medium";
 	transport = "websocket-cached";
 	packages = [
-		{
-			source = "npm:mitsupi";
-			extensions = [
-				"extensions/context.ts"
-				"extensions/multi-edit.ts"
-				"extensions/todos.ts"
-			];
-			skills = [];
-			prompts = [];
-			themes = [];
-		}
 		"npm:pi-mcp-adapter"
 		"npm:@zenobius/pi-rose-pine"
 		"npm:@ff-labs/pi-fff"
 		"npm:pi-better-openai"
-		"${config.home.homeDirectory}/Projects/Personal/codex-supermemory"
 	];
 }

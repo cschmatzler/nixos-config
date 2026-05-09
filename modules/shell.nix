@@ -214,6 +214,16 @@ in {
 
 				source ${devenvHook}
 
+				$env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt | append {||
+					if ("DEVENV_ROOT" not-in $env) or ("_DEVENV_PROMPT_PREFIX_DISABLED" in $env) {
+						return
+					}
+
+					let devenv_prompt = $env.PROMPT_COMMAND
+					$env.PROMPT_COMMAND = {|| do $devenv_prompt | str replace --regex "^\\(devenv\\) " "" }
+					$env._DEVENV_PROMPT_PREFIX_DISABLED = "1"
+				})
+
 				# Vi mode indicators — Starship handles the character (green/red for
 				# success/error), nushell adds a dot for normal mode.
 				$env.PROMPT_INDICATOR_VI_INSERT = "· "
