@@ -35,9 +35,6 @@ in {
 						},
 					},
 				},
-				output = {
-					format = 'minimal'
-				}
 			})
 		'';
 	};
