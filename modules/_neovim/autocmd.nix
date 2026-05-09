@@ -30,6 +30,8 @@
 						vim.api.nvim_set_hl(0, "WhichKeyTitle", { fg = p.foam, bg = p.base, bold = true })
 						vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", { fg = p.iris, bg = p.base })
 						vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", { fg = p.foam, bg = p.base })
+						vim.api.nvim_set_hl(0, "DiffviewDiffChange", { fg = p.text, bg = p.highlight_low })
+						vim.api.nvim_set_hl(0, "DiffviewDiffText", { fg = p.text, bg = p.highlight_med, bold = true })
 					end
 				'';
 			}
