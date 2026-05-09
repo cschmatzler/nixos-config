@@ -32,7 +32,6 @@ in {
 		piExtensions = {
 			".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-			".pi/agent/extensions/session-name.ts".source = ./_pi/extensions/session-name.ts;
 		};
 		piSkills = {
 			".pi/agent/skills/wrdn-authz" = {
