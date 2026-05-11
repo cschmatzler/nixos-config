@@ -10,5 +10,6 @@
 		"npm:@zenobius/pi-rose-pine"
 		"npm:@ff-labs/pi-fff"
 		"npm:pi-better-openai"
+		"npm:pi-goal"
 	];
 }

@@ -12,6 +12,12 @@
 			directTools = true;
 			lifecycle = "eager";
 		};
+		context7 = {
+			url = "https://mcp.context7.com/mcp";
+			directTools = true;
+			lifecycle = "eager";
+			auth = "oauth";
+		};
 		sentry = {
 			url = "https://mcp.sentry.dev/mcp";
 			auth = "oauth";

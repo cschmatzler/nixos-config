@@ -26,13 +26,14 @@ in rec {
 		nixos ? null,
 	}:
 		lib.setAttrByPath ["den" "aspects" host "includes"] [
-			(den.lib.perHost ({inherit includes;}
+			({host, ...}:
+					{inherit includes;}
 					// lib.optionalAttrs (darwin != null) {
 						inherit darwin;
 					}
 					// lib.optionalAttrs (nixos != null) {
 						inherit nixos;
-					}))
+					})
 		];
 
 	mkHostConfig = {
