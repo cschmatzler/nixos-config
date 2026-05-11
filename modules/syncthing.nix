@@ -77,9 +77,10 @@
 			else "${guiAddress}${path}";
 		devices = lib.mapAttrsToList (_: device: device // {deviceID = device.id;}) settings.devices;
 		folders =
-			lib.mapAttrsToList (_: folder:
+			lib.mapAttrsToList (folderId: folder:
 					folder
 					// {
+						id = folderId;
 						devices =
 							map (
 								device:
