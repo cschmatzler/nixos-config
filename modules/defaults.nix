@@ -32,13 +32,13 @@
 			secrets = ./secrets.nix;
 
 			# User environment
+			ai-api-key = ./ai-api-key.nix;
 			ai-tools = ./ai-tools.nix;
 			atuin = ./atuin.nix;
 			desktop = ./desktop.nix;
 			dev-tools = ./dev-tools.nix;
 			email = ./email.nix;
 			neovim = ./neovim.nix;
-			opencode = ./opencode.nix;
 			pi = ./pi.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;

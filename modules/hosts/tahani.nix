@@ -32,7 +32,7 @@ in
 		};
 		hostIncludes = [
 			den.aspects.host-nixos-base
-			den.aspects.opencode-api-key
+			den.aspects.ai-api-key
 			den.aspects.ynab-api-key
 			den.aspects.syncthing
 		];

@@ -18,7 +18,7 @@ in
 		];
 		hostIncludes = [
 			den.aspects.host-darwin-base
-			den.aspects.opencode-api-key
+			den.aspects.ai-api-key
 			den.aspects.syncthing
 		];
 		darwin = {...}: {
