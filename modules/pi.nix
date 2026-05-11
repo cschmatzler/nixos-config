@@ -47,7 +47,6 @@
 	in {
 		home.packages = [
 			inputs'.llm-agents.packages.pi
-			pkgs.cog-cli
 			pkgs.hunkdiff
 			pkgs.uv
 			pkgs.python314
