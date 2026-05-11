@@ -38,9 +38,12 @@
 			dev-tools = ./dev-tools.nix;
 			email = ./email.nix;
 			neovim = ./neovim.nix;
+			opencode = ./opencode.nix;
+			pi = ./pi.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
 			terminal = ./terminal.nix;
+			ynab = ./ynab.nix;
 			zellij = ./zellij.nix;
 			zk = ./zk.nix;
 		};
