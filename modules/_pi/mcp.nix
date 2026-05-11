@@ -18,10 +18,6 @@
 			lifecycle = "eager";
 			auth = "oauth";
 		};
-		sentry = {
-			url = "https://mcp.sentry.dev/mcp";
-			auth = "oauth";
-		};
 		ynab = {
 			command = "uv";
 			args = [
