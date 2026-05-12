@@ -34,6 +34,7 @@ in {
 				statix
 				tea
 				tokei
+				vite-plus
 				tree-sitter
 			]
 			++ lib.optionals stdenv.isDarwin [

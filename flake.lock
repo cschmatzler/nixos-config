@@ -600,6 +600,26 @@
         "type": "github"
       }
     },
+    "nix-vite-plus": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777445514,
+        "narHash": "sha256-IcaVj8t5YiiXONElemAMz92CvK/rCs/kKRjK1qcuUZw=",
+        "owner": "ryoppippi",
+        "repo": "nix-vite-plus",
+        "rev": "c965c34f6d4c0381244b62fd44c2dcc258ca8e11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryoppippi",
+        "repo": "nix-vite-plus",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1743014863,
@@ -739,6 +759,7 @@
         "naersk": "naersk",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nix-homebrew": "nix-homebrew",
+        "nix-vite-plus": "nix-vite-plus",
         "nixpkgs": "nixpkgs_4",
         "nixvim": "nixvim",
         "sops-nix": "sops-nix",
