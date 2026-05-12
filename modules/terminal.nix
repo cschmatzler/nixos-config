@@ -2,12 +2,6 @@
 	theme = (import ./_lib/theme.nix).rosePineDawn;
 	palette = theme.hex;
 in {
-	den.aspects.terminal.darwin = {pkgs, ...}: {
-		fonts.packages = [
-			pkgs.nerd-fonts.fira-code
-		];
-	};
-
 	den.aspects.terminal.homeManager = {
 		config,
 		pkgs,
