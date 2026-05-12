@@ -20,7 +20,7 @@ in {
 				keymaps = false,
 				comment = {
 					storage = {
-						backend = "memory",
+						backend = "file",
 					},
 				},
 				ui = {
