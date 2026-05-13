@@ -56,10 +56,6 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-		nix-vite-plus = {
-			url = "github:ryoppippi/nix-vite-plus";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
 		nixpkgs.url = "github:nixos/nixpkgs/master";
 		nixvim = {
 			url = "github:nix-community/nixvim";

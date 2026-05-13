@@ -57,10 +57,6 @@
 		};
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		# Overlay inputs
-		nix-vite-plus = {
-			url = "github:ryoppippi/nix-vite-plus";
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
 		himalaya.url = "github:pimalaya/himalaya";
 		fallow = {
 			url = "github:fallow-rs/fallow";
