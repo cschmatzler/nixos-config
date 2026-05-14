@@ -6,9 +6,14 @@
 			den.aspects.ynab
 		];
 
-		homeManager = {pkgs, ...}: {
-			home.packages = with pkgs; [
-				nono
+		homeManager = {
+			pkgs,
+			inputs',
+			...
+		}: {
+			home.packages = [
+				pkgs.nono
+				inputs'.llm-agents.packages.opencode
 			];
 		};
 	};

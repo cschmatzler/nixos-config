@@ -9,7 +9,6 @@
 		jsonFormat = pkgs.formats.json {};
 		piExtensions = {
 			".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-			".pi/agent/extensions/multi-edit.ts".source = ./_pi/extensions/multi-edit.ts;
 			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
 		};
 		piSkills = {
