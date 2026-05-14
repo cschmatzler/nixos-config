@@ -103,7 +103,7 @@
 			key = "<leader>ff";
 			action.__raw = ''
 				function()
-					require('fff').find_files()
+					Snacks.picker.files()
 				end
 			'';
 			options.desc = "Find files";
@@ -113,7 +113,7 @@
 			key = "<leader>fg";
 			action.__raw = ''
 				function()
-					require('fff').live_grep()
+					Snacks.picker.grep()
 				end
 			'';
 			options.desc = "Live grep";

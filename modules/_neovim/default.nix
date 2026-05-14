@@ -7,7 +7,6 @@
 		./plugins/code-review.nix
 		./plugins/conform.nix
 		./plugins/diffview.nix
-		./plugins/fff.nix
 		./plugins/flash.nix
 		./plugins/grug-far.nix
 		./plugins/hardtime.nix
