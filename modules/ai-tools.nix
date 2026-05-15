@@ -13,8 +13,29 @@
 		}: {
 			home.packages = [
 				pkgs.nono
-				inputs'.llm-agents.packages.opencode
 			];
+
+			programs.opencode = {
+				enable = true;
+				package = inputs'.llm-agents.packages.opencode;
+				settings.mcp = {
+					opensrc = {
+						type = "local";
+						command = [
+							"npx"
+							"-y"
+							"opensrc-mcp"
+						];
+						enabled = true;
+					};
+					executor = {
+						type = "remote";
+						url = "https://executor.sh/mcp";
+						enabled = true;
+					};
+				};
+				tui.theme = "rose-pine-dawn";
+			};
 		};
 	};
 }
