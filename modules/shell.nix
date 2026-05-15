@@ -21,6 +21,11 @@ in {
 			vivid
 		];
 
+		programs.mise = {
+			enable = true;
+			enableNushellIntegration = true;
+		};
+
 		programs.nushell = {
 			enable = true;
 
