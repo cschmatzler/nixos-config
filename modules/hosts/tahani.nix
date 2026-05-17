@@ -27,7 +27,7 @@ in
 		nixos = {pkgs, ...}: {
 			networking.hostName = host;
 
-			environment.systemPackages = [pkgs._1password-cli];
+			environment.systemPackages = [pkgs._1password-cli pkgs.codex];
 
 			imports = [
 				./_parts/tahani/networking.nix

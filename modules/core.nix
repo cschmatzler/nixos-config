@@ -11,7 +11,11 @@
 			];
 
 		programs.fish.enable = true;
-		environment.shells = [pkgs.nushell];
+		programs.zsh.enable = true;
+		environment.shells = [
+			pkgs.nushell
+			pkgs.zsh
+		];
 
 		nixpkgs = {
 			config = {
