@@ -5,7 +5,7 @@
 		den.aspects.terminal
 		den.aspects.atuin
 		den.aspects.secrets
-		den.aspects.zellij
+		den.aspects.tmux
 		den.aspects.zk
 	];
 }

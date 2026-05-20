@@ -44,7 +44,7 @@
 			ssh-client = ./ssh-client.nix;
 			terminal = ./terminal.nix;
 			ynab = ./ynab.nix;
-			zellij = ./zellij.nix;
+			tmux = ./tmux.nix;
 			zk = ./zk.nix;
 		};
 		den.default.nixos.system.stateVersion = "25.11";

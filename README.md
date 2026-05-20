@@ -12,7 +12,7 @@ Personal Nix flake for two machines:
 - `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and literal networking
 - `modules/profiles/` - shared host and user profile bundles
 - `modules/_lib/` - local helper functions
-- `modules/_desktop/`, `modules/_pi/`, `modules/_terminal/`, `modules/_zellij/` - feature-owned config data, templates, and rendered config sources
+- `modules/_desktop/`, `modules/_pi/`, `modules/_terminal/`, `modules/_tmux/` - feature-owned config data, templates, and rendered config sources
 - `apps/` - shell apps exposed through the flake
 - `secrets/` - SOPS-encrypted secrets
 - `flake.nix` - generated flake entrypoint

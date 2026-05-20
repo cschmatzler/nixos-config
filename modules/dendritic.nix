@@ -62,7 +62,6 @@
 			url = "github:fallow-rs/fallow";
 			flake = false;
 		};
-		zjstatus.url = "github:dj95/zjstatus";
 		fenix = {
 			url = "github:nix-community/fenix";
 			inputs.nixpkgs.follows = "nixpkgs";
