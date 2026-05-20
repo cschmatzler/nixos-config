@@ -27,6 +27,7 @@ in {
 			COLORFGBG = "15;0";
 			TERM_BACKGROUND = "light";
 			EDITOR = "nvim";
+			MANPAGER = "nvim +Man!";
 		};
 
 		xdg.configFile."fish/themes/Rosé Pine Dawn.theme".source = "${rosePineFish}/themes/Rosé Pine Dawn.theme";
@@ -54,6 +55,64 @@ in {
 						set_color normal
 					case insert
 						echo -n "· "
+				end
+			'';
+			functions.fvim = ''
+				if test (count $argv) -eq 0
+					fd -H -t f | fzf --header "Open File in Vim" --preview "cat {}" | xargs nvim
+				else
+					set -l query (string join " " $argv)
+					fd -H -t f | fzf --header "Open File in Vim" --preview "cat {}" -q "$query" | xargs nvim
+				end
+			'';
+			functions.grt = ''
+				cd (git rev-parse --show-toplevel; or echo ".")
+			'';
+			functions.scratch = ''
+				set -l tmpfile (mktemp)
+				if set -q EDITOR
+					$EDITOR $tmpfile
+				else if command -v nvim &>/dev/null
+					nvim $tmpfile
+				else if command -v vim &>/dev/null
+					vim $tmpfile
+				else
+					nano $tmpfile
+				end
+			'';
+			functions.trash = ''
+				if test (count $argv) -lt 1
+					echo "Usage: trash <file>..."
+					return 1
+				end
+
+				set -l trash_dir
+				if test (uname) = Darwin
+					set trash_dir ~/.Trash
+				else if test -n "$XDG_DATA_HOME"
+					set trash_dir $XDG_DATA_HOME/Trash/files
+				else
+					set trash_dir ~/.local/share/Trash/files
+				end
+
+				if not test -d $trash_dir
+					mkdir -p $trash_dir
+				end
+
+				for file in $argv
+					if not test -e $file
+						echo "Error: '$file' does not exist"
+						continue
+					end
+
+					set -l basename (basename $file)
+					set -l dest $trash_dir/$basename
+
+					if test -e $dest
+						set dest "$trash_dir/$basename."(date +%s)
+					end
+
+					mv -v $file $dest
 				end
 			'';
 		};
