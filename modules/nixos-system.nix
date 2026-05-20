@@ -83,7 +83,7 @@ in {
 					"network"
 					"systemd-journal"
 				];
-				shell = pkgs.zsh;
+				shell = pkgs.fish;
 				openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
 			};
 			root = {

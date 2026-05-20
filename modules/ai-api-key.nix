@@ -13,11 +13,11 @@ in {
 	};
 
 	den.aspects.ai-api-key.homeManager = {lib, ...}: {
-		programs.nushell.extraEnv =
+		programs.fish.shellInit =
 			lib.mkAfter ''
-				if ("${apiKeyPath}" | path exists) {
-					$env.OPENCODE_API_KEY = (open --raw "${apiKeyPath}" | str trim)
-				}
+				if test -f "${apiKeyPath}"
+					set -gx OPENCODE_API_KEY (string trim -- (cat "${apiKeyPath}"))
+				end
 			'';
 	};
 }

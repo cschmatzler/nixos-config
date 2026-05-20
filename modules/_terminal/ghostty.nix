@@ -2,7 +2,7 @@
 	pkgs,
 	theme,
 }: {
-	command = "${pkgs.nushell}/bin/nu";
+	command = "${pkgs.fish}/bin/fish";
 	theme = theme.ghosttyName;
 	window-padding-x = 12;
 	window-padding-y = 3;

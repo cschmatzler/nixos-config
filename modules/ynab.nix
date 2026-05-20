@@ -13,11 +13,11 @@ in {
 	};
 
 	den.aspects.ynab.homeManager = {lib, ...}: {
-		programs.nushell.extraEnv =
+		programs.fish.shellInit =
 			lib.mkAfter ''
-				if ("${ynabSecretPath}" | path exists) {
-					$env.YNAB_API_KEY = (open --raw "${ynabSecretPath}" | str trim)
-				}
+				if test -f "${ynabSecretPath}"
+					set -gx YNAB_API_KEY (string trim -- (cat "${ynabSecretPath}"))
+				end
 			'';
 	};
 }

@@ -40,7 +40,7 @@ alejandra .                   # Format all Nix files
   - `_darwin/` - Darwin-specific sub-modules
   - `_neovim/` - Neovim plugin configs
   - `hosts/_parts/` - Host-specific leaf files (disk-config, hardware, service fragments, etc.)
-- **Apps**: `apps/` - Per-system app scripts (Nushell)
+- **Apps**: `apps/` - Per-system app scripts
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)
 
 ### Architecture

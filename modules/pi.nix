@@ -52,10 +52,7 @@
 			pkgs.python314Packages.greenlet
 		];
 
-		programs.nushell.extraEnv =
-			lib.mkAfter ''
-				$env.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global"
-			'';
+		home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
 
 		home.file =
 			{
