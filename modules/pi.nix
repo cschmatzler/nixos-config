@@ -55,10 +55,7 @@
 		home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
 
 		home.file =
-			{
-				"AGENTS.md".source = ./_pi/AGENTS.md;
-			}
-			// piExtensions
+			piExtensions
 			// piSkills
 			// piGeneratedConfigs;
 	};

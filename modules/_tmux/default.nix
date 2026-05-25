@@ -2,7 +2,9 @@
 	pkgs,
 	theme,
 	clipboardTool,
-}: ''
+}: let
+	palette = theme.hex;
+in ''
 	# vim: set ft=tmux:
 
 	# tmux sensible see: https://github.com/tmux-plugins/tmux-sensible
@@ -89,6 +91,19 @@
 
 	# Status bar positioning
 	set-option -g status-position top
+	set-option -g status-justify centre
+	set-option -g status-style "fg=${palette.text},bg=${palette.base}"
+	set-option -g status-left-length 80
+	set-option -g status-right-length 140
+	set-option -g status-left "#[fg=${palette.base},bg=${palette.pine},bold] #S #[fg=${palette.subtle},bg=${palette.base}] "
+	set-option -g status-right "#[fg=${palette.subtle},bg=${palette.base}] #{b:pane_current_path}  #[fg=${palette.base},bg=${palette.iris},bold] %a %d %b %H:%M "
+	set-window-option -g window-status-separator ""
+	set-window-option -g window-status-format "#[fg=${palette.muted},bg=${palette.base}] #I #W "
+	set-window-option -g window-status-current-format "#[fg=${palette.base},bg=${palette.rose},bold] #I #W "
+	set-option -g pane-border-style "fg=${palette.highlightHigh}"
+	set-option -g pane-active-border-style "fg=${palette.pine}"
+	set-option -g message-style "fg=${palette.base},bg=${palette.gold},bold"
+	set-window-option -g mode-style "fg=${palette.base},bg=${palette.iris}"
 
 	# Start window and pane numbering at 1 (more intuitive than 0)
 	set -g base-index 1
@@ -101,13 +116,7 @@
 	bind -T copy-mode-vi 'C-j' select-pane -D
 	bind -T copy-mode-vi 'C-k' select-pane -U
 	bind -T copy-mode-vi 'C-l' select-pane -R
-	bind -T copy-mode-vi 'C-\\' select-pane -l
 	bind -T copy-mode-vi 'C-Space' select-pane -t:.+
-
-	# Theme Configuration
-	# IMPORTANT: Theme must load BEFORE continuum to avoid overwriting status-right
-	set -g @rose_pine_variant 'dawn'
-	set -g @rose_pine_directory 'on'
 
 	# Session persistence - save and restore tmux sessions
 	set -g @resurrect-strategy-vim 'session'

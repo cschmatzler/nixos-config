@@ -28,6 +28,7 @@ in
 			networking.hostName = host;
 
 			environment.systemPackages = [pkgs._1password-cli pkgs.codex];
+			programs.nix-ld.enable = true;
 
 			imports = [
 				./_parts/tahani/networking.nix

@@ -21,7 +21,6 @@ in {
 			extraConfig = tmuxConf;
 			plugins = with pkgs.tmuxPlugins; [
 				vim-tmux-navigator
-				rose-pine
 				resurrect
 				continuum
 			];
