@@ -51,6 +51,7 @@
 		den.default.darwin.system.stateVersion = 6;
 		den.default.homeManager = {
 			home.stateVersion = "25.11";
+			home.enableNixpkgsReleaseCheck = false;
 			programs.home-manager.enable = true;
 		};
 		den.default.nixos.home-manager.useGlobalPkgs = true;

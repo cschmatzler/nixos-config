@@ -8,5 +8,8 @@
 		_module.args.nvim-plugin-sources = {
 			code-review-nvim = inputs.code-review-nvim;
 		};
+
+		programs.nixvim.nixpkgs.source = inputs.nixpkgs;
+		programs.nixvim.version.enableNixpkgsReleaseCheck = false;
 	};
 }

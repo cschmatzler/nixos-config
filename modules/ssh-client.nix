@@ -6,11 +6,11 @@
 			includes = [
 				"${config.home.homeDirectory}/.ssh/config_external"
 			];
-			matchBlocks = {
+			settings = {
 				"*" = {};
 				"github.com" = {
-					identitiesOnly = true;
-					identityFile = [
+					IdentitiesOnly = true;
+					IdentityFile = [
 						"${config.home.homeDirectory}/.ssh/id_ed25519"
 					];
 				};

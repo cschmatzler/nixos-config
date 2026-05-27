@@ -11,10 +11,6 @@
 			inputs',
 			...
 		}: {
-			home.packages = [
-				pkgs.nono
-			];
-
 			programs.opencode = {
 				enable = true;
 				package = inputs'.llm-agents.packages.opencode;
