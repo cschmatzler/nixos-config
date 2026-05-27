@@ -6,11 +6,7 @@
 			den.aspects.ynab
 		];
 
-		homeManager = {
-			pkgs,
-			inputs',
-			...
-		}: {
+		homeManager = {inputs', ...}: {
 			programs.opencode = {
 				enable = true;
 				package = inputs'.llm-agents.packages.opencode;
