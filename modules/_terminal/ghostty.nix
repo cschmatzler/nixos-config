@@ -8,7 +8,7 @@
 	window-padding-y = 3;
 	window-padding-balance = true;
 	font-family = "MonoLisa";
-	font-size = 17.5;
+	font-size = 14;
 	cursor-style = "block";
 	mouse-hide-while-typing = true;
 	mouse-scroll-multiplier = 1.25;
