@@ -37,6 +37,7 @@ in {
 			shellInit =
 				''
 					set -gx LS_COLORS (${pkgs.vivid}/bin/vivid generate ${theme.slug})
+					set -gx SHELL ${pkgs.fish}/bin/fish
 				''
 				+ lib.optionalString pkgs.stdenv.isDarwin ''
 					fish_add_path --prepend "$HOME/.nix-profile/bin" /run/current-system/sw/bin
