@@ -1,20 +1,20 @@
 {...}: let
 	local = import ./_lib/local.nix;
-	theme = (import ./_lib/theme.nix).rosePineDawn;
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
 	palette = theme.hex;
-	pineFish = builtins.replaceStrings ["#"] [""] palette.pine;
+	accentFish = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
 	den.aspects.shell.homeManager = {
 		lib,
 		pkgs,
 		...
 	}: let
-		rosePineFish =
+		catppuccinFish =
 			pkgs.fetchFromGitHub {
-				owner = "rose-pine";
+				owner = "catppuccin";
 				repo = "fish";
-				rev = "127a990e5ad4688118c950123787fb0686afa4c8";
-				hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
+				rev = "5fc5ae9c2ec22eb376cb03ce76f0d262a38960f3";
+				hash = "sha256-3KNWYXfOMzZovdjwjBpjSH8cVlD4CO2QmQcCyQE4Dac=";
 			};
 	in {
 		home.packages = with pkgs; [
@@ -30,7 +30,7 @@ in {
 			MANPAGER = "nvim +Man!";
 		};
 
-		xdg.configFile."fish/themes/Rosé Pine Dawn.theme".source = "${rosePineFish}/themes/Rosé Pine Dawn.theme";
+		xdg.configFile."fish/themes/${theme.fishName}.theme".source = "${catppuccinFish}/themes/${theme.fishName}.theme";
 
 		programs.fish = {
 			enable = true;
@@ -45,13 +45,13 @@ in {
 			interactiveShellInit = ''
 				set fish_greeting
 				fish_vi_key_bindings
-				fish_config theme choose "Rosé Pine Dawn" >/dev/null
+				fish_config theme choose ${theme.fishName} >/dev/null
 				devenv hook fish | source
 			'';
 			functions.fish_mode_prompt = ''
 				switch $fish_bind_mode
 					case default
-						set_color --bold ${pineFish}
+						set_color --bold ${accentFish}
 						echo -n "· "
 						set_color normal
 					case insert
