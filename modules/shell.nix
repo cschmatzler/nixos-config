@@ -30,7 +30,7 @@ in {
 			MANPAGER = "nvim +Man!";
 		};
 
-		xdg.configFile."fish/themes/${theme.fishName}.theme".source = "${catppuccinFish}/themes/${theme.fishName}.theme";
+		xdg.configFile."fish/themes/${theme.fishName}.theme".source = "${catppuccinFish}/themes/static/${theme.fishName}.theme";
 
 		programs.fish = {
 			enable = true;
