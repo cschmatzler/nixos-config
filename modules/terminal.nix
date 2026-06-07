@@ -21,6 +21,13 @@ in {
 			ghosttySettings;
 		jsonFormat = pkgs.formats.json {};
 		yamlFormat = pkgs.formats.yaml {};
+		batThemeSrc =
+			pkgs.fetchFromGitHub {
+				owner = "rose-pine";
+				repo = "tm-theme";
+				rev = "23bb25b9c421cdc9ea89ff3ad3825840cd19d65d";
+				hash = "sha256-GUFdv5V5OZ2PG+gfsbiohMT23LWsrZda34ReHBr2Xy0=";
+			};
 	in {
 		home.packages = with pkgs;
 			[
@@ -77,13 +84,7 @@ in {
 			};
 			themes = {
 				"${theme.displayName}" = {
-					src =
-						pkgs.fetchFromGitHub {
-							owner = "rose-pine";
-							repo = "tm-theme";
-							rev = "23bb25b9c421cdc9ea89ff3ad3825840cd19d65d";
-							hash = "sha256-GUFdv5V5OZ2PG+gfsbiohMT23LWsrZda34ReHBr2Xy0=";
-						};
+					src = batThemeSrc;
 					file = "dist/${theme.slug}.tmTheme";
 				};
 			};

@@ -1,4 +1,6 @@
-{inputs', ...}: {
+{inputs', ...}: let
+	theme = (import ../_lib/theme.nix).rosePineDawn;
+in {
 	imports = [
 		./autocmd.nix
 		./mappings.nix
@@ -40,10 +42,10 @@
 						'';
 				});
 		luaLoader.enable = true;
-		colorschemes.rose-pine = {
+		colorschemes.${theme.neovim.colorscheme} = {
 			enable = true;
 			settings = {
-				variant = "dawn";
+				variant = theme.neovim.variant;
 				extend_background_behind_borders = false;
 				styles = {
 					italic = false;

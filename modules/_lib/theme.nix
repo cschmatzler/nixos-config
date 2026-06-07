@@ -1,8 +1,19 @@
 {
-	rosePineDawn = {
+	rosePineDawn = rec {
 		slug = "rose-pine-dawn";
 		displayName = "Rosé Pine Dawn";
-		ghosttyName = "Rose Pine Dawn";
+		fishThemeName = displayName;
+		ghosttyThemeName = "Rose Pine Dawn";
+		opencodeThemeName = slug;
+		piThemeName = slug;
+		piPackage = "npm:@zenobius/pi-rose-pine";
+		deltaSyntaxTheme = "GitHub";
+
+		neovim = {
+			colorscheme = "rose-pine";
+			paletteModule = "rose-pine.palette";
+			variant = "dawn";
+		};
 
 		hex = {
 			love = "#b4637a";

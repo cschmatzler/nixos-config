@@ -2,14 +2,14 @@
 	local = import ./_lib/local.nix;
 	theme = (import ./_lib/theme.nix).rosePineDawn;
 	palette = theme.hex;
-	pineFish = builtins.replaceStrings ["#"] [""] palette.pine;
+	fishPromptColor = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
 	den.aspects.shell.homeManager = {
 		lib,
 		pkgs,
 		...
 	}: let
-		rosePineFish =
+		fishThemeSrc =
 			pkgs.fetchFromGitHub {
 				owner = "rose-pine";
 				repo = "fish";
@@ -30,7 +30,7 @@ in {
 			MANPAGER = "nvim +Man!";
 		};
 
-		xdg.configFile."fish/themes/Rosé Pine Dawn.theme".source = "${rosePineFish}/themes/Rosé Pine Dawn.theme";
+		xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${fishThemeSrc}/themes/${theme.fishThemeName}.theme";
 
 		programs.fish = {
 			enable = true;
@@ -45,13 +45,13 @@ in {
 			interactiveShellInit = ''
 				set fish_greeting
 				fish_vi_key_bindings
-				fish_config theme choose "Rosé Pine Dawn" >/dev/null
+				fish_config theme choose "${theme.fishThemeName}" >/dev/null
 				devenv hook fish | source
 			'';
 			functions.fish_mode_prompt = ''
 				switch $fish_bind_mode
 					case default
-						set_color --bold ${pineFish}
+						set_color --bold ${fishPromptColor}
 						echo -n "· "
 						set_color normal
 					case insert

@@ -1,13 +1,14 @@
 {...}: let
 	local = import ./_lib/local.nix;
-	palette = (import ./_lib/theme.nix).rosePineDawn.hex;
+	theme = (import ./_lib/theme.nix).rosePineDawn;
+	palette = theme.hex;
 in {
 	den.aspects.dev-tools.homeManager = {
 		pkgs,
 		lib,
 		...
 	}: let
-		name = local.user.fullName;
+		userName = local.user.fullName;
 	in {
 		home.packages = with pkgs;
 			[
@@ -48,7 +49,7 @@ in {
 			enable = true;
 			ignores = ["*.swp"];
 			settings = {
-				user.name = name;
+				user.name = userName;
 				init.defaultBranch = "main";
 				core = {
 					editor = "vim";
@@ -94,7 +95,7 @@ in {
 				delta = {
 					navigate = true;
 					line-numbers = true;
-					syntax-theme = "GitHub";
+					syntax-theme = theme.deltaSyntaxTheme;
 					side-by-side = true;
 					pager = "less -FRX";
 				};

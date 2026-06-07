@@ -1,4 +1,6 @@
-{den, ...}: {
+{den, ...}: let
+	theme = (import ./_lib/theme.nix).rosePineDawn;
+in {
 	den.aspects.ai-tools = {
 		includes = [
 			den.aspects.ai-api-key
@@ -26,7 +28,7 @@
 						enabled = true;
 					};
 				};
-				tui.theme = "rose-pine-dawn";
+				tui.theme = theme.opencodeThemeName;
 			};
 		};
 	};

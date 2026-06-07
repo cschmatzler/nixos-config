@@ -1,4 +1,6 @@
-{
+let
+	theme = (import ../_lib/theme.nix).rosePineDawn;
+in {
 	programs.nixvim = {
 		autoGroups = {
 			Christoph = {};
@@ -11,7 +13,7 @@
 				pattern = "*";
 				callback.__raw = ''
 					function()
-						local p = require("rose-pine.palette")
+						local p = require("${theme.neovim.paletteModule}")
 						vim.api.nvim_set_hl(0, "NormalFloat", { bg = p.base })
 						vim.api.nvim_set_hl(0, "FloatTitle", { fg = p.foam, bg = p.base, bold = true })
 						vim.api.nvim_set_hl(0, "Pmenu", { fg = p.subtle, bg = p.base })

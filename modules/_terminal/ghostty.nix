@@ -3,7 +3,7 @@
 	theme,
 }: {
 	command = "${pkgs.fish}/bin/fish";
-	theme = theme.ghosttyName;
+	theme = theme.ghosttyThemeName;
 	window-padding-x = 12;
 	window-padding-y = 3;
 	window-padding-balance = true;
