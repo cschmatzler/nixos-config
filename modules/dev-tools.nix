@@ -1,7 +1,6 @@
 {...}: let
 	local = import ./_lib/local.nix;
-	theme = (import ./_lib/theme.nix).catppuccinLatte;
-	palette = theme.hex;
+	palette = (import ./_lib/theme.nix).rosePineDawn.hex;
 in {
 	den.aspects.dev-tools.homeManager = {
 		pkgs,
@@ -95,7 +94,7 @@ in {
 				delta = {
 					navigate = true;
 					line-numbers = true;
-					syntax-theme = theme.displayName;
+					syntax-theme = "GitHub";
 					side-by-side = true;
 					pager = "less -FRX";
 				};

@@ -1,6 +1,4 @@
-{inputs', ...}: let
-	theme = (import ../_lib/theme.nix).catppuccinLatte;
-in {
+{inputs', ...}: {
 	imports = [
 		./autocmd.nix
 		./mappings.nix
@@ -42,12 +40,14 @@ in {
 						'';
 				});
 		luaLoader.enable = true;
-		colorschemes.catppuccin = {
+		colorschemes.rose-pine = {
 			enable = true;
 			settings = {
-				flavour = theme.neovimFlavor;
-				term_colors = true;
-				no_italic = true;
+				variant = "dawn";
+				extend_background_behind_borders = false;
+				styles = {
+					italic = false;
+				};
 			};
 		};
 	};

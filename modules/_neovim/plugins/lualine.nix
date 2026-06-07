@@ -1,11 +1,9 @@
-{...}: let
-	theme = (import ../../_lib/theme.nix).catppuccinLatte;
-in {
+{...}: {
 	programs.nixvim.plugins.lualine = {
 		enable = true;
 		settings = {
 			options = {
-				theme = theme.slug;
+				theme = "rose-pine";
 				globalstatus = true;
 				component_separators = {
 					left = "│";

@@ -1,7 +1,5 @@
-{config}: let
-	theme = (import ../_lib/theme.nix).catppuccinLatte;
-in {
-	theme = theme.slug;
+{config}: {
+	theme = "rose-pine-dawn";
 	quietStartup = true;
 	defaultProvider = "openai-codex";
 	defaultModel = "gpt-5.5";
@@ -9,7 +7,7 @@ in {
 	transport = "websocket-cached";
 	packages = [
 		"npm:pi-mcp-adapter"
-		theme.piPackage
+		"npm:@zenobius/pi-rose-pine"
 		"npm:pi-better-openai"
 	];
 }
