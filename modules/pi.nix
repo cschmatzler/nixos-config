@@ -6,12 +6,7 @@
 		inputs',
 		...
 	}: let
-		jsonFormat = pkgs.formats.json {};
-		piExtensions = {
-			".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-			".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-		};
-		piSkills = {
+		skills = {
 			".pi/agent/skills/wrdn-authz" = {
 				source = ./_pi/skills/warden-skills/wrdn-authz;
 				recursive = true;
@@ -33,30 +28,25 @@
 				recursive = true;
 			};
 		};
-		piGeneratedConfigs = {
+		configs = {
 			".pi/agent/settings.json".source =
-				jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
+				pkgs.format.json.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
 						inherit config;
 					});
 			".pi/agent/mcp.json".source =
-				jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
+				pkgs.format.json.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
 						inherit lib pkgs;
 					});
 		};
 	in {
 		home.packages = [
 			inputs'.llm-agents.packages.pi
-			pkgs.hunkdiff
-			pkgs.uv
-			pkgs.python314
-			pkgs.python314Packages.greenlet
 		];
 
 		home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
 
 		home.file =
-			piExtensions
-			// piSkills
-			// piGeneratedConfigs;
+			skills
+			// configs;
 	};
 }

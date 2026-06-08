@@ -8,8 +8,11 @@ in {
 	defaultThinkingLevel = "medium";
 	transport = "websocket-cached";
 	packages = [
-		"npm:pi-mcp-adapter"
 		theme.piPackage
+		"npm:pi-mcp-adapter"
 		"npm:pi-better-openai"
+		"npm:@ff-labs/pi-fff"
+		"npm:@juicesharp/rpiv-ask-user-question"
+		"npm:@juicesharp/rpiv-todo"
 	];
 }

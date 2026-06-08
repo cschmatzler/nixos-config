@@ -91,7 +91,7 @@ in ''
 
 	# Status bar positioning
 	set-option -g status-position top
-	set-option -g status-justify centre
+	set-option -g status-justify absolute-centre
 	set-option -g status-style "fg=${palette.text},bg=${palette.base}"
 	set-option -g status-left-length 80
 	set-option -g status-right-length 140
