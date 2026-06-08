@@ -28,13 +28,14 @@
 				recursive = true;
 			};
 		};
+		jsonFormat = pkgs.formats.json {};
 		configs = {
 			".pi/agent/settings.json".source =
-				pkgs.format.json.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
+				jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
 						inherit config;
 					});
 			".pi/agent/mcp.json".source =
-				pkgs.format.json.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
+				jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
 						inherit lib pkgs;
 					});
 		};
