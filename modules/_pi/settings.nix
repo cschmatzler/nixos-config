@@ -1,5 +1,5 @@
 {...}: let
-	theme = (import ../_lib/theme.nix).rosePineDawn;
+	theme = (import ../_lib/theme.nix).catppuccinLatte;
 in {
 	theme = theme.piThemeName;
 	quietStartup = true;

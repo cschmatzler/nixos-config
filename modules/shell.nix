@@ -1,6 +1,6 @@
 {...}: let
 	local = import ./_lib/local.nix;
-	theme = (import ./_lib/theme.nix).rosePineDawn;
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
 	palette = theme.hex;
 	fishPromptColor = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
@@ -11,10 +11,10 @@ in {
 	}: let
 		fishThemeSrc =
 			pkgs.fetchFromGitHub {
-				owner = "rose-pine";
+				owner = "catppuccin";
 				repo = "fish";
-				rev = "127a990e5ad4688118c950123787fb0686afa4c8";
-				hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
+				rev = "5fc5ae9c2ec22eb376cb03ce76f0d262a38960f3";
+				hash = "sha256-3KNWYXfOMzZovdjwjBpjSH8cVlD4CO2QmQcCyQE4Dac=";
 			};
 	in {
 		home.packages = with pkgs; [
@@ -24,7 +24,7 @@ in {
 
 		home.sessionVariables = {
 			COLORTERM = "truecolor";
-			COLORFGBG = "0;15";
+			COLORFGBG = "15;0";
 			TERM_BACKGROUND = "light";
 			EDITOR = "nvim";
 			MANPAGER = "nvim +Man!";

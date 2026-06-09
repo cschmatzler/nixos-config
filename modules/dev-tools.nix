@@ -1,6 +1,6 @@
 {...}: let
 	local = import ./_lib/local.nix;
-	theme = (import ./_lib/theme.nix).rosePineDawn;
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
 	palette = theme.hex;
 in {
 	den.aspects.dev-tools.homeManager = {

@@ -1,5 +1,5 @@
 {inputs', ...}: let
-	theme = (import ../_lib/theme.nix).rosePineDawn;
+	theme = (import ../_lib/theme.nix).catppuccinLatte;
 in {
 	imports = [
 		./autocmd.nix
@@ -45,11 +45,9 @@ in {
 		colorschemes.${theme.neovim.colorscheme} = {
 			enable = true;
 			settings = {
-				variant = theme.neovim.variant;
-				extend_background_behind_borders = false;
-				styles = {
-					italic = false;
-				};
+				flavour = theme.neovim.flavour;
+				term_colors = true;
+				no_italic = true;
 			};
 		};
 	};

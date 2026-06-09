@@ -1,4 +1,6 @@
-{...}: {
+{...}: let
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
+in {
 	den.aspects.herdr.homeManager = {inputs', ...}: {
 		home.packages = [
 			inputs'.herdr.packages.herdr
@@ -8,7 +10,7 @@
 			onboarding = false
 
 			[theme]
-			name = "rose-pine-dawn"
+			name = "${theme.slug}"
 
 			[terminal]
 			new_cwd = "follow"

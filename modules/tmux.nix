@@ -1,5 +1,5 @@
 {...}: let
-	theme = (import ./_lib/theme.nix).rosePineDawn;
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
 in {
 	den.aspects.tmux.homeManager = {
 		config,

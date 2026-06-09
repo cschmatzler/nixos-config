@@ -1,5 +1,5 @@
 {...}: let
-	theme = (import ./_lib/theme.nix).rosePineDawn;
+	theme = (import ./_lib/theme.nix).catppuccinLatte;
 	palette = theme.hex;
 in {
 	den.aspects.terminal.homeManager = {
@@ -23,10 +23,17 @@ in {
 		yamlFormat = pkgs.formats.yaml {};
 		batThemeSrc =
 			pkgs.fetchFromGitHub {
-				owner = "rose-pine";
-				repo = "tm-theme";
-				rev = "23bb25b9c421cdc9ea89ff3ad3825840cd19d65d";
-				hash = "sha256-GUFdv5V5OZ2PG+gfsbiohMT23LWsrZda34ReHBr2Xy0=";
+				owner = "catppuccin";
+				repo = "bat";
+				rev = "6810349b28055dce54076712fc05fc68da4b8ec0";
+				hash = "sha256-lJapSgRVENTrbmpVyn+UQabC9fpV1G1e+CdlJ090uvg=";
+			};
+		yaziThemeSrc =
+			pkgs.fetchFromGitHub {
+				owner = "catppuccin";
+				repo = "yazi";
+				rev = "41f24ed142e34109a9a65a5dfe58c1b4eb6d2fd9";
+				hash = "sha256-Og33IGS9pTim6LEH33CO102wpGnPomiperFbqfgrJjw=";
 			};
 	in {
 		home.packages = with pkgs;
@@ -74,6 +81,8 @@ in {
 			"glow/${theme.slug}.json" = {
 				source = jsonFormat.generate "${theme.slug}.json" glowFiles.theme;
 			};
+			"yazi/Catppuccin-latte.tmTheme".source = "${batThemeSrc}/themes/${theme.displayName}.tmTheme";
+			"yazi/theme.toml".source = "${yaziThemeSrc}/themes/latte/catppuccin-latte-maroon.toml";
 		};
 
 		programs.bat = {
@@ -85,7 +94,7 @@ in {
 			themes = {
 				"${theme.displayName}" = {
 					src = batThemeSrc;
-					file = "dist/${theme.slug}.tmTheme";
+					file = "themes/${theme.displayName}.tmTheme";
 				};
 			};
 		};
@@ -129,34 +138,6 @@ in {
 					show_hidden = true;
 					sort_by = "natural";
 					sort_dir_first = true;
-				};
-			};
-			theme = {
-				tabs = {
-					sep_inner = {
-						open = "";
-						close = "";
-					};
-					sep_outer = {
-						open = "";
-						close = "";
-					};
-				};
-				indicator = {
-					padding = {
-						open = "";
-						close = "";
-					};
-				};
-				status = {
-					sep_left = {
-						open = "";
-						close = "";
-					};
-					sep_right = {
-						open = "";
-						close = "";
-					};
 				};
 			};
 		};
