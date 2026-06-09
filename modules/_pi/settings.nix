@@ -6,6 +6,7 @@ in {
 	defaultProvider = "openai-codex";
 	defaultModel = "gpt-5.5";
 	defaultThinkingLevel = "medium";
+	hideThinkingBlock = true;
 	transport = "websocket-cached";
 	packages = [
 		theme.piPackage
