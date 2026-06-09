@@ -24,7 +24,7 @@ in {
 
 		home.sessionVariables = {
 			COLORTERM = "truecolor";
-			COLORFGBG = "15;0";
+			COLORFGBG = "0;15";
 			TERM_BACKGROUND = "light";
 			EDITOR = "nvim";
 			MANPAGER = "nvim +Man!";
