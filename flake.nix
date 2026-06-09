@@ -31,6 +31,10 @@
 			url = "github:hercules-ci/flake-parts";
 			inputs.nixpkgs-lib.follows = "nixpkgs";
 		};
+		herdr = {
+			url = "github:ogulcancelik/herdr";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		himalaya.url = "github:pimalaya/himalaya";
 		home-manager = {
 			url = "github:nix-community/home-manager";
@@ -43,10 +47,6 @@
 		homebrew-core = {
 			url = "github:homebrew/homebrew-core";
 			flake = false;
-		};
-		herdr = {
-			url = "github:ogulcancelik/herdr";
-			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		import-tree.url = "github:vic/import-tree";
 		llm-agents.url = "github:numtide/llm-agents.nix";
