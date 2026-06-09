@@ -31,13 +31,6 @@
 	in {
 		apps =
 			pkgs.lib.genAttrs platformAppNames mkPlatformApp
-			// pkgs.lib.genAttrs sharedAppNames mkSharedApp
-			// {
-				deploy = {
-					type = "app";
-					program = "${inputs.deploy-rs.packages.${system}.deploy-rs}/bin/deploy";
-					meta.description = "Deploy to NixOS hosts via deploy-rs";
-				};
-			};
+			// pkgs.lib.genAttrs sharedAppNames mkSharedApp;
 	};
 }

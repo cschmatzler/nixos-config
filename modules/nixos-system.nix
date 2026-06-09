@@ -22,26 +22,6 @@ in {
 						command = "/nix/store/*/bin/activate";
 						options = ["NOPASSWD"];
 					}
-					{
-						command = "/nix/store/*/bin/activate-rs";
-						options = ["NOPASSWD"];
-					}
-					{
-						command = "/nix/store/*/activate-rs";
-						options = ["NOPASSWD"];
-					}
-					{
-						command = "/nix/store/*/bin/wait-activate";
-						options = ["NOPASSWD"];
-					}
-					{
-						command = "/nix/store/*/wait-activate";
-						options = ["NOPASSWD"];
-					}
-					{
-						command = "/run/current-system/sw/bin/rm /tmp/deploy-rs-canary-*";
-						options = ["NOPASSWD"];
-					}
 				];
 			}
 		];

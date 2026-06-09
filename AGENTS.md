@@ -12,14 +12,6 @@ nix flake check               # Validate flake
 
 Do not run build or apply unless instructed to.
 
-### Remote Deployment (NixOS only)
-```bash
-nix run .#deploy              # Deploy to all NixOS hosts
-nix run .#deploy -- .#tahani  # Deploy to specific NixOS host
-```
-
-When you're on tahani and asked to apply, that means running `nix run .#deploy`.
-
 ### Formatting
 ```bash
 alejandra .                   # Format all Nix files
@@ -63,7 +55,7 @@ alejandra .                   # Format all Nix files
 
 **Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `_darwin/`, etc.) are excluded from auto-import
 
-**Deployment**: deploy-rs for NixOS host `tahani`; darwin host `janet` is local-only
+**Apply**: use `nix run .#apply` for local application; darwin host `janet` is local-only
 
 ### Nix Language Conventions
 

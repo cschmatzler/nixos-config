@@ -13,7 +13,6 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		den.url = "github:vic/den";
-		deploy-rs.url = "github:serokell/deploy-rs";
 		disko = {
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";

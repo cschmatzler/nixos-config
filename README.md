@@ -46,7 +46,6 @@ Common examples:
 nix run .#build
 nix run .#build -- tahani
 nix run .#apply
-nix run .#deploy -- .#tahani
 nix flake check
 alejandra .
 ```

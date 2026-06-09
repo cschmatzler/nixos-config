@@ -9,11 +9,6 @@
 				type = lib.types.lazyAttrsOf lib.types.raw;
 				default = {};
 			};
-		deploy =
-			lib.mkOption {
-				type = lib.types.lazyAttrsOf lib.types.raw;
-				default = {};
-			};
 		flakeModules =
 			lib.mkOption {
 				type = lib.types.lazyAttrsOf lib.types.raw;
