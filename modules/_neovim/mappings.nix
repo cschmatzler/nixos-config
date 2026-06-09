@@ -275,7 +275,11 @@
 		{
 			mode = ["n" "v"];
 			key = "<leader>rc";
-			action = ":CodeReviewComment<CR>";
+			action.__raw = ''
+				function()
+					require("code-review").add_comment(vim.v.count > 0 and vim.v.count or nil)
+				end
+			'';
 			options.desc = "Add comment";
 		}
 		{
