@@ -56,6 +56,19 @@ in {
 				command = "normal zR";
 			}
 			{
+				event = "User";
+				group = "Christoph";
+				pattern = "SnacksDashboardOpened";
+				callback.__raw = ''
+					function()
+						vim.b.minitrailspace_disable = true
+						pcall(function()
+							require("mini.trailspace").unhighlight()
+						end)
+					end
+				'';
+			}
+			{
 				event = "FileType";
 				group = "Christoph";
 				pattern = "elixir,eelixir,heex";
