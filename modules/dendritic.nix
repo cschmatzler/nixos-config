@@ -56,6 +56,10 @@
 		};
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		# Overlay inputs
+		herdr = {
+			url = "github:ogulcancelik/herdr";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		himalaya.url = "github:pimalaya/himalaya";
 		fallow = {
 			url = "github:fallow-rs/fallow";

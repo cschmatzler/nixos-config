@@ -44,6 +44,10 @@
 			url = "github:homebrew/homebrew-core";
 			flake = false;
 		};
+		herdr = {
+			url = "github:ogulcancelik/herdr";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 		import-tree.url = "github:vic/import-tree";
 		llm-agents.url = "github:numtide/llm-agents.nix";
 		naersk = {
