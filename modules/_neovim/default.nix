@@ -1,4 +1,8 @@
-{inputs', ...}: let
+{
+	inputs',
+	lib,
+	...
+}: let
 	theme = (import ../_lib/theme.nix).catppuccinLatte;
 in {
 	imports = [
@@ -33,6 +37,7 @@ in {
 		defaultEditor = true;
 		package =
 			inputs'.neovim-nightly-overlay.packages.default.overrideAttrs (old: {
+					patches = lib.filter (patch: !(lib.hasInfix "CVE-2026-11487" (builtins.baseNameOf (toString patch)))) (old.patches or []);
 					postInstall =
 						(old.postInstall or "")
 						+ ''
