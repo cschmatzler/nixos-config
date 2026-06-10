@@ -13,6 +13,7 @@ in {
 		"npm:pi-mcp-adapter"
 		"npm:pi-better-openai"
 		"npm:@ff-labs/pi-fff"
+		"npm:@narumitw/pi-goal"
 		"npm:@juicesharp/rpiv-ask-user-question"
 		"npm:@juicesharp/rpiv-todo"
 	];
