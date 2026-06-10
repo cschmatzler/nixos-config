@@ -43,7 +43,9 @@ in {
 			previous_workspace = "prefix+shift+left"
 			next_workspace = "prefix+shift+right"
 			switch_workspace = "prefix+shift+1..9"
-			focus_agent = "prefix+alt+1..9"
+			focus_agent = "prefix+ctrl+1..9"
+			previous_agent = "prefix+["
+			next_agent = "prefix+]"
 			open_notification_target = "prefix+o"
 			reload_config = "prefix+r"
 			copy_mode = "prefix+v"
@@ -51,6 +53,7 @@ in {
 			split_horizontal = "prefix+enter"
 			zoom = "prefix+m"
 			resize_mode = "prefix+shift+r"
+			remove_worktree = "prefix+backspace"
 
 		'';
 	};
