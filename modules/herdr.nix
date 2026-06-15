@@ -55,6 +55,11 @@ in {
 			resize_mode = "prefix+shift+r"
 			remove_worktree = "prefix+backspace"
 
+			navigate_workspace_up = "k"
+			navigate_workspace_down = "j"
+			navigate_pane_up = "up"
+			navigate_pane_down = "down"
+
 		'';
 	};
 }
