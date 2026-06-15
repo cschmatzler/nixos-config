@@ -143,6 +143,11 @@ in {
 			onActivation = {
 				autoUpdate = true;
 				cleanup = "uninstall";
+				extraEnv = {
+					# Homebrew overwrites HOMEBREW_MACOS_VERSION from sw_vers internally;
+					# HOMEBREW_FAKE_MACOS is the supported override for cask version checks.
+					HOMEBREW_FAKE_MACOS = "26";
+				};
 				upgrade = true;
 			};
 			taps = [
