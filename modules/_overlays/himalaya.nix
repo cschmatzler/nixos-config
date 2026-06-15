@@ -25,7 +25,7 @@ in {
 			version = "2.0.0-alpha.1";
 
 			src = inputs.himalaya;
-			cargoHash = "sha256-HYAlHfpRlZw95YvaRojASlKq641qKf+bjmRQ/twuTXU=";
+			cargoHash = "sha256-wYzkxOwdBg9e+026tylGgpLnaEhEbylESlr6N/FA6KA=";
 
 			inherit withFeatures withNoDefaultFeatures;
 
