@@ -156,14 +156,16 @@ in {
 			casks = [
 				"1password"
 				"alcove"
-				"aqua-voice"
 				"chatgpt"
 				"cleanshot"
-				"tailscale-app"
 				"ghostty@tip"
 				"helium-browser"
+				"notion"
+				"notion-calendar"
+				"notion-cli"
 				"raycast"
 				"spotify"
+				"tailscale-app"
 				"whatsapp"
 			];
 		};
