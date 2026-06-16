@@ -166,6 +166,7 @@ in {
 				"raycast"
 				"spotify"
 				"tailscale-app"
+				"tidal"
 				"whatsapp"
 			];
 		};
