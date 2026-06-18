@@ -12,6 +12,10 @@
 			url = "github:clabby/difftastic.nvim";
 			flake = false;
 		};
+		neojj = {
+			url = "github:NicholasZolton/neojj";
+			flake = false;
+		};
 		darwin = {
 			url = "github:LnL7/nix-darwin/master";
 			inputs.nixpkgs.follows = "nixpkgs";

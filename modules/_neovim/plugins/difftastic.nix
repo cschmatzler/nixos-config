@@ -27,6 +27,7 @@
 			postInstall = ''
 				mkdir -p $out/target/release
 				cp ${difftastic-nvim-lib}/lib/libdifftastic_nvim.* $out/target/release/
+				cp ${difftastic-nvim-lib}/lib/libdifftastic_nvim.so $out/target/release/difftastic_nvim.so
 			'';
 		};
 in {
@@ -43,7 +44,7 @@ in {
 		extraConfigLua = ''
 			require("difftastic-nvim").setup({
 				download = false,
-				vcs = "git",
+				vcs = "jj",
 				highlight_mode = "treesitter",
 				snacks_picker = {
 					enabled = true,

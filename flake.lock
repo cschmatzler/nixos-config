@@ -467,6 +467,22 @@
         "type": "github"
       }
     },
+    "neojj": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781066035,
+        "narHash": "sha256-et700L4Eb03iftfYxxxlKF+fr8GIoMkyWDSu1DMnmxw=",
+        "owner": "NicholasZolton",
+        "repo": "neojj",
+        "rev": "3b2a8bd256a01f9124df087c417c99f81e23dfa6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NicholasZolton",
+        "repo": "neojj",
+        "type": "github"
+      }
+    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -596,6 +612,7 @@
         "import-tree": "import-tree",
         "llm-agents": "llm-agents",
         "naersk": "naersk",
+        "neojj": "neojj",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",

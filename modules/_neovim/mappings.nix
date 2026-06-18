@@ -196,80 +196,96 @@
 		{
 			mode = "n";
 			key = "<leader>va";
-			action = ":vnew | terminal git blame -- %<CR>";
+			action = ":vnew | terminal jj file annotate %<CR>";
 			options.desc = "Annotate (blame)";
 		}
 		{
 			mode = "n";
+			key = "<leader>vc";
+			action = ":JJDiffConflicts<CR>";
+			options.desc = "Resolve conflicts";
+		}
+		{
+			mode = "n";
 			key = "<leader>vd";
-			action = ":DiffviewOpen -- %<CR>";
-			options.desc = "Diff (current file)";
+			action = ":Difft @<CR>";
+			options.desc = "Diff current change";
 		}
 		{
 			mode = "n";
 			key = "<leader>vD";
-			action = ":DiffviewOpen<CR>";
-			options.desc = "Diff (all changes)";
+			action = ":Difft<CR>";
+			options.desc = "Diff working copy";
 		}
 		{
 			mode = "n";
 			key = "<leader>ve";
-			action = ":Neogit commit<CR>";
+			action = ":Neojj commit<CR>";
 			options.desc = "Commit";
 		}
 		{
 			mode = "n";
 			key = "<leader>vf";
-			action = ":!git fetch --all --prune<CR>";
+			action = ":Neojj fetch<CR>";
 			options.desc = "Fetch";
 		}
 		{
 			mode = "n";
-			key = "<leader>vv";
-			action = ":Neogit<CR>";
-			options.desc = "Neogit";
+			key = "<leader>vg";
+			action.__raw = ''
+				function()
+					require('toggleterm.terminal').Terminal:new({ cmd = 'jjui', direction = 'float' }):toggle()
+				end
+			'';
+			options.desc = "jjui";
 		}
 		{
 			mode = "n";
 			key = "<leader>vh";
-			action = ":DiffviewOpen HEAD~1..HEAD<CR>";
+			action = ":Difft @-<CR>";
 			options.desc = "Diff parent revision";
 		}
 		{
 			mode = "n";
 			key = "<leader>vl";
-			action = ":Neogit log<CR>";
+			action = ":Neojj log<CR>";
 			options.desc = "Log";
 		}
 		{
 			mode = "n";
 			key = "<leader>vn";
-			action = ":Neogit branch<CR>";
-			options.desc = "Branch";
+			action = ":Neojj bookmark<CR>";
+			options.desc = "Bookmarks";
 		}
 		{
 			mode = "n";
 			key = "<leader>vp";
-			action = ":!git push<CR>";
+			action = ":Neojj push<CR>";
 			options.desc = "Push";
 		}
 		{
 			mode = "n";
 			key = "<leader>vq";
-			action = ":DiffviewClose<CR>";
-			options.desc = "Close diffview";
+			action = ":DifftClose<CR>";
+			options.desc = "Close diff";
 		}
 		{
 			mode = "n";
 			key = "<leader>vR";
-			action = ":DiffviewOpen origin/HEAD...HEAD<CR>";
-			options.desc = "Review branch";
+			action = ":Difft trunk()..@<CR>";
+			options.desc = "Review stack";
 		}
 		{
 			mode = "n";
 			key = "<leader>vs";
-			action = ":Neogit<CR>";
+			action = ":Neojj<CR>";
 			options.desc = "Status";
+		}
+		{
+			mode = "n";
+			key = "<leader>vv";
+			action = ":Neojj<CR>";
+			options.desc = "Neojj";
 		}
 		# r - review
 		{

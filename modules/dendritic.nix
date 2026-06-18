@@ -81,6 +81,10 @@
 			url = "github:clabby/difftastic.nvim";
 			flake = false;
 		};
+		neojj = {
+			url = "github:NicholasZolton/neojj";
+			flake = false;
+		};
 		# Secrets inputs
 		sops-nix = {
 			url = "github:Mic92/sops-nix";

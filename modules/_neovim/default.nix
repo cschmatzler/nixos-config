@@ -21,7 +21,7 @@ in {
 		./plugins/lsp.nix
 		./plugins/lualine.nix
 		./plugins/mini.nix
-		./plugins/neogit.nix
+		./plugins/neojj.nix
 		./plugins/noice.nix
 		./plugins/oil.nix
 		./plugins/render-markdown.nix
