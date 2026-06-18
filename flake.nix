@@ -8,6 +8,10 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
+		difftastic-nvim = {
+			url = "github:clabby/difftastic.nvim";
+			flake = false;
+		};
 		darwin = {
 			url = "github:LnL7/nix-darwin/master";
 			inputs.nixpkgs.follows = "nixpkgs";

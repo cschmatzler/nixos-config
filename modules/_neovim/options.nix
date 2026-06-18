@@ -16,6 +16,14 @@
 			scrolloff = 8;
 			shiftwidth = 2;
 			smartcase = true;
+			diffopt = [
+				"internal"
+				"filler"
+				"closeoff"
+				"indent-heuristic"
+				"inline:char"
+				"linematch:40"
+			];
 			undofile = true;
 		};
 	};

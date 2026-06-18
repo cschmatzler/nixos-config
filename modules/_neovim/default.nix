@@ -12,7 +12,7 @@ in {
 		./plugins/blink-cmp.nix
 		./plugins/code-review.nix
 		./plugins/conform.nix
-		./plugins/diffview.nix
+		./plugins/difftastic.nix
 		./plugins/flash.nix
 		./plugins/grug-far.nix
 		./plugins/hardtime.nix

@@ -77,6 +77,10 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
+		difftastic-nvim = {
+			url = "github:clabby/difftastic.nvim";
+			flake = false;
+		};
 		# Secrets inputs
 		sops-nix = {
 			url = "github:Mic92/sops-nix";
