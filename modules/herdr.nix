@@ -38,7 +38,7 @@ in {
 			scrollback_limit_bytes = 50000000
 
 			[keys]
-			prefix = "ctrl+semicolon"
+			prefix = "ctrl+b"
 			last_pane = "prefix+backtick"
 			previous_workspace = "prefix+shift+left"
 			next_workspace = "prefix+shift+right"
