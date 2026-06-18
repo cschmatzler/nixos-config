@@ -5,7 +5,6 @@
 }: let
 	hostLib = import ../_lib/hosts.nix {inherit den lib;};
 	local = import ../_lib/local.nix;
-	secretLib = import ../_lib/secrets.nix {inherit lib;};
 	host = "tahani";
 	hostMeta = local.hosts.tahani;
 in
@@ -16,7 +15,6 @@ in
 		userIncludes = [
 			den.aspects.user-workstation
 			den.aspects.user-personal
-			den.aspects.email
 		];
 		hostIncludes = [
 			den.aspects.host-nixos-base
@@ -33,12 +31,6 @@ in
 			imports = [
 				./_parts/tahani/networking.nix
 			];
-
-			sops.secrets.tahani-email-password =
-				secretLib.mkUserBinarySecret {
-					name = "tahani-email-password";
-					sopsFile = ../../secrets/tahani-email-password;
-				};
 
 			virtualisation.docker.enable = true;
 			users.users.${local.user.name}.extraGroups = [

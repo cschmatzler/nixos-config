@@ -1,6 +1,5 @@
 {inputs, ...}: let
 	toolOverlays = [
-		(import ./_overlays/himalaya.nix {inherit inputs;})
 		(import ./_overlays/fallow.nix {inherit inputs;})
 		(import ./_overlays/hunkdiff.nix {inherit inputs;})
 	];

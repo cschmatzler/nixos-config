@@ -60,7 +60,6 @@
 			url = "github:ogulcancelik/herdr";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		himalaya.url = "github:pimalaya/himalaya";
 		fallow = {
 			url = "github:fallow-rs/fallow";
 			flake = false;

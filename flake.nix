@@ -35,7 +35,6 @@
 			url = "github:ogulcancelik/herdr";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
-		himalaya.url = "github:pimalaya/himalaya";
 		home-manager = {
 			url = "github:nix-community/home-manager";
 			inputs.nixpkgs.follows = "nixpkgs";

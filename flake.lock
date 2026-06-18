@@ -184,29 +184,6 @@
         "type": "github"
       }
     },
-    "fenix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "himalaya",
-          "nixpkgs"
-        ],
-        "rust-analyzer-src": "rust-analyzer-src_2"
-      },
-      "locked": {
-        "lastModified": 1777624102,
-        "narHash": "sha256-thSyElkje577x/kAbP72nHlfiFc1a+tCudskLPHXe9s=",
-        "owner": "nix-community",
-        "repo": "fenix",
-        "rev": "4d81601e0b73f20d81d066754ad0e7d1e7f75a06",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "monthly",
-        "repo": "fenix",
-        "type": "github"
-      }
-    },
     "fenix_3": {
       "inputs": {
         "nixpkgs": [
@@ -359,26 +336,6 @@
       "original": {
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "type": "github"
-      }
-    },
-    "himalaya": {
-      "inputs": {
-        "fenix": "fenix_2",
-        "nixpkgs": "nixpkgs",
-        "pimalaya": "pimalaya"
-      },
-      "locked": {
-        "lastModified": 1781254632,
-        "narHash": "sha256-JwUiJNEKmuh8E6dHRzxG9FLkk6XqvKKIEpITzsoD5VU=",
-        "owner": "pimalaya",
-        "repo": "himalaya",
-        "rev": "b350955f21b2c11682b178d8a98bcf5bf446cd48",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pimalaya",
-        "repo": "himalaya",
         "type": "github"
       }
     },
@@ -620,22 +577,6 @@
         "type": "github"
       }
     },
-    "pimalaya": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1780852612,
-        "narHash": "sha256-X4zHs6OztjwTZVg7PlIVemtRXDga6Dxa9cWG/crxdTY=",
-        "owner": "pimalaya",
-        "repo": "nix",
-        "rev": "1fd82b4e07b90886eba31047dffc21cd31c83682",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pimalaya",
-        "repo": "nix",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "code-review-nvim": "code-review-nvim",
@@ -648,7 +589,6 @@
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
         "herdr": "herdr",
-        "himalaya": "himalaya",
         "home-manager": "home-manager",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
@@ -670,23 +610,6 @@
         "owner": "rust-lang",
         "repo": "rust-analyzer",
         "rev": "cc272809a173c2c11d0e479d639c811c1eacf049",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rust-lang",
-        "ref": "nightly",
-        "repo": "rust-analyzer",
-        "type": "github"
-      }
-    },
-    "rust-analyzer-src_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777583169,
-        "narHash": "sha256-dVJ4+wrRKc8oIgp3rLOFSq1obt/sCKlXy3h47qof/w0=",
-        "owner": "rust-lang",
-        "repo": "rust-analyzer",
-        "rev": "aa64e4828a2bbba44463c1229a81c748d3cce583",
         "type": "github"
       },
       "original": {
