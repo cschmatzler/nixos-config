@@ -46,6 +46,9 @@ in {
 				download = false,
 				vcs = "jj",
 				highlight_mode = "treesitter",
+				tree = {
+					width = 30,
+				},
 				snacks_picker = {
 					enabled = true,
 				},

@@ -51,15 +51,15 @@ in {
 					elseif section_name == "range" and item_name then
 						revset = item_name
 					elseif (section_name == "stashes" or section_name == "commit") and item_name then
-						revset = item_name .. "^!"
+						revset = item_name
 					elseif (section_name == "recent" or section_name == "log" or section_name == "bookmarks" or (section_name and section_name:match("unmerged$"))) and item_name then
 						if type(item_name) == "table" then
 							revset = string.format("%s..%s", item_name[1], item_name[#item_name])
 						else
-							revset = (item_name:match("[a-f0-9]+") or item_name) .. "^!"
+							revset = item_name:match("[a-zA-Z0-9]+") or item_name
 						end
 					elseif section_name == nil and item_name ~= nil then
-						revset = item_name .. "^!"
+						revset = item_name
 					end
 
 					require("difftastic-nvim").open(revset)

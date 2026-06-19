@@ -8,19 +8,15 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
-		difftastic-nvim = {
-			url = "github:clabby/difftastic.nvim";
-			flake = false;
-		};
-		neojj = {
-			url = "github:NicholasZolton/neojj";
-			flake = false;
-		};
 		darwin = {
 			url = "github:LnL7/nix-darwin/master";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		den.url = "github:vic/den";
+		difftastic-nvim = {
+			url = "github:clabby/difftastic.nvim";
+			flake = false;
+		};
 		disko = {
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -60,6 +56,10 @@
 		naersk = {
 			url = "github:nix-community/naersk/master";
 			inputs.nixpkgs.follows = "nixpkgs";
+		};
+		neojj = {
+			url = "github:NicholasZolton/neojj";
+			flake = false;
 		};
 		neovim-nightly-overlay = {
 			url = "github:nix-community/neovim-nightly-overlay";
