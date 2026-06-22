@@ -33,6 +33,21 @@ in {
 		];
 
 		extraConfigLua = ''
+			local function open_difftastic_from_neojj(revset)
+				-- Neojj invokes diff integrations from plenary.async callbacks in some
+				-- paths. Defer until Neovim is back on the main loop. Also force a Lua
+				-- GC cycle before calling difftastic.nvim: mlua keeps Lua references on
+				-- an auxiliary stack, and repeated opens can exhaust it even for tiny diffs.
+				vim.defer_fn(function()
+					collectgarbage("collect")
+
+					local ok, err = pcall(require("difftastic-nvim").open, revset)
+					if not ok then
+						vim.notify("difftastic-nvim: " .. tostring(err), vim.log.levels.ERROR)
+					end
+				end, 50)
+			end
+
 			package.loaded["neojj.integrations.diffview"] = {
 				open = function(section_name, item_name, opts)
 					opts = opts or {}
@@ -62,7 +77,7 @@ in {
 						revset = item_name
 					end
 
-					require("difftastic-nvim").open(revset)
+					open_difftastic_from_neojj(revset)
 				end,
 			}
 

@@ -8,6 +8,9 @@
 			pname = "difftastic-nvim-lib";
 			version = "unstable";
 			src = nvim-plugin-sources.difftastic-nvim;
+			patches = [
+				../patches/difftastic-nvim-mlua-aux-stack.patch
+			];
 			cargoLock.lockFile = "${nvim-plugin-sources.difftastic-nvim}/Cargo.lock";
 			doCheck = false;
 			installPhase = ''
