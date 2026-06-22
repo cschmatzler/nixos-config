@@ -1,6 +1,7 @@
 {...}: let
 	local = import ./_lib/local.nix;
 	theme = (import ./_lib/theme.nix).catppuccinLatte;
+	palette = theme.hex;
 in {
 	den.aspects.dev-tools.homeManager = {
 		pkgs,
@@ -8,7 +9,6 @@ in {
 		...
 	}: let
 		userName = local.user.fullName;
-		userEmail = local.user.emails.personal;
 	in {
 		home.packages = with pkgs;
 			[
@@ -25,7 +25,6 @@ in {
 				gh
 				gnumake
 				hyperfine
-				jj-starship
 				nil
 				nodejs_24
 				nurl
@@ -111,59 +110,40 @@ in {
 			};
 		};
 
-		programs.jujutsu = {
+		programs.lazygit = {
 			enable = true;
 			settings = {
-				user = {
-					name = userName;
-					email = userEmail;
-				};
 				git = {
-					sign-on-push = true;
-					subprocess = true;
-					write-change-id-header = true;
-					private-commits = "description(glob:'wip:*') | description(glob:'WIP:*') | description(exact:'')";
+					pagers = [
+						{
+							colorArg = "always";
+							pager = "delta --paging=never";
+						}
+					];
 				};
-				fsmonitor.backend = "watchman";
-				ui = {
-					default-command = "status";
-					diff-formatter = ":git";
-					pager = ["delta" "--pager" "less -FRX"];
-					diff-editor = ["nvim" "-c" "DiffEditor $left $right $output"];
-					movement.edit = true;
+				gui = {
+					theme = {
+						lightTheme = true;
+						activeBorderColor = [palette.iris "bold"];
+						inactiveBorderColor = [palette.muted];
+						searchingActiveBorderColor = [palette.foam "bold"];
+						optionsTextColor = [palette.pine];
+						selectedLineBgColor = [palette.overlay];
+						inactiveViewSelectedLineBgColor = [palette.surface];
+						cherryPickedCommitFgColor = [palette.pine];
+						cherryPickedCommitBgColor = [palette.foam];
+						markedBaseCommitFgColor = [palette.rose];
+						markedBaseCommitBgColor = [palette.gold];
+						unstagedChangesColor = [palette.love];
+						defaultFgColor = [palette.text];
+					};
+					nerdFontsVersion = "3";
 				};
-				aliases = {
-					n = ["new"];
-					tug = ["bookmark" "move" "--from" "closest_bookmark(@-)" "--to" "@-"];
-					stack = ["log" "-r" "stack()"];
-					retrunk = ["rebase" "-d" "trunk()"];
-					bm = ["bookmark"];
-					gf = ["git" "fetch"];
-					gp = ["git" "push"];
+				os = {
+					editPreset = "nvim";
+					editInTerminal = true;
 				};
-				revset-aliases = {
-					"closest_bookmark(to)" = "heads(::to & bookmarks())";
-					"closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
-					"mine()" = "author(\"${userEmail}\")";
-					"wip()" = "mine() ~ immutable()";
-					"open()" = "mine() ~ ::trunk()";
-					"current()" = "@:: & mutable()";
-					"stack()" = "reachable(@, mutable())";
-				};
-				templates.draft_commit_description = ''
-					concat(
-					  coalesce(description, default_commit_description, "\n"),
-					  surround(
-					    "\nJJ: This commit contains the following changes:\n", "",
-					    indent("JJ:     ", diff.stat(72)),
-					  ),
-					  "\nJJ: ignore-rest\n",
-					  diff.git(),
-					)
-				'';
 			};
 		};
-
-		programs.jjui.enable = true;
 	};
 }

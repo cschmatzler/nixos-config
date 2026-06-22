@@ -12,7 +12,8 @@ in {
 		./plugins/blink-cmp.nix
 		./plugins/code-review.nix
 		./plugins/conform.nix
-		./plugins/difftastic.nix
+		./plugins/diffs.nix
+		./plugins/diffview.nix
 		./plugins/flash.nix
 		./plugins/grug-far.nix
 		./plugins/hardtime.nix
@@ -21,7 +22,7 @@ in {
 		./plugins/lsp.nix
 		./plugins/lualine.nix
 		./plugins/mini.nix
-		./plugins/neojj.nix
+		./plugins/neogit.nix
 		./plugins/noice.nix
 		./plugins/oil.nix
 		./plugins/render-markdown.nix

@@ -77,12 +77,8 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
-		difftastic-nvim = {
-			url = "github:clabby/difftastic.nvim";
-			flake = false;
-		};
-		neojj = {
-			url = "github:NicholasZolton/neojj";
+		diffs-nvim = {
+			url = "github:barrettruth/diffs.nvim";
 			flake = false;
 		};
 		# Secrets inputs

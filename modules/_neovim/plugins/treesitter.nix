@@ -6,6 +6,7 @@
 			grammarPackages = with pkgs.vimPlugins.nvim-treesitter-parsers; [
 				bash
 				css
+				diff
 				elixir
 				javascript
 				lua
