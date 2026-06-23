@@ -8,15 +8,15 @@
 			url = "github:choplin/code-review.nvim";
 			flake = false;
 		};
-		diffs-nvim = {
-			url = "github:barrettruth/diffs.nvim";
-			flake = false;
-		};
 		darwin = {
 			url = "github:LnL7/nix-darwin/master";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		den.url = "github:vic/den";
+		diffs-nvim = {
+			url = "github:barrettruth/diffs.nvim";
+			flake = false;
+		};
 		disko = {
 			url = "github:nix-community/disko";
 			inputs.nixpkgs.follows = "nixpkgs";

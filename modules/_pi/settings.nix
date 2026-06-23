@@ -13,5 +13,6 @@ in {
 		"npm:pi-mcp-adapter"
 		"npm:pi-better-openai"
 		"npm:@juicesharp/rpiv-ask-user-question"
+		"npm:@plannotator/pi-extension@0.21.1"
 	];
 }

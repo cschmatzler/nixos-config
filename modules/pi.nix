@@ -62,6 +62,7 @@
 					"$HOME/.npm"
 					"$HOME/.npm-global"
 					"$HOME/.pi"
+					"$HOME/.plannotator"
 					"$HOME/Projects/worktrees"
 				];
 				read = [
@@ -101,6 +102,8 @@
 					"nono.sh"
 					"objects.githubusercontent.com"
 					"pi.dev"
+					"plannotator.ai"
+					"room.plannotator.ai"
 					"proxy.golang.org"
 					"pypi.org"
 					"raw.githubusercontent.com"
@@ -113,6 +116,7 @@
 					5173
 					8000
 					8080
+					19432
 				];
 			};
 
@@ -126,6 +130,7 @@
 				"NIX_*"
 				"NIXOS_*"
 				"PATH"
+				"PLANNOTATOR_*"
 				"SHELL"
 				"SSH_AUTH_SOCK"
 				"TERM"
@@ -151,9 +156,12 @@
 		home.packages = [
 			inputs'.llm-agents.packages.pi
 			pkgs.nono
+			pkgs.plannotator
 		];
 
 		home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
+		home.sessionVariables.PLANNOTATOR_PORT = "19432";
+		home.sessionVariables.PLANNOTATOR_REMOTE = "1";
 
 		home.shellAliases.npi = "nono run --profile pi --allow-cwd -- pi";
 
