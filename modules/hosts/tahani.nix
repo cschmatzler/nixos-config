@@ -25,7 +25,7 @@ in
 		nixos = {pkgs, ...}: {
 			networking.hostName = host;
 
-			environment.systemPackages = [pkgs._1password-cli pkgs.codex];
+			environment.systemPackages = [pkgs._1password-cli];
 			programs.nix-ld.enable = true;
 
 			imports = [

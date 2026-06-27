@@ -30,6 +30,7 @@
 			ai-api-key = ./ai-api-key.nix;
 			ai-tools = ./ai-tools.nix;
 			atuin = ./atuin.nix;
+			codex = ./codex.nix;
 			dev-tools = ./dev-tools.nix;
 			herdr = ./herdr.nix;
 			neovim = ./neovim.nix;
