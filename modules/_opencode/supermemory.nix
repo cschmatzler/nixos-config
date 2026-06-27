@@ -1,0 +1,10 @@
+{...}: {
+	baseUrl = "https://api.supermemory.ai";
+	similarityThreshold = 0.6;
+	maxMemories = 5;
+	maxProjectMemories = 10;
+	maxProfileItems = 5;
+	injectProfile = true;
+	containerTagPrefix = "opencode";
+	compactionThreshold = 0.8;
+}
