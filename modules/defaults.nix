@@ -33,6 +33,7 @@
 			dev-tools = ./dev-tools.nix;
 			herdr = ./herdr.nix;
 			neovim = ./neovim.nix;
+			opencode = ./opencode.nix;
 			pi = ./pi.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
