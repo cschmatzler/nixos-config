@@ -48,6 +48,10 @@
 				source = jsonFormat.generate "opencode.jsonc" opencodeSettings;
 				force = true;
 			};
+			".config/opencode/plugins/herdr-agent-state.js" = {
+				source = ./_opencode/herdr-agent-state.js;
+				force = true;
+			};
 			".config/opencode/tui.json".source =
 				jsonFormat.generate "opencode-tui.json" tuiSettings;
 			".config/opencode/supermemory.jsonc".source =
