@@ -5,8 +5,6 @@
 		fishThemeName = slug;
 		ghosttyThemeName = displayName;
 		opencodeThemeName = slug;
-		piThemeName = slug;
-		piPackage = "npm:@sherif-fanous/pi-catppuccin";
 		deltaSyntaxTheme = displayName;
 
 		neovim = {
