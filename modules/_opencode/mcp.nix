@@ -11,7 +11,7 @@
 
 	executor = {
 		type = "remote";
-		url = "https://executor.sh/leuchtturm/mcp?elicitation_mode=browser";
+		url = "https://executor.sh/leuchtturm/mcp";
 		enabled = true;
 	};
 }
