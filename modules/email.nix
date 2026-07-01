@@ -49,7 +49,10 @@ in {
 			};
 			aerc = {
 				enable = true;
-				extraAccounts.archive = "[Gmail]/All Mail";
+				extraAccounts = {
+					archive = "[Gmail]/All Mail";
+					"folders-exclude" = "~^\\[Gmail\\]/";
+				};
 			};
 		};
 	};
