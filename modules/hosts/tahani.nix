@@ -5,6 +5,7 @@
 }: let
 	hostLib = import ../_lib/hosts.nix {inherit den lib;};
 	local = import ../_lib/local.nix;
+	secretLib = import ../_lib/secrets.nix {inherit lib;};
 	host = "tahani";
 	hostMeta = local.hosts.tahani;
 in
@@ -15,6 +16,7 @@ in
 		userIncludes = [
 			den.aspects.user-workstation
 			den.aspects.user-personal
+			den.aspects.email
 		];
 		hostIncludes = [
 			den.aspects.host-nixos-base
@@ -27,6 +29,12 @@ in
 
 			environment.systemPackages = [pkgs._1password-cli];
 			programs.nix-ld.enable = true;
+
+			sops.secrets.tahani-gmail-password =
+				secretLib.mkUserBinarySecret {
+					name = "tahani-gmail-password";
+					sopsFile = ../../secrets/tahani-gmail-password;
+				};
 
 			imports = [
 				./_parts/tahani/networking.nix

@@ -31,6 +31,7 @@
 			ai-tools = ./ai-tools.nix;
 			atuin = ./atuin.nix;
 			dev-tools = ./dev-tools.nix;
+			email = ./email.nix;
 			herdr = ./herdr.nix;
 			neovim = ./neovim.nix;
 			opencode = ./opencode.nix;
