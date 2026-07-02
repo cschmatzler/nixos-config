@@ -1,54 +1,53 @@
 {
-	den,
-	lib,
-	...
+  den,
+  lib,
+  ...
 }: let
-	hostLib = import ../_lib/hosts.nix {inherit den lib;};
-	local = import ../_lib/local.nix;
-	secretLib = import ../_lib/secrets.nix {inherit lib;};
-	host = "tahani";
-	hostMeta = local.hosts.tahani;
+  hostLib = import ../_lib/hosts.nix {inherit den lib;};
+  local = import ../_lib/local.nix;
+  secretLib = import ../_lib/secrets.nix {inherit lib;};
+  host = "tahani";
+  hostMeta = local.hosts.tahani;
 in
-	hostLib.mkHostConfig {
-		system = hostMeta.system;
-		inherit host;
-		user = local.user.name;
-		userIncludes = [
-			den.aspects.user-workstation
-			den.aspects.user-personal
-			den.aspects.email
-		];
-		hostIncludes = [
-			den.aspects.host-nixos-base
-			den.aspects.ai-api-key
-			den.aspects.ynab-api-key
-			den.aspects.syncthing
-		];
-		nixos = {pkgs, ...}: {
-			networking.hostName = host;
+  hostLib.mkHostConfig {
+    system = hostMeta.system;
+    inherit host;
+    user = local.user.name;
+    userIncludes = [
+      den.aspects.user-workstation
+      den.aspects.user-personal
+      den.aspects.email
+    ];
+    hostIncludes = [
+      den.aspects.host-nixos-base
+      den.aspects.ai-api-key
+      den.aspects.ynab-api-key
+      den.aspects.syncthing
+    ];
+    nixos = {pkgs, ...}: {
+      networking.hostName = host;
 
-			environment.systemPackages = [pkgs._1password-cli];
-			programs.nix-ld.enable = true;
+      environment.systemPackages = [pkgs._1password-cli];
+      programs.nix-ld.enable = true;
 
-			sops.secrets.tahani-gmail-password =
-				secretLib.mkUserBinarySecret {
-					name = "tahani-gmail-password";
-					sopsFile = ../../secrets/tahani-gmail-password;
-				};
+      sops.secrets.tahani-gmail-password = secretLib.mkUserBinarySecret {
+        name = "tahani-gmail-password";
+        sopsFile = ../../secrets/tahani-gmail-password;
+      };
 
-			imports = [
-				./_parts/tahani/networking.nix
-			];
+      imports = [
+        ./_parts/tahani/networking.nix
+      ];
 
-			virtualisation.docker.enable = true;
-			users.users.${local.user.name}.extraGroups = [
-				"docker"
-			];
-			swapDevices = [
-				{
-					device = "/swapfile";
-					size = 16 * 1024;
-				}
-			];
-		};
-	}
+      virtualisation.docker.enable = true;
+      users.users.${local.user.name}.extraGroups = [
+        "docker"
+      ];
+      swapDevices = [
+        {
+          device = "/swapfile";
+          size = 16 * 1024;
+        }
+      ];
+    };
+  }

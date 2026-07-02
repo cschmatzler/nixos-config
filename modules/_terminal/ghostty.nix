@@ -1,19 +1,19 @@
 {
-	pkgs,
-	theme,
+  pkgs,
+  theme,
 }: {
-	command = "${pkgs.fish}/bin/fish";
-	theme = theme.ghosttyThemeName;
-	window-padding-x = 12;
-	window-padding-y = 3;
-	window-padding-balance = true;
-	font-family = "MonoLisa";
-	font-size = 14;
-	cursor-style = "block";
-	mouse-hide-while-typing = true;
-	mouse-scroll-multiplier = 1.25;
-	shell-integration = "none";
-	shell-integration-features = "no-cursor";
-	clipboard-read = "allow";
-	clipboard-write = "allow";
+  command = "${pkgs.fish}/bin/fish";
+  theme = theme.ghosttyThemeName;
+  window-padding-x = 12;
+  window-padding-y = 3;
+  window-padding-balance = true;
+  font-family = "MonoLisa";
+  font-size = 14;
+  cursor-style = "block";
+  mouse-hide-while-typing = true;
+  mouse-scroll-multiplier = 1.25;
+  shell-integration = "none";
+  shell-integration-features = "no-cursor";
+  clipboard-read = "allow";
+  clipboard-write = "allow";
 }

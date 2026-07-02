@@ -1,5 +1,5 @@
 {den, ...}: {
-	den.aspects.user-minimal.includes = [
-		den.aspects.shell
-	];
+  den.aspects.user-minimal.includes = [
+    den.aspects.shell
+  ];
 }

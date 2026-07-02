@@ -6,26 +6,26 @@ source "$(dirname "${BASH_SOURCE[0]}")/../common.sh"
 print_info "Available generations:"
 
 if [[ "${EUID}" -ne 0 ]]; then
-	sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+  sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
 else
-	nix-env --profile /nix/var/nix/profiles/system --list-generations
+  nix-env --profile /nix/var/nix/profiles/system --list-generations
 fi
 
 read -r -p "Enter generation number to rollback to: " gen_num
 
 if [[ -z "$gen_num" ]]; then
-	print_error "No generation number provided"
-	exit 1
+  print_error "No generation number provided"
+  exit 1
 fi
 
 print_warning "Rolling back to generation ${gen_num}..."
 
 if [[ "${EUID}" -ne 0 ]]; then
-	sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation "$gen_num"
-	sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
+  sudo nix-env --profile /nix/var/nix/profiles/system --switch-generation "$gen_num"
+  sudo /nix/var/nix/profiles/system/bin/switch-to-configuration switch
 else
-	nix-env --profile /nix/var/nix/profiles/system --switch-generation "$gen_num"
-	/nix/var/nix/profiles/system/bin/switch-to-configuration switch
+  nix-env --profile /nix/var/nix/profiles/system --switch-generation "$gen_num"
+  /nix/var/nix/profiles/system/bin/switch-to-configuration switch
 fi
 
 print_success "Rollback to generation ${gen_num} complete"

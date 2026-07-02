@@ -1,66 +1,64 @@
 {...}: {
-	den.aspects.pi.homeManager = {
-		config,
-		lib,
-		pkgs,
-		inputs',
-		...
-	}: let
-		skills = {
-			".pi/agent/skills/wrdn-authz" = {
-				source = ./_skills/wrdn-authz;
-				recursive = true;
-			};
-			".pi/agent/skills/wrdn-code-execution" = {
-				source = ./_skills/wrdn-code-execution;
-				recursive = true;
-			};
-			".pi/agent/skills/wrdn-data-exfil" = {
-				source = ./_skills/wrdn-data-exfil;
-				recursive = true;
-			};
-			".pi/agent/skills/wrdn-gha-workflows" = {
-				source = ./_skills/wrdn-gha-workflows;
-				recursive = true;
-			};
-			".pi/agent/skills/wrdn-pii" = {
-				source = ./_skills/wrdn-pii;
-				recursive = true;
-			};
-		};
-		jsonFormat = pkgs.formats.json {};
-		prompts = import ./_pi/prompts.nix {};
-		promptFiles =
-			lib.mapAttrs' (
-				name: text:
-					lib.nameValuePair ".pi/agent/prompts/${name}.md" {
-						inherit text;
-					}
-			)
-			prompts;
-		configs = {
-			".pi/agent/settings.json".source =
-				jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
-						inherit config;
-					});
-			".pi/agent/mcp.json".source =
-				jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
-						inherit lib pkgs;
-					});
-		};
-	in {
-		home.packages = [
-			inputs'.llm-agents.packages.pi
-			pkgs.plannotator
-		];
+  den.aspects.pi.homeManager = {
+    config,
+    lib,
+    pkgs,
+    inputs',
+    ...
+  }: let
+    skills = {
+      ".pi/agent/skills/wrdn-authz" = {
+        source = ./_skills/wrdn-authz;
+        recursive = true;
+      };
+      ".pi/agent/skills/wrdn-code-execution" = {
+        source = ./_skills/wrdn-code-execution;
+        recursive = true;
+      };
+      ".pi/agent/skills/wrdn-data-exfil" = {
+        source = ./_skills/wrdn-data-exfil;
+        recursive = true;
+      };
+      ".pi/agent/skills/wrdn-gha-workflows" = {
+        source = ./_skills/wrdn-gha-workflows;
+        recursive = true;
+      };
+      ".pi/agent/skills/wrdn-pii" = {
+        source = ./_skills/wrdn-pii;
+        recursive = true;
+      };
+    };
+    jsonFormat = pkgs.formats.json {};
+    prompts = import ./_pi/prompts.nix {};
+    promptFiles =
+      lib.mapAttrs' (
+        name: text:
+          lib.nameValuePair ".pi/agent/prompts/${name}.md" {
+            inherit text;
+          }
+      )
+      prompts;
+    configs = {
+      ".pi/agent/settings.json".source = jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
+        inherit config;
+      });
+      ".pi/agent/mcp.json".source = jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
+        inherit lib pkgs;
+      });
+    };
+  in {
+    home.packages = [
+      inputs'.llm-agents.packages.pi
+      pkgs.plannotator
+    ];
 
-		home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-		home.sessionVariables.PLANNOTATOR_PORT = "19432";
-		home.sessionVariables.PLANNOTATOR_REMOTE = "1";
+    home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
+    home.sessionVariables.PLANNOTATOR_PORT = "19432";
+    home.sessionVariables.PLANNOTATOR_REMOTE = "1";
 
-		home.file =
-			skills
-			// promptFiles
-			// configs;
-	};
+    home.file =
+      skills
+      // promptFiles
+      // configs;
+  };
 }

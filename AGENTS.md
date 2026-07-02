@@ -21,7 +21,7 @@ alejandra .                   # Format all Nix files
 
 ### Formatter
 - **Tool**: Alejandra
-- **Config**: `alejandra.toml` specifies tabs for indentation
+- **Config**: default Alejandra formatting (spaces)
 - **Command**: Run `alejandra .` before committing
 
 ### File Structure

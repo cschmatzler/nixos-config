@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../common.sh"
 
 hostname="${1:-}"
 if [[ $# -gt 0 ]]; then
-	shift
+  shift
 fi
 
 build_config "nixos" "$hostname" "$@"

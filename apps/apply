@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 hostname="${1:-}"
 if [[ $# -gt 0 ]]; then
-	shift
+  shift
 fi
 
 host="$(resolve_host "$hostname")"
@@ -13,11 +13,11 @@ host="$(resolve_host "$hostname")"
 print_info "Applying configuration for ${host}"
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
-	sudo darwin-rebuild switch --flake ".#${host}" "$@"
+  sudo darwin-rebuild switch --flake ".#${host}" "$@"
 elif [[ "${EUID}" -ne 0 ]]; then
-	sudo nixos-rebuild switch --flake ".#${host}" "$@"
+  sudo nixos-rebuild switch --flake ".#${host}" "$@"
 else
-	nixos-rebuild switch --flake ".#${host}" "$@"
+  nixos-rebuild switch --flake ".#${host}" "$@"
 fi
 
 print_success "Configuration applied successfully"

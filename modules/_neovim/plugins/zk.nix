@@ -1,6 +1,6 @@
 {
-	programs.nixvim.plugins.zk = {
-		enable = true;
-		settings = {};
-	};
+  programs.nixvim.plugins.zk = {
+    enable = true;
+    settings = {};
+  };
 }

@@ -1,21 +1,20 @@
-{
-	lib,
-	pkgs,
-}: {
-	mcpServers = {
-		opensrc = {
-			command = "npx";
-			args = [
-				"-y"
-				"opensrc-mcp"
-			];
-			directTools = true;
-			lifecycle = "eager";
-		};
-		executor = {
-			url = "https://executor.sh/mcp";
-			lifecycle = "eager";
-			directTools = true;
-		};
-	};
+{...}: {
+  mcp = {
+    startup = "eager";
+    toolMode = "direct";
+    servers = {
+      opensrc = {
+        type = "local";
+        command = [
+          "npx"
+          "-y"
+          "opensrc-mcp"
+        ];
+      };
+      executor = {
+        type = "remote";
+        url = "https://executor.sh/leuchtturm/mcp?elicitation_mode=native";
+      };
+    };
+  };
 }

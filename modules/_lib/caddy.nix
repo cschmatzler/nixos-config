@@ -1,19 +1,19 @@
 let
-	local = import ./local.nix;
+  local = import ./local.nix;
 in {
-	inherit (local) tailscaleHost;
+  inherit (local) tailscaleHost;
 
-	mkTailscaleVHost = {
-		name,
-		configText,
-	}: {
-		"${local.tailscaleHost name}" = {
-			extraConfig = ''
-				tls {
-					get_certificate tailscale
-				}
-				${configText}
-			'';
-		};
-	};
+  mkTailscaleVHost = {
+    name,
+    configText,
+  }: {
+    "${local.tailscaleHost name}" = {
+      extraConfig = ''
+        tls {
+          get_certificate tailscale
+        }
+        ${configText}
+      '';
+    };
+  };
 }

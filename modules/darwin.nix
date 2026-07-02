@@ -1,174 +1,174 @@
 {inputs, ...}: let
-	local = import ./_lib/local.nix;
-	userHome = local.mkHome "aarch64-darwin";
+  local = import ./_lib/local.nix;
+  userHome = local.mkHome "aarch64-darwin";
 in {
-	den.aspects.darwin-system.darwin = {pkgs, ...}: {
-		imports = [
-			inputs.nix-homebrew.darwinModules.nix-homebrew
-			inputs.home-manager.darwinModules.home-manager
-			./_darwin/dock.nix
-		];
+  den.aspects.darwin-system.darwin = {pkgs, ...}: {
+    imports = [
+      inputs.nix-homebrew.darwinModules.nix-homebrew
+      inputs.home-manager.darwinModules.home-manager
+      ./_darwin/dock.nix
+    ];
 
-		system.primaryUser = local.user.name;
+    system.primaryUser = local.user.name;
 
-		environment.systemPackages = with pkgs; [
-			dockutil
-			mas
-		];
+    environment.systemPackages = with pkgs; [
+      dockutil
+      mas
+    ];
 
-		system.defaults = {
-			NSGlobalDomain = {
-				AppleInterfaceStyle = null;
-				AppleShowAllExtensions = true;
-				ApplePressAndHoldEnabled = false;
-				KeyRepeat = 2;
-				InitialKeyRepeat = 15;
-				"com.apple.mouse.tapBehavior" = 1;
-				"com.apple.sound.beep.volume" = 0.0;
-				"com.apple.sound.beep.feedback" = 0;
-				AppleShowScrollBars = "WhenScrolling";
-				NSAutomaticCapitalizationEnabled = false;
-				NSAutomaticDashSubstitutionEnabled = false;
-				NSAutomaticPeriodSubstitutionEnabled = false;
-				NSAutomaticQuoteSubstitutionEnabled = false;
-				NSAutomaticSpellingCorrectionEnabled = false;
-				NSDocumentSaveNewDocumentsToCloud = false;
-				NSNavPanelExpandedStateForSaveMode = true;
-				NSNavPanelExpandedStateForSaveMode2 = true;
-				PMPrintingExpandedStateForPrint = true;
-				PMPrintingExpandedStateForPrint2 = true;
-			};
+    system.defaults = {
+      NSGlobalDomain = {
+        AppleInterfaceStyle = null;
+        AppleShowAllExtensions = true;
+        ApplePressAndHoldEnabled = false;
+        KeyRepeat = 2;
+        InitialKeyRepeat = 15;
+        "com.apple.mouse.tapBehavior" = 1;
+        "com.apple.sound.beep.volume" = 0.0;
+        "com.apple.sound.beep.feedback" = 0;
+        AppleShowScrollBars = "WhenScrolling";
+        NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticDashSubstitutionEnabled = false;
+        NSAutomaticPeriodSubstitutionEnabled = false;
+        NSAutomaticQuoteSubstitutionEnabled = false;
+        NSAutomaticSpellingCorrectionEnabled = false;
+        NSDocumentSaveNewDocumentsToCloud = false;
+        NSNavPanelExpandedStateForSaveMode = true;
+        NSNavPanelExpandedStateForSaveMode2 = true;
+        PMPrintingExpandedStateForPrint = true;
+        PMPrintingExpandedStateForPrint2 = true;
+      };
 
-			dock = {
-				autohide = true;
-				show-recents = false;
-				launchanim = true;
-				orientation = "left";
-				tilesize = 60;
-				minimize-to-application = true;
-				mru-spaces = false;
-				expose-group-apps = true;
-				wvous-bl-corner = 1;
-				wvous-br-corner = 1;
-				wvous-tl-corner = 1;
-				wvous-tr-corner = 1;
-			};
+      dock = {
+        autohide = true;
+        show-recents = false;
+        launchanim = true;
+        orientation = "left";
+        tilesize = 60;
+        minimize-to-application = true;
+        mru-spaces = false;
+        expose-group-apps = true;
+        wvous-bl-corner = 1;
+        wvous-br-corner = 1;
+        wvous-tl-corner = 1;
+        wvous-tr-corner = 1;
+      };
 
-			finder = {
-				_FXShowPosixPathInTitle = false;
-				AppleShowAllFiles = true;
-				FXEnableExtensionChangeWarning = false;
-				FXPreferredViewStyle = "clmv";
-				ShowPathbar = true;
-				ShowStatusBar = true;
-			};
+      finder = {
+        _FXShowPosixPathInTitle = false;
+        AppleShowAllFiles = true;
+        FXEnableExtensionChangeWarning = false;
+        FXPreferredViewStyle = "clmv";
+        ShowPathbar = true;
+        ShowStatusBar = true;
+      };
 
-			trackpad = {
-				Clicking = true;
-				TrackpadThreeFingerDrag = true;
-			};
+      trackpad = {
+        Clicking = true;
+        TrackpadThreeFingerDrag = true;
+      };
 
-			screencapture = {
-				location = "~/Screenshots";
-				type = "png";
-				disable-shadow = true;
-			};
+      screencapture = {
+        location = "~/Screenshots";
+        type = "png";
+        disable-shadow = true;
+      };
 
-			screensaver = {
-				askForPassword = true;
-				askForPasswordDelay = 5;
-			};
+      screensaver = {
+        askForPassword = true;
+        askForPasswordDelay = 5;
+      };
 
-			loginwindow = {
-				GuestEnabled = false;
-				DisableConsoleAccess = true;
-			};
+      loginwindow = {
+        GuestEnabled = false;
+        DisableConsoleAccess = true;
+      };
 
-			spaces.spans-displays = false;
+      spaces.spans-displays = false;
 
-			WindowManager.StandardHideWidgets = true;
+      WindowManager.StandardHideWidgets = true;
 
-			menuExtraClock = {
-				Show24Hour = true;
-				ShowDate = 1;
-				ShowDayOfWeek = true;
-				ShowSeconds = false;
-			};
+      menuExtraClock = {
+        Show24Hour = true;
+        ShowDate = 1;
+        ShowDayOfWeek = true;
+        ShowSeconds = false;
+      };
 
-			CustomUserPreferences = {
-				"com.apple.desktopservices" = {
-					DSDontWriteNetworkStores = true;
-					DSDontWriteUSBStores = true;
-				};
-				"com.apple.AdLib" = {
-					allowApplePersonalizedAdvertising = false;
-				};
-				"com.apple.Spotlight" = {
-					"NSStatusItem Visible Item-0" = false;
-				};
-				"com.apple.TextInputMenu" = {
-					visible = false;
-				};
-			};
-		};
+      CustomUserPreferences = {
+        "com.apple.desktopservices" = {
+          DSDontWriteNetworkStores = true;
+          DSDontWriteUSBStores = true;
+        };
+        "com.apple.AdLib" = {
+          allowApplePersonalizedAdvertising = false;
+        };
+        "com.apple.Spotlight" = {
+          "NSStatusItem Visible Item-0" = false;
+        };
+        "com.apple.TextInputMenu" = {
+          visible = false;
+        };
+      };
+    };
 
-		nix = {
-			settings.trusted-users = [local.user.name];
-			gc.interval = {
-				Weekday = 0;
-				Hour = 2;
-				Minute = 0;
-			};
-		};
+    nix = {
+      settings.trusted-users = [local.user.name];
+      gc.interval = {
+        Weekday = 0;
+        Hour = 2;
+        Minute = 0;
+      };
+    };
 
-		users.users.${local.user.name} = {
-			name = local.user.name;
-			home = userHome;
-			isHidden = false;
-			shell = pkgs.fish;
-		};
+    users.users.${local.user.name} = {
+      name = local.user.name;
+      home = userHome;
+      isHidden = false;
+      shell = pkgs.fish;
+    };
 
-		nix-homebrew = {
-			enable = true;
-			user = local.user.name;
-			mutableTaps = true;
-			taps = {
-				"homebrew/homebrew-core" = inputs.homebrew-core;
-				"homebrew/homebrew-cask" = inputs.homebrew-cask;
-			};
-		};
+    nix-homebrew = {
+      enable = true;
+      user = local.user.name;
+      mutableTaps = true;
+      taps = {
+        "homebrew/homebrew-core" = inputs.homebrew-core;
+        "homebrew/homebrew-cask" = inputs.homebrew-cask;
+      };
+    };
 
-		homebrew = {
-			enable = true;
-			onActivation = {
-				autoUpdate = true;
-				cleanup = "uninstall";
-				extraEnv = {
-					# Homebrew overwrites HOMEBREW_MACOS_VERSION from sw_vers internally;
-					# HOMEBREW_FAKE_MACOS is the supported override for cask version checks.
-					HOMEBREW_FAKE_MACOS = "26";
-				};
-				upgrade = true;
-			};
-			taps = [
-				"homebrew/cask"
-			];
-			casks = [
-				"1password"
-				"alcove"
-				"chatgpt"
-				"cleanshot"
-				"ghostty@tip"
-				"helium-browser"
-				"notion"
-				"notion-calendar"
-				"notion-cli"
-				"raycast"
-				"spotify"
-				"tailscale-app"
-				"tidal"
-				"whatsapp"
-			];
-		};
-	};
+    homebrew = {
+      enable = true;
+      onActivation = {
+        autoUpdate = true;
+        cleanup = "uninstall";
+        extraEnv = {
+          # Homebrew overwrites HOMEBREW_MACOS_VERSION from sw_vers internally;
+          # HOMEBREW_FAKE_MACOS is the supported override for cask version checks.
+          HOMEBREW_FAKE_MACOS = "26";
+        };
+        upgrade = true;
+      };
+      taps = [
+        "homebrew/cask"
+      ];
+      casks = [
+        "1password"
+        "alcove"
+        "chatgpt"
+        "cleanshot"
+        "ghostty@tip"
+        "helium-browser"
+        "notion"
+        "notion-calendar"
+        "notion-cli"
+        "raycast"
+        "spotify"
+        "tailscale-app"
+        "tidal"
+        "whatsapp"
+      ];
+    };
+  };
 }
