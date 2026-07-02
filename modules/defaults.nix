@@ -34,7 +34,7 @@
 			email = ./email.nix;
 			herdr = ./herdr.nix;
 			neovim = ./neovim.nix;
-			opencode = ./opencode.nix;
+			pi = ./pi.nix;
 			shell = ./shell.nix;
 			ssh-client = ./ssh-client.nix;
 			terminal = ./terminal.nix;
