@@ -11,7 +11,9 @@ in {
   packages = [
     theme.piPackage
     "git:github.com/dmmulroy/pi-mcp"
+    "npm:pi-subagents"
     "npm:pi-better-openai"
+    "npm:pi-goal"
     "npm:@juicesharp/rpiv-ask-user-question"
     "npm:@plannotator/pi-extension@0.21.1"
   ];

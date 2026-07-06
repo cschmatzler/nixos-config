@@ -18,7 +18,6 @@ in {
         delta
         deadnix
         devenv
-        fallow
         docker
         docker-compose
         lazydocker

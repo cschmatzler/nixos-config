@@ -49,18 +49,6 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    fallow = {
-      url = "github:fallow-rs/fallow";
-      flake = false;
-    };
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    naersk = {
-      url = "github:nix-community/naersk/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # Neovim plugin inputs
     code-review-nvim = {
       url = "github:choplin/code-review.nvim";
