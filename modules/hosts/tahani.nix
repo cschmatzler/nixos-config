@@ -30,6 +30,11 @@ in
       environment.systemPackages = [pkgs._1password-cli];
       programs.nix-ld.enable = true;
 
+      sops.secrets.tahani-email-password = secretLib.mkUserBinarySecret {
+        name = "tahani-email-password";
+        sopsFile = ../../secrets/tahani-email-password;
+      };
+
       sops.secrets.tahani-gmail-password = secretLib.mkUserBinarySecret {
         name = "tahani-gmail-password";
         sopsFile = ../../secrets/tahani-gmail-password;

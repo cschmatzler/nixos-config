@@ -22,8 +22,8 @@
        - `Payments`
        - `Outgoing Shipments`
        - `Newsletters and Marketing`
-       - `[Gmail]/Spam`
-       - `[Gmail]/Trash`
+       - `Junk`
+       - `Deleted Messages`
     3. Determine source folder:
        - If `$ARGUMENTS` is a single known folder name (matches a folder from step 1), use that as source.
        - Otherwise use `INBOX`.
@@ -38,19 +38,19 @@
        - Check envelope flags from the JSON listing (seen/answered/flagged) before reading.
        - Read the message: `himalaya message read -f "<source>" <id>`.
        - Move: `himalaya message move -f "<source>" "<destination>" <id>`.
-       - Do not call `himalaya message delete`; trash messages by moving them to `[Gmail]/Trash`.
+       - Do not call `himalaya message delete`; trash messages by moving them to `Deleted Messages`.
     6. Classification precedence (higher rule wins on conflict):
        - **Actionable and unhandled** - if the message needs a reply, requires manual payment, needs a confirmation, or demands any human action, AND has NOT been replied to (no `answered` flag), leave it in the source folder untouched. This is the highest-priority rule: anything that still needs attention stays in `INBOX`.
        - Human correspondence already handled - freeform natural-language messages written by a human that have been replied to (`answered` flag set): move to `Correspondence`.
        - Human communication not yet replied to but not clearly actionable - when in doubt whether a human message requires action, leave it untouched.
-       - Obvious spam, phishing, or unsolicited scam messages: move to `[Gmail]/Spam`.
-       - Clearly ephemeral automated/system message (alerts, bot/status updates, OTP/2FA, password reset codes, login codes) with no archival value: move to `[Gmail]/Trash`.
+       - Obvious spam, phishing, or unsolicited scam messages: move to `Junk`.
+       - Clearly ephemeral automated/system message (alerts, bot/status updates, OTP/2FA, password reset codes, login codes) with no archival value: move to `Deleted Messages`.
        - Automatic payment transaction notifications (charge/payment confirmations, receipts, failed-payment notices, provider payment events such as Klarna/PayPal/Stripe) that are purely informational and require no action: move to `Payments`.
-       - Subscription renewal notifications (auto-renew reminders, "will renew soon", price-change notices without a concrete transaction) are operational alerts, not payment records: move to `[Gmail]/Trash`.
-       - Installment plan activation notifications (for example, Barclays "Ihr Ratenkauf wurde aktiviert") are operational confirmations, not payment records: move to `[Gmail]/Trash`.
-       - "Kontoauszug verfuegbar/ist online" notifications are availability alerts, not payment records: move to `[Gmail]/Trash`.
+       - Subscription renewal notifications (auto-renew reminders, "will renew soon", price-change notices without a concrete transaction) are operational alerts, not payment records: move to `Deleted Messages`.
+       - Installment plan activation notifications (for example, Barclays "Ihr Ratenkauf wurde aktiviert") are operational confirmations, not payment records: move to `Deleted Messages`.
+       - "Kontoauszug verfuegbar/ist online" notifications are availability alerts, not payment records: move to `Deleted Messages`.
        - Orders/invoices/business records: move to `Orders and Invoices`.
-       - Shipping/tracking notifications (dispatch confirmations, carrier updates, delivery ETAs) without invoice or order-document value: move to `[Gmail]/Trash`.
+       - Shipping/tracking notifications (dispatch confirmations, carrier updates, delivery ETAs) without invoice or order-document value: move to `Deleted Messages`.
        - Marketing/newsletters: move to `Newsletters and Marketing`.
        - Delivery/submission confirmations for items you shipped outbound: move to `Outgoing Shipments`.
        - Long-term but uncategorized messages: create a concise new folder and move there.

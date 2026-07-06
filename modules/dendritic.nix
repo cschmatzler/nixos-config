@@ -49,6 +49,10 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nono = {
+      url = "github:always-further/nono";
+      flake = false;
+    };
     # Neovim plugin inputs
     code-review-nvim = {
       url = "github:choplin/code-review.nvim";

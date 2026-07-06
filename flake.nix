@@ -51,6 +51,10 @@
     };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     nixpkgs.url = "github:nixos/nixpkgs/master";
+    nono = {
+      url = "github:always-further/nono";
+      flake = false;
+    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
