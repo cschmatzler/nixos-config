@@ -99,6 +99,7 @@ in {
 
     programs.fzf = {
       enable = true;
+      historyWidget.fish.command = "";
     };
 
     programs.ripgrep = {
