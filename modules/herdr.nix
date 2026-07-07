@@ -1,5 +1,5 @@
 {...}: let
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).catppuccinMocha;
 in {
   den.aspects.herdr.homeManager = {inputs', ...}: {
     home.packages = [

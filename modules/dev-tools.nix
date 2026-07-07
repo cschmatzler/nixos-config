@@ -1,6 +1,6 @@
 {...}: let
   local = import ./_lib/local.nix;
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).catppuccinMocha;
   palette = theme.hex;
 in {
   den.aspects.dev-tools.homeManager = {
@@ -122,7 +122,7 @@ in {
         };
         gui = {
           theme = {
-            lightTheme = true;
+            lightTheme = false;
             activeBorderColor = [palette.iris "bold"];
             inactiveBorderColor = [palette.muted];
             searchingActiveBorderColor = [palette.foam "bold"];

@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  theme = (import ../_lib/theme.nix).catppuccinLatte;
+  theme = (import ../_lib/theme.nix).catppuccinMocha;
 in {
   imports = [
     ./autocmd.nix
