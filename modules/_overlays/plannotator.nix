@@ -1,21 +1,21 @@
 {...}: final: prev: let
-  version = "0.21.1";
+  version = "0.22.0";
   prebuilt = {
     x86_64-linux = {
       asset = "plannotator-linux-x64";
-      hash = "sha256-J6TicUU4FJ8aPKQY/tgYSVVDSAwX36YQMrBz9v9DaP8=";
+      hash = "sha256-03G3gkKjHWh7rc0ncrc1fjOVZ8h0tE56UDFtHRHSp9E=";
     };
     aarch64-linux = {
       asset = "plannotator-linux-arm64";
-      hash = "sha256-MCFhVvkx6rtJA60OkQDRSJPuOM7EmENuBz8GP/Uakno=";
+      hash = "sha256-tTtIbLDTtGs0UdKpyWQ/GiGb9I3nt/KXJGhxhM3oyiQ=";
     };
     x86_64-darwin = {
       asset = "plannotator-darwin-x64";
-      hash = "sha256-rwFTNIlWsoLpW8mkdb1kQH+u4D0ufTY3wKderZ/pMbA=";
+      hash = "sha256-ADMXxRWhxE0oSpQApe/KBZUiGZnym/LeZxJDl2orOQo=";
     };
     aarch64-darwin = {
       asset = "plannotator-darwin-arm64";
-      hash = "sha256-ibSF9UU42tIRzV8eLiloYMw66kM620eF7tM12+JTd68=";
+      hash = "sha256-e6utZ5avj36jGYvZYzqm8szmq5fF7GjC/eDnTkwqBlI=";
     };
   };
   platform =

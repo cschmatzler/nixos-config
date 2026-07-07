@@ -15,6 +15,6 @@ in {
     "npm:pi-better-openai"
     "npm:pi-goal"
     "npm:@juicesharp/rpiv-ask-user-question"
-    "npm:@plannotator/pi-extension@0.21.1"
+    "npm:@plannotator/pi-extension@0.22.0"
   ];
 }
