@@ -1,5 +1,5 @@
 let
-  theme = (import ../_lib/theme.nix).catppuccinMocha;
+  theme = (import ../_lib/theme.nix).catppuccinLatte;
 in {
   programs.nixvim = {
     autoGroups = {

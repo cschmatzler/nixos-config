@@ -1,5 +1,5 @@
 {...}: let
-  theme = (import ./_lib/theme.nix).catppuccinMocha;
+  theme = (import ./_lib/theme.nix).catppuccinLatte;
   palette = theme.hex;
 in {
   den.aspects.terminal.homeManager = {
@@ -80,8 +80,8 @@ in {
       "glow/${theme.slug}.json" = {
         source = jsonFormat.generate "${theme.slug}.json" glowFiles.theme;
       };
-      "yazi/Catppuccin-mocha.tmTheme".source = "${batThemeSrc}/themes/${theme.displayName}.tmTheme";
-      "yazi/theme.toml".source = "${yaziThemeSrc}/themes/mocha/catppuccin-mocha-maroon.toml";
+      "yazi/Catppuccin-latte.tmTheme".source = "${batThemeSrc}/themes/${theme.displayName}.tmTheme";
+      "yazi/theme.toml".source = "${yaziThemeSrc}/themes/latte/catppuccin-latte-maroon.toml";
     };
 
     programs.bat = {

@@ -1,6 +1,6 @@
 {...}: let
   local = import ./_lib/local.nix;
-  theme = (import ./_lib/theme.nix).catppuccinMocha;
+  theme = (import ./_lib/theme.nix).catppuccinLatte;
   palette = theme.hex;
   fishPromptColor = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
@@ -24,7 +24,7 @@ in {
     home.sessionVariables = {
       COLORTERM = "truecolor";
       COLORFGBG = "15;0";
-      TERM_BACKGROUND = "dark";
+      TERM_BACKGROUND = "light";
       EDITOR = "nvim";
       MANPAGER = "nvim +Man!";
     };
