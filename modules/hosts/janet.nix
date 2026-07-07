@@ -24,5 +24,6 @@ in
     darwin = {...}: {
       networking.hostName = host;
       networking.computerName = host;
+      documentation.doc.enable = false;
     };
   }
