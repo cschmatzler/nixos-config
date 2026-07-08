@@ -12,7 +12,7 @@ Personal Nix flake for two machines:
 - `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and literal networking
 - `modules/profiles/` - shared host and user profile bundles
 - `modules/_lib/` - local helper functions
-- `modules/_desktop/`, `modules/_pi/`, `modules/_terminal/`, `modules/_tmux/` - feature-owned config data, templates, and rendered config sources
+- `modules/_desktop/`, `modules/_opencode/`, `modules/_terminal/`, `modules/_tmux/` - feature-owned config data, templates, and rendered config sources
 - `apps/` - shell apps exposed through the flake
 - `secrets/` - SOPS-encrypted secrets
 - `flake.nix` - generated flake entrypoint
@@ -36,7 +36,7 @@ Common examples:
 - `modules/core.nix` - shared Nix and shell foundation
 - `modules/dev-tools.nix` - VCS, language, and developer tooling
 - `modules/network.nix` - SSH and tailscale aspects
-- `modules/ai-tools.nix` - Pi, Claude Code, MCP, and agent extensions
+- `modules/ai-tools.nix` - OpenCode, MCP, and agent configuration
 - `modules/profiles/user/workstation.nix` - shared developer workstation user bundle
 - `modules/hosts/tahani.nix` - server/workstation composition for `tahani`
 

@@ -1,5 +1,5 @@
 {...}: {
-  den.aspects.pi.homeManager = {
+  den.aspects.opencode.homeManager = {
     config,
     lib,
     pkgs,
@@ -7,23 +7,23 @@
     ...
   }: let
     skills = {
-      ".pi/agent/skills/wrdn-authz" = {
+      ".config/opencode/skills/wrdn-authz" = {
         source = ./_skills/wrdn-authz;
         recursive = true;
       };
-      ".pi/agent/skills/wrdn-code-execution" = {
+      ".config/opencode/skills/wrdn-code-execution" = {
         source = ./_skills/wrdn-code-execution;
         recursive = true;
       };
-      ".pi/agent/skills/wrdn-data-exfil" = {
+      ".config/opencode/skills/wrdn-data-exfil" = {
         source = ./_skills/wrdn-data-exfil;
         recursive = true;
       };
-      ".pi/agent/skills/wrdn-gha-workflows" = {
+      ".config/opencode/skills/wrdn-gha-workflows" = {
         source = ./_skills/wrdn-gha-workflows;
         recursive = true;
       };
-      ".pi/agent/skills/wrdn-pii" = {
+      ".config/opencode/skills/wrdn-pii" = {
         source = ./_skills/wrdn-pii;
         recursive = true;
       };
@@ -31,9 +31,9 @@
     jsonFormat = pkgs.formats.json {};
     nonoProfile = {
       meta = {
-        name = "pi";
+        name = "opencode";
         version = "1.0.0";
-        description = "Pi coding agent profile with restricted network, Codex/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
+        description = "OpenCode coding agent profile with restricted network, OpenCode/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
       };
 
       extends = "default";
@@ -56,12 +56,13 @@
 
       filesystem = {
         allow = [
-          "$HOME/.cache/pi"
+          "$HOME/.cache/opencode"
           "$HOME/.codex"
-          "$HOME/.local/share/pi"
+          "$HOME/.config/opencode"
+          "$HOME/.local/share/opencode"
+          "$HOME/.local/state/opencode"
           "$HOME/.npm"
           "$HOME/.npm-global"
-          "$HOME/.pi"
           "$HOME/Projects/worktrees"
         ];
         read = [
@@ -73,7 +74,7 @@
         ];
         bypass_protection = [
           "$HOME/.codex"
-          "$HOME/.pi"
+          "$HOME/.config/opencode"
         ];
       };
 
@@ -88,6 +89,9 @@
         allow_domain = [
           "auth.openai.com"
           "chatgpt.com"
+          "console.opencode.ai"
+          "opencode.ai"
+          "*.opencode.ai"
           "executor.sh"
           "*.executor.sh"
           "api.github.com"
@@ -100,7 +104,6 @@
           "npm.pkg.github.com"
           "nono.sh"
           "objects.githubusercontent.com"
-          "pi.dev"
           "proxy.golang.org"
           "pypi.org"
           "raw.githubusercontent.com"
@@ -125,6 +128,7 @@
         "LC_*"
         "NIX_*"
         "NIXOS_*"
+        "OPENCODE_*"
         "PATH"
         "SHELL"
         "SSH_AUTH_SOCK"
@@ -135,39 +139,36 @@
         "XDG_*"
       ];
     };
-    prompts = import ./_pi/prompts.nix {};
-    promptFiles =
+    commands = import ./_opencode/commands.nix {};
+    commandFiles =
       lib.mapAttrs' (
         name: text:
-          lib.nameValuePair ".pi/agent/prompts/${name}.md" {
+          lib.nameValuePair ".config/opencode/commands/${name}.md" {
             inherit text;
           }
       )
-      prompts;
+      commands;
     configs = {
-      ".pi/agent/settings.json".source = jsonFormat.generate "pi-agent-settings.json" (import ./_pi/settings.nix {
-        inherit config;
-      });
-      ".pi/agent/mcp.json".source = jsonFormat.generate "pi-agent-mcp.json" (import ./_pi/mcp.nix {
-        inherit lib pkgs;
-      });
-      ".config/nono/profiles/pi.json".source = jsonFormat.generate "nono-pi-profile.json" nonoProfile;
+      ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" (import ./_opencode/settings.nix {});
+      ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" (import ./_opencode/tui.nix {});
+      ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
     };
   in {
     home.packages = [
-      inputs'.llm-agents.packages.pi
+      inputs'.llm-agents.packages.opencode
+      pkgs.nodejs_24
       pkgs.nono
       pkgs.plannotator
     ];
 
     home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-    home.shellAliases.npi = "nono run --profile pi --allow-cwd -- pi";
     home.sessionVariables.PLANNOTATOR_PORT = "19432";
     home.sessionVariables.PLANNOTATOR_REMOTE = "1";
+    home.shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
 
     home.file =
       skills
-      // promptFiles
+      // commandFiles
       // configs;
   };
 }
