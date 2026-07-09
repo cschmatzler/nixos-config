@@ -34,6 +34,7 @@ in {
     dontUnpack = true;
     dontConfigure = true;
     dontBuild = true;
+    dontStrip = true;
 
     nativeBuildInputs = prev.lib.optionals prev.stdenv.hostPlatform.isLinux [
       prev.autoPatchelfHook
