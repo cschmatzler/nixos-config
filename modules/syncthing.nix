@@ -187,7 +187,7 @@ in {
       key = config.sops.secrets."${host}-syncthing-key".path;
       inherit user;
       group = "users";
-      guiAddress = "0.0.0.0:8384";
+      guiAddress = "127.0.0.1:8384";
       overrideFolders = true;
       overrideDevices = true;
       settings = mkSettings homeDir;
@@ -202,7 +202,7 @@ in {
     host = config.networking.hostName;
     homeDir = mkHome true;
     configDir = "${homeDir}/.config/syncthing";
-    guiAddress = "0.0.0.0:8384";
+    guiAddress = "127.0.0.1:8384";
     settings = mkSettings homeDir;
     updateConfig = mkUpdateConfig {
       inherit pkgs configDir guiAddress settings;
