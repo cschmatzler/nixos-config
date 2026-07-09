@@ -4,6 +4,7 @@
     displayName = "Catppuccin Latte";
     fishThemeName = slug;
     ghosttyThemeName = displayName;
+    codexThemeName = slug;
     opencodeThemeName = "catppuccin";
     deltaSyntaxTheme = displayName;
 

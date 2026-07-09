@@ -1,9 +1,5 @@
 {...}: {
   "albanian-lesson" = ''
-    ---
-    description: Turn pasted Albanian lesson into translated notes and solved exercises in zk
-    ---
-
     Process the pasted Albanian lesson content and create two `zk` notes: one for lesson material and one for exercises.
 
     <lesson-material>
@@ -50,11 +46,8 @@
 
     If no lesson material was provided in `$ARGUMENTS`, stop and ask the user to paste it.
   '';
-  "inbox-triage" = ''
-    ---
-    description: Triage inbox one message at a time with himalaya only
-    ---
 
+  "inbox-triage" = ''
     Process email with strict manual triage using Himalaya only.
 
     Hard requirements:
@@ -91,19 +84,16 @@
        - Move: `himalaya message move -f "<source>" "<destination>" <id>`.
        - Do not call `himalaya message delete`; trash messages by moving them to `Deleted Messages`.
     6. Classification precedence (higher rule wins on conflict):
-       - **Actionable and unhandled** - if the message needs a reply, requires manual payment, needs a confirmation, or demands any human action, AND has NOT been replied to (no `answered` flag), leave it in the source folder untouched. This is the highest-priority rule: anything that still needs attention stays in `INBOX`.
-       - Human correspondence already handled - freeform natural-language messages written by a human that have been replied to (`answered` flag set): move to `Correspondence`.
-       - Human communication not yet replied to but not clearly actionable - when in doubt whether a human message requires action, leave it untouched.
+       - Actionable and unhandled: if the message needs a reply, requires manual payment, needs a confirmation, or demands any human action, and has not been replied to, leave it in the source folder untouched.
+       - Human correspondence already handled: move to `Correspondence`.
+       - Human communication not yet replied to but not clearly actionable: leave it untouched.
        - Obvious spam, phishing, or unsolicited scam messages: move to `Junk`.
-       - Clearly ephemeral automated/system message (alerts, bot/status updates, OTP/2FA, password reset codes, login codes) with no archival value: move to `Deleted Messages`.
-       - Automatic payment transaction notifications (charge/payment confirmations, receipts, failed-payment notices, provider payment events such as Klarna/PayPal/Stripe) that are purely informational and require no action: move to `Payments`.
-       - Subscription renewal notifications (auto-renew reminders, "will renew soon", price-change notices without a concrete transaction) are operational alerts, not payment records: move to `Deleted Messages`.
-       - Installment plan activation notifications (for example, Barclays "Ihr Ratenkauf wurde aktiviert") are operational confirmations, not payment records: move to `Deleted Messages`.
-       - "Kontoauszug verfuegbar/ist online" notifications are availability alerts, not payment records: move to `Deleted Messages`.
+       - Clearly ephemeral automated/system message with no archival value: move to `Deleted Messages`.
+       - Automatic payment transaction notifications that are purely informational: move to `Payments`.
+       - Subscription renewal, installment activation, account-statement availability, and shipping/tracking notifications without archival value: move to `Deleted Messages`.
        - Orders/invoices/business records: move to `Orders and Invoices`.
-       - Shipping/tracking notifications (dispatch confirmations, carrier updates, delivery ETAs) without invoice or order-document value: move to `Deleted Messages`.
        - Marketing/newsletters: move to `Newsletters and Marketing`.
-       - Delivery/submission confirmations for items you shipped outbound: move to `Outgoing Shipments`.
+       - Delivery/submission confirmations for items shipped outbound: move to `Outgoing Shipments`.
        - Long-term but uncategorized messages: create a concise new folder and move there.
     7. Folder creation rule:
        - Create a new folder only if no existing folder fits and the message should be kept.
@@ -118,15 +108,9 @@
     - Keep decisions conservative: when in doubt about whether something needs action, leave it in `INBOX`.
     - Never move unhandled actionable messages.
     - Never move human communications that haven't been replied to, unless clearly non-actionable.
-    - Define "processed" as "reviewed once in this run" (including intentionally untouched human messages).
+    - Define processed as reviewed once in this run, including intentionally untouched human messages.
     - Include only messages observed during this run's listings; if new mail arrives mid-run, leave it for the next run.
-    - Report a compact action log at the end with:
-      - source folder,
-      - total reviewed IDs,
-      - counts by action (untouched/moved-to-folder),
-      - per-destination-folder counts,
-      - created folders,
-      - short rationale for non-obvious classifications.
+    - Report a compact action log at the end with source folder, total reviewed IDs, counts by action, per-destination-folder counts, created folders, and short rationale for non-obvious classifications.
 
     <user-request>
     $ARGUMENTS

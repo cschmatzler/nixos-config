@@ -1,39 +1,27 @@
 {...}: {
-  den.aspects.opencode.homeManager = {
+  den.aspects.codex.homeManager = {
     config,
     lib,
     pkgs,
     inputs',
     ...
   }: let
-    skills = {
-      ".config/opencode/skills/wrdn-authz" = {
-        source = ./_skills/wrdn-authz;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-code-execution" = {
-        source = ./_skills/wrdn-code-execution;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-data-exfil" = {
-        source = ./_skills/wrdn-data-exfil;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-gha-workflows" = {
-        source = ./_skills/wrdn-gha-workflows;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-pii" = {
-        source = ./_skills/wrdn-pii;
-        recursive = true;
-      };
-    };
     jsonFormat = pkgs.formats.json {};
+    tomlFormat = pkgs.formats.toml {};
+    commands = import ./_codex/commands.nix {};
+    commandFiles =
+      lib.mapAttrs' (
+        name: text:
+          lib.nameValuePair ".codex/prompts/${name}.md" {
+            inherit text;
+          }
+      )
+      commands;
     nonoProfile = {
       meta = {
-        name = "opencode";
+        name = "codex";
         version = "1.0.0";
-        description = "OpenCode coding agent profile with restricted network, OpenCode/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
+        description = "Codex CLI coding agent profile with restricted network, Codex/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
       };
 
       extends = "default";
@@ -56,11 +44,10 @@
 
       filesystem = {
         allow = [
-          "$HOME/.cache/opencode"
+          "$HOME/.cache/codex"
           "$HOME/.codex"
-          "$HOME/.config/opencode"
-          "$HOME/.local/share/opencode"
-          "$HOME/.local/state/opencode"
+          "$HOME/.local/share/codex"
+          "$HOME/.local/state/codex"
           "$HOME/.npm"
           "$HOME/.npm-global"
           "$HOME/Projects/worktrees"
@@ -74,7 +61,6 @@
         ];
         bypass_protection = [
           "$HOME/.codex"
-          "$HOME/.config/opencode"
         ];
       };
 
@@ -87,11 +73,10 @@
       network = {
         network_profile = "codex";
         allow_domain = [
+          "api.openai.com"
           "auth.openai.com"
           "chatgpt.com"
-          "console.opencode.ai"
-          "opencode.ai"
-          "*.opencode.ai"
+          "*.chatgpt.com"
           "executor.sh"
           "*.executor.sh"
           "api.github.com"
@@ -104,6 +89,8 @@
           "npm.pkg.github.com"
           "nono.sh"
           "objects.githubusercontent.com"
+          "openai.com"
+          "*.openai.com"
           "proxy.golang.org"
           "pypi.org"
           "raw.githubusercontent.com"
@@ -128,7 +115,7 @@
         "LC_*"
         "NIX_*"
         "NIXOS_*"
-        "OPENCODE_*"
+        "OPENAI_*"
         "PATH"
         "SHELL"
         "SSH_AUTH_SOCK"
@@ -139,33 +126,22 @@
         "XDG_*"
       ];
     };
-    commands = import ./_opencode/commands.nix {};
-    commandFiles =
-      lib.mapAttrs' (
-        name: text:
-          lib.nameValuePair ".config/opencode/commands/${name}.md" {
-            inherit text;
-          }
-      )
-      commands;
     configs = {
-      ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" (import ./_opencode/settings.nix {});
-      ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" (import ./_opencode/tui.nix {});
-      ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
+      ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" (import ./_codex/settings.nix {
+        homeDirectory = config.home.homeDirectory;
+      });
+      ".config/nono/profiles/codex.json".source = jsonFormat.generate "nono-codex-profile.json" nonoProfile;
     };
   in {
     home.packages = [
-      inputs'.llm-agents.packages.opencode
+      inputs'.llm-agents.packages.codex
       pkgs.nodejs_24
       pkgs.nono
     ];
 
-    home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-    home.shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
+    home.sessionVariables.NPM_CONFIG_PREFIX = lib.mkDefault "${config.home.homeDirectory}/.npm-global";
+    home.shellAliases.ncodex = "nono run --profile codex --allow-cwd -- codex";
 
-    home.file =
-      skills
-      // commandFiles
-      // configs;
+    home.file = commandFiles // configs;
   };
 }

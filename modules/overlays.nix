@@ -2,7 +2,6 @@
   toolOverlays = [
     (import ./_overlays/hunkdiff.nix {inherit inputs;})
     (import ./_overlays/nono.nix {inherit inputs;})
-    (import ./_overlays/plannotator.nix {})
   ];
 
   overlays = toolOverlays;
