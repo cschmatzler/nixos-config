@@ -1,4 +1,19 @@
 {...}: {
+  "plannotator-review" = ''
+    ---
+    description: Open interactive code review for current changes or a PR URL; pass --git to force Git in JJ workspaces
+    ---
+  '';
+  "plannotator-annotate" = ''
+    ---
+    description: Open interactive annotation UI for a file, folder, or URL
+    ---
+  '';
+  "plannotator-last" = ''
+    ---
+    description: Annotate the last assistant message
+    ---
+  '';
   "inbox-triage" = ''
     ---
     description: Triage inbox one message at a time with himalaya only
