@@ -21,9 +21,12 @@
       den.aspects.opencode
     ];
     homeManager = {pkgs, ...}: {
-      home.packages = [
-        (pkgs.callPackage ./_packages/nono.nix {nonoSrc = inputs.nono;})
-      ];
+      home = {
+        packages = [
+          (pkgs.callPackage ./_packages/nono.nix {nonoSrc = inputs.nono;})
+        ];
+        sessionVariables.PLANNOTATOR_REMOTE = "1";
+      };
     };
   };
 }

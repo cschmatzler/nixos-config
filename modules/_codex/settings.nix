@@ -7,6 +7,8 @@ in {
   web_search = "cached";
   check_for_update_on_startup = false;
 
+  features.hooks = true;
+
   tui = {
     theme = theme.codexThemeName;
     status_line = [

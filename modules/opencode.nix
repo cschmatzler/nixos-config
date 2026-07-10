@@ -79,6 +79,7 @@ in {
       home = {
         packages = [
           inputs'.llm-agents.packages.opencode
+          inputs'.llm-agents.packages.plannotator
         ];
         shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
         file =

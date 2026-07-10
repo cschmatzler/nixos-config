@@ -36,6 +36,7 @@
       ++ [
         "$HOME/.npm"
         "$HOME/.npm-global"
+        "$HOME/.plannotator"
         "$HOME/Projects/worktrees"
       ];
     read = [
@@ -86,6 +87,7 @@
       5173
       8000
       8080
+      19432
     ];
   };
 
@@ -99,6 +101,7 @@
       "LC_*"
       "NIX_*"
       "NIXOS_*"
+      "PLANNOTATOR_*"
     ]
     ++ apiEnvironmentVariables
     ++ [
