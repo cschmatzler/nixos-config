@@ -1,602 +1,139 @@
-{
+let
+  keymap = mode: key: action: desc: {
+    inherit mode key action;
+    options = {inherit desc;};
+  };
+  normal = keymap "n";
+  visual = keymap "v";
+  normalVisual = keymap ["n" "v"];
+  rawLua = __raw: {inherit __raw;};
+  luaFunction = body: rawLua "function()\n  ${body}\nend\n";
+  snacksPicker = call: luaFunction "Snacks.picker.${call}";
+in {
   programs.nixvim.keymaps = [
     # clipboard - OSC52 yank and paste
-    {
-      mode = ["n" "v"];
-      key = "<leader>y";
-      action = ''"+y'';
-      options.desc = "Yank to system clipboard (OSC52)";
-    }
+    (normalVisual "<leader>y" ''"+y'' "Yank to system clipboard (OSC52)")
+
     # e - explore/edit
-    {
-      mode = "n";
-      key = "<leader>ef";
-      action.__raw = ''
-        function()
-          require("oil").open()
-        end
-      '';
-      options.desc = "Oil";
-    }
-    {
-      mode = "n";
-      key = "<leader>er";
-      action = ":lua require('grug-far').open()<CR>";
-      options.desc = "Search and replace";
-    }
+    (normal "<leader>ef" (luaFunction "require(\"oil\").open()") "Oil")
+    (normal "<leader>er" ":lua require('grug-far').open()<CR>" "Search and replace")
+
     # f - find
-    {
-      mode = "n";
-      key = "<leader>f/";
-      action.__raw = ''
-        function()
-          Snacks.picker.search_history()
-        end
-      '';
-      options.desc = "Search history";
-    }
-    {
-      mode = "n";
-      key = "<leader>f:";
-      action.__raw = ''
-        function()
-          Snacks.picker.command_history()
-        end
-      '';
-      options.desc = "Command history";
-    }
-    {
-      mode = "n";
-      key = "<leader>fa";
-      action.__raw = ''
-        function()
-          Snacks.picker.git_diff({ staged = true })
-        end
-      '';
-      options.desc = "Staged hunks (all)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fA";
-      action.__raw = ''
-        function()
-          Snacks.picker.git_diff({
-            staged = true,
-            filter = { buf = true },
-          })
-        end
-      '';
-      options.desc = "Staged hunks (buffer)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fb";
-      action.__raw = ''
-        function()
-          Snacks.picker.buffers()
-        end
-      '';
-      options.desc = "Buffers";
-    }
-    {
-      mode = "n";
-      key = "<leader>fd";
-      action.__raw = ''
-        function()
-          Snacks.picker.diagnostics()
-        end
-      '';
-      options.desc = "Diagnostic (workspace)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fD";
-      action.__raw = ''
-        function()
-          Snacks.picker.diagnostics_buffer()
-        end
-      '';
-      options.desc = "Diagnostic (buffer)";
-    }
-    {
-      mode = "n";
-      key = "<leader>ff";
-      action.__raw = ''
-        function()
-          Snacks.picker.files()
-        end
-      '';
-      options.desc = "Find files";
-    }
-    {
-      mode = "n";
-      key = "<leader>fg";
-      action.__raw = ''
-        function()
-          Snacks.picker.grep()
-        end
-      '';
-      options.desc = "Live grep";
-    }
-    {
-      mode = "n";
-      key = "<leader>fm";
-      action.__raw = ''
-        function()
-          Snacks.picker.git_diff()
-        end
-      '';
-      options.desc = "Modified hunks (all)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fM";
-      action.__raw = ''
-        function()
-          Snacks.picker.git_diff({
-            filter = { buf = true },
-          })
-        end
-      '';
-      options.desc = "Modified hunks (buffer)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fr";
-      action.__raw = ''
-        function()
-          Snacks.picker.lsp_references()
-        end
-      '';
-      options.desc = "References (LSP)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fs";
-      action.__raw = ''
-        function()
-          Snacks.picker.lsp_workspace_symbols()
-        end
-      '';
-      options.desc = "Symbols (LSP, workspace)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fS";
-      action.__raw = ''
-        function()
-          Snacks.picker.lsp_symbols()
-        end
-      '';
-      options.desc = "Symbols (LSP, buffer)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fv";
-      action.__raw = ''
-        function()
-          Snacks.picker.recent()
-        end
-      '';
-      options.desc = "Recent files (all)";
-    }
-    {
-      mode = "n";
-      key = "<leader>fV";
-      action.__raw = ''
-        function()
-          Snacks.picker.recent({
-            filter = { cwd = true },
-          })
-        end
-      '';
-      options.desc = "Recent files (cwd)";
-    }
+    (normal "<leader>f/" (snacksPicker "search_history()") "Search history")
+    (normal "<leader>f:" (snacksPicker "command_history()") "Command history")
+    (normal "<leader>fa" (snacksPicker "git_diff({ staged = true })") "Staged hunks (all)")
+    (normal "<leader>fA" (rawLua ''
+      function()
+        Snacks.picker.git_diff({
+          staged = true,
+          filter = { buf = true },
+        })
+      end
+    '') "Staged hunks (buffer)")
+    (normal "<leader>fb" (snacksPicker "buffers()") "Buffers")
+    (normal "<leader>fd" (snacksPicker "diagnostics()") "Diagnostic (workspace)")
+    (normal "<leader>fD" (snacksPicker "diagnostics_buffer()") "Diagnostic (buffer)")
+    (normal "<leader>ff" (snacksPicker "files()") "Find files")
+    (normal "<leader>fg" (snacksPicker "grep()") "Live grep")
+    (normal "<leader>fm" (snacksPicker "git_diff()") "Modified hunks (all)")
+    (normal "<leader>fM" (rawLua ''
+      function()
+        Snacks.picker.git_diff({
+          filter = { buf = true },
+        })
+      end
+    '') "Modified hunks (buffer)")
+    (normal "<leader>fr" (snacksPicker "lsp_references()") "References (LSP)")
+    (normal "<leader>fs" (snacksPicker "lsp_workspace_symbols()") "Symbols (LSP, workspace)")
+    (normal "<leader>fS" (snacksPicker "lsp_symbols()") "Symbols (LSP, buffer)")
+    (normal "<leader>fv" (snacksPicker "recent()") "Recent files (all)")
+    (normal "<leader>fV" (rawLua ''
+      function()
+        Snacks.picker.recent({
+          filter = { cwd = true },
+        })
+      end
+    '') "Recent files (cwd)")
+
     # v - vcs
-    {
-      mode = "n";
-      key = "<leader>va";
-      action = ":vnew | terminal git blame -- %<CR>";
-      options.desc = "Annotate (blame)";
-    }
-    {
-      mode = "n";
-      key = "<leader>vd";
-      action = ":DiffviewOpen -- %<CR>";
-      options.desc = "Diff (current file)";
-    }
-    {
-      mode = "n";
-      key = "<leader>vD";
-      action = ":DiffviewOpen<CR>";
-      options.desc = "Diff (all changes)";
-    }
-    {
-      mode = "n";
-      key = "<leader>ve";
-      action = ":Neogit commit<CR>";
-      options.desc = "Commit";
-    }
-    {
-      mode = "n";
-      key = "<leader>vf";
-      action = ":!git fetch --all --prune<CR>";
-      options.desc = "Fetch";
-    }
-    {
-      mode = "n";
-      key = "<leader>vv";
-      action = ":Neogit<CR>";
-      options.desc = "Neogit";
-    }
-    {
-      mode = "n";
-      key = "<leader>vh";
-      action = ":DiffviewOpen HEAD~1..HEAD<CR>";
-      options.desc = "Diff parent revision";
-    }
-    {
-      mode = "n";
-      key = "<leader>vl";
-      action = ":Neogit log<CR>";
-      options.desc = "Log";
-    }
-    {
-      mode = "n";
-      key = "<leader>vn";
-      action = ":Neogit branch<CR>";
-      options.desc = "Branch";
-    }
-    {
-      mode = "n";
-      key = "<leader>vp";
-      action = ":!git push<CR>";
-      options.desc = "Push";
-    }
-    {
-      mode = "n";
-      key = "<leader>vq";
-      action = ":DiffviewClose<CR>";
-      options.desc = "Close diffview";
-    }
-    {
-      mode = "n";
-      key = "<leader>vR";
-      action = ":DiffviewOpen origin/HEAD...HEAD<CR>";
-      options.desc = "Review branch";
-    }
-    {
-      mode = "n";
-      key = "<leader>vs";
-      action = ":Neogit<CR>";
-      options.desc = "Status";
-    }
+    (normal "<leader>va" ":vnew | terminal git blame -- %<CR>" "Annotate (blame)")
+    (normal "<leader>vd" ":DiffviewOpen -- %<CR>" "Diff (current file)")
+    (normal "<leader>vD" ":DiffviewOpen<CR>" "Diff (all changes)")
+    (normal "<leader>ve" ":Neogit commit<CR>" "Commit")
+    (normal "<leader>vf" ":!git fetch --all --prune<CR>" "Fetch")
+    (normal "<leader>vv" ":Neogit<CR>" "Neogit")
+    (normal "<leader>vh" ":DiffviewOpen HEAD~1..HEAD<CR>" "Diff parent revision")
+    (normal "<leader>vl" ":Neogit log<CR>" "Log")
+    (normal "<leader>vn" ":Neogit branch<CR>" "Branch")
+    (normal "<leader>vp" ":!git push<CR>" "Push")
+    (normal "<leader>vq" ":DiffviewClose<CR>" "Close diffview")
+    (normal "<leader>vR" ":DiffviewOpen origin/HEAD...HEAD<CR>" "Review branch")
+    (normal "<leader>vs" ":Neogit<CR>" "Status")
+
     # r - review
-    {
-      mode = ["n" "v"];
-      key = "<leader>rc";
-      action.__raw = ''
-        function()
-          require("code-review").add_comment(vim.v.count > 0 and vim.v.count or nil)
-        end
-      '';
-      options.desc = "Add comment";
-    }
-    {
-      mode = "n";
-      key = "<leader>rd";
-      action = ":CodeReviewDeleteComment<CR>";
-      options.desc = "Delete comment";
-    }
-    {
-      mode = "n";
-      key = "<leader>rl";
-      action = ":CodeReviewList<CR>";
-      options.desc = "List comments";
-    }
-    {
-      mode = "n";
-      key = "<leader>ro";
-      action = ":CodeReviewResolve<CR>";
-      options.desc = "Resolve thread";
-    }
-    {
-      mode = "n";
-      key = "<leader>rp";
-      action = ":CodeReviewPreview<CR>";
-      options.desc = "Preview review";
-    }
-    {
-      mode = "n";
-      key = "<leader>rr";
-      action = ":CodeReviewReply<CR>";
-      options.desc = "Reply to comment";
-    }
-    {
-      mode = "n";
-      key = "<leader>rs";
-      action = ":CodeReviewShowComment<CR>";
-      options.desc = "Show comment";
-    }
-    {
-      mode = "n";
-      key = "<leader>rx";
-      action = ":CodeReviewClear<CR>";
-      options.desc = "Clear all comments";
-    }
-    {
-      mode = "n";
-      key = "<leader>ry";
-      action = ":CodeReviewCopy<CR>";
-      options.desc = "Copy review to clipboard";
-    }
+    (normalVisual "<leader>rc" (luaFunction "require(\"code-review\").add_comment(vim.v.count > 0 and vim.v.count or nil)") "Add comment")
+    (normal "<leader>rd" ":CodeReviewDeleteComment<CR>" "Delete comment")
+    (normal "<leader>rl" ":CodeReviewList<CR>" "List comments")
+    (normal "<leader>ro" ":CodeReviewResolve<CR>" "Resolve thread")
+    (normal "<leader>rp" ":CodeReviewPreview<CR>" "Preview review")
+    (normal "<leader>rr" ":CodeReviewReply<CR>" "Reply to comment")
+    (normal "<leader>rs" ":CodeReviewShowComment<CR>" "Show comment")
+    (normal "<leader>rx" ":CodeReviewClear<CR>" "Clear all comments")
+    (normal "<leader>ry" ":CodeReviewCopy<CR>" "Copy review to clipboard")
+
     # l - lsp/formatter
-    {
-      mode = "n";
-      key = "<leader>la";
-      action = ":lua vim.lsp.buf.code_action()<CR>";
-      options.desc = "Actions";
-    }
-    {
-      mode = "n";
-      key = "<leader>ld";
-      action = ":lua vim.diagnostic.open_float({ severity = { min = vim.diagnostic.severity.HINT } })<CR>";
-      options.desc = "Diagnostics popup";
-    }
-    {
-      mode = "n";
-      key = "<leader>lf";
-      action = ":lua require('conform').format({ lsp_fallback = true })<CR>";
-      options.desc = "Format";
-    }
-    {
-      mode = "n";
-      key = "<leader>li";
-      action = ":lua vim.lsp.buf.hover()<CR>";
-      options.desc = "Information";
-    }
-    {
-      mode = "n";
-      key = "<leader>lj";
-      action = ":lua vim.diagnostic.jump({ count = 1 })<CR>";
-      options.desc = "Next diagnostic";
-    }
-    {
-      mode = "n";
-      key = "<leader>lk";
-      action = ":lua vim.diagnostic.jump({ count = -1 })<CR>";
-      options.desc = "Prev diagnostic";
-    }
-    {
-      mode = "n";
-      key = "<leader>lr";
-      action = ":lua vim.lsp.buf.rename()<CR>";
-      options.desc = "Rename";
-    }
-    {
-      mode = "n";
-      key = "<leader>lR";
-      action = ":lua vim.lsp.buf.references()<CR>";
-      options.desc = "References";
-    }
-    {
-      mode = "n";
-      key = "<leader>ls";
-      action = ":lua vim.lsp.buf.definition()<CR>";
-      options.desc = "Source definition";
-    }
+    (normal "<leader>la" ":lua vim.lsp.buf.code_action()<CR>" "Actions")
+    (normal "<leader>ld" ":lua vim.diagnostic.open_float({ severity = { min = vim.diagnostic.severity.HINT } })<CR>" "Diagnostics popup")
+    (normal "<leader>lf" ":lua require('conform').format({ lsp_fallback = true })<CR>" "Format")
+    (normal "<leader>li" ":lua vim.lsp.buf.hover()<CR>" "Information")
+    (normal "<leader>lj" ":lua vim.diagnostic.jump({ count = 1 })<CR>" "Next diagnostic")
+    (normal "<leader>lk" ":lua vim.diagnostic.jump({ count = -1 })<CR>" "Prev diagnostic")
+    (normal "<leader>lr" ":lua vim.lsp.buf.rename()<CR>" "Rename")
+    (normal "<leader>lR" ":lua vim.lsp.buf.references()<CR>" "References")
+    (normal "<leader>ls" ":lua vim.lsp.buf.definition()<CR>" "Source definition")
+
     # t - tab
-    {
-      mode = "n";
-      key = "<leader>tc";
-      action = ":tabclose<CR>";
-      options.desc = "Close tab";
-    }
-    {
-      mode = "n";
-      key = "<leader>tn";
-      action = ":tabnew<CR>";
-      options.desc = "New tab";
-    }
-    {
-      mode = "n";
-      key = "<leader>to";
-      action = ":tabonly<CR>";
-      options.desc = "Close other tabs";
-    }
-    {
-      mode = "n";
-      key = "<leader>th";
-      action = ":tabprevious<CR>";
-      options.desc = "Previous tab";
-    }
-    {
-      mode = "n";
-      key = "<leader>tl";
-      action = ":tabnext<CR>";
-      options.desc = "Next tab";
-    }
+    (normal "<leader>tc" ":tabclose<CR>" "Close tab")
+    (normal "<leader>tn" ":tabnew<CR>" "New tab")
+    (normal "<leader>to" ":tabonly<CR>" "Close other tabs")
+    (normal "<leader>th" ":tabprevious<CR>" "Previous tab")
+    (normal "<leader>tl" ":tabnext<CR>" "Next tab")
+
     # w - window
-    {
-      mode = "n";
-      key = "<leader>wh";
-      action = "<C-w>h";
-      options.desc = "Go left";
-    }
-    {
-      mode = "n";
-      key = "<leader>wj";
-      action = "<C-w>j";
-      options.desc = "Go down";
-    }
-    {
-      mode = "n";
-      key = "<leader>wk";
-      action = "<C-w>k";
-      options.desc = "Go up";
-    }
-    {
-      mode = "n";
-      key = "<leader>wl";
-      action = "<C-w>l";
-      options.desc = "Go right";
-    }
-    {
-      mode = "n";
-      key = "<leader>ws";
-      action = ":split<CR>";
-      options.desc = "Split horizontal";
-    }
-    {
-      mode = "n";
-      key = "<leader>wv";
-      action = ":vsplit<CR>";
-      options.desc = "Split vertical";
-    }
-    {
-      mode = "n";
-      key = "<leader>wc";
-      action = ":close<CR>";
-      options.desc = "Close window";
-    }
-    {
-      mode = "n";
-      key = "<leader>wq";
-      action = ":q<CR>";
-      options.desc = "Quit window";
-    }
-    {
-      mode = "n";
-      key = "<leader>wo";
-      action = ":only<CR>";
-      options.desc = "Close other windows";
-    }
-    {
-      mode = "n";
-      key = "<leader>w=";
-      action = "<C-w>=";
-      options.desc = "Equalize windows";
-    }
+    (normal "<leader>wh" "<C-w>h" "Go left")
+    (normal "<leader>wj" "<C-w>j" "Go down")
+    (normal "<leader>wk" "<C-w>k" "Go up")
+    (normal "<leader>wl" "<C-w>l" "Go right")
+    (normal "<leader>ws" ":split<CR>" "Split horizontal")
+    (normal "<leader>wv" ":vsplit<CR>" "Split vertical")
+    (normal "<leader>wc" ":close<CR>" "Close window")
+    (normal "<leader>wq" ":q<CR>" "Quit window")
+    (normal "<leader>wo" ":only<CR>" "Close other windows")
+    (normal "<leader>w=" "<C-w>=" "Equalize windows")
+
     # scrolling
-    {
-      mode = "n";
-      key = "<C-d>";
-      action = "<C-d>zz";
-      options.desc = "Scroll down and center";
-    }
-    {
-      mode = "n";
-      key = "<C-u>";
-      action = "<C-u>zz";
-      options.desc = "Scroll up and center";
-    }
+    (normal "<C-d>" "<C-d>zz" "Scroll down and center")
+    (normal "<C-u>" "<C-u>zz" "Scroll up and center")
+
     # other
-    {
-      mode = "n";
-      key = "<leader>j";
-      action.__raw = ''
-        function()
-          require('flash').jump()
-        end
-      '';
-      options.desc = "Jump to character";
-    }
-    {
-      mode = "n";
-      key = "<leader>a";
-      action = ":lua require('harpoon'):list():add()<CR>";
-      options.desc = "Add harpoon";
-    }
-    {
-      mode = "n";
-      key = "<C-e>";
-      action = ":lua require('harpoon').ui:toggle_quick_menu(require('harpoon'):list())<CR>";
-      options.desc = "Toggle harpoon quick menu";
-    }
-    {
-      mode = "n";
-      key = "<leader>1";
-      action = ":lua require('harpoon'):list():select(1)<CR>";
-      options.desc = "Go to harpoon 1";
-    }
-    {
-      mode = "n";
-      key = "<leader>2";
-      action = ":lua require('harpoon'):list():select(2)<CR>";
-      options.desc = "Go to harpoon 2";
-    }
-    {
-      mode = "n";
-      key = "<leader>3";
-      action = ":lua require('harpoon'):list():select(3)<CR>";
-      options.desc = "Go to harpoon 3";
-    }
-    {
-      mode = "n";
-      key = "<leader>4";
-      action = ":lua require('harpoon'):list():select(4)<CR>";
-      options.desc = "Go to harpoon 4";
-    }
+    (normal "<leader>j" (luaFunction "require('flash').jump()") "Jump to character")
+    (normal "<leader>a" ":lua require('harpoon'):list():add()<CR>" "Add harpoon")
+    (normal "<C-e>" ":lua require('harpoon').ui:toggle_quick_menu(require('harpoon'):list())<CR>" "Toggle harpoon quick menu")
+    (normal "<leader>1" ":lua require('harpoon'):list():select(1)<CR>" "Go to harpoon 1")
+    (normal "<leader>2" ":lua require('harpoon'):list():select(2)<CR>" "Go to harpoon 2")
+    (normal "<leader>3" ":lua require('harpoon'):list():select(3)<CR>" "Go to harpoon 3")
+    (normal "<leader>4" ":lua require('harpoon'):list():select(4)<CR>" "Go to harpoon 4")
+
     # z - zk (notes)
-    {
-      mode = "n";
-      key = "<leader>zn";
-      action = ":ZkNew { title = vim.fn.input('Title: ') }<CR>";
-      options.desc = "New note";
-    }
-    {
-      mode = "n";
-      key = "<leader>zo";
-      action = ":ZkNotes { sort = { 'modified' } }<CR>";
-      options.desc = "Open notes";
-    }
-    {
-      mode = "n";
-      key = "<leader>zt";
-      action = ":ZkTags<CR>";
-      options.desc = "Browse tags";
-    }
-    {
-      mode = "n";
-      key = "<leader>zf";
-      action = ":ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>";
-      options.desc = "Find notes";
-    }
-    {
-      mode = "v";
-      key = "<leader>zf";
-      action = ":'<,'>ZkMatch<CR>";
-      options.desc = "Find notes matching selection";
-    }
-    {
-      mode = "n";
-      key = "<leader>zb";
-      action = ":ZkBacklinks<CR>";
-      options.desc = "Backlinks";
-    }
-    {
-      mode = "n";
-      key = "<leader>zl";
-      action = ":ZkLinks<CR>";
-      options.desc = "Outbound links";
-    }
-    {
-      mode = "n";
-      key = "<leader>zi";
-      action = ":ZkInsertLink<CR>";
-      options.desc = "Insert link";
-    }
-    {
-      mode = "v";
-      key = "<leader>zi";
-      action = ":'<,'>ZkInsertLinkAtSelection<CR>";
-      options.desc = "Insert link at selection";
-    }
-    {
-      mode = "v";
-      key = "<leader>zc";
-      action = ":'<,'>ZkNewFromTitleSelection<CR>";
-      options.desc = "Create note from selection";
-    }
+    (normal "<leader>zn" ":ZkNew { title = vim.fn.input('Title: ') }<CR>" "New note")
+    (normal "<leader>zo" ":ZkNotes { sort = { 'modified' } }<CR>" "Open notes")
+    (normal "<leader>zt" ":ZkTags<CR>" "Browse tags")
+    (normal "<leader>zf" ":ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<CR>" "Find notes")
+    (visual "<leader>zf" ":'<,'>ZkMatch<CR>" "Find notes matching selection")
+    (normal "<leader>zb" ":ZkBacklinks<CR>" "Backlinks")
+    (normal "<leader>zl" ":ZkLinks<CR>" "Outbound links")
+    (normal "<leader>zi" ":ZkInsertLink<CR>" "Insert link")
+    (visual "<leader>zi" ":'<,'>ZkInsertLinkAtSelection<CR>" "Insert link at selection")
+    (visual "<leader>zc" ":'<,'>ZkNewFromTitleSelection<CR>" "Create note from selection")
   ];
 }

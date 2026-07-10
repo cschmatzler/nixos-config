@@ -37,6 +37,7 @@ in {
     enable = true;
     defaultEditor = true;
     package = inputs'.neovim-nightly-overlay.packages.default.overrideAttrs (old: {
+      # TODO: Remove this filter once the nightly source accepts Nixpkgs' CVE-2026-11487 patch.
       patches = lib.filter (patch: !(lib.hasInfix "CVE-2026-11487" (builtins.baseNameOf (toString patch)))) (old.patches or []);
       postInstall =
         (old.postInstall or "")

@@ -1,171 +1,91 @@
-{...}: {
-  den.aspects.opencode.homeManager = {
-    config,
-    lib,
-    pkgs,
-    inputs',
-    ...
-  }: let
-    skills = {
-      ".config/opencode/skills/wrdn-authz" = {
-        source = ./_skills/wrdn-authz;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-code-execution" = {
-        source = ./_skills/wrdn-code-execution;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-data-exfil" = {
-        source = ./_skills/wrdn-data-exfil;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-gha-workflows" = {
-        source = ./_skills/wrdn-gha-workflows;
-        recursive = true;
-      };
-      ".config/opencode/skills/wrdn-pii" = {
-        source = ./_skills/wrdn-pii;
-        recursive = true;
-      };
+_: let
+  local = import ./_lib/local.nix;
+  secretLib = import ./_lib/secrets.nix {};
+  apiKeyPath = local.secretPath "opencode-api-key";
+in {
+  den.aspects.opencode = {
+    os.sops.secrets.opencode-api-key = secretLib.mkUserBinarySecret {
+      name = "opencode-api-key";
+      sopsFile = ../secrets/opencode-api-key;
     };
-    jsonFormat = pkgs.formats.json {};
-    nonoProfile = {
-      meta = {
-        name = "opencode";
-        version = "1.0.0";
-        description = "OpenCode coding agent profile with restricted network, OpenCode/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
-      };
 
-      extends = "default";
-
-      groups.include = [
-        "git_config"
-        "go_runtime"
-        "java_runtime"
-        "linux_runtime_state"
-        "linux_sysfs_read"
-        "linux_temp_read"
-        "nix_runtime"
-        "node_runtime"
-        "python_runtime"
-        "rust_runtime"
-        "user_caches_linux"
+    homeManager = {
+      lib,
+      pkgs,
+      inputs',
+      ...
+    }: let
+      skillNames = [
+        "wrdn-authz"
+        "wrdn-code-execution"
+        "wrdn-data-exfil"
+        "wrdn-gha-workflows"
+        "wrdn-pii"
       ];
-
-      workdir.access = "readwrite";
-
-      filesystem = {
-        allow = [
+      skills = builtins.listToAttrs (map (name: {
+          name = ".config/opencode/skills/${name}";
+          value = {
+            source = ./_skills + "/${name}";
+            recursive = true;
+          };
+        })
+        skillNames);
+      jsonFormat = pkgs.formats.json {};
+      mkNonoProfile = import ./_ai/nono-profile.nix;
+      nonoProfile = mkNonoProfile {
+        name = "opencode";
+        description = "OpenCode coding agent profile with restricted network, OpenCode/OpenAI access, executor.sh MCP access, and NixOS development tooling.";
+        writablePaths = [
           "$HOME/.cache/opencode"
-          "$HOME/.codex"
           "$HOME/.config/opencode"
           "$HOME/.local/share/opencode"
           "$HOME/.local/state/opencode"
-          "$HOME/.npm"
-          "$HOME/.npm-global"
-          "$HOME/Projects/worktrees"
         ];
-        read = [
-          "$HOME/.config/nix"
-          "$HOME/.local/state/nix"
-        ];
-        unix_socket = [
-          "$HOME/.config/herdr/herdr.sock"
-        ];
-        bypass_protection = [
-          "$HOME/.codex"
+        bypassProtection = [
           "$HOME/.config/opencode"
         ];
-      };
-
-      security = {
-        process_info_mode = "isolated";
-        signal_mode = "isolated";
-        wsl2_proxy_policy = "error";
-      };
-
-      network = {
-        network_profile = "codex";
-        allow_domain = [
+        serviceDomains = [
           "auth.openai.com"
           "chatgpt.com"
           "console.opencode.ai"
           "opencode.ai"
           "*.opencode.ai"
-          "executor.sh"
-          "*.executor.sh"
-          "api.github.com"
-          "cache.nixos.org"
-          "codeload.github.com"
-          "crates.io"
-          "files.pythonhosted.org"
-          "github.com"
-          "index.crates.io"
-          "npm.pkg.github.com"
-          "nono.sh"
-          "objects.githubusercontent.com"
-          "proxy.golang.org"
-          "pypi.org"
-          "raw.githubusercontent.com"
-          "registry.npmjs.org"
-          "static.crates.io"
-          "sum.golang.org"
         ];
-        open_port = [
-          3000
-          5173
-          8000
-          8080
+        apiEnvironmentVariables = [
+          "OPENCODE_*"
         ];
       };
+      commands = import ./_ai/commands.nix {};
+      commandFiles =
+        lib.mapAttrs' (
+          name: text:
+            lib.nameValuePair ".config/opencode/commands/${name}.md" {
+              inherit text;
+            }
+        )
+        commands;
+      configs = {
+        ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" (import ./_opencode/settings.nix {});
+        ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" (import ./_opencode/tui.nix {});
+        ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
+      };
+    in {
+      programs.fish.shellInit = lib.mkAfter ''
+        if test -f "${apiKeyPath}"
+          set -gx OPENCODE_API_KEY (string trim -- (cat "${apiKeyPath}"))
+        end
+      '';
 
-      environment.allow_vars = [
-        "COLORTERM"
-        "EDITOR"
-        "HERDR_*"
-        "HOME"
-        "LANG"
-        "LC_*"
-        "NIX_*"
-        "NIXOS_*"
-        "OPENCODE_*"
-        "PATH"
-        "SHELL"
-        "SSH_AUTH_SOCK"
-        "TERM"
-        "TERM_PROGRAM"
-        "TMPDIR"
-        "USER"
-        "XDG_*"
-      ];
+      home = {
+        packages = [
+          inputs'.llm-agents.packages.opencode
+        ];
+        shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
+        file =
+          skills
+          // commandFiles
+          // configs;
+      };
     };
-    commands = import ./_opencode/commands.nix {};
-    commandFiles =
-      lib.mapAttrs' (
-        name: text:
-          lib.nameValuePair ".config/opencode/commands/${name}.md" {
-            inherit text;
-          }
-      )
-      commands;
-    configs = {
-      ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" (import ./_opencode/settings.nix {});
-      ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" (import ./_opencode/tui.nix {});
-      ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
-    };
-  in {
-    home.packages = [
-      inputs'.llm-agents.packages.opencode
-      pkgs.nodejs_24
-      pkgs.nono
-    ];
-
-    home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-    home.shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
-
-    home.file =
-      skills
-      // commandFiles
-      // configs;
   };
 }

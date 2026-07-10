@@ -1,4 +1,4 @@
-{...}: let
+_: let
   theme = (import ./_lib/theme.nix).catppuccinLatte;
   palette = theme.hex;
 in {
@@ -34,6 +34,8 @@ in {
       hash = "sha256-Og33IGS9pTim6LEH33CO102wpGnPomiperFbqfgrJjw=";
     };
   in {
+    fonts.fontconfig.enable = true;
+
     home.packages = with pkgs;
       [
         dust
@@ -62,7 +64,7 @@ in {
         --delimiter='\t'
         --with-nth=1
         --preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
-        --separator='─' --scrollbar='┃' --layout='reverse'
+        --separator='─' --scrollbar='┃'
 
         --color=bg+:${palette.overlay},bg:${palette.base},spinner:${palette.gold},hl:${palette.rose}
         --color=fg:${palette.subtle},header:${palette.pine},info:${palette.foam},pointer:${palette.iris}
@@ -84,60 +86,62 @@ in {
       "yazi/theme.toml".source = "${yaziThemeSrc}/themes/latte/catppuccin-latte-maroon.toml";
     };
 
-    programs.bat = {
-      enable = true;
-      config = {
-        theme = theme.displayName;
-        pager = "ov";
-      };
-      themes = {
-        "${theme.displayName}" = {
-          src = batThemeSrc;
-          file = "themes/${theme.displayName}.tmTheme";
+    programs = {
+      bat = {
+        enable = true;
+        config = {
+          theme = theme.displayName;
+          pager = "ov";
+        };
+        themes = {
+          "${theme.displayName}" = {
+            src = batThemeSrc;
+            file = "themes/${theme.displayName}.tmTheme";
+          };
         };
       };
-    };
 
-    programs.fzf = {
-      enable = true;
-      historyWidget.fish.command = "";
-    };
+      fzf = {
+        enable = true;
+        historyWidget.fish.command = "";
+      };
 
-    programs.ripgrep = {
-      enable = true;
-      arguments = [
-        "--max-columns=150"
-        "--max-columns-preview"
-        "--hidden"
-        "--smart-case"
-        "--colors=column:none"
-        "--colors=column:fg:4"
-        "--colors=column:style:underline"
-        "--colors=line:none"
-        "--colors=line:fg:4"
-        "--colors=match:none"
-        "--colors=match:bg:0"
-        "--colors=match:fg:6"
-        "--colors=path:none"
-        "--colors=path:fg:14"
-        "--colors=path:style:bold"
-      ];
-    };
+      ripgrep = {
+        enable = true;
+        arguments = [
+          "--max-columns=150"
+          "--max-columns-preview"
+          "--hidden"
+          "--smart-case"
+          "--colors=column:none"
+          "--colors=column:fg:4"
+          "--colors=column:style:underline"
+          "--colors=line:none"
+          "--colors=line:fg:4"
+          "--colors=match:none"
+          "--colors=match:bg:0"
+          "--colors=match:fg:6"
+          "--colors=path:none"
+          "--colors=path:fg:14"
+          "--colors=path:style:bold"
+        ];
+      };
 
-    programs.zoxide = {
-      enable = true;
-      enableFishIntegration = true;
-    };
+      zoxide = {
+        enable = true;
+        enableFishIntegration = true;
+      };
 
-    programs.yazi = {
-      enable = true;
-      enableFishIntegration = true;
-      shellWrapperName = "y";
-      settings = {
-        manager = {
-          show_hidden = true;
-          sort_by = "natural";
-          sort_dir_first = true;
+      yazi = {
+        enable = true;
+        enableFishIntegration = true;
+        shellWrapperName = "y";
+        settings = {
+          manager = {
+            show_hidden = true;
+            sort_by = "natural";
+            sort_dir_first = true;
+          };
         };
       };
     };

@@ -1,23 +1,39 @@
-{...}: let
+_: let
   local = import ./_lib/local.nix;
+  secretLib = import ./_lib/secrets.nix {};
   passwordSecret = "tahani-email-password";
   gmailPasswordSecret = "tahani-gmail-password";
 in {
-  den.aspects.email.homeManager = {pkgs, ...}: {
-    programs.aerc = {
-      enable = true;
-      extraConfig.general.unsafe-accounts-conf = true;
+  den.aspects.email.os.sops.secrets = {
+    ${passwordSecret} = secretLib.mkUserBinarySecret {
+      name = passwordSecret;
+      sopsFile = ../secrets/tahani-email-password;
     };
+    ${gmailPasswordSecret} = secretLib.mkUserBinarySecret {
+      name = gmailPasswordSecret;
+      sopsFile = ../secrets/tahani-gmail-password;
+    };
+  };
 
-    programs.himalaya = {
-      enable = true;
-      package = pkgs.writeShellApplication {
-        name = "himalaya";
-        runtimeInputs = [pkgs.bash pkgs.coreutils pkgs.himalaya];
-        text = ''
-          exec env RUST_LOG="warn,imap_codec::response=error" ${pkgs.himalaya}/bin/himalaya "$@"
-        '';
+  den.aspects.email.homeManager = {pkgs, ...}: {
+    programs = {
+      aerc = {
+        enable = true;
+        extraConfig.general.unsafe-accounts-conf = true;
       };
+
+      himalaya = {
+        enable = true;
+        package = pkgs.writeShellApplication {
+          name = "himalaya";
+          runtimeInputs = [pkgs.bash pkgs.coreutils pkgs.himalaya];
+          text = ''
+            exec env RUST_LOG="warn,imap_codec::response=error" ${pkgs.himalaya}/bin/himalaya "$@"
+          '';
+        };
+      };
+
+      mbsync.enable = true;
     };
 
     home.packages = [
@@ -86,7 +102,6 @@ in {
       })
     ];
 
-    programs.mbsync.enable = true;
     services.mbsync = {
       enable = true;
       frequency = "*:0/5";

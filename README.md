@@ -1,60 +1,93 @@
 # NixOS Config
 
-Personal Nix flake for two machines:
+Personal `den`/flake-parts configuration for two machines.
 
-- `tahani` - x86_64 Linux home server / workstation
-- `janet` - aarch64 Darwin personal laptop
+| Host | System | Role | Entry point |
+| --- | --- | --- | --- |
+| `janet` | `aarch64-darwin` | Personal laptop | [`modules/hosts/janet.nix`](modules/hosts/janet.nix) |
+| `tahani` | `x86_64-linux` | Home server and workstation | [`modules/hosts/tahani.nix`](modules/hosts/tahani.nix) |
+
+## Start Here
+
+The repository is feature/aspect-centric. Read it in this order:
+
+1. [`modules/inventory.nix`](modules/inventory.nix) declares the hosts and their users.
+2. [`modules/hosts/`](modules/hosts) composes named host and user aspects.
+3. [`modules/profiles/`](modules/profiles) contains short role bundles, mostly composed from feature aspects.
+4. Top-level feature modules such as [`terminal.nix`](modules/terminal.nix), [`neovim.nix`](modules/neovim.nix), and [`tailscale.nix`](modules/tailscale.nix) own the actual behavior.
+5. Underscore-prefixed directories contain implementation details that `import-tree` must not auto-import.
 
 ## Repository Map
 
-- `modules/` - flake-parts modules, auto-imported via `import-tree`
-- `modules/hosts/` - per-host composition modules
-- `modules/hosts/_parts/` - host-private leaf modules like hardware, disks, and literal networking
-- `modules/profiles/` - shared host and user profile bundles
-- `modules/_lib/` - local helper functions
-- `modules/_desktop/`, `modules/_opencode/`, `modules/_terminal/`, `modules/_tmux/` - feature-owned config data, templates, and rendered config sources
-- `apps/` - shell apps exposed through the flake
-- `secrets/` - SOPS-encrypted secrets
-- `flake.nix` - generated flake entrypoint
-- `modules/dendritic.nix` - source of truth for flake inputs and `flake.nix` generation
+- `modules/*.nix` — auto-imported flake-parts modules and feature aspects
+- `modules/hosts/` — explicit host composition
+- `modules/hosts/_parts/<host>/` — machine-only hardware and literal networking leaves
+- `modules/profiles/{host,user}/` — reusable role manifests and small role-specific settings
+- `modules/_ai/`, `_codex/`, `_opencode/` — shared and client-specific agent configuration
+- `modules/_darwin/`, `_neovim/`, `_terminal/`, `_tmux/` — feature-owned implementation payloads
+- `modules/_lib/` — small pure helpers and personal constants
+- `modules/_packages/` — local package definitions consumed with `callPackage`
+- `modules/_skills/` — OpenCode skill payloads
+- `apps/` — implementation scripts for flake apps
+- `secrets/` — SOPS-encrypted material only; decrypted values never enter the Nix store
+- `flake.nix` — generated entrypoint; do not edit directly
 
-## How It Is Structured
+## Aspect Composition
 
-This repo uses `den` and organizes configuration around aspects instead of putting everything directly in host files.
+| Aspect/profile | Owns or includes |
+| --- | --- |
+| `host-darwin-base` | nix-darwin foundation, shared core, Tailscale |
+| `host-nixos-base` | NixOS foundation, shared core, OpenSSH, Tailscale |
+| `user-base` | shell, SSH client, terminal tools, Atuin, SOPS tools, tmux |
+| `user-workstation` | base user, development tools, Herdr, Neovim, AI tools, zk |
+| `user-personal` | personal Git identity |
+| `ai-tools` | Codex, OpenCode, shared Node runtime, Nono sandbox |
 
-- shared behavior lives in `den.aspects.<name>.<class>` modules under `modules/*.nix`
-- the machine inventory lives in `modules/inventory.nix`
-- shared bundles live in `modules/profiles/{host,user}/`
-- host composition happens in `modules/hosts/<host>.nix`
-- host-private imports live in `modules/hosts/_parts/<host>/` and stay limited to true machine leaf files
-- feature-owned services and user config live in top-level modules like `modules/ai-tools.nix` and `modules/network.nix`
-- large app config payloads live next to their feature under `_`-prefixed directories and get rendered from Nix data instead of mixing inline JSON/text blobs and checked-in generated files
-- user-level config mostly lives in Home Manager aspects
+Host aspects use den's native `provides.to-users` routing. Hardware facts, state versions, and host-only services stay in the relevant host module or `_parts` leaf. A feature that spans NixOS/Darwin and Home Manager owns all of those class definitions in the same feature module.
 
-Common examples:
+## Where to Change Things
 
-- `modules/core.nix` - shared Nix and shell foundation
-- `modules/dev-tools.nix` - VCS, language, and developer tooling
-- `modules/network.nix` - SSH and tailscale aspects
-- `modules/ai-tools.nix` - OpenCode, MCP, and agent configuration
-- `modules/profiles/user/workstation.nix` - shared developer workstation user bundle
-- `modules/hosts/tahani.nix` - server/workstation composition for `tahani`
+| Change | File |
+| --- | --- |
+| Host membership | [`modules/inventory.nix`](modules/inventory.nix) |
+| Janet composition or lifecycle version | [`modules/hosts/janet.nix`](modules/hosts/janet.nix) |
+| Tahani composition or lifecycle version | [`modules/hosts/tahani.nix`](modules/hosts/tahani.nix) |
+| Tahani boot, filesystems, or swap | [`modules/hosts/_parts/tahani/hardware.nix`](modules/hosts/_parts/tahani/hardware.nix) |
+| Shared Nix policy | [`modules/core.nix`](modules/core.nix) |
+| macOS policy and Homebrew apps | [`modules/darwin-system.nix`](modules/darwin-system.nix) |
+| User profile membership | [`modules/profiles/user/`](modules/profiles/user) |
+| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/_ai/`](modules/_ai) |
+| SOPS integration | [`modules/secrets.nix`](modules/secrets.nix) |
+| Flake app wrappers and checks | [`modules/apps.nix`](modules/apps.nix), [`modules/checks.nix`](modules/checks.nix) |
 
 ## Common Commands
 
 ```bash
-nix run .#build
-nix run .#build -- tahani
-nix run .#apply
-nix flake check
-alejandra .
+nix run .#build                  # Build the current host
+nix run .#build -- tahani       # Build a named host, regardless of caller platform
+nix run .#apply                 # Build and switch the current host
+nix fmt                         # Format with the flake's Alejandra formatter
+nix fmt -- --check .            # Check formatting without changing files
+deadnix --fail .                # Find unused Nix bindings
+statix check .                  # Run Nix static analysis
+nix flake check                 # Run flake schema checks plus the lint check
 ```
 
-## Updating The Flake
+`build` and `apply` are intentionally separate. `build -- <host>` derives NixOS versus Darwin from the flake's configuration outputs; it does not assume the target matches the machine invoking it.
 
-`flake.nix` is generated. Update inputs in `modules/dendritic.nix`, then regenerate:
+## Inputs and Generated `flake.nix`
+
+`flake.nix` is generated by `flake-file`.
+
+- Foundational inputs live in [`modules/dendritic.nix`](modules/dendritic.nix).
+- Feature-specific inputs live beside their consumers, for example in [`modules/neovim.nix`](modules/neovim.nix), [`modules/ai-tools.nix`](modules/ai-tools.nix), and [`modules/secrets.nix`](modules/secrets.nix).
+
+After changing an input declaration:
 
 ```bash
 nix run .#write-flake
-alejandra .
+nix flake lock
+nix fmt
 ```
+
+Do not routinely bump `system.stateVersion` or `home.stateVersion`; they are compatibility contracts, not the installed package release.

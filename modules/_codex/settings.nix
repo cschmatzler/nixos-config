@@ -15,7 +15,7 @@ in {
     ];
   };
 
-  mcp_servers = import ./mcp.nix {};
+  mcp_servers = import ../_ai/mcp.nix {client = "codex";};
 
   projects = {
     "${homeDirectory}/nixos-config".trust_level = "trusted";

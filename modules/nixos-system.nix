@@ -31,26 +31,10 @@ in {
     nix = {
       settings.trusted-users = [local.user.name];
       gc.dates = "weekly";
-      nixPath = ["nixos-config=${userHome}/.local/share/src/nixos-config:/etc/nixos"];
-    };
-
-    boot = {
-      loader = {
-        systemd-boot = {
-          enable = true;
-          configurationLimit = 42;
-        };
-        efi.canTouchEfiVariables = true;
-      };
-      initrd.availableKernelModules = [
-        "xhci_pci"
-        "ahci"
-        "nvme"
-        "usbhid"
-        "usb_storage"
-        "sd_mod"
+      nixPath = [
+        "nixos-config=${userHome}/.local/share/src/nixos-config"
+        "/etc/nixos"
       ];
-      kernelPackages = pkgs.linuxPackages;
     };
 
     users.users = {
@@ -64,9 +48,6 @@ in {
           "systemd-journal"
         ];
         shell = pkgs.fish;
-        openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
-      };
-      root = {
         openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
       };
     };

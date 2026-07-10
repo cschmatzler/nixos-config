@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs.nixvim.plugins.which-key = {
     enable = true;
     settings = {
@@ -59,12 +59,6 @@
           icon = " ";
         }
         {
-          __unkeyed-1 = "<leader>s";
-          mode = ["n" "x"];
-          group = "Sidekick";
-          icon = " ";
-        }
-        {
           __unkeyed-1 = "<leader>t";
           group = "Tab";
           icon = "󰓩 ";
@@ -78,6 +72,11 @@
           __unkeyed-1 = "<leader>w";
           group = "Window";
           icon = " ";
+        }
+        {
+          __unkeyed-1 = "<leader>z";
+          group = "Notes";
+          icon = "󰠮 ";
         }
       ];
     };

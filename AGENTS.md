@@ -53,6 +53,8 @@ alejandra .                   # Format all Nix files
 
 **Defaults**: `den.default.*` defined in `modules/defaults.nix`
 
+**Inputs**: foundational inputs live in `modules/dendritic.nix`; feature-specific `flake-file.inputs` live with their owning feature module
+
 **Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `_darwin/`, etc.) are excluded from auto-import
 
 **Apply**: use `nix run .#apply` for local application; darwin host `janet` is local-only
@@ -127,7 +129,7 @@ in {
 ### Secrets Management
 - Use SOPS for secrets (see `.sops.yaml`)
 - Never commit unencrypted secrets
-- Secret definitions live in per-host modules (`modules/hosts/tahani.nix`, etc.)
+- Secret definitions live with the feature that consumes them; host aspects include the feature on the required OS/user scopes
 - Shared SOPS defaults (module imports, key paths) in `modules/secrets.nix`
 
 ### Aspect Composition

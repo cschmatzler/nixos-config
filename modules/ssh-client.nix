@@ -1,4 +1,4 @@
-{...}: {
+_: {
   den.aspects.ssh-client.homeManager = {config, ...}: {
     programs.ssh = {
       enable = true;

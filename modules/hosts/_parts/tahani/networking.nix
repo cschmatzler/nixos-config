@@ -1,4 +1,4 @@
-{config, ...}: {
+_: {
   services.tailscale.extraSetFlags = ["--accept-routes=false"];
 
   networking = {
@@ -14,25 +14,10 @@
     firewall = {
       enable = true;
       trustedInterfaces = ["eno1" "tailscale0" "docker0"];
-      allowedUDPPorts = [
-        53
-        config.services.tailscale.port
-      ];
       allowedTCPPorts = [
         22
-        53
       ];
       checkReversePath = "loose";
     };
-  };
-
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXROOT";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-label/NIXBOOT";
-    fsType = "vfat";
   };
 }

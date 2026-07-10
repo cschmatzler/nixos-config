@@ -3,59 +3,29 @@
   lib,
   ...
 }: {
-  options.flake = {
-    darwinConfigurations = lib.mkOption {
-      type = lib.types.lazyAttrsOf lib.types.raw;
-      default = {};
-    };
-    flakeModules = lib.mkOption {
-      type = lib.types.lazyAttrsOf lib.types.raw;
-      default = {};
-    };
+  options.flake.darwinConfigurations = lib.mkOption {
+    type = lib.types.lazyAttrsOf lib.types.raw;
+    default = {};
   };
 
-  config = {
-    flake.flakeModules = {
-      # Shared system foundations
-      core = ./core.nix;
-      darwin = ./darwin.nix;
-      network = ./network.nix;
-      nixos-system = ./nixos-system.nix;
-      overlays = ./overlays.nix;
-      secrets = ./secrets.nix;
-
-      # User environment
-      ai-api-key = ./ai-api-key.nix;
-      ai-tools = ./ai-tools.nix;
-      atuin = ./atuin.nix;
-      codex = ./codex.nix;
-      dev-tools = ./dev-tools.nix;
-      email = ./email.nix;
-      herdr = ./herdr.nix;
-      neovim = ./neovim.nix;
-      opencode = ./opencode.nix;
-      shell = ./shell.nix;
-      ssh-client = ./ssh-client.nix;
-      terminal = ./terminal.nix;
-      ynab = ./ynab.nix;
-      tmux = ./tmux.nix;
-      zk = ./zk.nix;
+  config.den = {
+    default = {
+      nixos = {
+        home-manager.useGlobalPkgs = true;
+      };
+      darwin = {
+        home-manager.useGlobalPkgs = true;
+      };
+      homeManager = {
+        home.enableNixpkgsReleaseCheck = false;
+        programs.home-manager.enable = true;
+      };
+      includes = [
+        den.provides.define-user
+        den.provides.inputs'
+      ];
     };
-    den.default.nixos.system.stateVersion = "25.11";
-    den.default.darwin.system.stateVersion = 6;
-    den.default.homeManager = {
-      home.stateVersion = "25.11";
-      home.enableNixpkgsReleaseCheck = false;
-      programs.home-manager.enable = true;
-    };
-    den.default.nixos.home-manager.useGlobalPkgs = true;
-    den.default.darwin.home-manager.useGlobalPkgs = true;
 
-    den.default.includes = [
-      den.provides.define-user
-      den.provides.inputs'
-    ];
-
-    den.schema.user.classes = lib.mkDefault ["homeManager"];
+    schema.user.classes = lib.mkDefault ["homeManager"];
   };
 }

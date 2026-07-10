@@ -1,4 +1,4 @@
-{...}: let
+_: let
   theme = (import ../../_lib/theme.nix).catppuccinLatte;
 in {
   programs.nixvim.plugins.lualine = {

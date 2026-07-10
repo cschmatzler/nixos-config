@@ -1,5 +1,5 @@
-{...}: {
-  den.aspects.zk.homeManager = {...}: {
+_: {
+  den.aspects.zk.homeManager = _: {
     programs.zk = {
       enable = true;
       settings = {};

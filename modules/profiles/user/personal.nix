@@ -1,4 +1,4 @@
-{...}: let
+_: let
   local = import ../../_lib/local.nix;
 in {
   den.aspects.user-personal.homeManager = {

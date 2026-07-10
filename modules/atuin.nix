@@ -1,5 +1,5 @@
-{...}: {
-  den.aspects.atuin.homeManager = {...}: {
+_: {
+  den.aspects.atuin.homeManager = _: {
     programs.atuin = {
       enable = true;
       enableFishIntegration = true;

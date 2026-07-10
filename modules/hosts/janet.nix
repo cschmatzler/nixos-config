@@ -1,29 +1,24 @@
-{
-  den,
-  lib,
-  ...
-}: let
-  hostLib = import ../_lib/hosts.nix {inherit den lib;};
-  local = import ../_lib/local.nix;
-  host = "janet";
-  hostMeta = local.hosts.janet;
-in
-  hostLib.mkHostConfig {
-    system = hostMeta.system;
-    inherit host;
-    user = local.user.name;
-    userIncludes = [
-      den.aspects.user-darwin-laptop
-      den.aspects.user-personal
-    ];
-    hostIncludes = [
+{den, ...}: {
+  den.aspects.janet = {
+    includes = [
       den.aspects.host-darwin-base
-      den.aspects.ai-api-key
+      den.aspects.opencode
       den.aspects.syncthing
     ];
-    darwin = {...}: {
-      networking.hostName = host;
-      networking.computerName = host;
+
+    provides.to-users = {
+      includes = [
+        den.aspects.user-workstation
+        den.aspects.user-personal
+      ];
+      homeManager.home.stateVersion = "25.11";
+    };
+
+    darwin = {
+      system.stateVersion = 6;
+      networking.hostName = "janet";
+      networking.computerName = "janet";
       documentation.doc.enable = false;
     };
-  }
+  };
+}

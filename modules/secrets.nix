@@ -1,18 +1,25 @@
 {inputs, ...}: let
   local = import ./_lib/local.nix;
 in {
-  # Import sops-nix modules into den.default per-class
-  den.default.nixos.imports = [inputs.sops-nix.nixosModules.sops];
-  den.default.darwin.imports = [inputs.sops-nix.darwinModules.sops];
+  flake-file.inputs.sops-nix = {
+    url = "github:Mic92/sops-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
-  # Configure NixOS SOPS defaults
-  den.default.nixos.sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+  den.default = {
+    nixos = {
+      imports = [inputs.sops-nix.nixosModules.sops];
+      sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+    };
 
-  # Configure Darwin SOPS defaults
-  den.default.darwin = {
-    sops.age.keyFile = "/Users/${local.user.name}/.config/sops/age/keys.txt";
-    sops.age.sshKeyPaths = [];
-    sops.gnupg.sshKeyPaths = [];
+    darwin = {
+      imports = [inputs.sops-nix.darwinModules.sops];
+      sops = {
+        age.keyFile = "/Users/${local.user.name}/.config/sops/age/keys.txt";
+        age.sshKeyPaths = [];
+        gnupg.sshKeyPaths = [];
+      };
+    };
   };
 
   # Encryption/secrets tools

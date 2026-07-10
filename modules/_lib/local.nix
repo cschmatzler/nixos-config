@@ -20,16 +20,6 @@ rec {
     then "/Users/${user.name}"
     else "/home/${user.name}";
 
-  mkHost = system: {
-    inherit system;
-    home = mkHome system;
-  };
-
-  hosts = {
-    janet = mkHost "aarch64-darwin";
-    tahani = mkHost "x86_64-linux";
-  };
-
   tailscaleDomain = "manticore-hippocampus.ts.net";
   tailscaleHost = name: "${name}.${tailscaleDomain}";
 }

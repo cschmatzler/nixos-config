@@ -1,10 +1,8 @@
-{lib, ...}: let
+_: let
   local = import ./_lib/local.nix;
-in
-  lib.foldl' lib.recursiveUpdate {} (
-    lib.mapAttrsToList (
-      host: hostMeta:
-        lib.setAttrByPath ["den" "hosts" hostMeta.system host "users" local.user.name] {}
-    )
-    local.hosts
-  )
+in {
+  den.hosts = {
+    aarch64-darwin.janet.users.${local.user.name} = {};
+    x86_64-linux.tahani.users.${local.user.name} = {};
+  };
+}

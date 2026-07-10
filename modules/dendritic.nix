@@ -4,68 +4,26 @@
     (inputs.flake-file.flakeModules.dendritic or {})
   ];
 
-  flake-file.inputs = {
-    den.url = "github:vic/den";
-    flake-file.url = "github:vic/flake-file";
-    import-tree.url = "github:vic/import-tree";
-    flake-aspects.url = "github:vic/flake-aspects";
-    nixpkgs.url = "github:nixos/nixpkgs/master";
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    darwin = {
-      url = "github:LnL7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    llm-agents.url = "github:numtide/llm-agents.nix";
-    # Overlay inputs
-    herdr = {
-      url = "github:ogulcancelik/herdr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nono = {
-      url = "github:always-further/nono";
-      flake = false;
-    };
-    # Neovim plugin inputs
-    code-review-nvim = {
-      url = "github:choplin/code-review.nvim";
-      flake = false;
-    };
-    diffs-nvim = {
-      url = "github:barrettruth/diffs.nvim";
-      flake = false;
-    };
-    # Secrets inputs
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+  flake-file = {
+    formatter = pkgs: pkgs.alejandra;
+    inputs = {
+      den.url = "github:denful/den";
+      flake-file.url = "github:vic/flake-file";
+      import-tree.url = "github:vic/import-tree";
+      flake-aspects.url = "github:vic/flake-aspects";
+      nixpkgs.url = "github:nixos/nixpkgs/master";
+      flake-parts = {
+        url = "github:hercules-ci/flake-parts";
+        inputs.nixpkgs-lib.follows = "nixpkgs";
+      };
+      home-manager = {
+        url = "github:nix-community/home-manager";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+      darwin = {
+        url = "github:LnL7/nix-darwin/master";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
     };
   };
 }

@@ -1,7 +1,20 @@
+# Shared nix-darwin foundation and macOS policy.
 {inputs, ...}: let
   local = import ./_lib/local.nix;
   userHome = local.mkHome "aarch64-darwin";
 in {
+  flake-file.inputs = {
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+  };
+
   den.aspects.darwin-system.darwin = {pkgs, ...}: {
     imports = [
       inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -161,7 +174,6 @@ in {
         "helium-browser"
         "obsidian"
         "raycast"
-        "tailscale-app"
         "tidal"
         "whatsapp"
       ];

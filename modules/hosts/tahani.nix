@@ -1,46 +1,34 @@
-{
-  den,
-  lib,
-  ...
-}: let
-  hostLib = import ../_lib/hosts.nix {inherit den lib;};
+{den, ...}: let
   local = import ../_lib/local.nix;
-  secretLib = import ../_lib/secrets.nix {inherit lib;};
-  host = "tahani";
-  hostMeta = local.hosts.tahani;
-in
-  hostLib.mkHostConfig {
-    system = hostMeta.system;
-    inherit host;
-    user = local.user.name;
-    userIncludes = [
-      den.aspects.user-workstation
-      den.aspects.user-personal
-      den.aspects.email
-    ];
-    hostIncludes = [
+in {
+  den.aspects.tahani = {
+    includes = [
       den.aspects.host-nixos-base
-      den.aspects.ai-api-key
-      den.aspects.ynab-api-key
+      den.aspects.opencode
+      den.aspects.email
+      den.aspects.ynab
       den.aspects.syncthing
     ];
+
+    provides.to-users = {
+      includes = [
+        den.aspects.user-workstation
+        den.aspects.user-personal
+        den.aspects.email
+        den.aspects.ynab
+      ];
+      homeManager.home.stateVersion = "25.11";
+    };
+
     nixos = {pkgs, ...}: {
-      networking.hostName = host;
+      system.stateVersion = "25.11";
+      networking.hostName = "tahani";
 
       environment.systemPackages = [pkgs._1password-cli];
       programs.nix-ld.enable = true;
 
-      sops.secrets.tahani-email-password = secretLib.mkUserBinarySecret {
-        name = "tahani-email-password";
-        sopsFile = ../../secrets/tahani-email-password;
-      };
-
-      sops.secrets.tahani-gmail-password = secretLib.mkUserBinarySecret {
-        name = "tahani-gmail-password";
-        sopsFile = ../../secrets/tahani-gmail-password;
-      };
-
       imports = [
+        ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
       ];
 
@@ -48,11 +36,6 @@ in
       users.users.${local.user.name}.extraGroups = [
         "docker"
       ];
-      swapDevices = [
-        {
-          device = "/swapfile";
-          size = 16 * 1024;
-        }
-      ];
     };
-  }
+  };
+}

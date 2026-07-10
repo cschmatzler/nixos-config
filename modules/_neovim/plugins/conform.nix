@@ -1,6 +1,7 @@
 {
   programs.nixvim.plugins.conform-nvim = {
     enable = true;
+    autoInstall.enable = true;
     settings = {
       format_on_save = {};
       formatters_by_ft = {
