@@ -4,7 +4,7 @@ in {
   den.aspects.tahani = {
     includes = [
       den.aspects.host-nixos-base
-      den.aspects.opencode
+      den.aspects.pi
       den.aspects.email
       den.aspects.ynab
       den.aspects.syncthing

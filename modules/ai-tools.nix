@@ -18,7 +18,7 @@
     includes = [
       den.aspects.codex
       den.aspects.node-runtime
-      den.aspects.opencode
+      den.aspects.pi
     ];
     homeManager = {pkgs, ...}: {
       home = {

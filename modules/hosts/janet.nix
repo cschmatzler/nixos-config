@@ -2,7 +2,7 @@
   den.aspects.janet = {
     includes = [
       den.aspects.host-darwin-base
-      den.aspects.opencode
+      den.aspects.pi
       den.aspects.syncthing
     ];
 

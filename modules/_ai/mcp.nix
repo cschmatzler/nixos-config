@@ -18,17 +18,20 @@ in
       enabled = true;
     };
   }
-  else if client == "opencode"
+  else if client == "pi"
   then {
-    opensrc = {
-      type = "local";
-      command = opensrcCommand;
-      enabled = true;
-    };
-    executor = {
-      type = "remote";
-      url = executorUrl;
-      enabled = true;
+    mcpServers = {
+      opensrc = {
+        command = builtins.head opensrcCommand;
+        args = builtins.tail opensrcCommand;
+        directTools = true;
+        lifecycle = "eager";
+      };
+      executor = {
+        url = executorUrl;
+        directTools = true;
+        lifecycle = "eager";
+      };
     };
   }
   else throw "Unsupported MCP client: ${client}"
