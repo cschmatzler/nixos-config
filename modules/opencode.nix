@@ -56,6 +56,31 @@ in {
         ];
       };
       commands = import ./_ai/commands.nix {};
+      plannotatorCommands = {
+        "plannotator-annotate" = ''
+          ---
+          description: Annotate a file, directory, URL, or HTML artifact with Plannotator
+          ---
+
+          Run `plannotator annotate $ARGUMENTS` from the current workspace. Wait for Plannotator to return feedback, then use that feedback to continue the task.
+
+          If no target was provided in `$ARGUMENTS`, ask which file, directory, URL, or HTML artifact should be annotated.
+        '';
+        "plannotator-last" = ''
+          ---
+          description: Annotate the last assistant message with Plannotator
+          ---
+
+          Run `plannotator last` from the current workspace. Wait for Plannotator to return feedback, then use that feedback to continue the task.
+        '';
+        "plannotator-review" = ''
+          ---
+          description: Review current changes or a PR/MR with Plannotator
+          ---
+
+          Run `plannotator review $ARGUMENTS` from the current workspace. If `$ARGUMENTS` is empty, review the current uncommitted changes. Wait for Plannotator to return feedback, then use that feedback to continue the task.
+        '';
+      };
       commandFiles =
         lib.mapAttrs' (
           name: text:
@@ -63,7 +88,7 @@ in {
               inherit text;
             }
         )
-        commands;
+        (commands // plannotatorCommands);
       configs = {
         ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" (import ./_opencode/settings.nix {});
         ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" (import ./_opencode/tui.nix {});

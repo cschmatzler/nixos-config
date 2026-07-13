@@ -1,6 +1,6 @@
 _: {
   "$schema" = "https://opencode.ai/config.json";
-  model = "openai/gpt-5.5";
+  model = "openai/gpt-5.6-sol";
   autoupdate = false;
   plugin = [
     [

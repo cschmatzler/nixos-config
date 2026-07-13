@@ -91,27 +91,30 @@
     ];
   };
 
-  environment.allow_vars =
-    [
-      "COLORTERM"
-      "EDITOR"
-      "HERDR_*"
-      "HOME"
-      "LANG"
-      "LC_*"
-      "NIX_*"
-      "NIXOS_*"
-      "PLANNOTATOR_*"
-    ]
-    ++ apiEnvironmentVariables
-    ++ [
-      "PATH"
-      "SHELL"
-      "SSH_AUTH_SOCK"
-      "TERM"
-      "TERM_PROGRAM"
-      "TMPDIR"
-      "USER"
-      "XDG_*"
-    ];
+  environment = {
+    allow_vars =
+      [
+        "COLORTERM"
+        "EDITOR"
+        "HERDR_*"
+        "HOME"
+        "LANG"
+        "LC_*"
+        "NIX_*"
+        "NIXOS_*"
+        "PLANNOTATOR_*"
+      ]
+      ++ apiEnvironmentVariables
+      ++ [
+        "PATH"
+        "SHELL"
+        "SSH_AUTH_SOCK"
+        "TERM"
+        "TERM_PROGRAM"
+        "TMPDIR"
+        "USER"
+        "XDG_*"
+      ];
+    set_vars.PLANNOTATOR_REMOTE = "1";
+  };
 }
