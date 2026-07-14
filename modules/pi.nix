@@ -36,10 +36,11 @@ _: {
       quietStartup = true;
       hideThinkingBlock = true;
       defaultProvider = "openai-codex";
-      defaultModel = "gpt-5.5";
+      defaultModel = "gpt-5.6-sol";
       defaultThinkingLevel = "high";
       enableInstallTelemetry = false;
       packages = [
+        "npm:pi-subagents"
         "npm:pi-mcp-adapter"
       ];
       prompts = ["./prompts"];
