@@ -58,9 +58,9 @@ _: {
       ];
     };
     configs = {
-      ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" (import ./_codex/settings.nix {
-        homeDirectory = config.home.homeDirectory;
-      });
+      # ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" (import ./_codex/settings.nix {
+      #   homeDirectory = config.home.homeDirectory;
+      # });
       ".codex/hooks.json".source = jsonFormat.generate "codex-hooks.json" plannotatorHook;
       ".config/nono/profiles/codex.json".source = jsonFormat.generate "nono-codex-profile.json" nonoProfile;
     };

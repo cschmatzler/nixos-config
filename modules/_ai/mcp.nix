@@ -4,7 +4,7 @@
     "-y"
     "opensrc-mcp"
   ];
-  executorUrl = "https://executor.sh/leuchtturm/mcp?elicitation_mode=browser";
+  executorUrl = "https://executor.sh/leuchtturm/mcp";
 in
   if client == "codex"
   then {

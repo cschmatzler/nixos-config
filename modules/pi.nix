@@ -40,8 +40,11 @@ _: {
       defaultThinkingLevel = "high";
       enableInstallTelemetry = false;
       packages = [
-        "npm:pi-subagents"
+        "npm:@ff-labs/pi-fff"
+        "npm:@juicesharp/rpiv-ask-user-question"
         "npm:pi-mcp-adapter"
+        "npm:pi-subagents"
+        "npm:pi-web-access"
       ];
       prompts = ["./prompts"];
       skills = ["./skills"];
@@ -78,6 +81,8 @@ _: {
     configs = {
       ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
       ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_ai/mcp.nix {client = "pi";});
+      # Vendored from mitsuhiko/agent-stuff at 4bce45560fa55ace2f5dc8634a63a2af464ddc8b.
+      ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
       ".config/nono/profiles/pi.json".source = jsonFormat.generate "nono-pi-profile.json" nonoProfile;
     };
   in {

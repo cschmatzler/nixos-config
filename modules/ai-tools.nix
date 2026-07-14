@@ -16,7 +16,7 @@
 
   den.aspects.ai-tools = {
     includes = [
-      # den.aspects.codex
+      den.aspects.codex
       den.aspects.node-runtime
       den.aspects.pi
     ];
