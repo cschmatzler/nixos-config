@@ -40,11 +40,8 @@ _: {
       defaultThinkingLevel = "high";
       enableInstallTelemetry = false;
       packages = [
-        "npm:@ff-labs/pi-fff"
-        "npm:@juicesharp/rpiv-ask-user-question"
         "npm:pi-mcp-adapter"
         "npm:pi-subagents"
-        "npm:pi-web-access"
       ];
       prompts = ["./prompts"];
       skills = ["./skills"];

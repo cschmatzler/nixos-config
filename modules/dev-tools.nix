@@ -1,8 +1,14 @@
-{den, ...}: let
+{
+  den,
+  inputs,
+  ...
+}: let
   local = import ./_lib/local.nix;
   theme = (import ./_lib/theme.nix).catppuccinLatte;
   palette = theme.hex;
 in {
+  flake-file.inputs.hunk.url = "github:modem-dev/hunk";
+
   den.aspects.dev-tools = {
     includes = [den.aspects.node-runtime];
     homeManager = {
@@ -25,6 +31,7 @@ in {
           gh
           gnumake
           hyperfine
+          inputs.hunk.packages.${stdenv.hostPlatform.system}.hunk
           nil
           nurl
           pnpm

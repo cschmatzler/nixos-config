@@ -39,6 +39,7 @@
       url = "github:homebrew/homebrew-core";
       flake = false;
     };
+    hunk.url = "github:modem-dev/hunk";
     import-tree.url = "github:vic/import-tree";
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
