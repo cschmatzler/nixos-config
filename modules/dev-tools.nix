@@ -18,6 +18,11 @@ in {
     }: let
       userName = local.user.fullName;
     in {
+      xdg.configFile."hunk/config.toml".text = ''
+        theme = "${theme.slug}"
+        menu_bar = false
+      '';
+
       home.packages = with pkgs;
         [
           alejandra
