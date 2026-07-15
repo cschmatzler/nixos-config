@@ -1,10 +1,5 @@
-{frontmatter ? true}: let
-  render = description: body:
-    if frontmatter
-    then "---\ndescription: ${description}\n---\n\n${body}"
-    else body;
-in {
-  "albanian-lesson" = render "Turn pasted Albanian lesson into translated notes and solved exercises in zk" ''
+{
+  "albanian-lesson" = ''
     Process the pasted Albanian lesson content and create two `zk` notes: one for lesson material and one for exercises.
 
     <lesson-material>
@@ -51,7 +46,7 @@ in {
 
     If no lesson material was provided in `$ARGUMENTS`, stop and ask the user to paste it.
   '';
-  "inbox-triage" = render "Triage inbox one message at a time with himalaya only" ''
+  "inbox-triage" = ''
     Process email with strict manual triage using Himalaya only.
 
     Hard requirements:

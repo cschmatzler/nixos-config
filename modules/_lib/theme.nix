@@ -4,7 +4,6 @@
     displayName = "Catppuccin Latte";
     fishThemeName = slug;
     ghosttyThemeName = displayName;
-    codexThemeName = slug;
     deltaSyntaxTheme = displayName;
 
     neovim = {

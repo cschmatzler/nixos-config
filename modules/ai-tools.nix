@@ -16,17 +16,13 @@
 
   den.aspects.ai-tools = {
     includes = [
-      den.aspects.codex
       den.aspects.node-runtime
       den.aspects.pi
     ];
     homeManager = {pkgs, ...}: {
-      home = {
-        packages = [
-          (pkgs.callPackage ./_packages/nono.nix {nonoSrc = inputs.nono;})
-        ];
-        sessionVariables.PLANNOTATOR_REMOTE = "1";
-      };
+      home.packages = [
+        (pkgs.callPackage ./_packages/nono.nix {nonoSrc = inputs.nono;})
+      ];
     };
   };
 }

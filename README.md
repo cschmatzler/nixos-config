@@ -23,7 +23,7 @@ The repository is feature/aspect-centric. Read it in this order:
 - `modules/hosts/` — explicit host composition
 - `modules/hosts/_parts/<host>/` — machine-only hardware and literal networking leaves
 - `modules/profiles/{host,user}/` — reusable role manifests and small role-specific settings
-- `modules/_ai/`, `_codex/` — shared and client-specific agent configuration
+- `modules/_pi/` — Pi commands, MCP endpoints, sandbox profile, and extensions
 - `modules/_darwin/`, `_neovim/`, `_terminal/`, `_tmux/` — feature-owned implementation payloads
 - `modules/_lib/` — small pure helpers and personal constants
 - `modules/_packages/` — local package definitions consumed with `callPackage`
@@ -41,7 +41,7 @@ The repository is feature/aspect-centric. Read it in this order:
 | `user-base` | shell, SSH client, terminal tools, Atuin, SOPS tools, tmux |
 | `user-workstation` | base user, development tools, Herdr, Neovim, AI tools, zk |
 | `user-personal` | personal Git identity |
-| `ai-tools` | Codex, Pi, shared Node runtime, Nono sandbox |
+| `ai-tools` | Pi, shared Node runtime, Nono sandbox |
 
 Host aspects use den's native `provides.to-users` routing. Hardware facts, state versions, and host-only services stay in the relevant host module or `_parts` leaf. A feature that spans NixOS/Darwin and Home Manager owns all of those class definitions in the same feature module.
 
@@ -56,7 +56,7 @@ Host aspects use den's native `provides.to-users` routing. Hardware facts, state
 | Shared Nix policy | [`modules/core.nix`](modules/core.nix) |
 | macOS policy and Homebrew apps | [`modules/darwin-system.nix`](modules/darwin-system.nix) |
 | User profile membership | [`modules/profiles/user/`](modules/profiles/user) |
-| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/_ai/`](modules/_ai) |
+| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/pi.nix`](modules/pi.nix), [`modules/_pi/`](modules/_pi) |
 | SOPS integration | [`modules/secrets.nix`](modules/secrets.nix) |
 | Flake app wrappers and checks | [`modules/apps.nix`](modules/apps.nix), [`modules/checks.nix`](modules/checks.nix) |
 
