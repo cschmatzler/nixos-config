@@ -9,6 +9,9 @@ _: {
     mkNonoProfile = import ./_ai/nono-profile.nix;
     commands = import ./_ai/commands.nix {frontmatter = false;};
     skillNames = [
+      "coding-standards"
+      "effect"
+      "herdr"
       "wrdn-authz"
       "wrdn-code-execution"
       "wrdn-data-exfil"
@@ -23,14 +26,18 @@ _: {
           }
       )
       commands;
-    skillFiles = builtins.listToAttrs (map (name: {
-        name = ".pi/agent/skills/${name}";
-        value = {
-          source = ./_skills + "/${name}";
-          recursive = true;
-        };
-      })
-      skillNames);
+    skillFiles =
+      builtins.listToAttrs (map (name: {
+          name = ".pi/agent/skills/${name}";
+          value = {
+            source = ./_skills + "/${name}";
+            recursive = true;
+          };
+        })
+        skillNames)
+      // {
+        ".pi/agent/skills/hunk-review/SKILL.md".source = "${inputs'.hunk.packages.hunk}/skills/hunk-review/SKILL.md";
+      };
     settings = {
       theme = "light";
       quietStartup = true;

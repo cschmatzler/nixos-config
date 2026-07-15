@@ -16,20 +16,27 @@ in {
       ...
     }: let
       skillNames = [
+        "coding-standards"
+        "effect"
+        "herdr"
         "wrdn-authz"
         "wrdn-code-execution"
         "wrdn-data-exfil"
         "wrdn-gha-workflows"
         "wrdn-pii"
       ];
-      skills = builtins.listToAttrs (map (name: {
-          name = ".config/opencode/skills/${name}";
-          value = {
-            source = ./_skills + "/${name}";
-            recursive = true;
-          };
-        })
-        skillNames);
+      skills =
+        builtins.listToAttrs (map (name: {
+            name = ".config/opencode/skills/${name}";
+            value = {
+              source = ./_skills + "/${name}";
+              recursive = true;
+            };
+          })
+          skillNames)
+        // {
+          ".config/opencode/skills/hunk-review/SKILL.md".source = "${inputs'.hunk.packages.hunk}/skills/hunk-review/SKILL.md";
+        };
       jsonFormat = pkgs.formats.json {};
       mkNonoProfile = import ./_ai/nono-profile.nix;
       nonoProfile = mkNonoProfile {
