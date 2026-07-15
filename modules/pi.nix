@@ -40,7 +40,7 @@ _: {
       defaultThinkingLevel = "high";
       enableInstallTelemetry = false;
       packages = [
-        "npm:pi-mcp-adapter"
+        "git:github.com/dmmulroy/pi-mcp"
         "npm:pi-subagents"
       ];
       prompts = ["./prompts"];

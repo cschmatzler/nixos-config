@@ -20,17 +20,20 @@ in
   }
   else if client == "pi"
   then {
-    mcpServers = {
-      opensrc = {
-        command = builtins.head opensrcCommand;
-        args = builtins.tail opensrcCommand;
-        directTools = true;
-        lifecycle = "eager";
-      };
-      executor = {
-        url = executorUrl;
-        directTools = true;
-        lifecycle = "eager";
+    mcp = {
+      toolMode = "direct";
+      startup = "eager";
+      servers = {
+        opensrc = {
+          type = "local";
+          command = opensrcCommand;
+          enabled = true;
+        };
+        executor = {
+          type = "remote";
+          url = "${executorUrl}?elicitation_mode=native";
+          enabled = true;
+        };
       };
     };
   }
