@@ -57,6 +57,7 @@ in {
         enableInstallTelemetry = false;
         packages = [
           "git:github.com/dmmulroy/pi-mcp"
+          "npm:sideshow"
         ];
         prompts = ["./prompts"];
         skills = ["./skills"];
@@ -83,6 +84,7 @@ in {
       home = {
         packages = [
           inputs'.llm-agents.packages.pi
+          (pkgs.callPackage ./_packages/sideshow.nix {})
         ];
         shellAliases.npi = "nono run --profile pi --allow-cwd -- pi";
         file =
