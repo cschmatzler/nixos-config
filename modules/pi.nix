@@ -57,7 +57,6 @@ in {
         enableInstallTelemetry = false;
         packages = [
           "git:github.com/dmmulroy/pi-mcp"
-          "npm:pi-subagents"
         ];
         prompts = ["./prompts"];
         skills = ["./skills"];
@@ -66,8 +65,10 @@ in {
       configs = {
         ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
         ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_pi/mcp.nix);
-        # Vendored from mitsuhiko/agent-stuff at 4bce45560fa55ace2f5dc8634a63a2af464ddc8b.
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
+        ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+        ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
+        ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
         ".config/nono/profiles/pi.json".source = jsonFormat.generate "nono-pi-profile.json" nonoProfile;
       };
     in {
