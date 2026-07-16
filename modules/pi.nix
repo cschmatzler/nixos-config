@@ -68,6 +68,7 @@ in {
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
         ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
         ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
+        ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
         ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
         ".config/nono/profiles/pi.json".source = jsonFormat.generate "nono-pi-profile.json" nonoProfile;
       };
