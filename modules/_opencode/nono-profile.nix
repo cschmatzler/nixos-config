@@ -1,7 +1,7 @@
 {
   meta = {
-    name = "pi";
-    description = "Pi coding agent profile with restricted network, OpenAI and OpenCode Go access, executor.sh MCP access, and NixOS development tooling.";
+    name = "opencode";
+    description = "OpenCode coding agent profile with restricted network, OpenAI and OpenCode access, MCP access, and NixOS development tooling.";
     version = "1.0.0";
   };
 
@@ -25,12 +25,12 @@
 
   filesystem = {
     allow = [
-      "$HOME/.cache/pi"
-      "$HOME/.local/share/pi"
-      "$HOME/.local/state/pi"
+      "$HOME/.cache/opencode"
+      "$HOME/.config/opencode"
+      "$HOME/.local/share/opencode"
+      "$HOME/.local/state/opencode"
       "$HOME/.npm"
       "$HOME/.npm-global"
-      "$HOME/.pi"
       "$HOME/Projects/worktrees"
     ];
     read = [
@@ -41,7 +41,7 @@
       "$HOME/.config/herdr/herdr.sock"
     ];
     bypass_protection = [
-      "$HOME/.pi"
+      "$HOME/.config/opencode"
     ];
   };
 
@@ -52,13 +52,12 @@
   };
 
   network = {
-    network_profile = "pi";
+    network_profile = "opencode";
     allow_domain = [
       "*.chatgpt.com"
       "*.executor.sh"
       "*.openai.com"
       "*.opencode.ai"
-      "*.pi.dev"
       "api.github.com"
       "api.openai.com"
       "auth.openai.com"
@@ -75,7 +74,6 @@
       "objects.githubusercontent.com"
       "openai.com"
       "opencode.ai"
-      "pi.dev"
       "proxy.golang.org"
       "pypi.org"
       "raw.githubusercontent.com"
@@ -88,29 +86,36 @@
       5173
       8000
       8080
+      8228
       19432
     ];
   };
 
-  environment.allow_vars = [
-    "COLORTERM"
-    "EDITOR"
-    "HERDR_*"
-    "HOME"
-    "LANG"
-    "LC_*"
-    "NIX_*"
-    "NIXOS_*"
-    "OPENAI_*"
-    "OPENCODE_*"
-    "PATH"
-    "PI_*"
-    "SHELL"
-    "SSH_AUTH_SOCK"
-    "TERM"
-    "TERM_PROGRAM"
-    "TMPDIR"
-    "USER"
-    "XDG_*"
-  ];
+  environment = {
+    allow_vars = [
+      "COLORTERM"
+      "EDITOR"
+      "HERDR_*"
+      "HOME"
+      "LANG"
+      "LC_*"
+      "NIX_*"
+      "NIXOS_*"
+      "OPENAI_*"
+      "OPENCODE_*"
+      "PATH"
+      "SHELL"
+      "SSH_AUTH_SOCK"
+      "TERM"
+      "TERM_PROGRAM"
+      "TMPDIR"
+      "USER"
+      "XDG_*"
+    ];
+    set_vars = {
+      GIT_EDITOR = "true";
+      GIT_MERGE_AUTOEDIT = "no";
+      GIT_SEQUENCE_EDITOR = "true";
+    };
+  };
 }

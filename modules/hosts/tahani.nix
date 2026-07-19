@@ -5,7 +5,7 @@ in {
     includes = [
       den.aspects.host-nixos-base
       den.aspects.mosh-server
-      den.aspects.pi
+      den.aspects.opencode
       den.aspects.email
       den.aspects.ynab
       den.aspects.syncthing

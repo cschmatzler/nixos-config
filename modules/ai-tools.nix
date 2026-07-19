@@ -17,7 +17,7 @@
   den.aspects.ai-tools = {
     includes = [
       den.aspects.node-runtime
-      den.aspects.pi
+      den.aspects.opencode
     ];
     homeManager = {pkgs, ...}: {
       home.packages = [
