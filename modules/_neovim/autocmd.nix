@@ -1,5 +1,5 @@
 let
-  theme = (import ../_lib/theme.nix).catppuccinLatte;
+  theme = (import ../_lib/theme.nix).rosePineDawn;
 in {
   programs.nixvim = {
     autoGroups = {
@@ -13,18 +13,7 @@ in {
         pattern = "*";
         callback.__raw = ''
           function()
-            local p = require("catppuccin.palettes").get_palette("${theme.neovim.flavour}")
-            p.love = p.red
-            p.gold = p.yellow
-            p.rose = p.rosewater
-            p.pine = p.maroon
-            p.foam = p.teal
-            p.iris = p.mauve
-            p.subtle = p.subtext1
-            p.muted = p.overlay1
-            p.highlight_high = p.surface2
-            p.highlight_med = p.surface1
-            p.highlight_low = p.surface0
+            local p = require("rose-pine.palette")
             vim.api.nvim_set_hl(0, "NormalFloat", { bg = p.base })
             vim.api.nvim_set_hl(0, "FloatTitle", { fg = p.foam, bg = p.base, bold = true })
             vim.api.nvim_set_hl(0, "Pmenu", { fg = p.subtle, bg = p.base })

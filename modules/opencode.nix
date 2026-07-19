@@ -78,10 +78,12 @@ in {
         };
       };
       tuiSettings = import ./_opencode/tui.nix;
+      tuiTheme = import ./_opencode/rose-pine-dawn.nix;
       nonoProfile = import ./_opencode/nono-profile.nix;
       configs = {
         ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" settings;
         ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" tuiSettings;
+        ".config/opencode/themes/rose-pine-dawn.json".source = jsonFormat.generate "opencode-rose-pine-dawn.json" tuiTheme;
         ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
       };
     in {

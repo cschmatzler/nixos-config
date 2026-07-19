@@ -1,6 +1,6 @@
 {
   "$schema" = "https://opencode.ai/tui.json";
-  theme = "catppuccin";
+  theme = "rose-pine-dawn";
   diff_style = "auto";
   mouse = true;
 }

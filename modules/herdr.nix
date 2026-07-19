@@ -1,6 +1,6 @@
 _: let
   renderHerdrConfig = import ./_herdr/render-config.nix;
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).rosePineDawn;
 in {
   flake-file.inputs.herdr = {
     url = "github:ogulcancelik/herdr";

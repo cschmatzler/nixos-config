@@ -7,7 +7,7 @@
   window-padding-x = 12;
   window-padding-y = 3;
   window-padding-balance = true;
-  font-family = "Geist Mono";
+  font-family = "MonoLisa";
   font-size = 14;
   cursor-style = "block";
   mouse-hide-while-typing = true;

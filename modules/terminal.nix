@@ -1,5 +1,5 @@
 _: let
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
 in {
   den.aspects.terminal.homeManager = {
@@ -21,27 +21,29 @@ in {
       ghosttySettings;
     jsonFormat = pkgs.formats.json {};
     yamlFormat = pkgs.formats.yaml {};
-    batThemeSrc = pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "bat";
-      rev = "6810349b28055dce54076712fc05fc68da4b8ec0";
-      hash = "sha256-lJapSgRVENTrbmpVyn+UQabC9fpV1G1e+CdlJ090uvg=";
+    tmThemeSrc = pkgs.fetchFromGitHub {
+      owner = "rose-pine";
+      repo = "tm-theme";
+      rev = "6d556734541ccb04172e81fd58de4a35fff72d19";
+      hash = "sha256-5+fG21KbB7bdPvszkz9Ftl6fCDGs17fJNTAXFRFWZGo=";
     };
     yaziThemeSrc = pkgs.fetchFromGitHub {
-      owner = "catppuccin";
+      owner = "rose-pine";
       repo = "yazi";
-      rev = "41f24ed142e34109a9a65a5dfe58c1b4eb6d2fd9";
-      hash = "sha256-Og33IGS9pTim6LEH33CO102wpGnPomiperFbqfgrJjw=";
+      rev = "c89d745573d4fcfe0550fe6646f9f9ab1c0e51db";
+      hash = "sha256-9e3dXViWl1rK9BPrGAFfs9ZL/tsG6Njz6ksuU6AIrFY=";
     };
   in {
-    fonts.fontconfig.enable = true;
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts.monospace = ["MonoLisa"];
+    };
 
     home.packages = with pkgs;
       [
         dust
         fastfetch
         fd
-        geist-font
         glow
         htop
         jq
@@ -82,8 +84,11 @@ in {
       "glow/${theme.slug}.json" = {
         source = jsonFormat.generate "${theme.slug}.json" glowFiles.theme;
       };
-      "yazi/Catppuccin-latte.tmTheme".source = "${batThemeSrc}/themes/${theme.displayName}.tmTheme";
-      "yazi/theme.toml".source = "${yaziThemeSrc}/themes/latte/catppuccin-latte-maroon.toml";
+      "yazi/flavors/${theme.slug}.yazi".source = "${yaziThemeSrc}/flavors/${theme.slug}.yazi";
+      "yazi/theme.toml".text = ''
+        [flavor]
+        light = "${theme.slug}"
+      '';
     };
 
     programs = {
@@ -95,8 +100,8 @@ in {
         };
         themes = {
           "${theme.displayName}" = {
-            src = batThemeSrc;
-            file = "themes/${theme.displayName}.tmTheme";
+            src = tmThemeSrc;
+            file = "dist/${theme.slug}.tmTheme";
           };
         };
       };
@@ -114,15 +119,15 @@ in {
           "--hidden"
           "--smart-case"
           "--colors=column:none"
-          "--colors=column:fg:4"
+          "--colors=column:fg:0x28,0x69,0x83"
           "--colors=column:style:underline"
           "--colors=line:none"
-          "--colors=line:fg:4"
+          "--colors=line:fg:0x28,0x69,0x83"
           "--colors=match:none"
-          "--colors=match:bg:0"
-          "--colors=match:fg:6"
+          "--colors=match:bg:0xf2,0xe9,0xe1"
+          "--colors=match:fg:0x56,0x94,0x9f"
           "--colors=path:none"
-          "--colors=path:fg:14"
+          "--colors=path:fg:0x56,0x94,0x9f"
           "--colors=path:style:bold"
         ];
       };

@@ -4,7 +4,7 @@
   ...
 }: let
   local = import ./_lib/local.nix;
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
 in {
   flake-file.inputs.hunk.url = "github:modem-dev/hunk";

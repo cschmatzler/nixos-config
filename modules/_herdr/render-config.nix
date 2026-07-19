@@ -23,7 +23,7 @@
   show_agent_labels_on_pane_borders = true
   agent_panel_scope = "all"
   prompt_new_tab_name = true
-  accent = "${theme.hex.mauve}"
+  accent = "${theme.hex.iris}"
 
   [ui.toast]
   delivery = "terminal"

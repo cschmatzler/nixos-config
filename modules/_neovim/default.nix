@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  theme = (import ../_lib/theme.nix).catppuccinLatte;
+  theme = (import ../_lib/theme.nix).rosePineDawn;
 in {
   imports = [
     ./autocmd.nix
@@ -51,9 +51,11 @@ in {
     colorschemes.${theme.neovim.colorscheme} = {
       enable = true;
       settings = {
-        flavour = theme.neovim.flavour;
-        term_colors = true;
-        no_italic = true;
+        variant = theme.neovim.variant;
+        styles = {
+          italic = false;
+          transparency = false;
+        };
       };
     };
   };

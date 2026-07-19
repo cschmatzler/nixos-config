@@ -1,5 +1,5 @@
 _: let
-  theme = (import ./_lib/theme.nix).catppuccinLatte;
+  theme = (import ./_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
   fishPromptColor = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
@@ -9,10 +9,10 @@ in {
     ...
   }: let
     fishThemeSrc = pkgs.fetchFromGitHub {
-      owner = "catppuccin";
+      owner = "rose-pine";
       repo = "fish";
-      rev = "5fc5ae9c2ec22eb376cb03ce76f0d262a38960f3";
-      hash = "sha256-3KNWYXfOMzZovdjwjBpjSH8cVlD4CO2QmQcCyQE4Dac=";
+      rev = "127a990e5ad4688118c950123787fb0686afa4c8";
+      hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
     };
   in {
     home.packages = with pkgs; [
@@ -26,7 +26,7 @@ in {
       TERM_BACKGROUND = "light";
     };
 
-    xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${fishThemeSrc}/themes/static/${theme.fishThemeName}.theme";
+    xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${fishThemeSrc}/themes/${theme.fishThemeName}.theme";
 
     programs.fish = {
       enable = true;
@@ -117,8 +117,8 @@ in {
           disabled = true;
         };
         character = {
-          error_symbol = "[󰘧](bold red)";
-          success_symbol = "[󰘧](bold green)";
+          error_symbol = "[󰘧](bold ${palette.love})";
+          success_symbol = "[󰘧](bold ${palette.pine})";
         };
         directory = {
           truncate_to_repo = false;
