@@ -31,6 +31,7 @@ in {
       imports = [
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
+        ./_parts/tahani/opencode-web.nix
       ];
 
       virtualisation.docker.enable = true;
