@@ -7,17 +7,8 @@
   local = import ../../../_lib/local.nix;
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
   apiKeyPath = local.secretPath "opencode-api-key";
-  passwordPath = local.secretPath "opencode-web-password";
   opencode = inputs'.llm-agents.packages.opencode;
 in {
-  sops.secrets.opencode-web-password = {
-    owner = local.user.name;
-    path = passwordPath;
-    sopsFile = ../../../../secrets/opencode-web-password;
-    format = "binary";
-    restartUnits = ["opencode-web.service"];
-  };
-
   systemd.services = {
     opencode-web = {
       description = "OpenCode web server";
@@ -30,8 +21,7 @@ in {
       };
       script = ''
         export OPENCODE_API_KEY="$(<${apiKeyPath})"
-        export OPENCODE_SERVER_PASSWORD="$(<${passwordPath})"
-        exec ${opencode}/bin/opencode web --hostname 127.0.0.1 --port 4096
+        exec ${opencode}/bin/opencode web --hostname 127.0.0.1 --port 4097
       '';
       serviceConfig = {
         User = local.user.name;
@@ -49,7 +39,7 @@ in {
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:opencode --https=443 http://127.0.0.1:4096";
+        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:opencode --https=443 http://127.0.0.1:4097";
         ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:opencode --https=443 off";
         Restart = "on-failure";
         RestartSec = "5s";
