@@ -4,6 +4,7 @@ in {
   den.aspects.tahani = {
     includes = [
       den.aspects.host-nixos-base
+      den.aspects.home-assistant
       den.aspects.mosh-server
       den.aspects.opencode
       den.aspects.email

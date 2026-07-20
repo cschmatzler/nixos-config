@@ -1,4 +1,5 @@
 {sideshow}: let
+  local = import ../_lib/local.nix;
   executorUrl = "https://executor.sh/leuchtturm/mcp";
 in {
   opensrc = {
@@ -21,6 +22,13 @@ in {
       "${sideshow}/bin/sideshow"
       "mcp"
     ];
+    enabled = true;
+  };
+  homeassistant = {
+    type = "remote";
+    url = "https://${local.tailscaleHost "ha"}/api/mcp";
+    headers.Authorization = "Bearer {env:HOME_ASSISTANT_TOKEN}";
+    oauth = false;
     enabled = true;
   };
 }
