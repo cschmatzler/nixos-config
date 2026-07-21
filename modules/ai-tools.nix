@@ -9,5 +9,9 @@
       den.aspects.node-runtime
       den.aspects.opencode
     ];
+
+    homeManager = {inputs', ...}: {
+      home.packages = [inputs'.llm-agents.packages.claude-code];
+    };
   };
 }
