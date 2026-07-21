@@ -1,6 +1,6 @@
 {sideshow}: let
   local = import ../_lib/local.nix;
-  executorUrl = "https://executor.sh/leuchtturm/mcp";
+  executorUrl = "https://${local.tailscaleHost "executor"}/mcp";
 in {
   opensrc = {
     type = "local";
@@ -13,7 +13,7 @@ in {
   };
   executor = {
     type = "remote";
-    url = "${executorUrl}?elicitation_mode=browser";
+    url = "${executorUrl}";
     enabled = true;
   };
   sideshow = {

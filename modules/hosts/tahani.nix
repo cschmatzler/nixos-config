@@ -30,6 +30,7 @@ in {
       programs.nix-ld.enable = true;
 
       imports = [
+        ./_parts/tahani/executor.nix
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
         ./_parts/tahani/opencode-web.nix

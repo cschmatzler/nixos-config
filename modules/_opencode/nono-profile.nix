@@ -65,6 +65,7 @@
       "chatgpt.com"
       "codeload.github.com"
       "crates.io"
+      "executor.manticore-hippocampus.ts.net"
       "executor.sh"
       "files.pythonhosted.org"
       "github.com"
