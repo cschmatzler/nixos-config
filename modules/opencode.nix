@@ -61,6 +61,7 @@ in {
         model = "openai/gpt-5.6-sol";
         autoupdate = false;
         share = "manual";
+        plugin = ["@plannotator/opencode@latest"];
         agent = {
           build = {
             model = "openai/gpt-5.6-sol";
@@ -88,12 +89,10 @@ in {
       };
       tuiSettings = import ./_opencode/tui.nix;
       tuiTheme = import ./_opencode/rose-pine-dawn.nix;
-      nonoProfile = import ./_opencode/nono-profile.nix;
       configs = {
         ".config/opencode/opencode.jsonc".source = jsonFormat.generate "opencode.jsonc" settings;
         ".config/opencode/tui.json".source = jsonFormat.generate "opencode-tui.json" tuiSettings;
         ".config/opencode/themes/rose-pine-dawn.json".source = jsonFormat.generate "opencode-rose-pine-dawn.json" tuiTheme;
-        ".config/nono/profiles/opencode.json".source = jsonFormat.generate "nono-opencode-profile.json" nonoProfile;
       };
     in {
       programs.fish.shellInit = lib.mkAfter ''
@@ -106,6 +105,10 @@ in {
       '';
 
       home = {
+        sessionVariables = {
+          PLANNOTATOR_PORT = "20000";
+          PLANNOTATOR_REMOTE = "1";
+        };
         packages =
           [
             inputs'.llm-agents.packages.opencode
@@ -114,7 +117,6 @@ in {
           ++ lib.optionals pkgs.stdenv.isLinux [
             pkgs.xdg-utils
           ];
-        shellAliases.nopencode = "nono run --profile opencode --allow-cwd -- opencode";
         file =
           commandFiles
           // skillFiles

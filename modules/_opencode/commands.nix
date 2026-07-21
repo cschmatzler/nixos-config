@@ -124,4 +124,19 @@
     $ARGUMENTS
     </user-request>
   '';
+  "plannotator-annotate" = ''
+    ---
+    description: Open interactive annotation UI for a file, folder, or URL
+    ---
+  '';
+  "plannotator-last" = ''
+    ---
+    description: Annotate the last assistant message
+    ---
+  '';
+  "plannotator-review" = ''
+    ---
+    description: Open interactive code review for current changes or a PR URL; pass --git or --gitbutler to force that provider
+    ---
+  '';
 }

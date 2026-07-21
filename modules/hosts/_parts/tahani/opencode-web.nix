@@ -21,6 +21,8 @@ in {
       environment = {
         HOME = home;
         PATH = lib.mkForce "${home}/.nix-profile/bin:/run/current-system/sw/bin:/run/wrappers/bin";
+        PLANNOTATOR_PORT = "20000";
+        PLANNOTATOR_REMOTE = "1";
       };
       script = ''
         export OPENCODE_API_KEY="$(<${apiKeyPath})"

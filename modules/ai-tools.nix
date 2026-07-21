@@ -1,17 +1,7 @@
-{
-  den,
-  inputs,
-  ...
-}: {
-  flake-file.inputs = {
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-    nono = {
-      url = "github:always-further/nono";
-      flake = false;
-    };
+{den, ...}: {
+  flake-file.inputs.llm-agents = {
+    url = "github:numtide/llm-agents.nix";
+    inputs.flake-parts.follows = "flake-parts";
   };
 
   den.aspects.ai-tools = {
@@ -19,10 +9,5 @@
       den.aspects.node-runtime
       den.aspects.opencode
     ];
-    homeManager = {pkgs, ...}: {
-      home.packages = [
-        (pkgs.callPackage ./_packages/nono.nix {nonoSrc = inputs.nono;})
-      ];
-    };
   };
 }

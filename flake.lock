@@ -516,22 +516,6 @@
         "type": "github"
       }
     },
-    "nono": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1784550459,
-        "narHash": "sha256-1mGgjAirmwUl8UK8qK1ztHA4PD5IkNPqiOrwagLhJLU=",
-        "owner": "always-further",
-        "repo": "nono",
-        "rev": "ab24e1f671924442217aa5c95511be3d1dc7bc7c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "always-further",
-        "repo": "nono",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "code-review-nvim": "code-review-nvim",
@@ -552,7 +536,6 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3",
         "nixvim": "nixvim",
-        "nono": "nono",
         "sops-nix": "sops-nix"
       }
     },
