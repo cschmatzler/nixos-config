@@ -106,6 +106,7 @@ in {
           delta = {
             navigate = true;
             line-numbers = true;
+            light = true;
             syntax-theme = theme.deltaSyntaxTheme;
             side-by-side = true;
             pager = "less -FRX";
