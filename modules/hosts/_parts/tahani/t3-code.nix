@@ -23,6 +23,9 @@ in {
       environment = {
         HOME = home;
         PATH = lib.mkForce "${lib.makeBinPath [pkgs.gcc pkgs.gnumake pkgs.python3]}:${home}/.nix-profile/bin:/run/current-system/sw/bin:/run/wrappers/bin";
+        PLANNOTATOR_PORT = "20000";
+        PLANNOTATOR_REMOTE = "0";
+        PLANNOTATOR_SKIP_BROWSER_OPEN = "1";
         PYTHON = lib.getExe pkgs.python3;
       };
       script = ''
@@ -48,6 +51,21 @@ in {
         RemainAfterExit = true;
         ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:t3 --https=443 http://127.0.0.1:3773";
         ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:t3 --https=443 off";
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
+    };
+
+    plannotator-tailscale = {
+      description = "Expose Plannotator through Tailscale Serve";
+      wantedBy = ["multi-user.target"];
+      requires = ["tailscaled.service"];
+      after = ["tailscaled.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:plannotator --https=443 http://127.0.0.1:20000";
+        ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:plannotator --https=443 off";
         Restart = "on-failure";
         RestartSec = "5s";
       };

@@ -61,7 +61,7 @@ in {
         model = "openai/gpt-5.6-sol";
         autoupdate = false;
         share = "manual";
-        plugin = ["@plannotator/opencode@latest"];
+        plugin = ["@plannotator/opencode@0.24.2"];
         agent = {
           build = {
             model = "openai/gpt-5.6-sol";
