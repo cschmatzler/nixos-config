@@ -23,11 +23,11 @@ The repository is feature/aspect-centric. Read it in this order:
 - `modules/hosts/` — explicit host composition
 - `modules/hosts/_parts/<host>/` — machine-only hardware and literal networking leaves
 - `modules/profiles/{host,user}/` — reusable role manifests and small role-specific settings
-- `modules/_opencode/` — OpenCode commands, MCP endpoints, and sandbox profile
+- `modules/_opencode/`, `modules/_pi/` — agent commands, MCP endpoints, and extensions
 - `modules/_darwin/`, `_neovim/`, `_terminal/`, `_tmux/` — feature-owned implementation payloads
 - `modules/_lib/` — small pure helpers and personal constants
 - `modules/_packages/` — local package definitions consumed with `callPackage`
-- `modules/_skills/` — OpenCode skill payloads
+- `modules/_skills/` — shared agent skill payloads
 - `apps/` — implementation scripts for flake apps
 - `secrets/` — SOPS-encrypted material only; decrypted values never enter the Nix store
 - `flake.nix` — generated entrypoint; do not edit directly
@@ -41,7 +41,7 @@ The repository is feature/aspect-centric. Read it in this order:
 | `user-base` | shell, SSH client, terminal tools, Atuin, SOPS tools, tmux |
 | `user-workstation` | base user, development tools, Herdr, Neovim, AI tools, zk |
 | `user-personal` | personal Git identity |
-| `ai-tools` | OpenCode, shared Node runtime, Nono sandbox |
+| `ai-tools` | OpenCode, Pi, shared Node runtime |
 
 Host aspects use den's native `provides.to-users` routing. Hardware facts, state versions, and host-only services stay in the relevant host module or `_parts` leaf. A feature that spans NixOS/Darwin and Home Manager owns all of those class definitions in the same feature module.
 
@@ -56,7 +56,7 @@ Host aspects use den's native `provides.to-users` routing. Hardware facts, state
 | Shared Nix policy | [`modules/core.nix`](modules/core.nix) |
 | macOS policy and Homebrew apps | [`modules/darwin-system.nix`](modules/darwin-system.nix) |
 | User profile membership | [`modules/profiles/user/`](modules/profiles/user) |
-| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/opencode.nix`](modules/opencode.nix), [`modules/_opencode/`](modules/_opencode) |
+| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/opencode.nix`](modules/opencode.nix), [`modules/pi.nix`](modules/pi.nix), [`modules/_opencode/`](modules/_opencode), [`modules/_pi/`](modules/_pi) |
 | SOPS integration | [`modules/secrets.nix`](modules/secrets.nix) |
 | Flake app wrappers and checks | [`modules/apps.nix`](modules/apps.nix), [`modules/checks.nix`](modules/checks.nix) |
 
