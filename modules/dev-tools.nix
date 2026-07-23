@@ -32,9 +32,11 @@ in {
           deadnix
           docker
           docker-compose
+          fnox
           lazydocker
           gh
           gnumake
+          hk
           hyperfine
           inputs.hunk.packages.${stdenv.hostPlatform.system}.hunk
           nil
