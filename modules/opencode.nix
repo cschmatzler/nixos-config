@@ -55,7 +55,6 @@ in {
         // {
           ".config/opencode/skills/hunk-review/SKILL.md".source = "${inputs'.hunk.packages.hunk}/skills/hunk-review/SKILL.md";
         };
-      sideshow = pkgs.callPackage ./_packages/sideshow.nix {};
       settings = {
         "$schema" = "https://opencode.ai/config.json";
         model = "openai/gpt-5.6-sol";
@@ -74,7 +73,7 @@ in {
             variant = "high";
           };
         };
-        mcp = import ./_opencode/mcp.nix {inherit sideshow;};
+        mcp = import ./_opencode/mcp.nix;
         permission = {
           bash."*--no-verify*" = "deny";
           skill = {
@@ -112,7 +111,6 @@ in {
         packages =
           [
             inputs'.llm-agents.packages.opencode
-            sideshow
           ]
           ++ lib.optionals pkgs.stdenv.isLinux [
             pkgs.xdg-utils
