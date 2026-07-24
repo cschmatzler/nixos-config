@@ -7,7 +7,7 @@
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
   apiKeyPath = local.secretPath "opencode-api-key";
   homeAssistantTokenPath = local.secretPath "home-assistant-token";
-  version = "0.0.29-nightly.20260723.880";
+  version = "0.0.29-nightly.20260724.893";
 in {
   sops.secrets = {
     home-assistant-token.restartUnits = ["t3-code.service"];
