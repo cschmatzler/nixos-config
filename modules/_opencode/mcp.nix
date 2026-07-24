@@ -1,4 +1,4 @@
-{sideshow}: let
+let
   local = import ../_lib/local.nix;
   executorUrl = "https://${local.tailscaleHost "executor"}/mcp";
 in {
@@ -14,14 +14,6 @@ in {
   executor = {
     type = "remote";
     url = "${executorUrl}";
-    enabled = true;
-  };
-  sideshow = {
-    type = "local";
-    command = [
-      "${sideshow}/bin/sideshow"
-      "mcp"
-    ];
     enabled = true;
   };
   homeassistant = {
