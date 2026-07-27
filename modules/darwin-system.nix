@@ -169,12 +169,9 @@ in {
       casks = [
         "1password"
         "alcove"
-        "chatgpt"
         "ghostty@tip"
         "helium-browser"
         "obsidian"
-        "raycast"
-        "tidal"
         "whatsapp"
       ];
     };
