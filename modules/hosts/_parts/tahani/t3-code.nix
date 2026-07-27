@@ -6,13 +6,9 @@
   local = import ../../../_lib/local.nix;
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
   apiKeyPath = local.secretPath "opencode-api-key";
-  homeAssistantTokenPath = local.secretPath "home-assistant-token";
   version = "0.0.29-nightly.20260727.915";
 in {
-  sops.secrets = {
-    home-assistant-token.restartUnits = ["t3-code.service"];
-    opencode-api-key.restartUnits = ["t3-code.service"];
-  };
+  sops.secrets.opencode-api-key.restartUnits = ["t3-code.service"];
 
   systemd.services = {
     t3-code = {
@@ -30,7 +26,6 @@ in {
       };
       script = ''
         export OPENCODE_API_KEY="$(<${apiKeyPath})"
-        export HOME_ASSISTANT_TOKEN="$(<${homeAssistantTokenPath})"
         exec ${pkgs.nodejs_24}/bin/npx --yes t3@${version} serve --host 127.0.0.1 --port 3773
       '';
       serviceConfig = {

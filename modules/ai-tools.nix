@@ -1,4 +1,6 @@
-{den, ...}: {
+{den, ...}: let
+  mcp = import ./_lib/mcp.nix;
+in {
   flake-file.inputs.llm-agents = {
     url = "github:numtide/llm-agents.nix";
     inputs.flake-parts.follows = "flake-parts";
@@ -15,7 +17,7 @@
       settings = {
         check_for_update_on_startup = false;
         features.hooks = true;
-        mcp_servers = import ./_codex/mcp.nix;
+        mcp_servers = mcp.codex;
       };
     in {
       environment.etc."codex/config.toml".source = (pkgs.formats.toml {}).generate "codex-config.toml" settings;
@@ -61,9 +63,14 @@
           "plannotator-last"
         ]);
     in {
+      programs.claude-code = {
+        enable = true;
+        package = inputs'.llm-agents.packages.claude-code;
+        mcpServers = mcp.servers;
+      };
+
       home = {
         packages = [
-          inputs'.llm-agents.packages.claude-code
           codex
           plannotator
         ];

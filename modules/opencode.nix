@@ -2,17 +2,12 @@ _: let
   local = import ./_lib/local.nix;
   secretLib = import ./_lib/secrets.nix {};
   apiKeyPath = local.secretPath "opencode-api-key";
-  homeAssistantTokenPath = local.secretPath "home-assistant-token";
 in {
   den.aspects.opencode = {
     os.sops.secrets = {
       opencode-api-key = secretLib.mkUserBinarySecret {
         name = "opencode-api-key";
         sopsFile = ../secrets/opencode-api-key;
-      };
-      home-assistant-token = secretLib.mkUserBinarySecret {
-        name = "home-assistant-token";
-        sopsFile = ../secrets/home-assistant-token;
       };
     };
 
@@ -28,7 +23,6 @@ in {
         "coding-standards"
         "effect"
         "herdr"
-        "home-assistant"
         "wrdn-authz"
         "wrdn-code-execution"
         "wrdn-data-exfil"
@@ -73,14 +67,13 @@ in {
             variant = "high";
           };
         };
-        mcp = import ./_opencode/mcp.nix;
+        mcp = (import ./_lib/mcp.nix).opencode;
         permission = {
           bash."*--no-verify*" = "deny";
           skill = {
             "coding-standards" = "allow";
             effect = "allow";
             herdr = "allow";
-            "home-assistant" = "allow";
             "hunk-review" = "allow";
             "wrdn-*" = "allow";
           };
@@ -97,9 +90,6 @@ in {
       programs.fish.shellInit = lib.mkAfter ''
         if test -f "${apiKeyPath}"
           set -gx OPENCODE_API_KEY (string trim -- (cat "${apiKeyPath}"))
-        end
-        if test -f "${homeAssistantTokenPath}"
-          set -gx HOME_ASSISTANT_TOKEN (string trim -- (cat "${homeAssistantTokenPath}"))
         end
       '';
 

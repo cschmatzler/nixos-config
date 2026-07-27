@@ -63,7 +63,7 @@ in {
       };
       configs = {
         ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
-        ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_pi/mcp.nix);
+        ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_lib/mcp.nix).pi;
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
         ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
         ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;

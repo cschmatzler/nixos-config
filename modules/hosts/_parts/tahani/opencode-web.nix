@@ -7,13 +7,9 @@
   local = import ../../../_lib/local.nix;
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
   apiKeyPath = local.secretPath "opencode-api-key";
-  homeAssistantTokenPath = local.secretPath "home-assistant-token";
   opencode = inputs'.llm-agents.packages.opencode;
 in {
-  sops.secrets = {
-    home-assistant-token.restartUnits = ["opencode-web.service"];
-    opencode-api-key.restartUnits = ["opencode-web.service"];
-  };
+  sops.secrets.opencode-api-key.restartUnits = ["opencode-web.service"];
 
   systemd.services = {
     opencode-web = {
@@ -30,7 +26,6 @@ in {
       };
       script = ''
         export OPENCODE_API_KEY="$(<${apiKeyPath})"
-        export HOME_ASSISTANT_TOKEN="$(<${homeAssistantTokenPath})"
         exec ${opencode}/bin/opencode web --hostname 127.0.0.1 --port 4097
       '';
       serviceConfig = {

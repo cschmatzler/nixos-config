@@ -23,7 +23,8 @@ The repository is feature/aspect-centric. Read it in this order:
 - `modules/hosts/` — explicit host composition
 - `modules/hosts/_parts/<host>/` — machine-only hardware and literal networking leaves
 - `modules/profiles/{host,user}/` — reusable role manifests and small role-specific settings
-- `modules/_opencode/`, `modules/_pi/` — agent commands, MCP endpoints, and extensions
+- `modules/_opencode/`, `modules/_pi/` — agent commands and extensions
+- `modules/_lib/mcp.nix` — canonical MCP inventory and per-client config adapters
 - `modules/_darwin/`, `_neovim/`, `_terminal/`, `_tmux/` — feature-owned implementation payloads
 - `modules/_lib/` — small pure helpers and personal constants
 - `modules/_packages/` — local package definitions consumed with `callPackage`
@@ -56,7 +57,8 @@ Host aspects use den's native `provides.to-users` routing. Hardware facts, state
 | Shared Nix policy | [`modules/core.nix`](modules/core.nix) |
 | macOS policy and Homebrew apps | [`modules/darwin-system.nix`](modules/darwin-system.nix) |
 | User profile membership | [`modules/profiles/user/`](modules/profiles/user) |
-| AI runtime, commands, and MCP endpoints | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/opencode.nix`](modules/opencode.nix), [`modules/pi.nix`](modules/pi.nix), [`modules/_opencode/`](modules/_opencode), [`modules/_pi/`](modules/_pi) |
+| AI runtime and commands | [`modules/ai-tools.nix`](modules/ai-tools.nix), [`modules/opencode.nix`](modules/opencode.nix), [`modules/pi.nix`](modules/pi.nix), [`modules/_opencode/`](modules/_opencode), [`modules/_pi/`](modules/_pi) |
+| Shared MCP endpoints | [`modules/_lib/mcp.nix`](modules/_lib/mcp.nix) |
 | SOPS integration | [`modules/secrets.nix`](modules/secrets.nix) |
 | Flake app wrappers and checks | [`modules/apps.nix`](modules/apps.nix), [`modules/checks.nix`](modules/checks.nix) |
 
