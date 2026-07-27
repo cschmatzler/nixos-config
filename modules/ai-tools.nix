@@ -11,6 +11,16 @@
       den.aspects.pi
     ];
 
+    os = {pkgs, ...}: let
+      settings = {
+        check_for_update_on_startup = false;
+        features.hooks = true;
+        mcp_servers = import ./_codex/mcp.nix;
+      };
+    in {
+      environment.etc."codex/config.toml".source = (pkgs.formats.toml {}).generate "codex-config.toml" settings;
+    };
+
     homeManager = {
       inputs',
       pkgs,
@@ -25,11 +35,6 @@
           wrapProgram $out/bin/codex \
             --run 'set -- --config "projects.\"$PWD\".trust_level=\"trusted\"" "$@"'
         '';
-      };
-      settings = {
-        check_for_update_on_startup = false;
-        features.hooks = true;
-        mcp_servers = import ./_codex/mcp.nix;
       };
       hooks = {
         hooks.Stop = [
@@ -65,7 +70,6 @@
         file =
           plannotatorSkills
           // {
-            ".codex/config.toml".source = (pkgs.formats.toml {}).generate "codex-config.toml" settings;
             ".codex/hooks.json".source = (pkgs.formats.json {}).generate "codex-hooks.json" hooks;
           };
       };
