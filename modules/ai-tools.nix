@@ -16,6 +16,7 @@
       pkgs,
       ...
     }: let
+      mcp = import ./_lib/mcp.nix;
       plannotator = inputs'.llm-agents.packages.plannotator;
       codex = pkgs.symlinkJoin {
         name = "codex";
@@ -26,10 +27,20 @@
             --run 'set -- --config "projects.\"$PWD\".trust_level=\"trusted\"" "$@"'
         '';
       };
+      claudeMcpConfig = (pkgs.formats.json {}).generate "claude-mcp.json" mcp.claude;
+      claude = pkgs.symlinkJoin {
+        name = "claude-code";
+        paths = [inputs'.llm-agents.packages.claude-code];
+        nativeBuildInputs = [pkgs.makeWrapper];
+        postBuild = ''
+          wrapProgram $out/bin/claude \
+            --add-flags '--strict-mcp-config --mcp-config ${claudeMcpConfig}'
+        '';
+      };
       settings = {
         check_for_update_on_startup = false;
         features.hooks = true;
-        mcp_servers = import ./_codex/mcp.nix;
+        mcp_servers = mcp.codex;
       };
       hooks = {
         hooks.Stop = [
@@ -58,7 +69,7 @@
     in {
       home = {
         packages = [
-          inputs'.llm-agents.packages.claude-code
+          claude
           codex
           plannotator
         ];
