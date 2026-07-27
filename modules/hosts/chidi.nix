@@ -1,24 +1,29 @@
 {den, ...}: {
-  den.aspects.janet = {
+  den.aspects.chidi = {
     includes = [
       den.aspects.host-darwin-base
-      den.aspects.syncthing
     ];
 
     provides.to-users = {
       includes = [
         den.aspects.user-workstation
-        den.aspects.user-personal
-        den.aspects.mosh-client
+        den.aspects.user-work
       ];
       homeManager.home.stateVersion = "25.11";
     };
 
     darwin = {
       system.stateVersion = 6;
-      networking.hostName = "janet";
-      networking.computerName = "janet";
+      networking.hostName = "chidi";
+      networking.computerName = "chidi";
       documentation.doc.enable = false;
+
+      homebrew.casks = [
+        "granola"
+        "linear"
+        "notion"
+        "slack"
+      ];
     };
   };
 }
