@@ -6,11 +6,8 @@
 }: let
   local = import ../../../_lib/local.nix;
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
-  apiKeyPath = local.secretPath "opencode-api-key";
   opencode = inputs'.llm-agents.packages.opencode;
 in {
-  sops.secrets.opencode-api-key.restartUnits = ["opencode-web.service"];
-
   systemd.services = {
     opencode-web = {
       description = "OpenCode web server";
@@ -25,7 +22,6 @@ in {
         PLANNOTATOR_SKIP_BROWSER_OPEN = "1";
       };
       script = ''
-        export OPENCODE_API_KEY="$(<${apiKeyPath})"
         exec ${opencode}/bin/opencode web --hostname 127.0.0.1 --port 4097
       '';
       serviceConfig = {

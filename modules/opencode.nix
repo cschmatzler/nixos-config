@@ -1,16 +1,5 @@
-_: let
-  local = import ./_lib/local.nix;
-  secretLib = import ./_lib/secrets.nix {};
-  apiKeyPath = local.secretPath "opencode-api-key";
-in {
+_: {
   den.aspects.opencode = {
-    os.sops.secrets = {
-      opencode-api-key = secretLib.mkUserBinarySecret {
-        name = "opencode-api-key";
-        sopsFile = ../secrets/opencode-api-key;
-      };
-    };
-
     homeManager = {
       inputs',
       lib,
@@ -90,12 +79,6 @@ in {
         ".config/opencode/themes/rose-pine-dawn.json".source = jsonFormat.generate "opencode-rose-pine-dawn.json" tuiTheme;
       };
     in {
-      programs.fish.shellInit = lib.mkAfter ''
-        if test -f "${apiKeyPath}"
-          set -gx OPENCODE_API_KEY (string trim -- (cat "${apiKeyPath}"))
-        end
-      '';
-
       home = {
         sessionVariables = {
           PLANNOTATOR_PORT = "20000";
