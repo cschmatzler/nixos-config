@@ -35,6 +35,7 @@ in {
         ./_parts/tahani/networking.nix
         ./_parts/tahani/opencode-web.nix
         ./_parts/tahani/plannotator.nix
+        ./_parts/tahani/t3-code.nix
       ];
 
       virtualisation.docker.enable = true;
