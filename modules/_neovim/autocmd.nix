@@ -1,6 +1,4 @@
-let
-  theme = (import ../_lib/theme.nix).rosePineDawn;
-in {
+{
   programs.nixvim = {
     autoGroups = {
       Christoph = {};

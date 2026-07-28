@@ -3,10 +3,29 @@
   port = 4788;
   url = "https://${local.tailscaleHost "executor"}";
 in {
-  # 65532 is the distroless image's nonroot UID/GID.
-  systemd.tmpfiles.rules = [
-    "d /var/lib/executor 0700 65532 65532 -"
-  ];
+  systemd = {
+    # 65532 is the distroless image's nonroot UID/GID.
+    tmpfiles.rules = [
+      "d /var/lib/executor 0700 65532 65532 -"
+    ];
+
+    services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:${toString port}/api/health";
+
+    services.executor-tailscale = {
+      description = "Expose Executor through Tailscale Serve";
+      wantedBy = ["multi-user.target"];
+      requires = ["docker-executor.service" "tailscaled.service"];
+      after = ["docker-executor.service" "tailscaled.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 http://127.0.0.1:${toString port}";
+        ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 off";
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
+    };
+  };
 
   virtualisation.oci-containers = {
     backend = "docker";
@@ -34,23 +53,6 @@ in {
         "--memory-swap=2g"
         "--pids-limit=256"
       ];
-    };
-  };
-
-  systemd.services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:${toString port}/api/health";
-
-  systemd.services.executor-tailscale = {
-    description = "Expose Executor through Tailscale Serve";
-    wantedBy = ["multi-user.target"];
-    requires = ["docker-executor.service" "tailscaled.service"];
-    after = ["docker-executor.service" "tailscaled.service"];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 http://127.0.0.1:${toString port}";
-      ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 off";
-      Restart = "on-failure";
-      RestartSec = "5s";
     };
   };
 }

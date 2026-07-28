@@ -252,38 +252,6 @@
         "type": "github"
       }
     },
-    "homebrew-cask": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1785219049,
-        "narHash": "sha256-IXiv/eKopaEOhJCCRZ3ZB3jSBFhVwmpSh30T4XlHAOg=",
-        "owner": "homebrew",
-        "repo": "homebrew-cask",
-        "rev": "61793113bd611d63abd628e28d127deb05a19968",
-        "type": "github"
-      },
-      "original": {
-        "owner": "homebrew",
-        "repo": "homebrew-cask",
-        "type": "github"
-      }
-    },
-    "homebrew-core": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1785220398,
-        "narHash": "sha256-SVi08hhGR3vk7IbMSkpYIjJlmWrZjxSgWu9CSirR8Mk=",
-        "owner": "homebrew",
-        "repo": "homebrew-core",
-        "rev": "8b21e70b1a3438b5298b975ccadb62572595dd10",
-        "type": "github"
-      },
-      "original": {
-        "owner": "homebrew",
-        "repo": "homebrew-core",
-        "type": "github"
-      }
-    },
     "hunk": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -464,16 +432,16 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1785220283,
-        "narHash": "sha256-21ZZ/aNPw9x3KEUs0ZNxmKrPS95GYieIlSLfhORR+sw=",
+        "lastModified": 1785090369,
+        "narHash": "sha256-m0pDuRJG7EDo9ri+4Ksu83VsI+PlxNC9lNBfydejce4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "a915e2cb00849f69bc20c2ee90e29f0d66b14cdb",
+        "rev": "624af665418d3c65d544145b4d34ad696439570e",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "master",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -527,8 +495,6 @@
         "flake-parts": "flake-parts",
         "herdr": "herdr",
         "home-manager": "home-manager",
-        "homebrew-cask": "homebrew-cask",
-        "homebrew-core": "homebrew-core",
         "hunk": "hunk",
         "import-tree": "import-tree_2",
         "llm-agents": "llm-agents",

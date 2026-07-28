@@ -23,13 +23,17 @@ in {
   };
 
   # Encryption/secrets tools
-  den.aspects.secrets.homeManager = {pkgs, ...}: {
+  den.aspects.secrets.homeManager = {
+    config,
+    pkgs,
+    ...
+  }: {
     home.packages = with pkgs; [
       age
       gnupg
       sops
       ssh-to-age
     ];
-    home.sessionVariables.SOPS_AGE_SSH_PRIVATE_KEY_FILE = "~/.ssh/id_ed25519";
+    home.sessionVariables.SOPS_AGE_SSH_PRIVATE_KEY_FILE = "${config.home.homeDirectory}/.ssh/id_ed25519";
   };
 }

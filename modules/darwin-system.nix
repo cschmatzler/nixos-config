@@ -5,14 +5,6 @@
 in {
   flake-file.inputs = {
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
   };
 
   den.aspects.darwin-system.darwin = {pkgs, ...}: {
@@ -145,10 +137,6 @@ in {
       enable = true;
       user = local.user.name;
       mutableTaps = true;
-      taps = {
-        "homebrew/homebrew-core" = inputs.homebrew-core;
-        "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      };
     };
 
     homebrew = {
@@ -163,9 +151,6 @@ in {
         };
         upgrade = true;
       };
-      taps = [
-        "homebrew/cask"
-      ];
       casks = [
         "1password"
         "alcove"

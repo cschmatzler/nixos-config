@@ -11,7 +11,7 @@
       flake-file.url = "github:vic/flake-file";
       import-tree.url = "github:vic/import-tree";
       flake-aspects.url = "github:vic/flake-aspects";
-      nixpkgs.url = "github:nixos/nixpkgs/master";
+      nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
       flake-parts = {
         url = "github:hercules-ci/flake-parts";
         inputs.nixpkgs-lib.follows = "nixpkgs";

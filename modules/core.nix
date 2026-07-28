@@ -23,7 +23,7 @@ _: {
     nix = {
       package = pkgs.nix;
       settings = {
-        cores = 4;
+        cores = 0;
         experimental-features = [
           "nix-command"
           "flakes"
@@ -39,6 +39,7 @@ _: {
         automatic = true;
         options = "--delete-older-than 30d";
       };
+      optimise.automatic = true;
     };
   };
 }
