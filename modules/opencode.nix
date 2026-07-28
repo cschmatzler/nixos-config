@@ -54,7 +54,10 @@ in {
         model = "openai/gpt-5.6-sol";
         autoupdate = false;
         share = "manual";
-        plugin = ["@plannotator/opencode@0.24.2"];
+        plugin = [
+          "@plannotator/opencode@0.24.2"
+          "opencode-claude-auth@2.1.4"
+        ];
         agent = {
           build = {
             model = "openai/gpt-5.6-sol";
