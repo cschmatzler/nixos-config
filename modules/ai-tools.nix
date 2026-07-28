@@ -27,7 +27,25 @@ in {
       pkgs,
       ...
     }: let
-      plannotator = inputs'.llm-agents.packages.plannotator;
+      bunForPlannotator = pkgs.bun.overrideAttrs {
+        version = "1.3.11";
+        src = pkgs.fetchurl {
+          url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.11/bun-darwin-aarch64.zip";
+          hash = "sha256-b1o0Z+2crsR5W/eM1HZQfZ+HDH1XuGyUX8szgSZ3L/w=";
+        };
+      };
+      plannotatorPackage = inputs'.llm-agents.packages.plannotator;
+      plannotator =
+        if pkgs.stdenv.isDarwin
+        then
+          plannotatorPackage.overrideAttrs (oldAttrs: {
+            nativeBuildInputs = map (input:
+              if (input.pname or null) == "bun"
+              then bunForPlannotator
+              else input)
+            oldAttrs.nativeBuildInputs;
+          })
+        else plannotatorPackage;
       codex = pkgs.symlinkJoin {
         name = "codex";
         paths = [inputs'.llm-agents.packages.codex];
