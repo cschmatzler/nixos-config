@@ -35,18 +35,4 @@ in rec {
   codex = builtins.mapAttrs codexServer servers;
 
   opencode = builtins.mapAttrs opencodeServer servers;
-
-  pi.mcp = {
-    toolMode = "direct";
-    startup = "eager";
-    servers =
-      opencode
-      // {
-        executor =
-          opencode.executor
-          // {
-            url = "${servers.executor.url}?elicitation_mode=native";
-          };
-      };
-  };
 }
