@@ -88,6 +88,7 @@ in {
 
       home = {
         packages = [
+          inputs'.llm-agents.packages.amp
           codex
           plannotator
         ];
