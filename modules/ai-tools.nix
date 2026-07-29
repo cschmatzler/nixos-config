@@ -79,6 +79,16 @@ in {
           "plannotator-annotate"
           "plannotator-last"
         ]);
+      sharedAgentSkills = {
+        ".agents/skills/rmslop" = {
+          source = ./_skills/rmslop;
+          recursive = true;
+        };
+        ".claude/skills/rmslop" = {
+          source = ./_skills/rmslop;
+          recursive = true;
+        };
+      };
     in {
       programs.claude-code = {
         enable = true;
@@ -94,6 +104,7 @@ in {
         ];
         file =
           plannotatorSkills
+          // sharedAgentSkills
           // {
             ".codex/hooks.json".source = (pkgs.formats.json {}).generate "codex-hooks.json" hooks;
           };

@@ -1,4 +1,9 @@
 {
+  rmslop = ''
+    Use the `rmslop` skill to clean up the current branch.
+
+    Scope: $ARGUMENTS
+  '';
   "albanian-lesson" = ''
     Process the pasted Albanian lesson content and create two `zk` notes: one for lesson material and one for exercises.
 

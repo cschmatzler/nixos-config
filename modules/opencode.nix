@@ -12,6 +12,7 @@ _: {
         "coding-standards"
         "effect"
         "herdr"
+        "rmslop"
         "wrdn-authz"
         "wrdn-code-execution"
         "wrdn-data-exfil"
