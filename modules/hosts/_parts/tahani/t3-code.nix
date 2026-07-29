@@ -5,7 +5,7 @@
 }: let
   local = import ../../../_lib/local.nix;
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
-  version = "0.0.30-nightly.20260728.933";
+  version = "0.0.31-nightly.20260729.942";
 in {
   systemd.services = {
     t3-code = {
