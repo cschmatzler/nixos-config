@@ -10,6 +10,7 @@ in {
     includes = [
       den.aspects.node-runtime
       den.aspects.opencode
+      den.aspects.pi
     ];
 
     os = {pkgs, ...}: let

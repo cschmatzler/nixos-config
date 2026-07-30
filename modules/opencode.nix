@@ -27,18 +27,14 @@ _: {
             }
         )
         commands;
-      skillFiles =
-        builtins.listToAttrs (map (name: {
-            name = ".config/opencode/skills/${name}";
-            value = {
-              source = ./_skills + "/${name}";
-              recursive = true;
-            };
-          })
-          skillNames)
-        // {
-          ".config/opencode/skills/hunk-review/SKILL.md".source = "${inputs'.hunk.packages.hunk}/skills/hunk-review/SKILL.md";
-        };
+      skillFiles = builtins.listToAttrs (map (name: {
+          name = ".config/opencode/skills/${name}";
+          value = {
+            source = ./_skills + "/${name}";
+            recursive = true;
+          };
+        })
+        skillNames);
       settings = {
         "$schema" = "https://opencode.ai/config.json";
         model = "openai/gpt-5.6-sol";
@@ -67,7 +63,6 @@ _: {
             "coding-standards" = "allow";
             effect = "allow";
             herdr = "allow";
-            "hunk-review" = "allow";
             "wrdn-*" = "allow";
           };
         };

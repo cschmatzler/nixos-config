@@ -1,14 +1,8 @@
-{
-  den,
-  inputs,
-  ...
-}: let
+{den, ...}: let
   local = import ./_lib/local.nix;
   theme = (import ./_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
 in {
-  flake-file.inputs.hunk.url = "github:modem-dev/hunk";
-
   den.aspects.dev-tools = {
     includes = [den.aspects.node-runtime];
     homeManager = {
@@ -18,11 +12,6 @@ in {
     }: let
       userName = local.user.fullName;
     in {
-      xdg.configFile."hunk/config.toml".text = ''
-        theme = "${theme.slug}"
-        menu_bar = false
-      '';
-
       home.packages = with pkgs;
         [
           alejandra
@@ -38,7 +27,6 @@ in {
           gnumake
           hk
           hyperfine
-          inputs.hunk.packages.${stdenv.hostPlatform.system}.hunk
           nil
           nurl
           pnpm
