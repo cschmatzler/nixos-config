@@ -1,5 +1,15 @@
-_: {
+_: let
+  local = import ./_lib/local.nix;
+  inherit (local) secretPath;
+  secretLib = import ./_lib/secrets.nix {};
+  supermemoryApiKeyPath = secretPath "supermemory-api-key";
+in {
   den.aspects.pi = {
+    os.sops.secrets.supermemory-api-key = secretLib.mkUserBinarySecret {
+      name = "supermemory-api-key";
+      sopsFile = ../secrets/supermemory-api-key;
+    };
+
     homeManager = {
       inputs',
       lib,
@@ -47,6 +57,8 @@ _: {
           "git:github.com/dmmulroy/pi-mcp"
           "npm:pi-cache-optimizer"
           "npm:pi-subagents"
+          "npm:pi-claude-auth"
+          "npm:@awesamarth/pi-supermemory"
         ];
         prompts = ["./prompts"];
         skills = ["./skills"];
@@ -62,6 +74,11 @@ _: {
       };
     in {
       programs.fish.shellInit = lib.mkAfter ''
+        if test -f "${supermemoryApiKeyPath}"
+          set -gx SUPERMEMORY_API_KEY (string trim -- (cat "${supermemoryApiKeyPath}"))
+        end
+
+        set -gx SUPERMEMORY_API_URL "https://api.supermemory.ai"
         set -gx PI_SKIP_VERSION_CHECK 1
       '';
 
