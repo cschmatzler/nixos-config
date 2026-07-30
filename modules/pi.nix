@@ -56,7 +56,6 @@ in {
         packages = [
           "git:github.com/dmmulroy/pi-mcp"
           "npm:pi-cache-optimizer"
-          "npm:pi-subagents"
           "npm:pi-claude-auth"
           "npm:@awesamarth/pi-supermemory"
         ];
@@ -68,6 +67,7 @@ in {
         ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_lib/mcp.nix).pi;
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
         ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+        ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
         ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
         ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
         ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
