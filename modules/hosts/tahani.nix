@@ -6,7 +6,6 @@ in {
       den.aspects.host-nixos-base
       den.aspects.home-assistant
       den.aspects.mosh-server
-      den.aspects.opencode
       den.aspects.email
       den.aspects.ynab
       den.aspects.syncthing
@@ -33,9 +32,8 @@ in {
         ./_parts/tahani/executor.nix
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
-        ./_parts/tahani/opencode-web.nix
+        ./_parts/tahani/pi-web.nix
         ./_parts/tahani/plannotator.nix
-        ./_parts/tahani/t3-code.nix
       ];
 
       virtualisation.docker.enable = true;

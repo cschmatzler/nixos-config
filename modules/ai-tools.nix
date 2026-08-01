@@ -1,6 +1,4 @@
-{den, ...}: let
-  mcp = import ./_lib/mcp.nix;
-in {
+{den, ...}: {
   flake-file.inputs.llm-agents = {
     url = "github:numtide/llm-agents.nix";
     inputs.flake-parts.follows = "flake-parts";
@@ -9,25 +7,16 @@ in {
   den.aspects.ai-tools = {
     includes = [
       den.aspects.node-runtime
-      den.aspects.opencode
       den.aspects.pi
     ];
-
-    os = {pkgs, ...}: let
-      settings = {
-        check_for_update_on_startup = false;
-        features.hooks = true;
-        mcp_servers = mcp.codex;
-      };
-    in {
-      environment.etc."codex/config.toml".source = (pkgs.formats.toml {}).generate "codex-config.toml" settings;
-    };
 
     homeManager = {
       inputs',
       pkgs,
       ...
     }: let
+      mcp = import ./_lib/mcp.nix;
+      resources = import ./_lib/agent-resources.nix;
       bunForPlannotator = pkgs.bun.overrideAttrs {
         version = "1.3.11";
         src = pkgs.fetchurl {
@@ -47,68 +36,54 @@ in {
             oldAttrs.nativeBuildInputs;
           })
         else plannotatorPackage;
-      codex = pkgs.symlinkJoin {
-        name = "codex";
-        paths = [inputs'.llm-agents.packages.codex];
-        nativeBuildInputs = [pkgs.makeWrapper];
-        postBuild = ''
-          wrapProgram $out/bin/codex \
-            --run 'set -- --config "projects.\"$PWD\".trust_level=\"trusted\"" "$@"'
-        '';
-      };
-      hooks = {
-        hooks.Stop = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "${plannotator}/bin/plannotator";
-                timeout = 345600;
-              }
-            ];
-          }
-        ];
-      };
-      plannotatorSkills = builtins.listToAttrs (map (name: {
-          name = ".agents/skills/${name}";
-          value = {
-            source = "${plannotator.src}/apps/skills/core/${name}";
-            recursive = true;
-          };
-        }) [
-          "plannotator-review"
-          "plannotator-annotate"
-          "plannotator-last"
-        ]);
-      sharedAgentSkills = {
-        ".agents/skills/rmslop" = {
-          source = ./_skills/rmslop;
-          recursive = true;
-        };
-        ".claude/skills/rmslop" = {
-          source = ./_skills/rmslop;
-          recursive = true;
-        };
-      };
+      claudeSkills = builtins.listToAttrs (map (name: {
+          inherit name;
+          value = ./_skills + "/${name}";
+        })
+        resources.skillNames);
     in {
       programs.claude-code = {
         enable = true;
         package = inputs'.llm-agents.packages.claude-code;
+        inherit (resources) commands;
+        skills = claudeSkills;
         mcpServers = mcp.servers;
+        settings.hooks = {
+          PreToolUse = [
+            {
+              matcher = "EnterPlanMode";
+              hooks = [
+                {
+                  type = "command";
+                  command = "${plannotator}/bin/plannotator improve-context";
+                  timeout = 5;
+                }
+              ];
+            }
+          ];
+          PermissionRequest = [
+            {
+              matcher = "ExitPlanMode";
+              hooks = [
+                {
+                  type = "command";
+                  command = "${plannotator}/bin/plannotator";
+                  timeout = 345600;
+                }
+              ];
+            }
+          ];
+        };
       };
 
       home = {
+        sessionVariables = {
+          PLANNOTATOR_PORT = "20000";
+          PLANNOTATOR_REMOTE = "1";
+        };
         packages = [
-          inputs'.llm-agents.packages.amp
-          codex
           plannotator
         ];
-        file =
-          plannotatorSkills
-          // sharedAgentSkills
-          // {
-            ".codex/hooks.json".source = (pkgs.formats.json {}).generate "codex-hooks.json" hooks;
-          };
       };
     };
   };

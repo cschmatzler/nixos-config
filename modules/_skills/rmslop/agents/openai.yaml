@@ -1,4 +1,0 @@
-interface:
-  display_name: "Remove AI Slop"
-  short_description: "Remove generated-looking changes from a branch diff"
-  default_prompt: "Use $rmslop to clean generated-looking changes from the current branch while preserving behavior."

@@ -17,18 +17,8 @@ in {
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      commands = import ./_pi/commands.nix;
-      skillNames = [
-        "coding-standards"
-        "effect"
-        "herdr"
-        "rmslop"
-        "wrdn-authz"
-        "wrdn-code-execution"
-        "wrdn-data-exfil"
-        "wrdn-gha-workflows"
-        "wrdn-pii"
-      ];
+      resources = import ./_lib/agent-resources.nix;
+      commands = removeAttrs resources.commands resources.plannotatorCommandNames;
       promptFiles =
         lib.mapAttrs' (
           name: text:
@@ -44,7 +34,7 @@ in {
             recursive = true;
           };
         })
-        skillNames);
+        resources.skillNames);
       settings = {
         theme = "light";
         quietStartup = true;
@@ -56,6 +46,7 @@ in {
         packages = [
           "git:github.com/dmmulroy/pi-mcp"
           "npm:pi-cache-optimizer"
+          "npm:@plannotator/pi-extension@0.25.0"
           "npm:pi-claude-auth"
           "npm:@awesamarth/pi-supermemory"
         ];

@@ -14,9 +14,7 @@ let
     executor.url = executorUrl;
   };
 
-  codex = builtins.mapAttrs (_: server: server // {enabled = true;}) servers;
-
-  opencode =
+  piServers =
     builtins.mapAttrs (
       _: server:
         if server ? command
@@ -33,12 +31,11 @@ let
     )
     servers;
 in {
-  inherit servers codex opencode;
+  inherit servers;
 
-  # pi-mcp parses the OpenCode server schema verbatim.
   pi.mcp = {
     toolMode = "direct";
     startup = "eager";
-    servers = opencode;
+    servers = piServers;
   };
 }
