@@ -24,6 +24,9 @@
   prompt_new_tab_name = true
   accent = "${theme.hex.iris}"
 
+  [ui.sidebar.agents]
+  rows = [["state_icon", "workspace", "$pr"], ["agent"]]
+
   [ui.toast]
   delivery = "terminal"
   delay_seconds = 1
@@ -38,8 +41,6 @@
   manage_ssh_config = true
 
   [experimental]
-  pane_history = true
-  allow_nested = false
   kitty_graphics = true
 
   [advanced]

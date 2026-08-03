@@ -39,16 +39,19 @@ in {
         theme = "light";
         quietStartup = true;
         hideThinkingBlock = true;
+        showCacheMissNotices = true;
         defaultProvider = "openai-codex";
         defaultModel = "gpt-5.6-sol";
         defaultThinkingLevel = "high";
         enableInstallTelemetry = false;
         packages = [
-          "git:github.com/dmmulroy/pi-mcp"
-          "npm:pi-cache-optimizer"
-          "npm:@plannotator/pi-extension@0.25.0"
           "npm:pi-claude-auth"
+          "git:github.com/dmmulroy/pi-mcp"
+          "npm:@plannotator/pi-extension"
           "npm:@awesamarth/pi-supermemory"
+          "npm:pi-subagents"
+          "npm:pi-cache-optimizer"
+          "npm:pi-openai-codex-fast"
         ];
         prompts = ["./prompts"];
         skills = ["./skills"];

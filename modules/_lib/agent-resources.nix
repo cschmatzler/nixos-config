@@ -4,7 +4,6 @@
   skillNames = [
     "coding-standards"
     "effect"
-    "herdr"
     "wrdn-authz"
     "wrdn-code-execution"
     "wrdn-data-exfil"
