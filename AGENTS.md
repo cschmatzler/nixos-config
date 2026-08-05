@@ -26,12 +26,12 @@ alejandra .                   # Format all Nix files
 
 ### File Structure
 - **Modules**: `modules/` - All configuration (flake-parts modules, auto-imported by import-tree)
+  - `features/` - Reusable capability aspects grouped by domain (`system`, `interactive`, `development`, `ai`, `personal`, `services`)
+  - `profiles/` - Include-only host and user role bundles, except identity-specific settings
   - `hosts/` - Per-host composition modules
-  - `profiles/` - Shared host and user profile bundles
-  - `_lib/` - Utility functions (underscore = ignored by import-tree)
-  - `_darwin/` - Darwin-specific sub-modules
-  - `_neovim/` - Neovim plugin configs
-  - `hosts/_parts/` - Host-specific leaf files (disk-config, hardware, service fragments, etc.)
+  - `hosts/_parts/` - Host-specific leaf files (disk config, hardware, service fragments, etc.)
+  - `_lib/` - Cross-feature utility functions and constants
+  - `features/**/_*/` - Feature-private implementation payloads (underscore = ignored by import-tree)
 - **Apps**: `apps/` - Per-system app scripts
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)
 
@@ -39,7 +39,7 @@ alejandra .                   # Format all Nix files
 
 **Framework**: den (vic/den) — every .nix file in `modules/` is a flake-parts module
 
-**Pattern**: Feature/aspect-centric, not host-centric
+**Pattern**: Feature/aspect-centric, not host-centric. Leaf aspects implement capabilities, profiles group capabilities, and hosts choose profiles.
 
 **Aspects**: `den.aspects.<name>.<class>` where class is:
 - `nixos` - NixOS-only configuration
@@ -53,9 +53,9 @@ alejandra .                   # Format all Nix files
 
 **Defaults**: `den.default.*` defined in `modules/defaults.nix`
 
-**Inputs**: foundational inputs live in `modules/dendritic.nix`; feature-specific `flake-file.inputs` live with their owning feature module
+**Inputs**: foundational inputs live in `modules/dendritic.nix`; feature-specific `flake-file.inputs` live with their owning feature or domain module
 
-**Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `_darwin/`, etc.) are excluded from auto-import
+**Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `features/**/_*/`, etc.) are excluded from auto-import
 
 **Apply**: use `nix run .#apply` for local application; darwin host `janet` is local-only
 
@@ -130,7 +130,7 @@ in {
 - Use SOPS for secrets (see `.sops.yaml`)
 - Never commit unencrypted secrets
 - Secret definitions live with the feature that consumes them; host aspects include the feature on the required OS/user scopes
-- Shared SOPS defaults (module imports, key paths) in `modules/secrets.nix`
+- Shared SOPS defaults (module imports, key paths) in `modules/features/system/secrets.nix`
 
 ### Aspect Composition
 Use `den.aspects.<name>.includes` to compose aspects:
