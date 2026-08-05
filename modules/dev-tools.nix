@@ -42,8 +42,13 @@ in {
           xcodes
         ]
         ++ lib.optionals stdenv.isLinux [
+          chromium
           gcc15
         ];
+
+      home.sessionVariables = lib.optionalAttrs pkgs.stdenv.isLinux {
+        CHROMIUM_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
+      };
 
       # Git configuration
       programs.git = {

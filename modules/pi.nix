@@ -40,7 +40,7 @@ in {
         quietStartup = true;
         hideThinkingBlock = true;
         showCacheMissNotices = true;
-        defaultProvider = "openai-codex";
+        defaultProvider = "openai-codex-fast";
         defaultModel = "gpt-5.6-sol";
         defaultThinkingLevel = "high";
         enableInstallTelemetry = false;
@@ -61,6 +61,7 @@ in {
         ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_lib/mcp.nix).pi;
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
         ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+        ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
         ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
         ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
         ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;

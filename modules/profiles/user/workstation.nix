@@ -3,6 +3,7 @@
     den.aspects.user-base
     den.aspects.dev-tools
     den.aspects.herdr
+    den.aspects.mise
     den.aspects.neovim
     den.aspects.ai-tools
     den.aspects.zk
