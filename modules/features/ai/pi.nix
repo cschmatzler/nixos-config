@@ -37,6 +37,21 @@ in {
           };
         })
         resources.skillNames);
+      plannotatorConfig = {
+        diffOptions = {
+          defaultDiffType = "since-base";
+          diffStyle = "split";
+          diffIndicators = "bars";
+          lineDiffType = "word-alt";
+          fontFamily = "";
+        };
+        displayName = "Christoph Schmatzler";
+        prompts.review.runtimes.pi.denied = ''
+          The comments above are review directions written by the user. Treat them as intentional and correct by default, and address each one. Use the code to determine the right implementation. If a direction appears incorrect or harmful, raise the specific concern instead of following it blindly. Do not treat the comments as automated or unverified feedback, and do not require a verdict for each one.
+
+          Review only the submitted comments. Do not independently review the rest of the diff or search for issues that were not submitted.
+        '';
+      };
       settings = {
         theme = "light";
         quietStartup = true;
@@ -59,6 +74,7 @@ in {
         skills = ["./skills"];
       };
       configs = {
+        ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
         ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
         ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_shared/mcp.nix).pi;
         ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
