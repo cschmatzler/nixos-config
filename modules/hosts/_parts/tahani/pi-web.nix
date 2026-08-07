@@ -4,6 +4,7 @@
   ...
 }: let
   local = import ../../../_lib/local.nix;
+  mkTailscaleServeExposure = import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;};
   home = local.mkHome pkgs.stdenv.hostPlatform.system;
   port = 30141;
   version = "0.8.5";
@@ -41,19 +42,11 @@ in {
       };
     };
 
-    pi-web-tailscale = {
-      description = "Expose Pi through Tailscale Serve";
-      wantedBy = ["multi-user.target"];
-      requires = ["pi-web.service" "tailscaled.service"];
-      after = ["pi-web.service" "tailscaled.service"];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:pi --https=443 http://127.0.0.1:${toString port}";
-        ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:pi --https=443 off";
-        Restart = "on-failure";
-        RestartSec = "5s";
-      };
+    pi-web-tailscale = mkTailscaleServeExposure {
+      inherit pkgs port;
+      workload = "Pi";
+      identity = "svc:pi";
+      orderingUnits = ["pi-web.service"];
     };
   };
 }

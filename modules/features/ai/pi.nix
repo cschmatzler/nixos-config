@@ -19,7 +19,40 @@ in {
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      commands = import ./_shared/commands.nix;
+      aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "pi";
+      mcpServers =
+        lib.mapAttrs (
+          name: endpoint:
+            if endpoint.kind == "local"
+            then {
+              type = "local";
+              inherit (endpoint) command;
+              enabled = true;
+            }
+            else if endpoint.kind == "remote"
+            then {
+              type = "remote";
+              inherit (endpoint) url;
+              enabled = true;
+            }
+            else throw "Unsupported Pi MCP kind for ${name}: ${endpoint.kind}"
+        )
+        aiTools.mcp;
+      promptFiles =
+        lib.mapAttrs' (
+          name: command:
+            lib.nameValuePair ".pi/agent/prompts/${name}.md" {inherit (command) text;}
+        )
+        aiTools.commands;
+      skillFiles =
+        lib.mapAttrs' (
+          name: skill:
+            lib.nameValuePair ".pi/agent/skills/${name}" {
+              inherit (skill) source;
+              recursive = true;
+            }
+        )
+        aiTools.skills;
       plannotatorConfig = {
         diffOptions = {
           defaultDiffType = "since-base";
@@ -71,74 +104,29 @@ in {
           inputs'.llm-agents.packages.pi
         ];
 
-        file = {
-          ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
+        file =
+          {
+            ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
 
-          ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
-          ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
-            mcp = {
-              toolMode = "direct";
-              startup = "eager";
-              servers = {
-                opensrc = {
-                  type = "local";
-                  command = [
-                    "npx"
-                    "-y"
-                    "opensrc-mcp"
-                  ];
-                  enabled = true;
-                };
-                executor = {
-                  type = "remote";
-                  url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
-                  enabled = true;
-                };
+            ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
+            ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
+              mcp = {
+                toolMode = "direct";
+                startup = "eager";
+                servers = mcpServers;
               };
             };
-          };
 
-          ".pi/agent/prompts/rmslop.md".text = commands.rmslop;
-          ".pi/agent/prompts/albanian-lesson.md".text = commands."albanian-lesson";
-          ".pi/agent/prompts/inbox-triage.md".text = commands."inbox-triage";
-
-          ".pi/agent/skills/coding-standards" = {
-            source = ./_skills/coding-standards;
-            recursive = true;
-          };
-          ".pi/agent/skills/effect" = {
-            source = ./_skills/effect;
-            recursive = true;
-          };
-          ".pi/agent/skills/wrdn-authz" = {
-            source = ./_skills/wrdn-authz;
-            recursive = true;
-          };
-          ".pi/agent/skills/wrdn-code-execution" = {
-            source = ./_skills/wrdn-code-execution;
-            recursive = true;
-          };
-          ".pi/agent/skills/wrdn-data-exfil" = {
-            source = ./_skills/wrdn-data-exfil;
-            recursive = true;
-          };
-          ".pi/agent/skills/wrdn-gha-workflows" = {
-            source = ./_skills/wrdn-gha-workflows;
-            recursive = true;
-          };
-          ".pi/agent/skills/wrdn-pii" = {
-            source = ./_skills/wrdn-pii;
-            recursive = true;
-          };
-
-          ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-          ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-          ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
-          ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
-          ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
-          ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
-          ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
-        };
+            ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
+            ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+            ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
+            ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
+            ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
+            ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
+            ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
+          }
+          // promptFiles
+          // skillFiles;
       };
     };
   };

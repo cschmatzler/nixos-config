@@ -1,5 +1,10 @@
-{pkgs, ...}: let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   local = import ../../../_lib/local.nix;
+  mkTailscaleServeExposure = import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;};
   port = 4788;
   url = "https://${local.tailscaleHost "executor"}";
 in {
@@ -11,19 +16,11 @@ in {
 
     services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:${toString port}/api/health";
 
-    services.executor-tailscale = {
-      description = "Expose Executor through Tailscale Serve";
-      wantedBy = ["multi-user.target"];
-      requires = ["docker-executor.service" "tailscaled.service"];
-      after = ["docker-executor.service" "tailscaled.service"];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 http://127.0.0.1:${toString port}";
-        ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:executor --https=443 off";
-        Restart = "on-failure";
-        RestartSec = "5s";
-      };
+    services.executor-tailscale = mkTailscaleServeExposure {
+      inherit pkgs port;
+      workload = "Executor";
+      identity = "svc:executor";
+      orderingUnits = ["docker-executor.service"];
     };
   };
 

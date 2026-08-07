@@ -27,7 +27,7 @@ The repository is feature/aspect-centric. Read it in this order:
 - `modules/hosts/_parts/<host>/` — machine-only hardware and literal networking leaves
 - `modules/profiles/{host,user}/` — include-only role manifests, except identity-specific settings
 - `modules/_lib/` — small pure helpers and personal constants
-- `apps/` — implementation scripts for flake apps
+- `apps/` — Lifecycle Command implementations with shared Host and platform validation
 - `secrets/` — SOPS-encrypted material only; decrypted values never enter the Nix store
 - `flake.nix` — generated entrypoint; do not edit directly
 
@@ -61,22 +61,25 @@ Host aspects use den's native `provides.to-users` routing. Hardware facts, state
 | Interactive shell and terminal capabilities | [`modules/features/interactive/`](modules/features/interactive) |
 | AI capabilities, commands, and MCP endpoints | [`modules/features/ai/`](modules/features/ai) |
 | SOPS integration | [`modules/features/system/secrets.nix`](modules/features/system/secrets.nix) |
-| Flake app wrappers | [`modules/apps.nix`](modules/apps.nix) |
+| Lifecycle Command wrappers | [`modules/apps.nix`](modules/apps.nix) |
 
 ## Common Commands
 
 ```bash
-nix run .#build                  # Build the current host
-nix run .#build -- tahani       # Build a named host, regardless of caller platform
-nix run .#apply                 # Build and switch the current host
-nix fmt                         # Format with the flake's Alejandra formatter
-nix fmt -- --check .            # Check formatting without changing files
-deadnix --fail .                # Find unused Nix bindings
-statix check .                  # Run Nix static analysis
-nix flake check                 # Run flake schema checks and generated-input checks
+nix run .#build                         # Build the current Host
+nix run .#build -- --host tahani       # Build any declared Host
+nix run .#build -- --host tahani -- --no-link # Forward native build arguments
+nix run .#apply                         # Build and switch the current Host
+nix run .#rollback -- --generation 42  # Roll back the current Host
+nix run .#update -- nixpkgs            # Update selected inputs; omit names for all inputs
+nix fmt                                # Format with the flake's Alejandra formatter
+nix fmt -- --check .                   # Check formatting without changing files
+deadnix --fail .                       # Find unused Nix bindings
+statix check .                         # Run Nix static analysis
+nix flake check                        # Run flake schema and generated-input checks
 ```
 
-`build` and `apply` are intentionally separate. `build -- <host>` derives NixOS versus Darwin from the flake's configuration outputs; it does not assume the target matches the machine invoking it.
+`build` may target any Host because it derives NixOS versus Darwin from the flake's configuration outputs. `apply` and `rollback` resolve the current Host, verify that its declared kind matches the invoking platform, and reject remote or cross-platform mutation. `apply` accepts only diagnostic and concurrency arguments; configuration and activation-target selectors are rejected. Lifecycle Command flags are explicit: native build arguments follow a second `--`, and rollback never prompts for a generation.
 
 ## Inputs and Generated `flake.nix`
 

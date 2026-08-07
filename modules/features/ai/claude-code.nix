@@ -6,10 +6,24 @@ in {
 
     homeManager = {
       inputs',
+      lib,
       pkgs,
       ...
     }: let
-      sharedCommands = import ./_shared/commands.nix;
+      aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "claude-code";
+      mcpServers =
+        lib.mapAttrs (
+          name: endpoint:
+            if endpoint.kind == "local"
+            then {
+              command = builtins.head endpoint.command;
+              args = builtins.tail endpoint.command;
+            }
+            else if endpoint.kind == "remote"
+            then {inherit (endpoint) url;}
+            else throw "Unsupported Claude Code MCP kind for ${name}: ${endpoint.kind}"
+        )
+        aiTools.mcp;
       bunForPlannotator = pkgs.bun.overrideAttrs {
         version = "1.3.11";
         src = pkgs.fetchurl {
@@ -33,33 +47,9 @@ in {
       programs.claude-code = {
         enable = true;
         package = inputs'.llm-agents.packages.claude-code;
-        commands = {
-          rmslop = sharedCommands.rmslop;
-          "albanian-lesson" = sharedCommands."albanian-lesson";
-          "plannotator-annotate" = sharedCommands."plannotator-annotate";
-          "plannotator-last" = sharedCommands."plannotator-last";
-          "plannotator-review" = sharedCommands."plannotator-review";
-          "inbox-triage" = sharedCommands."inbox-triage";
-        };
-        skills = {
-          "coding-standards" = ./_skills/coding-standards;
-          effect = ./_skills/effect;
-          "wrdn-authz" = ./_skills/wrdn-authz;
-          "wrdn-code-execution" = ./_skills/wrdn-code-execution;
-          "wrdn-data-exfil" = ./_skills/wrdn-data-exfil;
-          "wrdn-gha-workflows" = ./_skills/wrdn-gha-workflows;
-          "wrdn-pii" = ./_skills/wrdn-pii;
-        };
-        mcpServers = {
-          opensrc = {
-            command = "npx";
-            args = [
-              "-y"
-              "opensrc-mcp"
-            ];
-          };
-          executor.url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
-        };
+        commands = lib.mapAttrs (_: command: command.text) aiTools.commands;
+        skills = lib.mapAttrs (_: skill: skill.source) aiTools.skills;
+        inherit mcpServers;
         settings = {
           extraKnownMarketplaces.phase0-skills = {
             source = {

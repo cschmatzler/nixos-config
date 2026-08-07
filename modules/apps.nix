@@ -12,75 +12,44 @@
     builtins.mapAttrs (_: _: "nixos") config.flake.nixosConfigurations
     // builtins.mapAttrs (_: _: "darwin") config.flake.darwinConfigurations;
 in {
-  perSystem = {
-    pkgs,
-    system,
-    ...
-  }: let
+  perSystem = {pkgs, ...}: let
     descriptions = {
-      apply = "Build and apply configuration";
-      build = "Build configuration";
-      rollback = "Rollback to previous generation";
+      apply = "Build and apply the current Host configuration";
+      build = "Build a Host configuration";
+      rollback = "Roll back the current Host to a generation";
       update = "Update flake inputs and regenerate flake.nix";
     };
     runtimePath = pkgs.lib.makeBinPath [
       pkgs.alejandra
+      pkgs.coreutils
       pkgs.git
       pkgs.nix
     ];
     hostCases = pkgs.lib.concatStringsSep "\n" (
       pkgs.lib.mapAttrsToList (host: kind: ''
-        ${pkgs.lib.escapeShellArg host}) kind=${pkgs.lib.escapeShellArg kind} ;;
+        ${pkgs.lib.escapeShellArg host}) printf '%s\n' ${pkgs.lib.escapeShellArg kind} ;;
       '')
       hostKinds
     );
-    mkPlatformApp = name: {
+    hostManifest = pkgs.writeText "lifecycle-hosts.sh" ''
+      host_kind() {
+        case "$1" in
+          ${hostCases}
+          *) return 1 ;;
+        esac
+      }
+    '';
+    mkLifecycleApp = name: {
       type = "app";
       program = "${(pkgs.writeShellScriptBin name ''
         PATH=${runtimePath}:$PATH
-        exec ${pkgs.bash}/bin/bash ${inputs.self}/apps/${system}/${name} "$@"
-      '')}/bin/${name}";
-      meta.description = descriptions.${name};
-    };
-    mkSharedApp = name: {
-      type = "app";
-      program = "${(pkgs.writeShellScriptBin name ''
-        PATH=${runtimePath}:$PATH
+        export HOST_MANIFEST=${pkgs.lib.escapeShellArg hostManifest}
         exec ${pkgs.bash}/bin/bash ${inputs.self}/apps/${name} "$@"
       '')}/bin/${name}";
       meta.description = descriptions.${name};
     };
-    buildApp = {
-      type = "app";
-      program = "${(pkgs.writeShellScriptBin "build" ''
-        PATH=${runtimePath}:$PATH
-        source ${inputs.self}/apps/common.sh
-
-        hostname="''${1:-}"
-        if [[ $# -gt 0 ]]; then
-          shift
-        fi
-
-        host="$(resolve_host "$hostname")"
-        case "$host" in
-          ${hostCases}
-          *)
-            print_error "Unknown host: $host"
-            exit 1
-            ;;
-        esac
-
-        build_config "$kind" "$host" "$@"
-      '')}/bin/build";
-      meta.description = descriptions.build;
-    };
-    platformAppNames = ["rollback"];
-    sharedAppNames = ["apply" "update"];
   in {
     formatter = pkgs.alejandra;
-    apps =
-      pkgs.lib.genAttrs platformAppNames mkPlatformApp
-      // pkgs.lib.genAttrs sharedAppNames mkSharedApp
-      // {build = buildApp;};
+    apps = pkgs.lib.genAttrs (builtins.attrNames descriptions) mkLifecycleApp;
   };
 }

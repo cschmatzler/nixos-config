@@ -25,10 +25,26 @@ type Workspace = {
   readonly fallbackCwd?: string;
 };
 
+type Unavailable = {
+  readonly _tag: "unavailable";
+  readonly reason: string;
+};
+
+type WorkspaceList =
+  | {readonly _tag: "found"; readonly workspaces: ReadonlyArray<Workspace>}
+  | Unavailable;
+
+type WorkspaceCwd = {readonly _tag: "found"; readonly cwd: string} | Unavailable;
+
+type BranchLookup =
+  | {readonly _tag: "found"; readonly branch: string}
+  | {readonly _tag: "no-branch"}
+  | Unavailable;
+
 type PullRequestLookup =
-  | { readonly _tag: "found"; readonly tokens: SidebarTokens }
-  | { readonly _tag: "not-found" }
-  | { readonly _tag: "unavailable"; readonly reason: string };
+  | {readonly _tag: "found"; readonly tokens: SidebarTokens}
+  | {readonly _tag: "not-found"}
+  | Unavailable;
 
 function isRecord(input: unknown): input is Readonly<Record<string, unknown>> {
   return typeof input === "object" && input !== null && !Array.isArray(input);
@@ -57,40 +73,37 @@ async function runCommand(
   }
 }
 
-function parseJson(output: string): unknown | undefined {
+function parseJson(output: string): {readonly _tag: "ok"; readonly value: unknown} | Unavailable {
   try {
-    return JSON.parse(output);
+    return {_tag: "ok", value: JSON.parse(output)};
   } catch {
-    return undefined;
+    return {_tag: "unavailable", reason: "invalid JSON response"};
   }
 }
 
-function parseWorkspaceList(input: unknown): ReadonlyArray<Workspace> | undefined {
+function parseWorkspaceList(input: unknown): WorkspaceList {
   if (!isRecord(input) || !isRecord(input.result) || !Array.isArray(input.result.workspaces)) {
-    return undefined;
+    return {_tag: "unavailable", reason: "invalid Herdr workspace list response"};
   }
 
   const workspaces: Array<Workspace> = [];
   for (const item of input.result.workspaces) {
-    if (!isRecord(item) || typeof item.workspace_id !== "string") return undefined;
-
-    let fallbackCwd: string | undefined;
-    if (isRecord(item.worktree) && typeof item.worktree.checkout_path === "string") {
-      fallbackCwd = item.worktree.checkout_path;
+    if (!isRecord(item) || typeof item.workspace_id !== "string") {
+      return {_tag: "unavailable", reason: "invalid Herdr workspace entry"};
     }
 
-    if (fallbackCwd) {
-      workspaces.push({id: item.workspace_id, fallbackCwd});
+    if (isRecord(item.worktree) && typeof item.worktree.checkout_path === "string") {
+      workspaces.push({id: item.workspace_id, fallbackCwd: item.worktree.checkout_path});
     } else {
       workspaces.push({id: item.workspace_id});
     }
   }
-  return workspaces;
+  return {_tag: "found", workspaces};
 }
 
-function parsePaneCwd(input: unknown): string | undefined {
+function parsePaneCwd(input: unknown): WorkspaceCwd {
   if (!isRecord(input) || !isRecord(input.result) || !Array.isArray(input.result.panes)) {
-    return undefined;
+    return {_tag: "unavailable", reason: "invalid Herdr pane list response"};
   }
 
   let firstCwd: string | undefined;
@@ -105,40 +118,59 @@ function parsePaneCwd(input: unknown): string | undefined {
     }
     if (!cwd) continue;
     if (!firstCwd) firstCwd = cwd;
-    if (pane.focused === true) return cwd;
+    if (pane.focused === true) return {_tag: "found", cwd};
   }
-  return firstCwd;
+
+  if (firstCwd) return {_tag: "found", cwd: firstCwd};
+  return {_tag: "unavailable", reason: "workspace has no available directory"};
 }
 
-async function listWorkspaces(herdrBin: string): Promise<ReadonlyArray<Workspace> | undefined> {
+async function listWorkspaces(herdrBin: string): Promise<WorkspaceList> {
   const result = await runCommand(herdrBin, ["workspace", "list"]);
   if (result._tag === "failure") {
-    console.error(`[gh-pr-workspace] herdr workspace list failed: ${result.stderr.trim()}`);
-    return undefined;
+    return {
+      _tag: "unavailable",
+      reason: result.stderr.trim() || `herdr exited ${result.exitCode}`,
+    };
   }
-  const workspaces = parseWorkspaceList(parseJson(result.stdout));
-  if (!workspaces) console.error("[gh-pr-workspace] invalid herdr workspace list response");
-  return workspaces;
+
+  const parsed = parseJson(result.stdout);
+  if (parsed._tag === "unavailable") return parsed;
+  return parseWorkspaceList(parsed.value);
 }
 
 async function resolveWorkspaceCwd(
   herdrBin: string,
   workspace: Workspace,
-): Promise<string | undefined> {
+): Promise<WorkspaceCwd> {
   const result = await runCommand(herdrBin, ["pane", "list", "--workspace", workspace.id]);
   if (result._tag === "success") {
-    const cwd = parsePaneCwd(parseJson(result.stdout));
-    if (cwd) return cwd;
+    const parsed = parseJson(result.stdout);
+    if (parsed._tag === "ok") {
+      const cwd = parsePaneCwd(parsed.value);
+      if (cwd._tag === "found") return cwd;
+    }
   }
-  return workspace.fallbackCwd;
+
+  if (workspace.fallbackCwd) return {_tag: "found", cwd: workspace.fallbackCwd};
+  if (result._tag === "failure") {
+    return {
+      _tag: "unavailable",
+      reason: result.stderr.trim() || `herdr exited ${result.exitCode}`,
+    };
+  }
+  return {_tag: "unavailable", reason: "workspace directory is unavailable"};
 }
 
-async function currentBranch(cwd: string): Promise<string | undefined> {
+async function currentBranch(cwd: string): Promise<BranchLookup> {
   const result = await runCommand("git", ["-C", cwd, "branch", "--show-current"]);
-  if (result._tag === "failure") return undefined;
+  if (result._tag === "failure") {
+    return {_tag: "unavailable", reason: result.stderr.trim() || `git exited ${result.exitCode}`};
+  }
+
   const branch = result.stdout.trim();
-  if (!branch) return undefined;
-  return branch;
+  if (!branch) return {_tag: "no-branch"};
+  return {_tag: "found", branch};
 }
 
 async function lookupPullRequest(cwd: string, branch: string): Promise<PullRequestLookup> {
@@ -152,12 +184,14 @@ async function lookupPullRequest(cwd: string, branch: string): Promise<PullReque
   ].join(",");
   const result = await runCommand("gh", ["pr", "view", branch, "--json", fields], cwd);
   if (result._tag === "failure") {
-    const details = `${result.stdout}\n${result.stderr}`;
+    const details = `${result.stdout}\n${result.stderr}`.toLowerCase();
     if (details.includes("no pull requests found")) return {_tag: "not-found"};
     return {_tag: "unavailable", reason: result.stderr.trim() || `gh exited ${result.exitCode}`};
   }
 
-  const parsed = parsePullRequest(parseJson(result.stdout));
+  const json = parseJson(result.stdout);
+  if (json._tag === "unavailable") return json;
+  const parsed = parsePullRequest(json.value);
   if (parsed._tag === "err") {
     return {_tag: "unavailable", reason: parsed.error.message};
   }
@@ -168,7 +202,7 @@ async function clearTokens(
   herdrBin: string,
   workspaceId: string,
   sequence: bigint,
-): Promise<void> {
+): Promise<CommandResult> {
   const args = [
     "workspace",
     "report-metadata",
@@ -179,10 +213,7 @@ async function clearTokens(
     String(sequence),
   ];
   for (const token of TOKEN_NAMES) args.push("--clear-token", token);
-  const result = await runCommand(herdrBin, args);
-  if (result._tag === "failure") {
-    console.error(`[gh-pr-workspace] failed to clear ${workspaceId}: ${result.stderr.trim()}`);
-  }
+  return runCommand(herdrBin, args);
 }
 
 async function reportTokens(
@@ -190,7 +221,7 @@ async function reportTokens(
   workspaceId: string,
   sequence: bigint,
   tokens: SidebarTokens,
-): Promise<void> {
+): Promise<CommandResult> {
   const args = [
     "workspace",
     "report-metadata",
@@ -212,10 +243,12 @@ async function reportTokens(
     else args.push("--clear-token", token);
   }
 
-  const result = await runCommand(herdrBin, args);
-  if (result._tag === "failure") {
-    console.error(`[gh-pr-workspace] failed to report ${workspaceId}: ${result.stderr.trim()}`);
-  }
+  return runCommand(herdrBin, args);
+}
+
+function logWriteFailure(operation: "clear" | "report", workspaceId: string, result: CommandFailure) {
+  const reason = result.stderr.trim() || `${result.command} exited ${result.exitCode}`;
+  console.error(`[gh-pr-workspace] failed to ${operation} ${workspaceId}: ${reason}`);
 }
 
 async function updateWorkspace(
@@ -224,41 +257,56 @@ async function updateWorkspace(
   sequence: bigint,
 ): Promise<void> {
   const cwd = await resolveWorkspaceCwd(herdrBin, workspace);
-  if (!cwd) {
-    await clearTokens(herdrBin, workspace.id, sequence);
+  if (cwd._tag === "unavailable") {
+    console.error(`[gh-pr-workspace] ${workspace.id}: ${cwd.reason}; preserving current status`);
     return;
   }
 
-  const branch = await currentBranch(cwd);
-  if (!branch) {
-    await clearTokens(herdrBin, workspace.id, sequence);
+  const branch = await currentBranch(cwd.cwd);
+  if (branch._tag === "unavailable") {
+    console.error(`[gh-pr-workspace] ${workspace.id}: ${branch.reason}; preserving current status`);
+    return;
+  }
+  if (branch._tag === "no-branch") {
+    const result = await clearTokens(herdrBin, workspace.id, sequence);
+    if (result._tag === "failure") logWriteFailure("clear", workspace.id, result);
     return;
   }
 
-  const pullRequest = await lookupPullRequest(cwd, branch);
+  const pullRequest = await lookupPullRequest(cwd.cwd, branch.branch);
   if (pullRequest._tag === "found") {
-    await reportTokens(herdrBin, workspace.id, sequence, pullRequest.tokens);
+    const result = await reportTokens(herdrBin, workspace.id, sequence, pullRequest.tokens);
+    if (result._tag === "failure") logWriteFailure("report", workspace.id, result);
     return;
   }
   if (pullRequest._tag === "not-found") {
-    await clearTokens(herdrBin, workspace.id, sequence);
+    const result = await clearTokens(herdrBin, workspace.id, sequence);
+    if (result._tag === "failure") logWriteFailure("clear", workspace.id, result);
     return;
   }
 
-  console.error(`[gh-pr-workspace] ${workspace.id} (${branch}): ${pullRequest.reason}`);
+  console.error(
+    `[gh-pr-workspace] ${workspace.id} (${branch.branch}): ${pullRequest.reason}; preserving current status`,
+  );
 }
 
 /**
- * Refreshes GitHub PR metadata for every open Herdr repository/worktree workspace.
+ * Refreshes GitHub pull request status for every open Herdr repository/worktree workspace.
+ *
+ * Unavailable workspace, Git, or GitHub data preserves the last successfully reported status.
+ * A successful no-branch result or confirmed missing pull request clears the owned status.
  *
  * @param herdrBin - Herdr binary injected into the plugin runtime.
  */
 export async function updateWorkspacePullRequests(herdrBin: string): Promise<void> {
   const workspaces = await listWorkspaces(herdrBin);
-  if (!workspaces) return;
+  if (workspaces._tag === "unavailable") {
+    console.error(`[gh-pr-workspace] unable to list workspaces: ${workspaces.reason}`);
+    return;
+  }
 
   const sequence = BigInt(Date.now()) * 1_000_000n;
   await Promise.all(
-    workspaces.map((workspace) => updateWorkspace(herdrBin, workspace, sequence)),
+    workspaces.workspaces.map((workspace) => updateWorkspace(herdrBin, workspace, sequence)),
   );
 }

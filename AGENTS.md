@@ -4,13 +4,17 @@
 
 ### Local Development
 ```bash
-nix run .#build               # Build current host config
-nix run .#build -- <hostname> # Build specific host (janet, tahani)
-nix run .#apply               # Build and apply locally (darwin-rebuild/nixos-rebuild switch)
-nix flake check               # Validate flake
+nix run .#build                         # Build the current Host
+nix run .#build -- --host <hostname>   # Build a declared Host (chidi, janet, tahani)
+nix run .#apply                         # Build and apply the current Host
+nix run .#rollback -- --generation <n> # Roll back the current Host
+nix run .#update -- [input...]          # Update all or selected flake inputs
+nix flake check                         # Validate the flake
 ```
 
-Do not run build or apply unless instructed to.
+Pass native build arguments after a second `--`, for example `nix run .#build -- --host tahani -- --no-link`. Apply and rollback only operate on the detected current Host and reject platform mismatches. Apply accepts only diagnostic and concurrency arguments; configuration and activation-target selectors are rejected.
+
+Do not run build or apply unless instructed to. This repository intentionally has no tests; do not add test files or Nix test checks.
 
 ### Formatting
 ```bash
@@ -32,7 +36,7 @@ alejandra .                   # Format all Nix files
   - `hosts/_parts/` - Host-specific leaf files (disk config, hardware, service fragments, etc.)
   - `_lib/` - Cross-feature utility functions and constants
   - `features/**/_*/` - Feature-private implementation payloads (underscore = ignored by import-tree)
-- **Apps**: `apps/` - Per-system app scripts
+- **Apps**: `apps/` - Lifecycle Command implementations with shared Host and platform validation
 - **Secrets**: `secrets/` - SOPS-encrypted secrets (`.sops.yaml` for config)
 
 ### Architecture
@@ -57,7 +61,7 @@ alejandra .                   # Format all Nix files
 
 **Imports**: Auto-imported by import-tree; underscore-prefixed dirs (`_lib/`, `features/**/_*/`, etc.) are excluded from auto-import
 
-**Apply**: use `nix run .#apply` for local application; darwin host `janet` is local-only
+**Lifecycle Commands**: `build` may target any declared Host; `apply` and `rollback` operate only on the detected current Host
 
 ### Nix Language Conventions
 

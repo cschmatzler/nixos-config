@@ -2,7 +2,7 @@
   local = import ../../_lib/local.nix;
   secretLib = import ../../_lib/secrets.nix {};
   user = local.user.name;
-  mkSettings = import ./_syncthing/settings.nix {inherit local;};
+  mkDesiredState = import ./_syncthing/desired-state.nix {inherit local;};
   mkDarwinReconcileScript = import ./_syncthing/darwin-rest-reconciliation.nix {
     inherit lib;
   };
@@ -48,7 +48,7 @@ in {
       guiAddress = "127.0.0.1:8384";
       overrideFolders = true;
       overrideDevices = true;
-      settings = mkSettings homeDir;
+      settings = mkDesiredState {inherit homeDir;};
     };
   };
 
@@ -61,9 +61,9 @@ in {
     homeDir = local.mkHome "aarch64-darwin";
     configDir = "${homeDir}/.config/syncthing";
     guiAddress = "127.0.0.1:8384";
-    settings = mkSettings homeDir;
+    desiredState = mkDesiredState {inherit homeDir;};
     updateConfig = mkDarwinReconcileScript {
-      inherit pkgs configDir guiAddress settings;
+      inherit pkgs configDir desiredState guiAddress;
     };
   in {
     sops.secrets = mkSecrets {

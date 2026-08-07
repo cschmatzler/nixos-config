@@ -1,8 +1,5 @@
 {
   "name": "herdr-plugin-gh-pr-workspace",
   "private": true,
-  "type": "module",
-  "scripts": {
-    "test": "bun test"
-  }
+  "type": "module"
 }

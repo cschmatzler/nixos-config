@@ -1,4 +1,5 @@
-_: let
+{lib, ...}: let
+  mkTailscaleServeExposure = import ../../_lib/tailscale-serve-exposure.nix {inherit lib;};
   zigbee2mqttEnvironmentSecret = "zigbee2mqtt-environment";
   zigbeeAdapter = "/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_76db1eb86012ef11848775b8bf9df066-if00-port0";
 in {
@@ -149,19 +150,12 @@ in {
           after = ["go2rtc.service" "mosquitto.service" "zigbee2mqtt.service"];
         };
 
-        home-assistant-tailscale = {
-          description = "Expose Home Assistant through Tailscale Serve";
-          wantedBy = ["multi-user.target"];
-          requires = ["home-assistant.service" "tailscaled.service"];
-          after = ["home-assistant.service" "tailscaled.service"];
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            ExecStart = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:ha --https=443 http://127.0.0.1:8123";
-            ExecStop = "${pkgs.tailscale}/bin/tailscale serve --yes --service=svc:ha --https=443 off";
-            Restart = "on-failure";
-            RestartSec = "5s";
-          };
+        home-assistant-tailscale = mkTailscaleServeExposure {
+          inherit pkgs;
+          workload = "Home Assistant";
+          identity = "svc:ha";
+          port = 8123;
+          orderingUnits = ["home-assistant.service"];
         };
       };
     };

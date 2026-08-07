@@ -10,7 +10,7 @@
     })
     deviceIds;
 in
-  homeDir: {
+  {homeDir}: {
     inherit devices;
 
     folders = {

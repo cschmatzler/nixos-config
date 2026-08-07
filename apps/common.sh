@@ -26,56 +26,66 @@ get_hostname() {
 }
 
 resolve_host() {
-  if [[ $# -eq 0 || -z "${1:-}" ]]; then
+  if [[ -z "${1:-}" ]]; then
     get_hostname
   else
     printf '%s\n' "$1"
   fi
 }
 
-cleanup_result_link() {
-  if [[ -e ./result || -L ./result ]]; then
-    rm ./result
+load_host_manifest() {
+  if ! declare -F host_kind >/dev/null; then
+    : "${HOST_MANIFEST:?HOST_MANIFEST must point to the generated Host manifest}"
+    # shellcheck source=/dev/null
+    source "$HOST_MANIFEST"
   fi
 }
 
-build_config() {
-  local kind="$1"
-  local hostname="${2:-}"
-  shift
-  if [[ $# -gt 0 ]]; then
-    shift
+require_host_kind() {
+  local host="$1"
+  local kind
+
+  load_host_manifest
+  if ! kind="$(host_kind "$host")"; then
+    print_error "Unknown Host: $host"
+    return 1
   fi
 
+  printf '%s\n' "$kind"
+}
+
+platform_kind() {
+  case "$(uname -s)" in
+    Darwin) printf '%s\n' darwin ;;
+    Linux) printf '%s\n' nixos ;;
+    *)
+      print_error "Unsupported platform: $(uname -s)"
+      return 1
+      ;;
+  esac
+}
+
+resolve_local_host() {
   local host
-  host="$(resolve_host "$hostname")"
+  local kind
+  local current_platform
 
-  print_info "Building configuration for ${host}"
+  host="$(get_hostname)"
+  kind="$(require_host_kind "$host")"
+  current_platform="$(platform_kind)"
 
-  if [[ "$kind" == "darwin" ]]; then
-    nix build ".#darwinConfigurations.${host}.system" --show-trace "$@"
-  else
-    nix build ".#nixosConfigurations.${host}.config.system.build.toplevel" --show-trace "$@"
+  if [[ "$kind" != "$current_platform" ]]; then
+    print_error "Host $host is declared as $kind but the current platform is $current_platform"
+    return 1
   fi
 
-  cleanup_result_link
-  print_success "Build completed successfully"
+  printf '%s\t%s\n' "$host" "$kind"
 }
 
-update_flake() {
-  if [[ $# -eq 0 ]]; then
-    print_info "Updating all flake inputs"
-    nix flake update
+run_as_root() {
+  if [[ "${EUID}" -eq 0 ]]; then
+    "$@"
   else
-    print_info "Updating flake inputs: $*"
-    nix flake update "$@"
+    sudo "$@"
   fi
-
-  print_info "Regenerating flake.nix"
-  nix run .#write-flake
-
-  print_info "Formatting"
-  alejandra .
-
-  print_success "Flake updated"
 }
