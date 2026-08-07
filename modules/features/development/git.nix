@@ -78,10 +78,10 @@ in {
     programs.lazygit = {
       enable = true;
       settings = {
-        git.pagers = [
+        git.diffRenderers = [
           {
             colorArg = "always";
-            pager = "delta --paging=never";
+            command = "delta --paging=never";
           }
         ];
         gui = {

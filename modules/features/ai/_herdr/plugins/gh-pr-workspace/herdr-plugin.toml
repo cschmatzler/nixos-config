@@ -1,0 +1,28 @@
+id = "gh-pr-workspace"
+name = "GitHub PR Workspace Status"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Shows GitHub PR, mergeability, review, and CI status on repository and worktree rows."
+platforms = ["macos", "linux"]
+
+[[events]]
+on = "workspace.focused"
+command = ["bun", "bin/update-pr-status.ts"]
+
+[[events]]
+on = "workspace.created"
+command = ["bun", "bin/update-pr-status.ts"]
+
+[[events]]
+on = "worktree.opened"
+command = ["bun", "bin/update-pr-status.ts"]
+
+[[events]]
+on = "worktree.created"
+command = ["bun", "bin/update-pr-status.ts"]
+
+[[actions]]
+id = "refresh"
+title = "Refresh workspace PR statuses"
+contexts = ["workspace"]
+command = ["bun", "bin/update-pr-status.ts"]

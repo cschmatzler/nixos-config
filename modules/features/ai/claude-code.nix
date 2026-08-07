@@ -40,31 +40,41 @@
         inherit (resources) commands;
         skills = claudeSkills;
         mcpServers = mcp.servers;
-        settings.hooks = {
-          PreToolUse = [
-            {
-              matcher = "EnterPlanMode";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${plannotator}/bin/plannotator improve-context";
-                  timeout = 5;
-                }
-              ];
-            }
-          ];
-          PermissionRequest = [
-            {
-              matcher = "ExitPlanMode";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${plannotator}/bin/plannotator";
-                  timeout = 345600;
-                }
-              ];
-            }
-          ];
+        settings = {
+          extraKnownMarketplaces.phase0-skills = {
+            source = {
+              source = "github";
+              repo = "wefario/ai-agents-skills";
+            };
+            autoUpdate = true;
+          };
+          enabledPlugins."phase0-skills@phase0-skills" = true;
+          hooks = {
+            PreToolUse = [
+              {
+                matcher = "EnterPlanMode";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${plannotator}/bin/plannotator improve-context";
+                    timeout = 5;
+                  }
+                ];
+              }
+            ];
+            PermissionRequest = [
+              {
+                matcher = "ExitPlanMode";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${plannotator}/bin/plannotator";
+                    timeout = 345600;
+                  }
+                ];
+              }
+            ];
+          };
         };
       };
 

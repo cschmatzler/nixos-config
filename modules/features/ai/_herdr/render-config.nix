@@ -27,6 +27,9 @@
   [ui.sidebar.agents]
   rows = [["state_icon", "workspace", "$pr"], ["agent"]]
 
+  [ui.sidebar.spaces]
+  rows = [["state_icon", "workspace"], ["branch", "git_status"], ["$pr", "$merge", "$ci", "$review"]]
+
   [ui.toast]
   delivery = "terminal"
   delay_seconds = 1
