@@ -37,6 +37,16 @@ in {
         ''
         + lib.optionalString pkgs.stdenv.isDarwin ''
           fish_add_path --prepend "$HOME/.nix-profile/bin" /run/current-system/sw/bin
+        ''
+        + lib.optionalString pkgs.stdenv.isLinux ''
+          fish_add_path --prepend \
+            /run/wrappers/bin \
+            "$HOME/.nix-profile/bin" \
+            /nix/profile/bin \
+            "$HOME/.local/state/nix/profile/bin" \
+            "/etc/profiles/per-user/$USER/bin" \
+            /nix/var/nix/profiles/default/bin \
+            /run/current-system/sw/bin
         '';
       interactiveShellInit = ''
         set fish_greeting

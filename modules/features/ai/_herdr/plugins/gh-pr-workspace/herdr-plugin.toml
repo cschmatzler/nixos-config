@@ -2,8 +2,11 @@ id = "gh-pr-workspace"
 name = "GitHub PR Workspace Status"
 version = "0.1.0"
 min_herdr_version = "0.8.0"
-description = "Shows GitHub PR, mergeability, review, and CI status on repository and worktree rows."
+description = "Shows GitHub PR mergeability and CI status on repository and worktree rows."
 platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["bun", "bin/poll-pr-status.ts"]
 
 [[events]]
 on = "workspace.focused"

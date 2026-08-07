@@ -110,8 +110,8 @@ function parsePaneCwd(input: unknown): string | undefined {
   return firstCwd;
 }
 
-async function listWorkspaces(): Promise<ReadonlyArray<Workspace> | undefined> {
-  const result = await runCommand("herdr", ["workspace", "list"]);
+async function listWorkspaces(herdrBin: string): Promise<ReadonlyArray<Workspace> | undefined> {
+  const result = await runCommand(herdrBin, ["workspace", "list"]);
   if (result._tag === "failure") {
     console.error(`[gh-pr-workspace] herdr workspace list failed: ${result.stderr.trim()}`);
     return undefined;
@@ -121,8 +121,11 @@ async function listWorkspaces(): Promise<ReadonlyArray<Workspace> | undefined> {
   return workspaces;
 }
 
-async function resolveWorkspaceCwd(workspace: Workspace): Promise<string | undefined> {
-  const result = await runCommand("herdr", ["pane", "list", "--workspace", workspace.id]);
+async function resolveWorkspaceCwd(
+  herdrBin: string,
+  workspace: Workspace,
+): Promise<string | undefined> {
+  const result = await runCommand(herdrBin, ["pane", "list", "--workspace", workspace.id]);
   if (result._tag === "success") {
     const cwd = parsePaneCwd(parseJson(result.stdout));
     if (cwd) return cwd;
@@ -145,7 +148,6 @@ async function lookupPullRequest(cwd: string, branch: string): Promise<PullReque
     "isDraft",
     "mergeable",
     "mergeStateStatus",
-    "reviewDecision",
     "statusCheckRollup",
   ].join(",");
   const result = await runCommand("gh", ["pr", "view", branch, "--json", fields], cwd);
@@ -162,16 +164,11 @@ async function lookupPullRequest(cwd: string, branch: string): Promise<PullReque
   return {_tag: "found", tokens: formatSidebarTokens(parsed.value)};
 }
 
-async function clearTokens(workspaceId: string): Promise<void> {
-  const args = ["workspace", "report-metadata", workspaceId, "--source", SOURCE];
-  for (const token of TOKEN_NAMES) args.push("--clear-token", token);
-  const result = await runCommand("herdr", args);
-  if (result._tag === "failure") {
-    console.error(`[gh-pr-workspace] failed to clear ${workspaceId}: ${result.stderr.trim()}`);
-  }
-}
-
-async function reportTokens(workspaceId: string, tokens: SidebarTokens): Promise<void> {
+async function clearTokens(
+  herdrBin: string,
+  workspaceId: string,
+  sequence: bigint,
+): Promise<void> {
   const args = [
     "workspace",
     "report-metadata",
@@ -179,13 +176,35 @@ async function reportTokens(workspaceId: string, tokens: SidebarTokens): Promise
     "--source",
     SOURCE,
     "--seq",
-    String(Date.now()),
+    String(sequence),
+  ];
+  for (const token of TOKEN_NAMES) args.push("--clear-token", token);
+  const result = await runCommand(herdrBin, args);
+  if (result._tag === "failure") {
+    console.error(`[gh-pr-workspace] failed to clear ${workspaceId}: ${result.stderr.trim()}`);
+  }
+}
+
+async function reportTokens(
+  herdrBin: string,
+  workspaceId: string,
+  sequence: bigint,
+  tokens: SidebarTokens,
+): Promise<void> {
+  const args = [
+    "workspace",
+    "report-metadata",
+    workspaceId,
+    "--source",
+    SOURCE,
+    "--seq",
+    String(sequence),
   ];
   const values = {
     pr: tokens.pr,
     merge: tokens.merge,
     ci: tokens.ci,
-    review: tokens.review,
+    review: undefined,
   };
   for (const token of TOKEN_NAMES) {
     const value = values[token];
@@ -193,41 +212,53 @@ async function reportTokens(workspaceId: string, tokens: SidebarTokens): Promise
     else args.push("--clear-token", token);
   }
 
-  const result = await runCommand("herdr", args);
+  const result = await runCommand(herdrBin, args);
   if (result._tag === "failure") {
     console.error(`[gh-pr-workspace] failed to report ${workspaceId}: ${result.stderr.trim()}`);
   }
 }
 
-async function updateWorkspace(workspace: Workspace): Promise<void> {
-  const cwd = await resolveWorkspaceCwd(workspace);
+async function updateWorkspace(
+  herdrBin: string,
+  workspace: Workspace,
+  sequence: bigint,
+): Promise<void> {
+  const cwd = await resolveWorkspaceCwd(herdrBin, workspace);
   if (!cwd) {
-    await clearTokens(workspace.id);
+    await clearTokens(herdrBin, workspace.id, sequence);
     return;
   }
 
   const branch = await currentBranch(cwd);
   if (!branch) {
-    await clearTokens(workspace.id);
+    await clearTokens(herdrBin, workspace.id, sequence);
     return;
   }
 
   const pullRequest = await lookupPullRequest(cwd, branch);
   if (pullRequest._tag === "found") {
-    await reportTokens(workspace.id, pullRequest.tokens);
+    await reportTokens(herdrBin, workspace.id, sequence, pullRequest.tokens);
     return;
   }
   if (pullRequest._tag === "not-found") {
-    await clearTokens(workspace.id);
+    await clearTokens(herdrBin, workspace.id, sequence);
     return;
   }
 
   console.error(`[gh-pr-workspace] ${workspace.id} (${branch}): ${pullRequest.reason}`);
 }
 
-/** Refreshes GitHub PR metadata for every open Herdr repository/worktree workspace. */
-export async function updateWorkspacePullRequests(): Promise<void> {
-  const workspaces = await listWorkspaces();
+/**
+ * Refreshes GitHub PR metadata for every open Herdr repository/worktree workspace.
+ *
+ * @param herdrBin - Herdr binary injected into the plugin runtime.
+ */
+export async function updateWorkspacePullRequests(herdrBin: string): Promise<void> {
+  const workspaces = await listWorkspaces(herdrBin);
   if (!workspaces) return;
-  await Promise.all(workspaces.map(updateWorkspace));
+
+  const sequence = BigInt(Date.now()) * 1_000_000n;
+  await Promise.all(
+    workspaces.map((workspace) => updateWorkspace(herdrBin, workspace, sequence)),
+  );
 }

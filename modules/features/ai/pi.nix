@@ -19,24 +19,7 @@ in {
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      resources = import ./_shared/agent-resources.nix;
-      commands = removeAttrs resources.commands resources.plannotatorCommandNames;
-      promptFiles =
-        lib.mapAttrs' (
-          name: text:
-            lib.nameValuePair ".pi/agent/prompts/${name}.md" {
-              inherit text;
-            }
-        )
-        commands;
-      skillFiles = builtins.listToAttrs (map (name: {
-          name = ".pi/agent/skills/${name}";
-          value = {
-            source = ./_skills + "/${name}";
-            recursive = true;
-          };
-        })
-        resources.skillNames);
+      commands = import ./_shared/commands.nix;
       plannotatorConfig = {
         diffOptions = {
           defaultDiffType = "since-base";
@@ -73,18 +56,6 @@ in {
         prompts = ["./prompts"];
         skills = ["./skills"];
       };
-      configs = {
-        ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
-        ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
-        ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" (import ./_shared/mcp.nix).pi;
-        ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-        ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-        ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
-        ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
-        ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
-        ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
-        ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
-      };
     in {
       programs.fish.shellInit = lib.mkAfter ''
         if test -f "${supermemoryApiKeyPath}"
@@ -99,10 +70,75 @@ in {
         packages = [
           inputs'.llm-agents.packages.pi
         ];
-        file =
-          promptFiles
-          // skillFiles
-          // configs;
+
+        file = {
+          ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
+
+          ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
+          ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
+            mcp = {
+              toolMode = "direct";
+              startup = "eager";
+              servers = {
+                opensrc = {
+                  type = "local";
+                  command = [
+                    "npx"
+                    "-y"
+                    "opensrc-mcp"
+                  ];
+                  enabled = true;
+                };
+                executor = {
+                  type = "remote";
+                  url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
+                  enabled = true;
+                };
+              };
+            };
+          };
+
+          ".pi/agent/prompts/rmslop.md".text = commands.rmslop;
+          ".pi/agent/prompts/albanian-lesson.md".text = commands."albanian-lesson";
+          ".pi/agent/prompts/inbox-triage.md".text = commands."inbox-triage";
+
+          ".pi/agent/skills/coding-standards" = {
+            source = ./_skills/coding-standards;
+            recursive = true;
+          };
+          ".pi/agent/skills/effect" = {
+            source = ./_skills/effect;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-authz" = {
+            source = ./_skills/wrdn-authz;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-code-execution" = {
+            source = ./_skills/wrdn-code-execution;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-data-exfil" = {
+            source = ./_skills/wrdn-data-exfil;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-gha-workflows" = {
+            source = ./_skills/wrdn-gha-workflows;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-pii" = {
+            source = ./_skills/wrdn-pii;
+            recursive = true;
+          };
+
+          ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
+          ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+          ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
+          ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
+          ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
+          ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
+          ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
+        };
       };
     };
   };

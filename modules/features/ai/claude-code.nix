@@ -1,4 +1,6 @@
-{den, ...}: {
+{den, ...}: let
+  local = import ../../_lib/local.nix;
+in {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
 
@@ -7,8 +9,7 @@
       pkgs,
       ...
     }: let
-      mcp = import ./_shared/mcp.nix;
-      resources = import ./_shared/agent-resources.nix;
+      sharedCommands = import ./_shared/commands.nix;
       bunForPlannotator = pkgs.bun.overrideAttrs {
         version = "1.3.11";
         src = pkgs.fetchurl {
@@ -28,18 +29,37 @@
             oldAttrs.nativeBuildInputs;
           })
         else plannotatorPackage;
-      claudeSkills = builtins.listToAttrs (map (name: {
-          inherit name;
-          value = ./_skills + "/${name}";
-        })
-        resources.skillNames);
     in {
       programs.claude-code = {
         enable = true;
         package = inputs'.llm-agents.packages.claude-code;
-        inherit (resources) commands;
-        skills = claudeSkills;
-        mcpServers = mcp.servers;
+        commands = {
+          rmslop = sharedCommands.rmslop;
+          "albanian-lesson" = sharedCommands."albanian-lesson";
+          "plannotator-annotate" = sharedCommands."plannotator-annotate";
+          "plannotator-last" = sharedCommands."plannotator-last";
+          "plannotator-review" = sharedCommands."plannotator-review";
+          "inbox-triage" = sharedCommands."inbox-triage";
+        };
+        skills = {
+          "coding-standards" = ./_skills/coding-standards;
+          effect = ./_skills/effect;
+          "wrdn-authz" = ./_skills/wrdn-authz;
+          "wrdn-code-execution" = ./_skills/wrdn-code-execution;
+          "wrdn-data-exfil" = ./_skills/wrdn-data-exfil;
+          "wrdn-gha-workflows" = ./_skills/wrdn-gha-workflows;
+          "wrdn-pii" = ./_skills/wrdn-pii;
+        };
+        mcpServers = {
+          opensrc = {
+            command = "npx";
+            args = [
+              "-y"
+              "opensrc-mcp"
+            ];
+          };
+          executor.url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
+        };
         settings = {
           extraKnownMarketplaces.phase0-skills = {
             source = {

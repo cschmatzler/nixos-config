@@ -12,7 +12,6 @@ export type PullRequest = {
   readonly isDraft: boolean;
   readonly mergeable: string;
   readonly mergeStateStatus: string;
-  readonly reviewDecision: string;
   readonly checks: ReadonlyArray<unknown>;
 };
 
@@ -21,7 +20,6 @@ export type SidebarTokens = {
   readonly pr: string;
   readonly merge: string;
   readonly ci: string;
-  readonly review?: string;
 };
 
 /** Indicates that `gh pr view` returned an unexpected JSON shape. */
@@ -65,9 +63,6 @@ export function parsePullRequest(input: unknown): Result<PullRequest, ParsePullR
   if (typeof input.mergeStateStatus !== "string") {
     return { _tag: "err", error: new ParsePullRequestError("mergeStateStatus") };
   }
-  if (typeof input.reviewDecision !== "string") {
-    return { _tag: "err", error: new ParsePullRequestError("reviewDecision") };
-  }
   if (!Array.isArray(input.statusCheckRollup)) {
     return { _tag: "err", error: new ParsePullRequestError("statusCheckRollup") };
   }
@@ -80,7 +75,6 @@ export function parsePullRequest(input: unknown): Result<PullRequest, ParsePullR
       isDraft: input.isDraft,
       mergeable: input.mergeable,
       mergeStateStatus: input.mergeStateStatus,
-      reviewDecision: input.reviewDecision,
       checks: input.statusCheckRollup,
     },
   };
@@ -128,21 +122,11 @@ function rollupChecks(checks: ReadonlyArray<unknown>): CiState {
 }
 
 function mergeLabel(pr: PullRequest): string {
-  if (pr.state === "MERGED") return "merged";
-  if (pr.state === "CLOSED") return "closed";
-  if (pr.isDraft) return "draft";
-  if (pr.mergeable === "CONFLICTING" || pr.mergeStateStatus === "DIRTY") return "conflicts";
-
-  const labels: Readonly<Record<string, string>> = {
-    BEHIND: "behind",
-    BLOCKED: "blocked",
-    CLEAN: "mergeable",
-    DRAFT: "draft",
-    HAS_HOOKS: "checks",
-    UNKNOWN: "merge ?",
-    UNSTABLE: "unstable",
-  };
-  return labels[pr.mergeStateStatus] ?? "merge ?";
+  if (pr.state === "MERGED") return "◆";
+  if (pr.state === "CLOSED" || pr.isDraft) return "✗";
+  if (pr.mergeable === "UNKNOWN" || pr.mergeStateStatus === "UNKNOWN") return "?";
+  if (pr.mergeable === "MERGEABLE" && pr.mergeStateStatus === "CLEAN") return "✓";
+  return "✗";
 }
 
 function ciLabel(checks: ReadonlyArray<unknown>): string {
@@ -155,15 +139,6 @@ function ciLabel(checks: ReadonlyArray<unknown>): string {
   return labels[rollupChecks(checks)];
 }
 
-function reviewLabel(reviewDecision: string): string | undefined {
-  const labels: Readonly<Record<string, string>> = {
-    APPROVED: "review ✓",
-    CHANGES_REQUESTED: "changes requested",
-    REVIEW_REQUIRED: "review needed",
-  };
-  return labels[reviewDecision];
-}
-
 /**
  * Formats parsed pull request state as compact Herdr workspace tokens.
  *
@@ -171,12 +146,9 @@ function reviewLabel(reviewDecision: string): string | undefined {
  * @returns Tokens for PR identity, mergeability, CI, and optional review state.
  */
 export function formatSidebarTokens(pr: PullRequest): SidebarTokens {
-  const review = reviewLabel(pr.reviewDecision);
-  const required = {
+  return {
     pr: `#${pr.number}`,
     merge: mergeLabel(pr),
     ci: ciLabel(pr.checks),
   };
-  if (!review) return required;
-  return {...required, review};
 }

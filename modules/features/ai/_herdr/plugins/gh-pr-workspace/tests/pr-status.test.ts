@@ -8,7 +8,6 @@ function pullRequest(overrides: Readonly<Record<string, unknown>> = {}): unknown
     isDraft: false,
     mergeable: "MERGEABLE",
     mergeStateStatus: "CLEAN",
-    reviewDecision: "APPROVED",
     statusCheckRollup: [],
     ...overrides,
   };
@@ -33,7 +32,7 @@ describe("parsePullRequest", () => {
 });
 
 describe("formatSidebarTokens", () => {
-  test("shows a mergeable PR with passing CI and approval", () => {
+  test("shows a mergeable PR with passing CI", () => {
     const parsed = parsePullRequest(
       pullRequest({
         statusCheckRollup: [
@@ -46,9 +45,8 @@ describe("formatSidebarTokens", () => {
 
     expect(formatSidebarTokens(parsed.value)).toEqual({
       pr: "#9561",
-      merge: "mergeable",
+      merge: "✓",
       ci: "CI ✓",
-      review: "review ✓",
     });
   });
 
@@ -56,7 +54,6 @@ describe("formatSidebarTokens", () => {
     const parsed = parsePullRequest(
       pullRequest({
         mergeStateStatus: "BLOCKED",
-        reviewDecision: "REVIEW_REQUIRED",
         statusCheckRollup: [
           {__typename: "CheckRun", status: "IN_PROGRESS", conclusion: ""},
           {__typename: "CheckRun", status: "COMPLETED", conclusion: "FAILURE"},
@@ -67,25 +64,23 @@ describe("formatSidebarTokens", () => {
 
     expect(formatSidebarTokens(parsed.value)).toEqual({
       pr: "#9561",
-      merge: "blocked",
+      merge: "✗",
       ci: "CI ✗",
-      review: "review needed",
     });
   });
 
-  test("shows conflicts and omits an absent review decision", () => {
+  test("shows a PR with conflicts as not mergeable", () => {
     const parsed = parsePullRequest(
       pullRequest({
         mergeable: "CONFLICTING",
         mergeStateStatus: "DIRTY",
-        reviewDecision: "",
       }),
     );
     if (parsed._tag === "err") throw parsed.error;
 
     expect(formatSidebarTokens(parsed.value)).toEqual({
       pr: "#9561",
-      merge: "conflicts",
+      merge: "✗",
       ci: "CI —",
     });
   });

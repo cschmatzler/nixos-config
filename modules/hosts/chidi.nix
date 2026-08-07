@@ -8,6 +8,7 @@
       includes = [
         den.aspects.user-workstation
         den.aspects.user-work
+        den.aspects.mosh-client
       ];
       homeManager.home.stateVersion = "25.11";
     };
