@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -x "$HOME/.nix-profile/bin/nix" ]]; then
+  printf 'Nix is missing; run .agents/setup to repair this orb.\n' >&2
+  exit 1
+fi
+
+"$HOME/.nix-profile/bin/nix" --version
