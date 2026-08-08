@@ -82,10 +82,6 @@ in {
           "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
           "npm:@plannotator/pi-extension"
           "npm:@awesamarth/pi-supermemory"
-          {
-            source = "npm:pi-subagents";
-            prompts = [];
-          }
           "npm:pi-cache-optimizer"
           "npm:@tunnckocore/pi-gpt-fast-mode"
         ];
