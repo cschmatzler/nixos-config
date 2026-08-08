@@ -6,7 +6,7 @@ description = "Shows GitHub PR mergeability and CI status on repository and work
 platforms = ["macos", "linux"]
 
 [[startup]]
-command = ["bun", "bin/poll-pr-status.ts"]
+command = ["bun", "bin/update-pr-status.ts"]
 
 [[events]]
 on = "workspace.focused"
@@ -20,12 +20,8 @@ command = ["bun", "bin/update-pr-status.ts"]
 on = "worktree.opened"
 command = ["bun", "bin/update-pr-status.ts"]
 
-[[events]]
-on = "worktree.created"
-command = ["bun", "bin/update-pr-status.ts"]
-
 [[actions]]
 id = "refresh"
-title = "Refresh workspace PR statuses"
+title = "Refresh workspace PR status"
 contexts = ["workspace"]
 command = ["bun", "bin/update-pr-status.ts"]

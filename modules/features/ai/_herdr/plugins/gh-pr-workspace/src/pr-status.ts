@@ -2,17 +2,27 @@ type Result<T, E extends Error> =
   | { readonly _tag: "ok"; readonly value: T }
   | { readonly _tag: "err"; readonly error: E };
 
-/** GitHub's lifecycle state for a pull request. */
-export type PullRequestState = "OPEN" | "CLOSED" | "MERGED";
+type PullRequestState = "OPEN" | "CLOSED" | "MERGED";
+type Mergeability = "MERGEABLE" | "CONFLICTING" | "UNKNOWN";
+type MergeState =
+  | "BEHIND"
+  | "BLOCKED"
+  | "CLEAN"
+  | "DIRTY"
+  | "DRAFT"
+  | "HAS_HOOKS"
+  | "UNKNOWN"
+  | "UNSTABLE";
+type CheckState = "pass" | "fail" | "pending";
+type CiState = CheckState | "none";
 
-/** Parsed GitHub pull request data needed by the sidebar. */
-export type PullRequest = {
+type PullRequest = {
   readonly number: number;
   readonly state: PullRequestState;
   readonly isDraft: boolean;
-  readonly mergeable: string;
-  readonly mergeStateStatus: string;
-  readonly checks: ReadonlyArray<unknown>;
+  readonly mergeability: Mergeability;
+  readonly mergeState: MergeState;
+  readonly checks: ReadonlyArray<CheckState>;
 };
 
 /** Named Herdr metadata values rendered on a workspace row. */
@@ -22,9 +32,9 @@ export type SidebarTokens = {
   readonly ci: string;
 };
 
-/** Indicates that `gh pr view` returned an unexpected JSON shape. */
-export class ParsePullRequestError extends Error {
-  readonly _tag = "ParsePullRequestError" as const;
+/** Indicates that GitHub CLI returned an unexpected pull request shape. */
+export class ParseWorkspacePrStatusError extends Error {
+  readonly _tag = "ParseWorkspacePrStatusError" as const;
 
   constructor(readonly field: string) {
     super(`Invalid GitHub pull request field: ${field}`);
@@ -40,49 +50,28 @@ function parseState(input: unknown): PullRequestState | undefined {
   return undefined;
 }
 
-/**
- * Parses the subset of `gh pr view --json` used by this plugin.
- *
- * @param input - Unknown JSON returned by GitHub CLI.
- * @returns Parsed pull request data, or the first malformed field.
- */
-export function parsePullRequest(input: unknown): Result<PullRequest, ParsePullRequestError> {
-  if (!isRecord(input)) return { _tag: "err", error: new ParsePullRequestError("root") };
-
-  const state = parseState(input.state);
-  if (typeof input.number !== "number") {
-    return { _tag: "err", error: new ParsePullRequestError("number") };
-  }
-  if (!state) return { _tag: "err", error: new ParsePullRequestError("state") };
-  if (typeof input.isDraft !== "boolean") {
-    return { _tag: "err", error: new ParsePullRequestError("isDraft") };
-  }
-  if (typeof input.mergeable !== "string") {
-    return { _tag: "err", error: new ParsePullRequestError("mergeable") };
-  }
-  if (typeof input.mergeStateStatus !== "string") {
-    return { _tag: "err", error: new ParsePullRequestError("mergeStateStatus") };
-  }
-  if (!Array.isArray(input.statusCheckRollup)) {
-    return { _tag: "err", error: new ParsePullRequestError("statusCheckRollup") };
-  }
-
-  return {
-    _tag: "ok",
-    value: {
-      number: input.number,
-      state,
-      isDraft: input.isDraft,
-      mergeable: input.mergeable,
-      mergeStateStatus: input.mergeStateStatus,
-      checks: input.statusCheckRollup,
-    },
-  };
+function parseMergeability(input: unknown): Mergeability | undefined {
+  if (input === "MERGEABLE" || input === "CONFLICTING" || input === "UNKNOWN") return input;
+  return undefined;
 }
 
-type CiState = "pass" | "fail" | "pending" | "none";
+function parseMergeState(input: unknown): MergeState | undefined {
+  if (
+    input === "BEHIND" ||
+    input === "BLOCKED" ||
+    input === "CLEAN" ||
+    input === "DIRTY" ||
+    input === "DRAFT" ||
+    input === "HAS_HOOKS" ||
+    input === "UNKNOWN" ||
+    input === "UNSTABLE"
+  ) {
+    return input;
+  }
+  return undefined;
+}
 
-function checkState(input: unknown): Exclude<CiState, "none"> | undefined {
+function parseCheckState(input: unknown): CheckState | undefined {
   if (!isRecord(input)) return undefined;
 
   if (input.__typename === "StatusContext") {
@@ -92,7 +81,18 @@ function checkState(input: unknown): Exclude<CiState, "none"> | undefined {
     return undefined;
   }
 
-  if (input.status !== "COMPLETED") return "pending";
+  if (input.__typename !== "CheckRun") return undefined;
+  if (
+    input.status === "IN_PROGRESS" ||
+    input.status === "PENDING" ||
+    input.status === "QUEUED" ||
+    input.status === "REQUESTED" ||
+    input.status === "WAITING"
+  ) {
+    return "pending";
+  }
+  if (input.status !== "COMPLETED") return undefined;
+
   if (
     input.conclusion === "ACTION_REQUIRED" ||
     input.conclusion === "CANCELLED" ||
@@ -113,8 +113,48 @@ function checkState(input: unknown): Exclude<CiState, "none"> | undefined {
   return undefined;
 }
 
-function rollupChecks(checks: ReadonlyArray<unknown>): CiState {
-  const states = new Set(checks.map(checkState).filter((state) => state !== undefined));
+function invalid(field: string): { readonly _tag: "err"; readonly error: ParseWorkspacePrStatusError } {
+  return { _tag: "err", error: new ParseWorkspacePrStatusError(field) };
+}
+
+function parsePullRequest(input: unknown): Result<PullRequest, ParseWorkspacePrStatusError> {
+  if (!isRecord(input)) return invalid("root");
+  if (typeof input.number !== "number" || !Number.isSafeInteger(input.number) || input.number < 1) {
+    return invalid("number");
+  }
+
+  const state = parseState(input.state);
+  if (!state) return invalid("state");
+  if (typeof input.isDraft !== "boolean") return invalid("isDraft");
+
+  const mergeability = parseMergeability(input.mergeable);
+  if (!mergeability) return invalid("mergeable");
+  const mergeState = parseMergeState(input.mergeStateStatus);
+  if (!mergeState) return invalid("mergeStateStatus");
+  if (!Array.isArray(input.statusCheckRollup)) return invalid("statusCheckRollup");
+
+  const checks: Array<CheckState> = [];
+  for (const [index, check] of input.statusCheckRollup.entries()) {
+    const state = parseCheckState(check);
+    if (!state) return invalid(`statusCheckRollup[${index}]`);
+    checks.push(state);
+  }
+
+  return {
+    _tag: "ok",
+    value: {
+      number: input.number,
+      state,
+      isDraft: input.isDraft,
+      mergeability,
+      mergeState,
+      checks,
+    },
+  };
+}
+
+function rollupChecks(checks: ReadonlyArray<CheckState>): CiState {
+  const states = new Set(checks);
   if (states.has("fail")) return "fail";
   if (states.has("pending")) return "pending";
   if (states.has("pass")) return "pass";
@@ -124,12 +164,12 @@ function rollupChecks(checks: ReadonlyArray<unknown>): CiState {
 function mergeLabel(pr: PullRequest): string {
   if (pr.state === "MERGED") return "◆";
   if (pr.state === "CLOSED" || pr.isDraft) return "✗";
-  if (pr.mergeable === "UNKNOWN" || pr.mergeStateStatus === "UNKNOWN") return "?";
-  if (pr.mergeable === "MERGEABLE" && pr.mergeStateStatus === "CLEAN") return "✓";
+  if (pr.mergeability === "UNKNOWN" || pr.mergeState === "UNKNOWN") return "?";
+  if (pr.mergeability === "MERGEABLE" && pr.mergeState === "CLEAN") return "✓";
   return "✗";
 }
 
-function ciLabel(checks: ReadonlyArray<unknown>): string {
+function ciLabel(checks: ReadonlyArray<CheckState>): string {
   const labels: Readonly<Record<CiState, string>> = {
     pass: "CI ✓",
     fail: "CI ✗",
@@ -140,15 +180,23 @@ function ciLabel(checks: ReadonlyArray<unknown>): string {
 }
 
 /**
- * Formats parsed pull request state as compact Herdr workspace tokens.
+ * Parses GitHub CLI pull request output into compact Herdr workspace tokens.
  *
- * @param pr - Parsed GitHub pull request data.
- * @returns Tokens for PR identity, mergeability, CI, and optional review state.
+ * @param input - Unknown JSON returned by `gh pr view --json`.
+ * @returns Sidebar tokens, or the first malformed or unsupported field.
  */
-export function formatSidebarTokens(pr: PullRequest): SidebarTokens {
+export function parseWorkspacePrStatus(
+  input: unknown,
+): Result<SidebarTokens, ParseWorkspacePrStatusError> {
+  const parsed = parsePullRequest(input);
+  if (parsed._tag === "err") return parsed;
+
   return {
-    pr: `#${pr.number}`,
-    merge: mergeLabel(pr),
-    ci: ciLabel(pr.checks),
+    _tag: "ok",
+    value: {
+      pr: `#${parsed.value.number}`,
+      merge: mergeLabel(parsed.value),
+      ci: ciLabel(parsed.value.checks),
+    },
   };
 }
