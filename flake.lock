@@ -102,22 +102,6 @@
         "type": "github"
       }
     },
-    "diffs-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1785947626,
-        "narHash": "sha256-RbM7fmPYVFBoncEBFXfFflaR/U8HVCu+iTqS6gmvMd0=",
-        "owner": "barrettruth",
-        "repo": "diffs.nvim",
-        "rev": "e6d3aa4bb400287ba1a612e28b5cd55e0ba15726",
-        "type": "github"
-      },
-      "original": {
-        "owner": "barrettruth",
-        "repo": "diffs.nvim",
-        "type": "github"
-      }
-    },
     "flake-aspects": {
       "locked": {
         "lastModified": 1773552804,
@@ -381,7 +365,6 @@
         "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
-        "diffs-nvim": "diffs-nvim",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",

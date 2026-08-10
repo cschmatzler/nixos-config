@@ -57,17 +57,17 @@ in {
 
     # v - vcs
     (normal "<leader>va" ":vnew | terminal git blame -- %<CR>" "Annotate (blame)")
-    (normal "<leader>vd" ":Diff ++layout=unified<CR>" "Diff (current file)")
-    (normal "<leader>vD" ":Diff review ++layout=unified HEAD<CR>" "Diff (all changes)")
+    (normal "<leader>vd" ":CodeDiff file HEAD --inline<CR>" "Diff (current file)")
+    (normal "<leader>vD" ":CodeDiff --inline<CR>" "Diff (all changes)")
     (normal "<leader>ve" ":Neogit commit<CR>" "Commit")
     (normal "<leader>vf" ":!git fetch --all --prune<CR>" "Fetch")
     (normal "<leader>vv" ":Neogit<CR>" "Neogit")
-    (normal "<leader>vh" ":Diff review ++layout=unified HEAD~1..HEAD<CR>" "Diff parent revision")
+    (normal "<leader>vh" ":CodeDiff HEAD~1 HEAD --inline<CR>" "Diff parent revision")
     (normal "<leader>vl" ":Neogit log<CR>" "Log")
     (normal "<leader>vn" ":Neogit branch<CR>" "Branch")
     (normal "<leader>vp" ":!git push<CR>" "Push")
-    (normal "<leader>vq" ":close<CR>" "Close diff")
-    (normal "<leader>vR" ":Diff review ++layout=unified origin/HEAD...HEAD<CR>" "Review branch")
+    (normal "<leader>vq" ":CodeDiff<CR>" "Close diff")
+    (normal "<leader>vR" ":CodeDiff origin/HEAD...HEAD --inline<CR>" "Review branch")
     (normal "<leader>vs" ":Neogit<CR>" "Status")
 
     # r - review

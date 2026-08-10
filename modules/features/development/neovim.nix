@@ -13,10 +13,6 @@
       url = "github:choplin/code-review.nvim";
       flake = false;
     };
-    diffs-nvim = {
-      url = "github:barrettruth/diffs.nvim";
-      flake = false;
-    };
   };
 
   den.aspects.neovim.homeManager = {
@@ -30,7 +26,7 @@
     ];
 
     _module.args.nvim-plugin-sources = {
-      inherit (inputs) code-review-nvim diffs-nvim;
+      inherit (inputs) code-review-nvim;
     };
 
     home.sessionVariables = {

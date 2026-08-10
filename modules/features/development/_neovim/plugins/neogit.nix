@@ -7,6 +7,8 @@
       preview_buffer.kind = "floating";
       popup.kind = "floating";
       disable_commit_confirmation = true;
+      diff_viewer = "codediff";
+      integrations.codediff = true;
       sections = {
         untracked = {
           folded = false;

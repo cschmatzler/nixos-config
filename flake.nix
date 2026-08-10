@@ -13,10 +13,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     den.url = "github:denful/den";
-    diffs-nvim = {
-      url = "github:barrettruth/diffs.nvim";
-      flake = false;
-    };
     flake-aspects.url = "github:vic/flake-aspects";
     flake-file.url = "github:vic/flake-file";
     flake-parts = {

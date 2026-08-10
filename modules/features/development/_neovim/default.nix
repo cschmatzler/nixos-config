@@ -11,8 +11,8 @@ in {
     ./options.nix
     ./plugins/blink-cmp.nix
     ./plugins/code-review.nix
+    ./plugins/codediff.nix
     ./plugins/conform.nix
-    ./plugins/diffs.nix
     ./plugins/flash.nix
     ./plugins/grug-far.nix
     ./plugins/hardtime.nix
@@ -70,6 +70,16 @@ in {
           };
           DiffText = {
             bg = "rose";
+            blend = 30;
+            bold = true;
+          };
+          CodeDiffCharInsertTheme = {
+            bg = "leaf";
+            blend = 30;
+            bold = true;
+          };
+          CodeDiffCharDeleteTheme = {
+            bg = "love";
             blend = 30;
             bold = true;
           };

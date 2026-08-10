@@ -58,7 +58,17 @@ in {
             };
             autoUpdate = true;
           };
-          enabledPlugins."phase0-skills@phase0-skills" = true;
+          extraKnownMarketplaces.mattpocock = {
+            source = {
+              source = "github";
+              repo = "mattpocock/skills";
+            };
+            autoUpdate = true;
+          };
+          enabledPlugins = {
+            "phase0-skills@phase0-skills" = true;
+            "mattpocock-skills@mattpocock" = true;
+          };
           hooks = {
             PreToolUse = [
               {
