@@ -34,7 +34,7 @@
     };
     executor = {
       kind = "remote";
-      url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
+      url = "https://executor.sh/mcp/toolkits/general";
     };
   };
 

@@ -27,7 +27,7 @@ in {
   virtualisation.oci-containers = {
     backend = "docker";
     containers.executor = {
-      image = "ghcr.io/usefulsoftwareco/executor-selfhost:1.5.37";
+      image = "ghcr.io/usefulsoftwareco/executor-selfhost:1.5.40";
       pull = "always";
       ports = ["127.0.0.1:${toString port}:${toString port}"];
       volumes = ["/var/lib/executor:/data"];
