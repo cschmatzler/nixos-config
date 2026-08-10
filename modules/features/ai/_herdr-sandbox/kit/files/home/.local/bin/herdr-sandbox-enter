@@ -17,11 +17,12 @@ if [[ -n "$host_system" ]]; then
   export PATH="$PATH:/run/current-system/sw/bin"
 fi
 
-mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr" "$HOME/.cache"
-for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git .cache/ms-playwright; do
+mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
+for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git; do
   [[ -d "$HOME/$entry" && ! -L "$HOME/$entry" ]] ||
     ln -sfn "$HERDR_HOST_HOME/$entry" "$HOME/$entry"
 done
+export PLAYWRIGHT_BROWSERS_PATH="$HERDR_HOST_HOME/.cache/ms-playwright"
 
 state="$HOME/.local/state/herdr-sandbox"
 relay="$state/relay"
