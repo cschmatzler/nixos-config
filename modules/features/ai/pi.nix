@@ -78,12 +78,13 @@ in {
         defaultThinkingLevel = "high";
         enableInstallTelemetry = false;
         packages = [
-          "npm:pi-claude-auth"
           "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
-          "npm:@plannotator/pi-extension"
           "npm:@awesamarth/pi-supermemory"
-          "npm:pi-cache-optimizer"
+          "npm:@ogulcancelik/pi-herdr"
+          "npm:@plannotator/pi-extension"
           "npm:@tunnckocore/pi-gpt-fast-mode"
+          "npm:pi-cache-optimizer"
+          "npm:pi-claude-auth"
         ];
         prompts = ["./prompts"];
         skills = ["./skills"];

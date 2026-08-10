@@ -13,7 +13,6 @@ in {
     ./plugins/code-review.nix
     ./plugins/conform.nix
     ./plugins/diffs.nix
-    ./plugins/diffview.nix
     ./plugins/flash.nix
     ./plugins/grug-far.nix
     ./plugins/hardtime.nix
@@ -55,6 +54,34 @@ in {
         styles = {
           italic = false;
           transparency = false;
+        };
+        highlight_groups = {
+          DiffAdd = {
+            bg = "leaf";
+            blend = 12;
+          };
+          DiffChange = {
+            bg = "rose";
+            blend = 12;
+          };
+          DiffDelete = {
+            bg = "love";
+            blend = 12;
+          };
+          DiffText = {
+            bg = "rose";
+            blend = 30;
+            bold = true;
+          };
+          Visual = {
+            fg = "text";
+            bg = "iris";
+            blend = 45;
+            bold = true;
+          };
+          VisualNOS = {
+            link = "Visual";
+          };
         };
       };
     };

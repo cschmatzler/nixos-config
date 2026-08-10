@@ -8,6 +8,7 @@
     opts = {
       winborder = "single";
       expandtab = true;
+      fillchars.diff = " ";
       softtabstop = 2;
       tabstop = 2;
       ignorecase = true;

@@ -17,6 +17,9 @@ in {
 
     extraConfigLuaPre = ''
       vim.g.diffs = {
+        view = {
+          prefix = false,
+        },
         integrations = {
           neogit = true,
         },
