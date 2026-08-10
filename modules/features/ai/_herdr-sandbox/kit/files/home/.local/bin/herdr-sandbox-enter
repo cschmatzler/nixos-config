@@ -7,10 +7,14 @@ unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 export PATH="$HOME/.nix-profile/bin:$PATH"
 
-if [[ -n "${HERDR_HOST_NAME:-}" ]]; then
-  grep -q " $HERDR_HOST_NAME\$" /etc/hosts ||
-    sudo sh -c "printf '127.0.0.1 %s\n' '$HERDR_HOST_NAME' >>/etc/hosts"
-  sudo hostname "$HERDR_HOST_NAME"
+host_system=$(readlink -f /nix/var/nix/profiles/system 2>/dev/null || true)
+if [[ -n "$host_system" ]]; then
+  # The host fish config prepends /run/wrappers/bin and
+  # /run/current-system/sw/bin; recreate both so the system profile's tools
+  # resolve while Ubuntu's setuid sudo still shadows the non-setuid Nix one.
+  sudo sh -c "ln -sfn '$host_system' /run/current-system &&
+    mkdir -p /run/wrappers/bin && ln -sfn /usr/bin/sudo /run/wrappers/bin/sudo"
+  export PATH="$PATH:/run/current-system/sw/bin"
 fi
 
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
