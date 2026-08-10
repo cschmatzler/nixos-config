@@ -98,6 +98,19 @@ export function authorize(request: any, scope: Scope): string | undefined {
   return undefined;
 }
 
+// Herdr shelves reports from "herdr:*" sources until its host-side process
+// detection sees the agent, which never happens for processes inside the VM.
+export function demotePrivilegedReportSource(request: any): void {
+  if (
+    typeof request?.method === "string" &&
+    request.method.startsWith("pane.report_") &&
+    typeof request.params?.source === "string" &&
+    request.params.source.startsWith("herdr:")
+  ) {
+    request.params.source = `sandbox:${request.params.source.slice("herdr:".length)}`;
+  }
+}
+
 const FILTERED = Symbol("filtered");
 
 function filterValue(value: unknown, workspaceId: string): unknown {

@@ -17,10 +17,10 @@ if [[ -n "$host_system" ]]; then
   export PATH="$PATH:/run/current-system/sw/bin"
 fi
 
-mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
-for name in sessions npm git; do
-  [[ -d "$HOME/.pi/agent/$name" && ! -L "$HOME/.pi/agent/$name" ]] ||
-    ln -sfn "$HERDR_HOST_HOME/.pi/agent/$name" "$HOME/.pi/agent/$name"
+mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr" "$HOME/.cache"
+for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git .cache/ms-playwright; do
+  [[ -d "$HOME/$entry" && ! -L "$HOME/$entry" ]] ||
+    ln -sfn "$HERDR_HOST_HOME/$entry" "$HOME/$entry"
 done
 
 state="$HOME/.local/state/herdr-sandbox"

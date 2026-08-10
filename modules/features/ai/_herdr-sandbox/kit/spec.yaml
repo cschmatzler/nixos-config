@@ -13,6 +13,7 @@ permissions:
       - localhost:18743
       - api.supermemory.ai:443
       - cache.nixos.org:443
+      - cdn.playwright.dev:443
       - channels.nixos.org:443
       - codeload.github.com:443
       - executor.sh:443

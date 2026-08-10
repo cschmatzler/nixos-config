@@ -129,6 +129,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       `${config.hostHome}/.pi/agent/npm:ro`,
       `${config.hostHome}/.pi/agent/git:ro`,
       `${config.hostHome}/.pi/agent/sessions`,
+      `${config.hostHome}/.cache/ms-playwright:ro`,
     ]) {
       if (fs.existsSync(extra.replace(/:ro$/, ""))) mounts.push(extra);
     }

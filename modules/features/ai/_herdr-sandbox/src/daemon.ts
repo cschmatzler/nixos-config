@@ -11,7 +11,14 @@ import {
   tokenSecretPath,
   verifyWorkspaceToken,
 } from "./common";
-import { authorize, call, filterResponse, scopeFromSnapshot, snapshot } from "./herdr";
+import {
+  authorize,
+  call,
+  demotePrivilegedReportSource,
+  filterResponse,
+  scopeFromSnapshot,
+  snapshot,
+} from "./herdr";
 
 const config = readConfig();
 
@@ -56,6 +63,7 @@ async function handleRpc(request: http.IncomingMessage, response: http.ServerRes
     sendJson(response, 403, { error: denied });
     return;
   }
+  demotePrivilegedReportSource(body);
   const result = await call(config.herdrSocketPath, body.method, body.params);
   sendJson(response, 200, { id: body.id, result: filterResponse(result, workspaceId) });
 }
