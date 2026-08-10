@@ -64,8 +64,10 @@ no `working` agent is stopped. Workspaces are matched by checkout path, so Herdr
 - Pane opens on a live sandbox cost one Herdr socket call plus one `docker exec`
   (sub-second). Creation pays kit apt install plus one config tar; Pi installs only its
   `git:`-sourced packages (~3 s) since the npm cache is shared read-only.
-- Copied credentials (Pi `auth.json`, Claude `.credentials.json`, MCP OAuth) can diverge
-  after guest-side refresh; the read-only mounts (store, secrets, npm cache) cannot.
+- Copied credentials (Pi `auth.json`, Claude `.credentials.json`, MCP OAuth) re-sync from
+  the host on every pane attach, so host-side refreshes win; a guest-side refresh lasts
+  only until the next attach. Read-only mounts (store, secrets, npm and git package
+  caches) cannot diverge at all.
 - The guest can write the mounted worktree, its common Git directory, and the shared Pi
   sessions directory; host Pi resuming a guest-written session is trusted.
 - `sbx stop` kills attached execs (exit 137); panes surface a paused notice and re-attach

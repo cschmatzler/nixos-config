@@ -15,7 +15,15 @@ import {
 } from "./common";
 import { snapshot } from "./herdr";
 
+const AUTH_PATHS = [
+  ".pi/agent/auth.json",
+  ".pi/agent/mcp-auth.json",
+  ".pi/agent/mcp-oauth",
+  ".claude/.credentials.json",
+];
+
 const HOME_COPY_PATHS = [
+  ...AUTH_PATHS,
   ".config/fish",
   ".config/nvim",
   ".config/git",
@@ -25,11 +33,7 @@ const HOME_COPY_PATHS = [
   ".pi/agent/skills",
   ".pi/agent/settings.json",
   ".pi/agent/mcp.json",
-  ".pi/agent/auth.json",
-  ".pi/agent/mcp-auth.json",
-  ".pi/agent/mcp-oauth",
   ".plannotator/config.json",
-  ".claude/.credentials.json",
   ".claude/settings.json",
   ".claude/CLAUDE.md",
   ".claude/commands",
@@ -67,10 +71,8 @@ async function ensureSbxDaemon(): Promise<Map<string, SandboxState>> {
   throw new Error("Docker Sandboxes daemon did not come up; try `sbx daemon start`");
 }
 
-async function provision(name: string): Promise<void> {
-  const existing = HOME_COPY_PATHS.filter((entry) =>
-    fs.existsSync(path.join(config.hostHome, entry)),
-  );
+async function copyHome(name: string, paths: ReadonlyArray<string>): Promise<void> {
+  const existing = paths.filter((entry) => fs.existsSync(path.join(config.hostHome, entry)));
   const tar = spawn("tar", ["-C", config.hostHome, "-cf", "-", ...existing]);
   const untar = spawn(
     config.dockerPath,
@@ -125,6 +127,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       "/nix:ro",
       "/run/secrets:ro",
       `${config.hostHome}/.pi/agent/npm:ro`,
+      `${config.hostHome}/.pi/agent/git:ro`,
       `${config.hostHome}/.pi/agent/sessions`,
     ]) {
       if (fs.existsSync(extra.replace(/:ro$/, ""))) mounts.push(extra);
@@ -137,7 +140,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       "--kit", config.kitPath,
       "shell", ...mounts,
     ]);
-    await provision(name);
+    await copyHome(name, HOME_COPY_PATHS);
   });
 }
 
@@ -164,23 +167,15 @@ function attachEnv(workspaceId: string, root: string): Array<string> {
   );
 }
 
-async function attachOnce(
-  name: string,
-  cwd: string,
-  env: Array<string>,
-  state: SandboxState,
-): Promise<number> {
-  const args = [
-    "exec", "-it", "-u", "agent", "-w", cwd, ...env,
-    name, "/home/agent/.local/bin/herdr-sandbox-enter",
-  ];
-  const child =
-    state === "running"
-      ? spawn(config.dockerPath, args, {
-          stdio: "inherit",
-          env: { ...process.env, DOCKER_HOST: `unix://${config.dockerSocketPath}` },
-        })
-      : spawn(config.sbxPath, args, { stdio: "inherit" });
+async function attachOnce(name: string, cwd: string, env: Array<string>): Promise<number> {
+  const child = spawn(
+    config.dockerPath,
+    ["exec", "-it", "-u", "agent", "-w", cwd, ...env, name, "/home/agent/.local/bin/herdr-sandbox-enter"],
+    {
+      stdio: "inherit",
+      env: { ...process.env, DOCKER_HOST: `unix://${config.dockerSocketPath}` },
+    },
+  );
   return await new Promise<number>((resolve) => child.on("close", (code) => resolve(code ?? 1)));
 }
 
@@ -229,7 +224,9 @@ async function main(): Promise<void> {
 
   const cwd = process.cwd().startsWith(root) ? process.cwd() : root;
   while (true) {
-    const code = await attachOnce(name, cwd, attachEnv(workspaceId, root), state);
+    if (state !== "running") await run(config.sbxPath, ["exec", name, "true"]);
+    await copyHome(name, AUTH_PATHS);
+    const code = await attachOnce(name, cwd, attachEnv(workspaceId, root));
     const after = await sandboxState(name).catch(() => undefined);
     if (after === "running") process.exit(code);
     if (after === undefined) return;

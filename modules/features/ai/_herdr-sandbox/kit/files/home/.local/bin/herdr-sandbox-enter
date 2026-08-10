@@ -18,12 +18,15 @@ if [[ -n "$host_system" ]]; then
 fi
 
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
-ln -sfn "$HERDR_HOST_HOME/.pi/agent/sessions" "$HOME/.pi/agent/sessions"
-ln -sfn "$HERDR_HOST_HOME/.pi/agent/npm" "$HOME/.pi/agent/npm"
+for name in sessions npm git; do
+  [[ -d "$HOME/.pi/agent/$name" && ! -L "$HOME/.pi/agent/$name" ]] ||
+    ln -sfn "$HERDR_HOST_HOME/.pi/agent/$name" "$HOME/.pi/agent/$name"
+done
 
 state="$HOME/.local/state/herdr-sandbox"
 relay="$state/relay"
 socket="$HOME/.config/herdr/herdr.sock"
+export HERDR_SOCKET_PATH="$socket"
 mkdir -p "$relay"
 
 if [[ "$(cat "$relay/token" 2>/dev/null)" != "$HERDR_SANDBOX_TOKEN" ]] ||
@@ -32,8 +35,7 @@ if [[ "$(cat "$relay/token" 2>/dev/null)" != "$HERDR_SANDBOX_TOKEN" ]] ||
   printf %s "$HERDR_SANDBOX_TOKEN" >"$relay/token"
   chmod 600 "$relay/token"
   rm -f "$socket"
-  HERDR_SOCKET_PATH="$socket" nohup node \
-    "$HOME/.local/lib/herdr-sandbox/herdr-relay.mjs" >"$relay/log" 2>&1 &
+  nohup node "$HOME/.local/lib/herdr-sandbox/herdr-relay.mjs" >"$relay/log" 2>&1 &
   echo $! >"$relay/pid"
   for _ in $(seq 1 100); do [[ -S $socket ]] && break; sleep 0.05; done
 fi

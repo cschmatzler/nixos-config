@@ -98,14 +98,26 @@ export function authorize(request: any, scope: Scope): string | undefined {
   return undefined;
 }
 
-export function filterResponse(value: unknown, workspaceId: string): unknown {
+const FILTERED = Symbol("filtered");
+
+function filterValue(value: unknown, workspaceId: string): unknown {
   if (Array.isArray(value)) {
-    return value
-      .filter((entry: any) => entry?.workspace_id === undefined || entry.workspace_id === workspaceId)
-      .map((entry) => filterResponse(entry, workspaceId));
+    return value.map((entry) => filterValue(entry, workspaceId)).filter((v) => v !== FILTERED);
   }
   if (typeof value !== "object" || value === null) return value;
-  return Object.fromEntries(
-    Object.entries(value).map(([key, entry]) => [key, filterResponse(entry, workspaceId)]),
-  );
+  const record = value as Record<string, unknown>;
+  if (typeof record.workspace_id === "string" && record.workspace_id !== workspaceId) {
+    return FILTERED;
+  }
+  const filtered: Record<string, unknown> = {};
+  for (const [key, entry] of Object.entries(record)) {
+    const result = filterValue(entry, workspaceId);
+    if (result !== FILTERED) filtered[key] = result;
+  }
+  return filtered;
+}
+
+export function filterResponse(value: unknown, workspaceId: string): unknown {
+  const filtered = filterValue(value, workspaceId);
+  return filtered === FILTERED ? {} : filtered;
 }
