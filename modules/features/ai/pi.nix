@@ -84,6 +84,7 @@ in {
           "npm:@plannotator/pi-extension"
           "npm:@tunnckocore/pi-gpt-fast-mode"
           "npm:pi-cache-optimizer"
+          "npm:mattpocock-skills-unofficial-plugin"
           "npm:pi-claude-auth"
         ];
         prompts = ["./prompts"];
