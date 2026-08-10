@@ -1,10 +1,13 @@
-{theme}: {
+{
+  theme,
+  defaultShell ? "fish",
+}: {
   onboarding = false;
 
   theme.name = theme.slug;
 
   terminal = {
-    default_shell = "fish";
+    default_shell = defaultShell;
     new_cwd = "follow";
     shell_mode = "auto";
   };

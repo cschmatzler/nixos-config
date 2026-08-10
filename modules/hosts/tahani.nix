@@ -15,6 +15,7 @@ in {
       includes = [
         den.aspects.user-workstation
         den.aspects.user-personal
+        den.aspects.herdr-sandbox
         den.aspects.email
         den.aspects.ynab
       ];
@@ -39,6 +40,7 @@ in {
       virtualisation.docker.enable = true;
       users.users.${local.user.name}.extraGroups = [
         "docker"
+        "kvm"
       ];
     };
   };

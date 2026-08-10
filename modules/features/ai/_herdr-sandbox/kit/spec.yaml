@@ -1,0 +1,43 @@
+schemaVersion: "2"
+kind: mixin
+name: herdr-pi-workspace
+version: "0.2.0"
+displayName: Herdr Pi Workspace
+description: Herdr workspace sandboxes running the host Nix profile
+requires:
+  agent: shell
+
+permissions:
+  network:
+    allow:
+      - localhost:18743
+      - api.supermemory.ai:443
+      - cache.nixos.org:443
+      - channels.nixos.org:443
+      - codeload.github.com:443
+      - executor.sh:443
+      - nixos.org:443
+      - releases.nixos.org:443
+      - "*.cachix.org:443"
+      - "*.executor.sh:443"
+      - "*.github.com:443"
+      - "*.githubusercontent.com:443"
+      - "*.ts.net:443"
+
+setup:
+  install:
+    - command: >-
+        apt-get update &&
+        DEBIAN_FRONTEND=noninteractive apt-get install -y
+        build-essential ca-certificates curl git jq sudo unzip xz-utils &&
+        printf 'agent ALL=(ALL) NOPASSWD:ALL\n' > /etc/sudoers.d/agent &&
+        chmod 0440 /etc/sudoers.d/agent &&
+        chmod 0755 /home/agent/.local/bin/herdr-sandbox-enter &&
+        rm -rf /var/lib/apt/lists/*
+      user: "0"
+      description: Install base build tooling and passwordless sudo
+
+environment:
+  variables:
+    PI_SKIP_VERSION_CHECK: "1"
+    BROWSER: "none"

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -u
+
+unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
+  XAI_API_KEY MISTRAL_API_KEY GOOGLE_API_KEY SBX_CRED_ANTHROPIC_MODE
+
+ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
+export PATH="$HOME/.nix-profile/bin:$PATH"
+
+if [[ -n "${HERDR_HOST_NAME:-}" ]]; then
+  grep -q " $HERDR_HOST_NAME\$" /etc/hosts ||
+    sudo sh -c "printf '127.0.0.1 %s\n' '$HERDR_HOST_NAME' >>/etc/hosts"
+  sudo hostname "$HERDR_HOST_NAME"
+fi
+
+mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
+ln -sfn "$HERDR_HOST_HOME/.pi/agent/sessions" "$HOME/.pi/agent/sessions"
+ln -sfn "$HERDR_HOST_HOME/.pi/agent/npm" "$HOME/.pi/agent/npm"
+
+state="$HOME/.local/state/herdr-sandbox"
+relay="$state/relay"
+socket="$HOME/.config/herdr/herdr.sock"
+mkdir -p "$relay"
+
+if [[ "$(cat "$relay/token" 2>/dev/null)" != "$HERDR_SANDBOX_TOKEN" ]] ||
+  ! kill -0 "$(cat "$relay/pid" 2>/dev/null)" 2>/dev/null; then
+  kill "$(cat "$relay/pid" 2>/dev/null)" 2>/dev/null
+  printf %s "$HERDR_SANDBOX_TOKEN" >"$relay/token"
+  chmod 600 "$relay/token"
+  rm -f "$socket"
+  HERDR_SOCKET_PATH="$socket" nohup node \
+    "$HOME/.local/lib/herdr-sandbox/herdr-relay.mjs" >"$relay/log" 2>&1 &
+  echo $! >"$relay/pid"
+  for _ in $(seq 1 100); do [[ -S $socket ]] && break; sleep 0.05; done
+fi
+
+boot=$(cat /proc/sys/kernel/random/boot_id)
+if mkdir "$state/boot-$boot" 2>/dev/null; then
+  (
+    cd "$HERDR_WORKSPACE_ROOT" || exit
+    if [[ -e "$state/setup-done" ]]; then
+      if [[ -x .agents/resume ]]; then
+        .agents/resume || echo "[herdr-sandbox] .agents/resume failed; continuing." >&2
+      fi
+    else
+      if [[ -x .agents/setup ]]; then
+        .agents/setup || echo "[herdr-sandbox] .agents/setup failed; continuing." >&2
+      fi
+      touch "$state/setup-done"
+    fi
+  )
+fi
+
+exec fish -l

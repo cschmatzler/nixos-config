@@ -1,0 +1,15 @@
+{
+  "name": "herdr-docker-sandbox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "bundle": "esbuild src/daemon.ts src/shell-client.ts src/guest/herdr-relay.ts --bundle --platform=node --target=node24 --format=esm --packages=external --out-extension:.js=.mjs --outdir=dist"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "esbuild": "0.27.0",
+    "typescript": "5.9.3"
+  }
+}
