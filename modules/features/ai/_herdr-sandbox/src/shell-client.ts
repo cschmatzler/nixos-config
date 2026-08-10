@@ -113,6 +113,23 @@ async function withLock(name: string, action: () => Promise<void>): Promise<void
   }
 }
 
+async function seedFromRepo(root: string, repoDir: string): Promise<void> {
+  if (repoDir === root || !fs.existsSync(path.join(repoDir, ".git"))) return;
+  const found = await run("find", [
+    repoDir, "-maxdepth", "3", "-name", "node_modules", "-type", "d", "-prune",
+  ]);
+  const nodeModules = found.stdout.split("\n").filter(Boolean);
+  for (const [source, copyFlags] of [
+    [path.join(repoDir, ".devenv"), "-a"] as const,
+    ...nodeModules.map((dir) => [dir, "-al"] as const),
+  ]) {
+    const target = path.join(root, path.relative(repoDir, source));
+    if (!fs.existsSync(source) || fs.existsSync(target)) continue;
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    await run("cp", [copyFlags, source, target]);
+  }
+}
+
 async function createSandbox(name: string, root: string): Promise<void> {
   await withLock(name, async () => {
     if ((await sandboxState(name)) !== undefined) return;
@@ -121,6 +138,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       root,
       (await run("git", ["-C", root, "rev-parse", "--git-common-dir"])).stdout.trim(),
     );
+    await seedFromRepo(root, path.dirname(gitDir));
     const mounts = [root];
     if (!gitDir.startsWith(`${root}${path.sep}`)) mounts.push(gitDir);
     for (const extra of [
