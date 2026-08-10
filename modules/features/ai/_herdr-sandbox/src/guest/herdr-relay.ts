@@ -11,35 +11,18 @@ if (socketPath === undefined || bridgeUrl === undefined || capability === undefi
   process.exit(2);
 }
 
-function requestId(input: string): string {
-  try {
-    const parsed: unknown = JSON.parse(input);
-    if (typeof parsed === "object" && parsed !== null && "id" in parsed) {
-      const id = parsed.id;
-      if (typeof id === "string") return id;
-    }
-  } catch {
-    // The host broker returns the authoritative parse error.
-  }
-  return "herdr-sandbox:invalid";
-}
+const LONG_METHODS = new Set(["agent.prompt", "agent.wait", "pane.wait_for_output"]);
 
-function requestTimeout(input: string): number {
+function parseEnvelope(input: string): { id: string; timeout: number } {
   try {
-    const parsed: unknown = JSON.parse(input);
-    if (typeof parsed !== "object" || parsed === null || !("method" in parsed)) return 5_000;
-    const method = parsed.method;
-    if (
-      method === "agent.prompt" ||
-      method === "agent.wait" ||
-      method === "pane.wait_for_output"
-    ) {
-      return 305_000;
-    }
+    const parsed: any = JSON.parse(input);
+    return {
+      id: typeof parsed?.id === "string" ? parsed.id : "herdr-sandbox:invalid",
+      timeout: LONG_METHODS.has(parsed?.method) ? 305_000 : 5_000,
+    };
   } catch {
-    return 5_000;
+    return { id: "herdr-sandbox:invalid", timeout: 5_000 };
   }
-  return 5_000;
 }
 
 function errorEnvelope(id: string, message: string): string {
@@ -53,7 +36,7 @@ function errorEnvelope(id: string, message: string): string {
 }
 
 async function forward(line: string): Promise<string> {
-  const id = requestId(line);
+  const { id, timeout } = parseEnvelope(line);
   try {
     const response = await fetch(`${bridgeUrl}/herdr/rpc`, {
       method: "POST",
@@ -62,7 +45,7 @@ async function forward(line: string): Promise<string> {
         "content-type": "application/json",
       },
       body: line,
-      signal: AbortSignal.timeout(requestTimeout(line)),
+      signal: AbortSignal.timeout(timeout),
     });
     const body = await response.text();
     if (!response.ok) {

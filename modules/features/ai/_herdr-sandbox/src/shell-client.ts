@@ -11,7 +11,6 @@ import {
   run,
   signWorkspaceToken,
   tokenSecretPath,
-  type Config,
   type SandboxState,
 } from "./common";
 import { snapshot } from "./herdr";
@@ -52,17 +51,15 @@ async function sandboxState(name: string): Promise<SandboxState | undefined> {
   return (await listSandboxes(config)).get(name);
 }
 
-async function ensureSbxDaemon(): Promise<void> {
+async function ensureSbxDaemon(): Promise<Map<string, SandboxState>> {
   try {
-    await listSandboxes(config);
-    return;
+    return await listSandboxes(config);
   } catch {
     await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "balanced"]);
   }
   for (let attempt = 0; attempt < 40; attempt += 1) {
     try {
-      await listSandboxes(config);
-      return;
+      return await listSandboxes(config);
     } catch {
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
@@ -150,7 +147,10 @@ function attachEnv(workspaceId: string, root: string): Array<string> {
     HERDR_WORKSPACE_ID: workspaceId,
     HERDR_TAB_ID: process.env.HERDR_TAB_ID,
     HERDR_PANE_ID: process.env.HERDR_PANE_ID,
-    HERDR_SANDBOX_TOKEN: signWorkspaceToken(workspaceId, readTokenSecret()),
+    HERDR_SANDBOX_TOKEN: signWorkspaceToken(
+      workspaceId,
+      fs.readFileSync(tokenSecretPath(config), "utf8").trim(),
+    ),
     HERDR_SANDBOX_BRIDGE_URL: `http://host.docker.internal:${config.listenPort}`,
     HERDR_HOST_PROFILE: fs.realpathSync(`${config.hostHome}/.nix-profile`),
     HERDR_HOST_HOME: config.hostHome,
@@ -164,28 +164,23 @@ function attachEnv(workspaceId: string, root: string): Array<string> {
   );
 }
 
-function readTokenSecret(): string {
-  return fs.readFileSync(tokenSecretPath(config), "utf8").trim();
-}
-
 async function attachOnce(
   name: string,
   cwd: string,
   env: Array<string>,
   state: SandboxState,
 ): Promise<number> {
-  const enter = "/home/agent/.local/bin/herdr-sandbox-enter";
+  const args = [
+    "exec", "-it", "-u", "agent", "-w", cwd, ...env,
+    name, "/home/agent/.local/bin/herdr-sandbox-enter",
+  ];
   const child =
     state === "running"
-      ? spawn(config.dockerPath, ["exec", "-it", "-u", "agent", "-w", cwd, ...env, name, enter], {
+      ? spawn(config.dockerPath, args, {
           stdio: "inherit",
           env: { ...process.env, DOCKER_HOST: `unix://${config.dockerSocketPath}` },
         })
-      : spawn(
-          config.sbxPath,
-          ["exec", "--interactive", "--tty", "--user", "agent", "--workdir", cwd, ...env.map((flag) => (flag === "-e" ? "--env" : flag)), name, enter],
-          { stdio: "inherit" },
-        );
+      : spawn(config.sbxPath, args, { stdio: "inherit" });
   return await new Promise<number>((resolve) => child.on("close", (code) => resolve(code ?? 1)));
 }
 
@@ -220,8 +215,11 @@ async function main(): Promise<void> {
 
   const root: string = worktree.checkout_path;
   const name = `herdr-${createHash("sha256").update(root).digest("hex").slice(0, 20)}`;
-  await ensureSbxDaemon();
-  if ((await sandboxState(name)) === undefined) await createSandbox(name, root);
+  let state = (await ensureSbxDaemon()).get(name);
+  if (state === undefined) {
+    await createSandbox(name, root);
+    state = "running";
+  }
 
   fs.mkdirSync(mappingsDirectory(config), { recursive: true, mode: 0o700 });
   fs.writeFileSync(
@@ -230,15 +228,13 @@ async function main(): Promise<void> {
   );
 
   const cwd = process.cwd().startsWith(root) ? process.cwd() : root;
-  const env = attachEnv(workspaceId, root);
   while (true) {
-    const before = await sandboxState(name);
-    if (before === undefined) return;
-    const code = await attachOnce(name, cwd, env, before);
+    const code = await attachOnce(name, cwd, attachEnv(workspaceId, root), state);
     const after = await sandboxState(name).catch(() => undefined);
     if (after === "running") process.exit(code);
     if (after === undefined) return;
     await waitForResume(name);
+    state = (await sandboxState(name).catch(() => undefined)) ?? "stopped";
   }
 }
 

@@ -10,7 +10,6 @@ import {
   run,
   tokenSecretPath,
   verifyWorkspaceToken,
-  type Config,
 } from "./common";
 import { authorize, call, filterResponse, scopeFromSnapshot, snapshot } from "./herdr";
 
