@@ -10,11 +10,14 @@ import {
   mappingsDirectory,
   readConfig,
   run,
-  runWithInput,
   tokenSecretPath,
   verifyWorkspaceToken,
 } from "./common";
 import { ensureSandboxTemplate } from "./sandbox-template";
+import {
+  removeLegacyGlobalProxyCredentials,
+  seedProxyCredentials,
+} from "./proxy-credentials";
 import {
   authorize,
   call,
@@ -41,33 +44,15 @@ const MAX_BODY_BYTES = 1024 * 1024;
 
 class BodyTooLarge extends Error {}
 
-async function seedProxySecrets(): Promise<void> {
-  try {
-    const token = (await run(config.ghPath, ["auth", "token"])).stdout.trim();
-    if (token.length > 0) {
-      await run(config.sbxPath, ["secret", "rm", "github", "-f"]);
-      await runWithInput(config.sbxPath, ["secret", "set", "github"], token);
-    }
-  } catch (cause: unknown) {
-    console.error(`[herdr-sandbox] could not seed the github secret: ${causeMessage(cause)}`);
-  }
-  try {
-    const key = fs.readFileSync(config.supermemoryApiKeyPath, "utf8").trim();
-    if (key.length > 0) {
-      const target = ["--host", "api.supermemory.ai", "--env", "SUPERMEMORY_API_KEY"];
-      await run(config.sbxPath, ["secret", "rm", ...target, "-f"]);
-      await run(config.sbxPath, [
-        "secret", "set-custom", ...target, "--placeholder", "herdr-supermemory", "--value", key,
-      ]);
-    }
-  } catch (cause: unknown) {
-    console.error(`[herdr-sandbox] could not seed the supermemory secret: ${causeMessage(cause)}`);
-  }
-}
-
 async function prepareHost(): Promise<void> {
-  await ensureSbxDaemon(config);
-  await seedProxySecrets();
+  const sandboxes = await ensureSbxDaemon(config);
+  await removeLegacyGlobalProxyCredentials(config);
+  await Promise.all(
+    readMappings()
+      .map(({ mapping }) => mapping.sandboxName)
+      .filter((sandboxName) => sandboxes.has(sandboxName))
+      .map((sandboxName) => seedProxyCredentials(config, sandboxName)),
+  );
   await ensureSandboxTemplate(config);
 }
 

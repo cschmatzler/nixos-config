@@ -21,6 +21,7 @@ import {
 } from "./common";
 import { snapshot } from "./herdr";
 import { ensureSandboxTemplate } from "./sandbox-template";
+import { seedProxyCredentials } from "./proxy-credentials";
 
 const AUTH_PATHS = [
   ".pi/agent/auth.json",
@@ -371,6 +372,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       "--kit", config.kitPath,
       "shell", ...mounts,
     ]);
+    await seedProxyCredentials(config, name);
     await copyHome(name, RUNTIME_COPY_PATHS);
   });
 }
