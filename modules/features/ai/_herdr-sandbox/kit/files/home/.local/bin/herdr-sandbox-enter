@@ -80,7 +80,7 @@ mirror_home_files() {
 mirror_home_files "${HERDR_HOST_HOME_FILES:-}"
 
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
-for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git; do
+for entry in .pi/agent/npm .pi/agent/git; do
   [[ -d "$HOME/$entry" && ! -L "$HOME/$entry" ]] ||
     ln -sfn "$HERDR_HOST_HOME/$entry" "$HOME/$entry"
 done
