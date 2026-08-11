@@ -24,29 +24,19 @@ import { snapshot } from "./herdr";
 import { ensureSandboxTemplate } from "./sandbox-template";
 import { seedProxyCredentials } from "./proxy-credentials";
 
-const AUTH_PATHS = [
-  ".pi/agent/auth.json",
-  ".pi/agent/mcp-auth.json",
-  ".pi/agent/mcp-oauth",
-  ".pi/agent/trust.json",
-  ".local/share/devenv/cachix_trusted_keys.json",
-  ".claude/.credentials.json",
-];
-
 const RUNTIME_COPY_PATHS = [
-  ...AUTH_PATHS,
+  ".local/share/devenv/cachix_trusted_keys.json",
   ".config/gh/config.yml",
   ".claude/CLAUDE.md",
   ".claude/agents",
   ".claude/hooks",
-  ".claude.json",
 ];
 
 const DEPENDENCY_CACHE_MARKER = ".herdr-sandbox-dependencies-v2";
 const DEVENV_CACHE_MARKER = ".herdr-sandbox-devenv-v2";
 const SANDBOX_HOSTNAME = "herdr-sandbox";
 const SANDBOX_WORKSPACE_ROOT = "/home/agent/workspace";
-const SANDBOX_PROJECTION_VERSION = 2;
+const SANDBOX_PROJECTION_VERSION = 3;
 
 const DEPENDENCY_INPUT_NAMES = new Set([
   ".npmrc",
@@ -544,7 +534,6 @@ async function main(): Promise<void> {
   const fingerprints = await cacheFingerprintsOrUndefined(root);
   while (true) {
     if (state !== "running") await run(config.sbxPath, ["exec", name, "true"]);
-    await copyHome(name, AUTH_PATHS);
     const code = await attachOnce(name, cwd, attachEnv(workspaceId, root, fingerprints));
     const after = await sandboxState(name).catch(() => undefined);
     if (after === "running") process.exit(code);
