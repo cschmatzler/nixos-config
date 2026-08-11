@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
 const messages = [
   // Short
@@ -458,18 +458,172 @@ const messages = [
   "Topping with tests...",
   "Cherry-picking the commits...",
   "Slop forking open source...",
-];
+  "Consulting the Nix oracle...",
+  "Petting the derivations...",
+  "Polishing the flake...",
+  "Untangling the dependency pretzel...",
+  "Forming a committee of rubber ducks...",
+  "Checking whether the bug is load-bearing...",
+  "Sending a strongly worded memo to entropy...",
+  "Making impossible states feel unwelcome...",
+  "Replacing TODOs with character development...",
+  "Raising a tiny flag on the call stack...",
+  "Refactoring the vibes...",
+  "Applying artisanal determinism...",
+  "Running on hopes and cache hits...",
+  "Searching the sofa cushions for context...",
+  "Trying turning it off and on conceptually...",
+  "Looking busy in O(n log n)...",
+] as const;
 
-function pickRandom(): string {
-  return messages[Math.floor(Math.random() * messages.length)]!;
+const readingMessages = [
+  "Consulting the sacred texts...",
+  "Reading between the line numbers...",
+  "Borrowing the librarian's monocle...",
+] as const;
+
+const writingMessages = [
+  "Putting pixels to parchment...",
+  "Freshly minting a file...",
+  "Teaching the disk a new story...",
+] as const;
+
+const editingMessages = [
+  "Moving commas with tweezers...",
+  "Performing keyhole surgery on the code...",
+  "Applying a tasteful patch...",
+] as const;
+
+const shellMessages = [
+  "Poking the shell with a velvet stick...",
+  "Summoning a well-behaved subprocess...",
+  "Asking the terminal nicely...",
+] as const;
+
+const searchingMessages = [
+  "Releasing the search ferrets...",
+  "Following a suspicious breadcrumb...",
+  "Dusting the codebase for fingerprints...",
+] as const;
+
+const memoryMessages = [
+  "Consulting the elephant...",
+  "Opening the scrapbook...",
+  "Asking past me what present me forgot...",
+] as const;
+
+const herdingMessages = [
+  "Rallying the herd...",
+  "Counting agents before they hatch...",
+  "Passing notes between tiny terminals...",
+] as const;
+
+const toolMessages = [
+  "Deploying the tool gnomes...",
+  "Handing this to a tiny specialist...",
+  "Pulling the correct lever...",
+] as const;
+
+const mishapMessages = [
+  "That lever was apparently load-bearing...",
+  "Encountering an unexpected banana peel...",
+  "The machine spirit requests a do-over...",
+  "One of the gnomes dropped a wrench...",
+] as const;
+
+const pepTalks = [
+  "The rubber duck has reviewed the plan and nods solemnly. 🦆",
+  "Your abstractions are wearing sensible shoes today. ✨",
+  "This branch has excellent vibes. 🌿",
+  "A wild solution is approaching. Remain calm. 🌟",
+  "The compiler fears your clarity. ⚡",
+  "The council of semicolons believes in you. 🪄",
+  "Your next cache hit has already been foretold. 🔮",
+] as const;
+
+function pickRandom(values: readonly string[] = messages): string {
+  const index = Math.floor(Math.random() * values.length);
+  return values[index] ?? "Recombobulating...";
 }
 
-export default function (pi: ExtensionAPI) {
-  pi.on("turn_start", async (_event, ctx) => {
+function messagesForTool(toolName: string): readonly string[] {
+  switch (toolName) {
+    case "read":
+      return readingMessages;
+    case "write":
+      return writingMessages;
+    case "edit":
+      return editingMessages;
+    case "bash":
+      return shellMessages;
+    case "grep":
+    case "find":
+    case "ls":
+      return searchingMessages;
+    case "supermemory_save":
+    case "supermemory_search":
+    case "supermemory_forget":
+    case "supermemory_profile":
+    case "supermemory_status":
+      return memoryMessages;
+    case "herdr_layout":
+    case "herdr_pane":
+    case "herdr_agent":
+      return herdingMessages;
+    default:
+      return toolMessages;
+  }
+}
+
+function installStardust(ctx: ExtensionContext): void {
+  ctx.ui.setWorkingIndicator({
+    frames: [
+      ctx.ui.theme.fg("dim", "·"),
+      ctx.ui.theme.fg("muted", "✧"),
+      ctx.ui.theme.fg("accent", "✦"),
+      ctx.ui.theme.fg("muted", "✧"),
+    ],
+    intervalMs: 140,
+  });
+}
+
+function resetWorkingDisplay(ctx: ExtensionContext): void {
+  ctx.ui.setWorkingMessage();
+  ctx.ui.setWorkingIndicator();
+}
+
+/** Adds playful, context-aware working messages and a little stardust to Pi. */
+export default function whimsical(pi: ExtensionAPI): void {
+  pi.on("session_start", (_event, ctx) => {
+    installStardust(ctx);
+  });
+
+  pi.on("turn_start", (_event, ctx) => {
+    installStardust(ctx);
     ctx.ui.setWorkingMessage(pickRandom());
   });
 
-  pi.on("turn_end", async (_event, ctx) => {
-    ctx.ui.setWorkingMessage(); // Reset for next time
+  pi.on("tool_execution_start", (event, ctx) => {
+    ctx.ui.setWorkingMessage(pickRandom(messagesForTool(event.toolName)));
+  });
+
+  pi.on("tool_execution_end", (event, ctx) => {
+    if (!event.isError) return;
+    ctx.ui.setWorkingMessage(pickRandom(mishapMessages));
+  });
+
+  pi.on("agent_settled", (_event, ctx) => {
+    ctx.ui.setWorkingMessage();
+  });
+
+  pi.on("session_shutdown", (_event, ctx) => {
+    resetWorkingDisplay(ctx);
+  });
+
+  pi.registerCommand("whimsy", {
+    description: "Receive a tiny, unreasonably confident pep talk",
+    handler: async (_args, ctx) => {
+      ctx.ui.notify(pickRandom(pepTalks), "info");
+    },
   });
 }

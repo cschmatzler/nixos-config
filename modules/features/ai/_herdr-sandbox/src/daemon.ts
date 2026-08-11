@@ -4,10 +4,13 @@ import path from "node:path";
 import { randomBytes } from "node:crypto";
 
 import {
+  causeMessage,
+  ensureSbxDaemon,
   listSandboxes,
   mappingsDirectory,
   readConfig,
   run,
+  runWithInput,
   tokenSecretPath,
   verifyWorkspaceToken,
 } from "./common";
@@ -34,12 +37,37 @@ function loadTokenSecret(): string {
 
 const tokenSecret = loadTokenSecret();
 
-async function prepareSandboxTemplate(): Promise<void> {
+const MAX_BODY_BYTES = 1024 * 1024;
+
+class BodyTooLarge extends Error {}
+
+async function seedProxySecrets(): Promise<void> {
   try {
-    await listSandboxes(config);
-  } catch {
-    await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "balanced"]);
+    const token = (await run(config.ghPath, ["auth", "token"])).stdout.trim();
+    if (token.length > 0) {
+      await run(config.sbxPath, ["secret", "rm", "github", "-f"]);
+      await runWithInput(config.sbxPath, ["secret", "set", "github"], token);
+    }
+  } catch (cause: unknown) {
+    console.error(`[herdr-sandbox] could not seed the github secret: ${causeMessage(cause)}`);
   }
+  try {
+    const key = fs.readFileSync(config.supermemoryApiKeyPath, "utf8").trim();
+    if (key.length > 0) {
+      const target = ["--host", "api.supermemory.ai", "--env", "SUPERMEMORY_API_KEY"];
+      await run(config.sbxPath, ["secret", "rm", ...target, "-f"]);
+      await run(config.sbxPath, [
+        "secret", "set-custom", ...target, "--placeholder", "herdr-supermemory", "--value", key,
+      ]);
+    }
+  } catch (cause: unknown) {
+    console.error(`[herdr-sandbox] could not seed the supermemory secret: ${causeMessage(cause)}`);
+  }
+}
+
+async function prepareHost(): Promise<void> {
+  await ensureSbxDaemon(config);
+  await seedProxySecrets();
   await ensureSandboxTemplate(config);
 }
 
@@ -51,7 +79,15 @@ function sendJson(response: http.ServerResponse, status: number, body: unknown):
 
 async function readBody(request: http.IncomingMessage): Promise<string> {
   let body = "";
-  for await (const chunk of request) body += chunk;
+  let size = 0;
+  for await (const chunk of request) {
+    size += Buffer.byteLength(chunk);
+    if (size > MAX_BODY_BYTES) {
+      request.destroy();
+      throw new BodyTooLarge();
+    }
+    body += chunk;
+  }
   return body;
 }
 
@@ -67,7 +103,17 @@ async function handleRpc(request: http.IncomingMessage, response: http.ServerRes
     sendJson(response, 403, { error: "workspace is no longer live" });
     return;
   }
-  const body = JSON.parse(await readBody(request));
+  let body: any;
+  try {
+    body = JSON.parse(await readBody(request));
+  } catch (cause: unknown) {
+    if (cause instanceof BodyTooLarge) {
+      sendJson(response, 413, { error: "request exceeds one MiB" });
+    } else {
+      sendJson(response, 400, { error: "invalid request body" });
+    }
+    return;
+  }
   const denied = authorize(body, scope);
   if (denied !== undefined) {
     sendJson(response, 403, { error: denied });
@@ -157,8 +203,8 @@ setInterval(() => {
   reconcile().catch((cause: unknown) => console.error("[herdr-sandbox] reconcile failed", cause));
 }, 30_000);
 
-prepareSandboxTemplate().catch((cause: unknown) => {
-  console.error("[herdr-sandbox] template preparation failed", cause);
+prepareHost().catch((cause: unknown) => {
+  console.error("[herdr-sandbox] host preparation failed", cause);
 });
 
 server.listen(config.listenPort, "127.0.0.1", () => {

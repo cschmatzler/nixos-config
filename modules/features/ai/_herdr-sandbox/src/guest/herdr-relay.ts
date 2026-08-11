@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import net from "node:net";
 
+import { timeoutForMethod } from "../common";
+
 const MAX_LINE_BYTES = 1024 * 1024;
 const socketPath = process.env.HERDR_SOCKET_PATH;
 const bridgeUrl = process.env.HERDR_SANDBOX_BRIDGE_URL;
@@ -11,14 +13,12 @@ if (socketPath === undefined || bridgeUrl === undefined || capability === undefi
   process.exit(2);
 }
 
-const LONG_METHODS = new Set(["agent.prompt", "agent.wait", "pane.wait_for_output"]);
-
 function parseEnvelope(input: string): { id: string; timeout: number } {
   try {
     const parsed: any = JSON.parse(input);
     return {
       id: typeof parsed?.id === "string" ? parsed.id : "herdr-sandbox:invalid",
-      timeout: LONG_METHODS.has(parsed?.method) ? 305_000 : 5_000,
+      timeout: timeoutForMethod(parsed?.method),
     };
   } catch {
     return { id: "herdr-sandbox:invalid", timeout: 5_000 };

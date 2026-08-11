@@ -1,7 +1,7 @@
 import net from "node:net";
 import { randomUUID } from "node:crypto";
 
-const LONG_METHODS = new Set(["agent.prompt", "agent.wait", "pane.wait_for_output"]);
+import { timeoutForMethod } from "./common";
 
 type Json = Record<string, unknown>;
 
@@ -12,7 +12,7 @@ export async function call(socketPath: string, method: string, params: Json = {}
     const timeout = setTimeout(() => {
       socket.destroy();
       reject(new Error(`herdr ${method} timed out`));
-    }, LONG_METHODS.has(method) ? 305_000 : 5_000);
+    }, timeoutForMethod(method));
     let buffered = "";
     socket.on("connect", () => socket.write(`${JSON.stringify(request)}\n`));
     socket.on("data", (chunk) => {
@@ -78,11 +78,11 @@ function identifiersInScope(value: unknown, scope: Scope, key?: string): boolean
   if (typeof value === "string") {
     const isId = key !== undefined && (key.endsWith("_id") || key === "target");
     if (!isId || !value.startsWith("w")) return true;
-    if (value.includes(":")) {
-      if (!value.startsWith(`${scope.workspaceId}:`)) return false;
-      return !value.includes(":p") || scope.paneIds.has(value) || scope.agentNames.has(value);
-    }
-    return value === scope.workspaceId || scope.agentNames.has(value);
+    const colon = value.indexOf(":");
+    if (colon === -1) return value === scope.workspaceId || scope.agentNames.has(value);
+    if (!value.startsWith(`${scope.workspaceId}:`)) return false;
+    const isPaneRef = value.slice(colon + 1).startsWith("p");
+    return !isPaneRef || scope.paneIds.has(value) || scope.agentNames.has(value);
   }
   if (Array.isArray(value)) return value.every((entry) => identifiersInScope(entry, scope, key));
   if (typeof value !== "object" || value === null) return true;

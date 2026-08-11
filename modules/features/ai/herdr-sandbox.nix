@@ -5,6 +5,7 @@
     pkgs,
     ...
   }: let
+    local = import ../../_lib/local.nix;
     jsonFormat = pkgs.formats.json {};
     package = import ./_herdr-sandbox/package.nix {inherit lib pkgs;};
     sbxPackage = import ./_herdr-sandbox/sbx-package.nix {inherit lib pkgs;};
@@ -18,6 +19,8 @@
       kitPath = "${package}/share/herdr-sandbox/kit";
       hostShell = "${pkgs.fish}/bin/fish";
       hostHome = config.home.homeDirectory;
+      ghPath = lib.getExe pkgs.gh;
+      supermemoryApiKeyPath = local.secretPath "supermemory-api-key";
       guestCpus = 2;
       guestMemory = "4g";
       idleMinutes = 10;

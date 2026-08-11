@@ -6,12 +6,17 @@ import { spawn } from "node:child_process";
 import { backup, DatabaseSync } from "node:sqlite";
 
 import {
+  causeMessage,
+  ensureSbxDaemon,
   listSandboxes,
   mappingsDirectory,
   readConfig,
   run,
+  sandboxDockerEnvironment,
   signWorkspaceToken,
   tokenSecretPath,
+  waitForExit,
+  withLock,
   type SandboxState,
 } from "./common";
 import { snapshot } from "./herdr";
@@ -26,23 +31,11 @@ const AUTH_PATHS = [
   ".claude/.credentials.json",
 ];
 
-const HOME_COPY_PATHS = [
+const RUNTIME_COPY_PATHS = [
   ...AUTH_PATHS,
-  ".config/fish",
-  ".config/nvim",
-  ".config/git",
-  ".config/gh",
-  ".pi/agent/extensions",
-  ".pi/agent/prompts",
-  ".pi/agent/skills",
-  ".pi/agent/settings.json",
-  ".pi/agent/mcp.json",
-  ".plannotator/config.json",
-  ".claude/settings.json",
+  ".config/gh/config.yml",
   ".claude/CLAUDE.md",
-  ".claude/commands",
   ".claude/agents",
-  ".claude/skills",
   ".claude/hooks",
   ".claude.json",
 ];
@@ -82,15 +75,22 @@ const DEVENV_INPUT_NAMES = new Set([
 
 const config = readConfig();
 
-function causeMessage(cause: unknown): string {
-  if (cause instanceof Error) return cause.message;
-  return String(cause);
-}
-
 function cwdWithin(root: string): string {
   const cwd = process.cwd();
   if (cwd.startsWith(root)) return cwd;
   return root;
+}
+
+function hostHomeFiles(): string | undefined {
+  const gcroot = path.join(
+    config.hostHome,
+    ".local/state/home-manager/gcroots/current-home/home-files",
+  );
+  try {
+    return fs.realpathSync(gcroot);
+  } catch {
+    return undefined;
+  }
 }
 
 function openHostShell(): never {
@@ -103,22 +103,6 @@ async function sandboxState(name: string): Promise<SandboxState | undefined> {
   return (await listSandboxes(config)).get(name);
 }
 
-async function ensureSbxDaemon(): Promise<Map<string, SandboxState>> {
-  try {
-    return await listSandboxes(config);
-  } catch {
-    await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "balanced"]);
-  }
-  for (let attempt = 0; attempt < 40; attempt += 1) {
-    try {
-      return await listSandboxes(config);
-    } catch {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-  }
-  throw new Error("Docker Sandboxes daemon did not come up; try `sbx daemon start`");
-}
-
 async function copyHome(name: string, paths: ReadonlyArray<string>): Promise<void> {
   const existing = paths.filter((entry) => fs.existsSync(path.join(config.hostHome, entry)));
   const tar = spawn("tar", ["-C", config.hostHome, "-cf", "-", ...existing]);
@@ -127,38 +111,12 @@ async function copyHome(name: string, paths: ReadonlyArray<string>): Promise<voi
     ["exec", "-i", "-u", "agent", name, "tar", "-xf", "-", "-C", "/home/agent"],
     {
       stdio: ["pipe", "inherit", "inherit"],
-      env: { ...process.env, DOCKER_HOST: `unix://${config.dockerSocketPath}` },
+      env: sandboxDockerEnvironment(config),
     },
   );
   tar.stdout.pipe(untar.stdin);
-  const code = await new Promise<number>((resolve) => untar.on("close", (c) => resolve(c ?? 1)));
+  const code = await waitForExit(untar);
   if (code !== 0) throw new Error(`copying host configuration failed (exit ${code})`);
-}
-
-async function withLock(name: string, action: () => Promise<void>): Promise<void> {
-  const lockDir = path.join(config.stateDirectory, "locks", `${name}.lock`);
-  fs.mkdirSync(path.dirname(lockDir), { recursive: true });
-  for (let attempt = 0; ; attempt += 1) {
-    try {
-      fs.mkdirSync(lockDir);
-      fs.writeFileSync(path.join(lockDir, "pid"), String(process.pid));
-      break;
-    } catch {
-      if (attempt >= 360) throw new Error(`timed out waiting for ${lockDir}`);
-      let ownerAlive = false;
-      try {
-        process.kill(Number(fs.readFileSync(path.join(lockDir, "pid"), "utf8")), 0);
-        ownerAlive = true;
-      } catch {}
-      if (ownerAlive) await new Promise((resolve) => setTimeout(resolve, 1_000));
-      else fs.rmSync(lockDir, { recursive: true, force: true });
-    }
-  }
-  try {
-    await action();
-  } finally {
-    fs.rmSync(lockDir, { recursive: true, force: true });
-  }
 }
 
 type CacheFingerprints = {
@@ -248,14 +206,6 @@ function parseGitWorktree(block: string): GitWorktree | undefined {
   };
 }
 
-function isGitWorktree(worktree: GitWorktree | undefined): worktree is GitWorktree {
-  return worktree !== undefined;
-}
-
-function isCacheCandidate(candidate: CacheCandidate | undefined): candidate is CacheCandidate {
-  return candidate !== undefined;
-}
-
 function cacheMarker(kind: CacheKind): string {
   if (kind === "devenv") return path.join(".devenv", DEVENV_CACHE_MARKER);
   return path.join("node_modules", DEPENDENCY_CACHE_MARKER);
@@ -297,8 +247,10 @@ async function orderedCacheSources(
   const worktrees = listed.stdout
     .trim()
     .split(/\n\n+/)
-    .map(parseGitWorktree)
-    .filter(isGitWorktree)
+    .flatMap((block) => {
+      const worktree = parseGitWorktree(block);
+      return worktree === undefined ? [] : [worktree];
+    })
     .filter((candidate) =>
       candidate.checkoutPath !== root && fs.existsSync(path.join(candidate.checkoutPath, ".git"))
     );
@@ -311,7 +263,7 @@ async function orderedCacheSources(
       if (fingerprints === undefined || fingerprints[kind] !== expectedFingerprint) return undefined;
       return { ...candidate, activity: cacheActivity(candidate.checkoutPath, kind) };
     }))
-  ).filter(isCacheCandidate);
+  ).flatMap((candidate) => (candidate === undefined ? [] : [candidate]));
   return candidates
     .toSorted((left, right) => {
       const leftMatchesHead = left.head === currentHead;
@@ -389,7 +341,8 @@ async function seedFromCompatibleCaches(root: string): Promise<void> {
 }
 
 async function createSandbox(name: string, root: string): Promise<void> {
-  await withLock(name, async () => {
+  const lockDir = path.join(config.stateDirectory, "locks", `${name}.lock`);
+  await withLock(lockDir, async () => {
     if ((await sandboxState(name)) !== undefined) return;
     process.stdout.write("[herdr-sandbox] creating the sandbox for this worktree…\n");
     const gitDir = path.resolve(
@@ -402,7 +355,6 @@ async function createSandbox(name: string, root: string): Promise<void> {
     if (!gitDir.startsWith(`${root}${path.sep}`)) mounts.push(gitDir);
     for (const extra of [
       "/nix:ro",
-      "/run/secrets:ro",
       `${config.hostHome}/.pi/agent/npm:ro`,
       `${config.hostHome}/.pi/agent/git:ro`,
       `${config.hostHome}/.pi/agent/sessions`,
@@ -420,7 +372,7 @@ async function createSandbox(name: string, root: string): Promise<void> {
       "--kit", config.kitPath,
       "shell", ...mounts,
     ]);
-    await copyHome(name, HOME_COPY_PATHS);
+    await copyHome(name, RUNTIME_COPY_PATHS);
   });
 }
 
@@ -440,6 +392,7 @@ function attachEnv(
     ),
     HERDR_SANDBOX_BRIDGE_URL: `http://host.docker.internal:${config.listenPort}`,
     HERDR_HOST_PROFILE: fs.realpathSync(`${config.hostHome}/.nix-profile`),
+    HERDR_HOST_HOME_FILES: hostHomeFiles(),
     HERDR_HOST_HOME: config.hostHome,
     HERDR_HOST_NAME: os.hostname(),
     HERDR_HOST_WORKSPACE_ROOT: root,
@@ -450,6 +403,7 @@ function attachEnv(
     HERDR_DEPENDENCY_CACHE_REUSED: dependencyCacheReuse(root, fingerprints),
     TERM: process.env.TERM ?? "xterm-256color",
     COLORTERM: process.env.COLORTERM,
+    LANG: "C.UTF-8",
   };
   return Object.entries(values).flatMap(([key, value]) => {
     if (value === undefined) return [];
@@ -463,10 +417,10 @@ async function attachOnce(name: string, cwd: string, env: Array<string>): Promis
     ["exec", "-it", "-u", "agent", "-w", cwd, ...env, name, "/home/agent/.local/bin/herdr-sandbox-enter"],
     {
       stdio: "inherit",
-      env: { ...process.env, DOCKER_HOST: `unix://${config.dockerSocketPath}` },
+      env: sandboxDockerEnvironment(config),
     },
   );
-  return await new Promise<number>((resolve) => child.on("close", (code) => resolve(code ?? 1)));
+  return await waitForExit(child);
 }
 
 async function waitForResume(name: string): Promise<void> {
@@ -500,7 +454,7 @@ async function main(): Promise<void> {
 
   const root: string = worktree.checkout_path;
   const name = `herdr-${createHash("sha256").update(root).digest("hex").slice(0, 20)}`;
-  let state = (await ensureSbxDaemon()).get(name);
+  let state = (await ensureSbxDaemon(config)).get(name);
   if (state === undefined) {
     await createSandbox(name, root);
     state = "running";
@@ -513,10 +467,10 @@ async function main(): Promise<void> {
   );
 
   const cwd = cwdWithin(root);
+  const fingerprints = await cacheFingerprintsOrUndefined(root);
   while (true) {
     if (state !== "running") await run(config.sbxPath, ["exec", name, "true"]);
     await copyHome(name, AUTH_PATHS);
-    const fingerprints = await cacheFingerprintsOrUndefined(root);
     const code = await attachOnce(name, cwd, attachEnv(workspaceId, root, fingerprints));
     const after = await sandboxState(name).catch(() => undefined);
     if (after === "running") process.exit(code);

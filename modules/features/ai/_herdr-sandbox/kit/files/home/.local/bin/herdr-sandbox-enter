@@ -2,8 +2,7 @@
 set -u
 
 unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
-  XAI_API_KEY MISTRAL_API_KEY GOOGLE_API_KEY GH_TOKEN GITHUB_TOKEN \
-  GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN SBX_CRED_ANTHROPIC_MODE
+  XAI_API_KEY MISTRAL_API_KEY GOOGLE_API_KEY SBX_CRED_ANTHROPIC_MODE
 
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 export PATH="$HOME/.nix-profile/bin:$PATH"
@@ -57,6 +56,16 @@ mount_cache_overlay() {
 
 mount_cache_overlay "$HOME/.cache/nix" "$HERDR_HOST_HOME/.cache/nix" nix
 
+mirror_home_files() {
+  src="$1"
+  [[ -n "$src" && -d "$src" ]] || return 0
+  while IFS= read -r -d '' rel; do
+    mkdir -p "$HOME/$(dirname "$rel")"
+    ln -sfn "$src/$rel" "$HOME/$rel"
+  done < <(cd "$src" && find . -mindepth 1 -not -type d -printf '%P\0')
+}
+mirror_home_files "${HERDR_HOST_HOME_FILES:-}"
+
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
 for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git; do
   [[ -d "$HOME/$entry" && ! -L "$HOME/$entry" ]] ||
@@ -83,9 +92,10 @@ socket="$HOME/.config/herdr/herdr.sock"
 export HERDR_SOCKET_PATH="$socket"
 mkdir -p "$relay"
 
+relay_pid=$(cat "$relay/pid" 2>/dev/null)
 if [[ "$(cat "$relay/token" 2>/dev/null)" != "$HERDR_SANDBOX_TOKEN" ]] ||
-  ! kill -0 "$(cat "$relay/pid" 2>/dev/null)" 2>/dev/null; then
-  kill "$(cat "$relay/pid" 2>/dev/null)" 2>/dev/null
+  ! kill -0 "$relay_pid" 2>/dev/null; then
+  kill "$relay_pid" 2>/dev/null
   printf %s "$HERDR_SANDBOX_TOKEN" >"$relay/token"
   chmod 600 "$relay/token"
   rm -f "$socket"
@@ -137,18 +147,20 @@ if [[ -e "$HERDR_WORKSPACE_ROOT/devenv.nix" ]] && command -v devenv >/dev/null 2
     echo "[herdr-sandbox] failed to activate the cached devenv environment; continuing." >&2
   fi
 fi
+write_cache_marker() {
+  cache_dir="$1"
+  marker="$2"
+  fingerprint="$3"
+  [[ -d "$cache_dir" && -n "$fingerprint" ]] || return 0
+  printf '%s\n' "$fingerprint" >"$marker.$$"
+  mv -f "$marker.$$" "$marker"
+}
 if ((lifecycle_status == 0 && devenv_status == 0)); then
-  if [[ -d "$HERDR_WORKSPACE_ROOT/.devenv" && -n "${HERDR_DEVENV_CACHE_FINGERPRINT:-}" ]]; then
-    devenv_marker="$HERDR_WORKSPACE_ROOT/.devenv/.herdr-sandbox-devenv-v2"
-    printf '%s\n' "$HERDR_DEVENV_CACHE_FINGERPRINT" >"$devenv_marker.$$"
-    mv -f "$devenv_marker.$$" "$devenv_marker"
-  fi
-  if [[ -d "$HERDR_WORKSPACE_ROOT/node_modules" && -n "${HERDR_DEPENDENCY_CACHE_FINGERPRINT:-}" ]]; then
-    dependency_marker="$HERDR_WORKSPACE_ROOT/node_modules/.herdr-sandbox-dependencies-v2"
-    printf '%s\n' "$HERDR_DEPENDENCY_CACHE_FINGERPRINT" >"$dependency_marker.$$"
-    mv -f "$dependency_marker.$$" "$dependency_marker"
-  fi
+  write_cache_marker "$HERDR_WORKSPACE_ROOT/.devenv" \
+    "$HERDR_WORKSPACE_ROOT/.devenv/.herdr-sandbox-devenv-v2" "${HERDR_DEVENV_CACHE_FINGERPRINT:-}"
+  write_cache_marker "$HERDR_WORKSPACE_ROOT/node_modules" \
+    "$HERDR_WORKSPACE_ROOT/node_modules/.herdr-sandbox-dependencies-v2" "${HERDR_DEPENDENCY_CACHE_FINGERPRINT:-}"
 fi
 cd "$host_workspace_cwd" 2>/dev/null || cd "$HERDR_HOST_WORKSPACE_ROOT" || exit
 
-exec fish -l
+exec fish -l -C "source $HOME/.local/lib/herdr-sandbox/remap-session-home.fish"
