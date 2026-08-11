@@ -87,18 +87,20 @@ if test "$exists" != true
     end
 end
 
-set -l credential_paths
+set -l home_paths
 for relative in \
     .pi/agent/auth.json \
     .pi/agent/mcp-auth.json \
     .pi/agent/mcp-oauth \
-    .pi/agent/extensions/herdr-agent-state.ts
+    .pi/agent/trust.json \
+    .pi/agent/extensions/herdr-agent-state.ts \
+    .claude/.credentials.json
     if test -e "$HERDR_SANDBOX_HOST_HOME/$relative"
-        set -a credential_paths "$relative"
+        set -a home_paths "$relative"
     end
 end
-if test (count $credential_paths) -gt 0
-    "$HERDR_SANDBOX_TAR" -C "$HERDR_SANDBOX_HOST_HOME" -cf - $credential_paths |
+if test (count $home_paths) -gt 0
+    "$HERDR_SANDBOX_TAR" -C "$HERDR_SANDBOX_HOST_HOME" -cf - $home_paths |
         "$HERDR_SANDBOX_SBX" exec -i -u agent "$sandbox" tar -xf - -C /home/agent
 end
 
@@ -121,8 +123,16 @@ set -l temporary "$registration."(random)
 chmod 600 "$temporary"
 mv -f "$temporary" "$registration"
 
-"$HERDR_SANDBOX_SBX" exec -u root "$sandbox" mkdir -p (dirname "$checkout")
-"$HERDR_SANDBOX_SBX" exec -u root "$sandbox" ln -sfn "$repo_root" "$checkout"
+"$HERDR_SANDBOX_SBX" exec -u root "$sandbox" sh -ceu '
+    checkout=$1
+    repo_root=$2
+    mkdir -p "$(dirname "$checkout")"
+    if test -L "$checkout"; then
+        rm "$checkout"
+    fi
+    mkdir -p "$checkout"
+    mountpoint -q "$checkout" || mount --bind "$repo_root" "$checkout"
+' sh "$checkout" "$repo_root"; or exit 1
 
 set -l terminal xterm-256color
 if set -q TERM
@@ -139,14 +149,12 @@ set -l exec_env \
     -e "HERDR_HOST_HOME_FILES=$HERDR_SANDBOX_HOME_FILES" \
     -e "HERDR_NIX=$HERDR_SANDBOX_NIX" \
     -e "HERDR_HOST_HOME=$HERDR_SANDBOX_HOST_HOME" \
-    -e "DEVENV_TUI=false" \
-    -e "PWD=$checkout" \
     -e "TERM=$terminal" \
     -e "LANG=C.UTF-8"
 if set -q COLORTERM
     set -a exec_env -e "COLORTERM=$COLORTERM"
 end
 
-exec "$HERDR_SANDBOX_SBX" exec -it -u agent -w "$repo_root" $exec_env \
+exec "$HERDR_SANDBOX_SBX" exec -it -u agent -w "$checkout" $exec_env \
     "$sandbox" "$HERDR_SANDBOX_HOST_PROFILE/bin/fish" \
     /home/agent/.local/bin/herdr-sandbox-fish

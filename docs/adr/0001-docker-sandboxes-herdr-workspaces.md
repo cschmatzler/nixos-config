@@ -25,6 +25,9 @@ A small Fish dispatcher is Herdr's default shell.
   `sbx exec`.
 - Because `sbx --clone` rejects linked worktrees, it clones the main repository and
   selects the linked worktree's branch inside the private clone.
+- The private clone is bind-mounted inside the guest at the linked checkout path. Fish
+  starts there so its `PWD` and Devenv's canonical project root agree while the Herdr
+  worktree identity remains visible.
 - Git isolation and publication use Docker Sandboxes' clone mode. Host Git exposes the
   guest's commits through the `sandbox-<name>` remote supplied by `sbx`.
 
@@ -44,9 +47,10 @@ Only established caches are added as read-only `sbx` workspace mounts:
 There is no custom cache fingerprinting, copying, hardlinking, reflinking, or overlay
 policy. Sandbox persistence and the mounted caches provide reuse.
 
-The dispatcher copies Pi OAuth and MCP credential files and Herdr's Pi state integration
-into the guest's private home on attachment. GitHub and Supermemory use sandbox-scoped
-Docker Sandbox proxy secrets. Pi sessions remain private to the sandbox.
+The dispatcher copies Pi OAuth and MCP credentials, Pi's saved project-trust decisions,
+Claude Code's credential file, and Herdr's Pi state integration into the guest's private
+home on attachment. GitHub and Supermemory use sandbox-scoped Docker Sandbox proxy
+secrets. Pi sessions remain private to the sandbox.
 
 The kit extends Docker Sandboxes' shell policy with the endpoints required by Nix and
 Devenv, Pi's model provider, the configured MCPs, Supermemory, and the local Herdr broker.
@@ -68,8 +72,9 @@ or maintain a parallel reconciler.
   Commits are retrieved through the `sbx`-managed remote.
 - The hot path invokes `sbx exec`; no custom Docker fast path is maintained.
 - Cache behavior follows `sbx` plus the four explicit read-only cache mounts.
-- Pi credentials are intentionally available to Pi processes inside the guest. They are
-  not mounted back into the host and do not grant access to unrelated host files.
+- Pi and Claude Code credentials are intentionally available to Pi processes inside the
+  guest. They are copied into private guest storage, are not mounted back into the host,
+  and do not grant access to unrelated host files.
 - Herdr API compatibility remains the only custom protocol integration.
 
 ## Rejected

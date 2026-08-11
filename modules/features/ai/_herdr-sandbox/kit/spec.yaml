@@ -45,5 +45,4 @@ setup:
 environment:
   variables:
     PI_SKIP_VERSION_CHECK: "1"
-    DEVENV_TUI: "false"
     BROWSER: "none"
