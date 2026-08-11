@@ -9,27 +9,34 @@
     jsonFormat = pkgs.formats.json {};
     package = import ./_herdr-sandbox/package.nix {inherit lib pkgs;};
     sbxPackage = import ./_herdr-sandbox/sbx-package.nix {inherit lib pkgs;};
+    stateDirectory = "${config.xdg.stateHome}/herdr-sandbox";
+    listenPort = 18743;
     controllerConfig = jsonFormat.generate "herdr-sandbox.json" {
       herdrSocketPath = "${config.xdg.configHome}/herdr/herdr.sock";
-      stateDirectory = "${config.xdg.stateHome}/herdr-sandbox";
-      listenPort = 18743;
-      sbxPath = "${sbxPackage}/bin/sbx";
-      dockerPath = lib.getExe pkgs.docker-client;
-      dockerSocketPath = "${config.xdg.stateHome}/sandboxes/sandboxes/sandboxd/docker.sock";
-      kitPath = "${package}/share/herdr-sandbox/kit";
-      hostShell = "${pkgs.fish}/bin/fish";
-      hostHome = config.home.homeDirectory;
-      ghPath = lib.getExe pkgs.gh;
-      supermemoryApiKeyPath = local.secretPath "supermemory-api-key";
-      guestCpus = 4;
-      guestMemory = "8g";
-      idleMinutes = 10;
+      inherit stateDirectory listenPort;
     };
     shell = pkgs.writeShellScript "herdr-sandbox-shell" ''
       export DOCKER_SANDBOXES_ROOT_SIZE=20g
       export DOCKER_SANDBOXES_DOCKER_SIZE=20g
       export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=1
-      exec ${package}/bin/herdr-sandbox-shell --config ${controllerConfig} "$@"
+      export HERDR_SANDBOX_SBX=${sbxPackage}/bin/sbx
+      export HERDR_SANDBOX_HERDR="$(command -v herdr)"
+      export HERDR_SANDBOX_JQ=${lib.getExe pkgs.jq}
+      export HERDR_SANDBOX_SHA256SUM=${pkgs.coreutils}/bin/sha256sum
+      export HERDR_SANDBOX_OPENSSL=${lib.getExe pkgs.openssl}
+      export HERDR_SANDBOX_TAR=${pkgs.gnutar}/bin/tar
+      export HERDR_SANDBOX_GH=${lib.getExe pkgs.gh}
+      export HERDR_SANDBOX_KIT=${package}/share/herdr-sandbox/kit
+      export HERDR_SANDBOX_HOST_SHELL=${lib.getExe pkgs.fish}
+      export HERDR_SANDBOX_HOST_HOME=${lib.escapeShellArg config.home.homeDirectory}
+      export HERDR_SANDBOX_HOST_PROFILE="$(${pkgs.coreutils}/bin/readlink -f ${lib.escapeShellArg "${config.home.homeDirectory}/.nix-profile"})"
+      export HERDR_SANDBOX_HOME_FILES="$(${pkgs.coreutils}/bin/readlink -f ${lib.escapeShellArg "${config.xdg.stateHome}/home-manager/gcroots/current-home/home-files"})"
+      export HERDR_SANDBOX_STATE_DIRECTORY=${lib.escapeShellArg stateDirectory}
+      export HERDR_SANDBOX_SUPERMEMORY_KEY=${lib.escapeShellArg (local.secretPath "supermemory-api-key")}
+      export HERDR_SANDBOX_LISTEN_PORT=${toString listenPort}
+      export HERDR_SANDBOX_CPUS=4
+      export HERDR_SANDBOX_MEMORY=8g
+      exec ${lib.getExe pkgs.fish} ${./_herdr-sandbox/shell.fish}
     '';
   in {
     herdrSandbox.shell = "${shell}";
@@ -41,16 +48,13 @@
 
     systemd.user.services.herdr-sandbox = {
       Unit = {
-        Description = "Herdr bridge and lifecycle reconciler for Docker-sandboxed workspaces";
-        After = ["network-online.target"];
-        Wants = ["network-online.target"];
+        Description = "Scoped Herdr broker for sandboxed Pi sessions";
         X-SwitchMethod = "restart";
       };
       Service = {
         ExecStart = "${package}/bin/herdr-sandboxd --config ${controllerConfig}";
         Restart = "on-failure";
         RestartSec = 2;
-        TimeoutStopSec = 10;
         NoNewPrivileges = true;
         PrivateTmp = true;
       };

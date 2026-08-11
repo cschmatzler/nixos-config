@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "bundle": "esbuild src/daemon.ts src/shell-client.ts src/guest/herdr-relay.ts --bundle --platform=node --target=node24 --format=esm --packages=external --out-extension:.js=.mjs --outdir=dist"
+    "bundle": "esbuild src/daemon.ts src/guest/herdr-relay.ts --bundle --platform=node --target=node24 --format=esm --packages=external --out-extension:.js=.mjs --outdir=dist"
   },
   "devDependencies": {
     "@types/node": "24.10.1",

@@ -10,7 +10,6 @@
       ./tsconfig.json
       ./src
       ./kit
-      ./template
     ];
   };
   nodeModules = pkgs.importNpmLock.buildNodeModules {
@@ -43,32 +42,20 @@ in
 
       runtime="$out/libexec/herdr-sandbox"
       kit="$out/share/herdr-sandbox/kit"
-      template="$out/share/herdr-sandbox/template"
-      mkdir -p "$out/bin" "$runtime/dist" "$kit" "$template"
+      mkdir -p "$out/bin" "$runtime/dist" "$kit"
       cp package.json "$runtime/package.json"
       cp -r dist/. "$runtime/dist/"
 
       makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/herdr-sandboxd" \
         --add-flags "$runtime/dist/daemon.mjs"
-      makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/herdr-sandbox-shell" \
-        --add-flags "$runtime/dist/shell-client.mjs"
 
       cp -r kit/. "$kit/"
-      cp -r template/. "$template/"
       mkdir -p "$kit/files/home/.local/lib/herdr-sandbox"
       cp "$runtime/dist/guest/herdr-relay.mjs" \
         "$kit/files/home/.local/lib/herdr-sandbox/herdr-relay.mjs"
-      chmod 0755 \
-        "$kit/files/home/.local/bin/herdr-sandbox-aube" \
-        "$kit/files/home/.local/bin/herdr-sandbox-enter" \
-        "$kit/files/home/.local/bin/herdr-sandbox-sudo"
+      chmod 0755 "$kit/files/home/.local/bin/herdr-sandbox-fish"
 
       runHook postInstall
-    '';
-
-    postFixup = ''
-      test "$(head -n 1 "$out/share/herdr-sandbox/kit/files/home/.local/bin/herdr-sandbox-enter")" = \
-        '#!/usr/bin/env bash'
     '';
 
     meta = {

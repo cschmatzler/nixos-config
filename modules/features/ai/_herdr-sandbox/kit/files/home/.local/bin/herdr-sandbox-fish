@@ -1,0 +1,50 @@
+#!/usr/bin/env fish
+
+set -gx HOME /home/agent
+ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
+set -gx PATH "$HOME/.nix-profile/bin" $PATH
+
+if test -d "$HERDR_HOST_HOME_FILES"
+    for relative in (find "$HERDR_HOST_HOME_FILES" -mindepth 1 -not -type d -printf '%P\0' | string split0)
+        set -l target "$HOME/$relative"
+        mkdir -p (dirname "$target")
+        ln -sfn "$HERDR_HOST_HOME_FILES/$relative" "$target"
+    end
+end
+
+mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
+for cache in .pi/agent/npm .pi/agent/git
+    set -l source "$HERDR_HOST_HOME/$cache"
+    set -l target "$HOME/$cache"
+    if test -d "$source"; and not test -e "$target"
+        mkdir -p (dirname "$target")
+        ln -s "$source" "$target"
+    end
+end
+
+set -gx HERDR_SOCKET_PATH "$HOME/.config/herdr/herdr.sock"
+set -l relay_state "$HOME/.local/state/herdr-sandbox/relay"
+mkdir -p "$relay_state"
+set -l relay_pid (cat "$relay_state/pid" 2>/dev/null)
+set -l relay_token (cat "$relay_state/token" 2>/dev/null)
+if test "$relay_token" != "$HERDR_SANDBOX_TOKEN"; or \
+        not kill -0 "$relay_pid" 2>/dev/null
+    kill "$relay_pid" 2>/dev/null
+    printf '%s' "$HERDR_SANDBOX_TOKEN" >"$relay_state/token"
+    chmod 600 "$relay_state/token"
+    rm -f "$HERDR_SOCKET_PATH"
+    nohup node "$HOME/.local/lib/herdr-sandbox/herdr-relay.mjs" \
+        >"$relay_state/log" 2>&1 &
+    echo $last_pid >"$relay_state/pid"
+end
+
+if test -d "$HERDR_HOST_HOME/.cache/ms-playwright"
+    set -gx PLAYWRIGHT_BROWSERS_PATH "$HERDR_HOST_HOME/.cache/ms-playwright"
+    set -gx PLAYWRIGHT_SKIP_BROWSER_GC 1
+end
+
+set -l startup_command "source $HOME/.local/lib/herdr-sandbox/remap-session-home.fish"
+if set -q SSL_CERT_FILE
+    set startup_command "set -gx SSL_CERT_FILE "(string escape -- "$SSL_CERT_FILE")"; $startup_command"
+end
+exec "$HERDR_HOST_PROFILE/bin/fish" -l -C "$startup_command"
