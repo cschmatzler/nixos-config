@@ -421,8 +421,7 @@ async function createSandbox(
     for (const extra of [
       "/nix",
       `${config.hostHome}/.pi/agent/npm`,
-      `${config.hostHome}/.pi/agent/git`,
-      `${config.hostHome}/.cache/nix`,
+      `${config.hostHome}/.pi/agent/git/github.com/dmmulroy/pi-mcp`,
       `${config.hostHome}/.cache/ms-playwright`,
     ]) {
       if (fs.existsSync(extra)) mounts.push(mountPath(extra, "read-only"));

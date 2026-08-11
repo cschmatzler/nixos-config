@@ -47,28 +47,6 @@ if [[ "$(hostname)" != "$HERDR_SANDBOX_HOSTNAME" ]] ||
   ' sh "$HERDR_SANDBOX_HOSTNAME"
 fi
 
-mount_cache_overlay() {
-  guest_path="$1"
-  lower_path="$2"
-  overlay_name="$3"
-  [[ -d "$lower_path" ]] || return
-  mkdir -p "$guest_path"
-  if ! mountpoint -q "$guest_path"; then
-    overlay_root="/run/herdr-cache-overlays/$overlay_name"
-    sudo mkdir -p "$overlay_root/upper" "$overlay_root/work"
-    sudo chown "$(id -u):$(id -g)" "$overlay_root/upper" "$overlay_root/work"
-    sudo mount -t overlay overlay \
-      -o "lowerdir=$lower_path,upperdir=$overlay_root/upper,workdir=$overlay_root/work" \
-      "$guest_path"
-    # overlayfs cannot write SQLite databases that live in the read-only lower
-    # layer; drop them so nix recreates writable ones in the upper (the shared
-    # store paths they index remain available via the /nix mount).
-    rm -f "$guest_path"/*.sqlite "$guest_path"/*.sqlite-wal "$guest_path"/*.sqlite-shm
-  fi
-}
-
-mount_cache_overlay "$HOME/.cache/nix" "$HERDR_HOST_HOME/.cache/nix" nix
-
 mirror_home_files() {
   src="$1"
   [[ -n "$src" && -d "$src" ]] || return 0
