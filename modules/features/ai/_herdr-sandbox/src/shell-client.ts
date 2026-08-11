@@ -328,7 +328,7 @@ async function seedDependencyCache(
     const target = path.join(root, path.relative(sourceRoot, source));
     if (fs.existsSync(target)) continue;
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    await run("cp", ["-al", source, target]);
+    await run("cp", ["-a", "--reflink=auto", source, target]);
   }
   process.stdout.write(`[herdr-sandbox] reused dependency cache from ${sourceRoot}\n`);
 }
