@@ -7,6 +7,14 @@ unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 export PATH="$HOME/.nix-profile/bin:$PATH"
 
+runtime_dir="/run/user/$(id -u)"
+if [[ ! -w "$runtime_dir" ]]; then
+  sudo mkdir -p "$runtime_dir"
+  sudo chown "$(id -u):$(id -g)" "$runtime_dir"
+  sudo chmod 700 "$runtime_dir"
+fi
+export XDG_RUNTIME_DIR="$runtime_dir"
+
 host_system=$(readlink -f /nix/var/nix/profiles/system 2>/dev/null || true)
 if [[ -n "$host_system" ]]; then
   # The host fish config prepends /run/wrappers/bin and
@@ -48,9 +56,14 @@ mount_cache_overlay() {
   if ! mountpoint -q "$guest_path"; then
     overlay_root="/run/herdr-cache-overlays/$overlay_name"
     sudo mkdir -p "$overlay_root/upper" "$overlay_root/work"
+    sudo chown "$(id -u):$(id -g)" "$overlay_root/upper" "$overlay_root/work"
     sudo mount -t overlay overlay \
       -o "lowerdir=$lower_path,upperdir=$overlay_root/upper,workdir=$overlay_root/work" \
       "$guest_path"
+    # overlayfs cannot write SQLite databases that live in the read-only lower
+    # layer; drop them so nix recreates writable ones in the upper (the shared
+    # store paths they index remain available via the /nix mount).
+    rm -f "$guest_path"/*.sqlite "$guest_path"/*.sqlite-wal "$guest_path"/*.sqlite-shm
   fi
 }
 
