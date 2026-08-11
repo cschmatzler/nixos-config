@@ -37,13 +37,26 @@ export function mappingsDirectory(config: Config): string {
   return `${config.stateDirectory}/workspaces`;
 }
 
-export function signWorkspaceToken(workspaceId: string, secret: string): string {
-  const payload = Buffer.from(workspaceId, "utf8").toString("base64url");
+export type WorkspaceCapabilityClaims = {
+  readonly version: 1;
+  readonly workspaceId: string;
+  readonly sandboxName: string;
+  readonly checkoutPath: string;
+};
+
+export function signWorkspaceToken(
+  claims: WorkspaceCapabilityClaims,
+  secret: string,
+): string {
+  const payload = Buffer.from(JSON.stringify(claims), "utf8").toString("base64url");
   const digest = createHmac("sha256", secret).update(payload).digest("base64url");
   return `${payload}.${digest}`;
 }
 
-export function verifyWorkspaceToken(token: string, secret: string): string | undefined {
+export function verifyWorkspaceToken(
+  token: string,
+  secret: string,
+): WorkspaceCapabilityClaims | undefined {
   const [payload, digest] = token.split(".");
   if (payload === undefined || digest === undefined) return undefined;
   const expected = createHmac("sha256", secret).update(payload).digest();
@@ -51,7 +64,38 @@ export function verifyWorkspaceToken(token: string, secret: string): string | un
   if (provided.length !== expected.length || !timingSafeEqual(provided, expected)) {
     return undefined;
   }
-  return Buffer.from(payload, "base64url").toString("utf8");
+  try {
+    const claims: unknown = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (
+      typeof claims !== "object" ||
+      claims === null ||
+      !("version" in claims) ||
+      !("workspaceId" in claims) ||
+      !("sandboxName" in claims) ||
+      !("checkoutPath" in claims)
+    ) {
+      return undefined;
+    }
+    const candidate = claims as Record<string, unknown>;
+    if (
+      candidate.version !== 1 ||
+      typeof candidate.workspaceId !== "string" ||
+      typeof candidate.sandboxName !== "string" ||
+      !/^herdr-[a-f0-9]{20}$/.test(candidate.sandboxName) ||
+      typeof candidate.checkoutPath !== "string" ||
+      !path.isAbsolute(candidate.checkoutPath)
+    ) {
+      return undefined;
+    }
+    return {
+      version: 1,
+      workspaceId: candidate.workspaceId,
+      sandboxName: candidate.sandboxName,
+      checkoutPath: candidate.checkoutPath,
+    };
+  } catch {
+    return undefined;
+  }
 }
 
 export const run = promisify(execFile);

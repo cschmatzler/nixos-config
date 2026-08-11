@@ -623,6 +623,7 @@ async function createSandbox(
 
 function attachEnv(
   workspaceId: string,
+  sandboxName: string,
   root: string,
   fingerprints: CacheFingerprints | undefined,
 ): Array<string> {
@@ -632,7 +633,12 @@ function attachEnv(
     HERDR_TAB_ID: process.env.HERDR_TAB_ID,
     HERDR_PANE_ID: process.env.HERDR_PANE_ID,
     HERDR_SANDBOX_TOKEN: signWorkspaceToken(
-      workspaceId,
+      {
+        version: 1,
+        workspaceId,
+        sandboxName,
+        checkoutPath: root,
+      },
       fs.readFileSync(tokenSecretPath(config), "utf8").trim(),
     ),
     HERDR_SANDBOX_BRIDGE_URL: `http://host.docker.internal:${config.listenPort}`,
@@ -724,7 +730,11 @@ async function main(): Promise<void> {
   const fingerprints = await cacheFingerprintsOrUndefined(root);
   while (true) {
     if (state !== "running") await run(config.sbxPath, ["exec", name, "true"]);
-    const code = await attachOnce(name, cwd, attachEnv(workspaceId, root, fingerprints));
+    const code = await attachOnce(
+      name,
+      cwd,
+      attachEnv(workspaceId, name, root, fingerprints),
+    );
     const after = await sandboxState(name).catch(() => undefined);
     if (after === "running") process.exit(code);
     if (after === undefined) return;

@@ -78,15 +78,41 @@ async function readBody(request: http.IncomingMessage): Promise<string> {
   return body;
 }
 
+function capabilityIsRegistered(
+  sandboxName: string,
+  checkoutPath: string,
+): boolean {
+  try {
+    const registrationPath = path.join(mappingsDirectory(config), `${sandboxName}.json`);
+    const registration: unknown = JSON.parse(fs.readFileSync(registrationPath, "utf8"));
+    return (
+      typeof registration === "object" &&
+      registration !== null &&
+      "sandboxName" in registration &&
+      "workspacePath" in registration &&
+      registration.sandboxName === sandboxName &&
+      registration.workspacePath === checkoutPath
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function handleRpc(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
   const token = request.headers.authorization?.replace(/^Bearer /, "");
-  const workspaceId = token === undefined ? undefined : verifyWorkspaceToken(token, tokenSecret);
-  if (workspaceId === undefined) {
+  const claims = token === undefined ? undefined : verifyWorkspaceToken(token, tokenSecret);
+  if (
+    claims === undefined ||
+    !capabilityIsRegistered(claims.sandboxName, claims.checkoutPath)
+  ) {
     sendJson(response, 401, { error: "invalid capability" });
     return;
   }
-  const scope = scopeFromSnapshot(await snapshot(config.herdrSocketPath), workspaceId);
-  if (scope === undefined) {
+  const scope = scopeFromSnapshot(
+    await snapshot(config.herdrSocketPath),
+    claims.workspaceId,
+  );
+  if (scope === undefined || scope.checkoutPath !== claims.checkoutPath) {
     sendJson(response, 403, { error: "workspace is no longer live" });
     return;
   }
@@ -108,7 +134,10 @@ async function handleRpc(request: http.IncomingMessage, response: http.ServerRes
   }
   demotePrivilegedReportSource(body);
   const result = await call(config.herdrSocketPath, body.method, body.params);
-  sendJson(response, 200, { id: body.id, result: filterResponse(result, workspaceId) });
+  sendJson(response, 200, {
+    id: body.id,
+    result: filterResponse(result, claims.workspaceId),
+  });
 }
 
 const server = http.createServer((request, response) => {
