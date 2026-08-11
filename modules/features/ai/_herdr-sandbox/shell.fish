@@ -139,6 +139,7 @@ set -l exec_env \
     -e "HERDR_HOST_HOME_FILES=$HERDR_SANDBOX_HOME_FILES" \
     -e "HERDR_NIX=$HERDR_SANDBOX_NIX" \
     -e "HERDR_HOST_HOME=$HERDR_SANDBOX_HOST_HOME" \
+    -e "DEVENV_TUI=false" \
     -e "PWD=$checkout" \
     -e "TERM=$terminal" \
     -e "LANG=C.UTF-8"
