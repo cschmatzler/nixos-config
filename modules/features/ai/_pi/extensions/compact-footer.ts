@@ -2,6 +2,13 @@ import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-a
 import { truncateToWidth } from "@earendil-works/pi-tui";
 
 const ANSI_ESCAPE = /\x1b\[[0-?]*[ -/]*[@-~]/g;
+const ORANGE_FOREGROUND = "\x1b[38;2;255;152;0m";
+const RESET_FOREGROUND = "\x1b[39m";
+
+type FormattedContext = {
+  readonly percent: number;
+  readonly text: string;
+};
 
 type MemoryConnection = "checking" | "connected" | "disconnected";
 
@@ -32,9 +39,14 @@ function formatTokens(tokens: { readonly input: number; readonly output: number 
   return `${formatTokenCount(tokens.input)}/${formatTokenCount(tokens.output)}`;
 }
 
-function formatContext(ctx: ExtensionContext): string | undefined {
+function formatContext(ctx: ExtensionContext): FormattedContext | undefined {
   const percent = ctx.getContextUsage()?.percent;
-  return percent === null || percent === undefined ? undefined : `ctx ${Math.round(percent)}%`;
+  if (percent === null || percent === undefined) return undefined;
+  return { percent, text: `ctx ${Math.round(percent)}%` };
+}
+
+function orange(value: string): string {
+  return `${ORANGE_FOREGROUND}${value}${RESET_FOREGROUND}`;
 }
 
 function formatCache(status: string | undefined): { readonly text: string; readonly warning: boolean } | undefined {
@@ -94,7 +106,11 @@ export default function compactFooter(pi: ExtensionAPI): void {
         ];
 
         const context = formatContext(ctx);
-        if (context) parts.push(theme.fg("dim", context));
+        if (context) {
+          if (context.percent > 75) parts.push(orange(context.text));
+          else if (context.percent > 50) parts.push(theme.fg("warning", context.text));
+          else parts.push(theme.fg("dim", context.text));
+        }
 
         const cache = formatCache(statuses.get("pi-cache-stats"));
         if (cache) parts.push(theme.fg(cache.warning ? "warning" : "dim", cache.text));
