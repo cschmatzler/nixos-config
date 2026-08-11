@@ -10,8 +10,7 @@ requires:
 permissions:
   network:
     allow:
-      - localhost:18743
-      - api.supermemory.ai:443
+      - "**"
 
 setup:
   install:

@@ -26,6 +26,7 @@
       export HERDR_SANDBOX_OPENSSL=${lib.getExe pkgs.openssl}
       export HERDR_SANDBOX_TAR=${pkgs.gnutar}/bin/tar
       export HERDR_SANDBOX_GH=${lib.getExe pkgs.gh}
+      export HERDR_SANDBOX_GIT=${lib.getExe pkgs.git}
       export HERDR_SANDBOX_KIT=${package}/share/herdr-sandbox/kit
       export HERDR_SANDBOX_HOST_SHELL=${lib.getExe pkgs.fish}
       export HERDR_SANDBOX_HOST_HOME=${lib.escapeShellArg config.home.homeDirectory}

@@ -19,6 +19,14 @@ end
 
 set -l checkout (printf '%s' "$workspace_json" | "$HERDR_SANDBOX_JQ" -r '.result.workspace.worktree.checkout_path')
 set checkout (realpath "$checkout")
+set -l repo_root (printf '%s' "$workspace_json" | "$HERDR_SANDBOX_JQ" -r '.result.workspace.worktree.repo_root')
+set repo_root (realpath "$repo_root")
+set -l branch ("$HERDR_SANDBOX_GIT" -C "$checkout" branch --show-current)
+"$HERDR_SANDBOX_HERDR" workspace rename "$HERDR_WORKSPACE_ID" (basename "$checkout") >/dev/null
+if test -z "$branch"
+    echo "[herdr-sandbox] detached worktrees are not supported" >&2
+    exit 1
+end
 set -l digest (printf '%s' "$checkout" | "$HERDR_SANDBOX_SHA256SUM" | string split ' ')[1]
 set -l sandbox "herdr-"(string sub -s 1 -l 20 "$digest")
 set -l state "$HERDR_SANDBOX_STATE_DIRECTORY"
@@ -42,11 +50,16 @@ if test "$exists" != true
         --cpus "$HERDR_SANDBOX_CPUS" \
         --memory "$HERDR_SANDBOX_MEMORY" \
         --kit "$HERDR_SANDBOX_KIT" \
-        shell "$checkout" $mounts
+        shell "$repo_root" $mounts
     if test $status -ne 0
         set exists ("$HERDR_SANDBOX_SBX" ls --json | "$HERDR_SANDBOX_JQ" -r --arg name "$sandbox" '.sandboxes | any(.name == $name)')
         test "$exists" = true; or exit 1
     else
+        if not "$HERDR_SANDBOX_SBX" exec -u agent "$sandbox" \
+                git switch --track -c "$branch" "origin/$branch"
+            "$HERDR_SANDBOX_SBX" rm --force "$sandbox" >/dev/null
+            exit 1
+        end
         if set -l github_token ("$HERDR_SANDBOX_GH" auth token 2>/dev/null)
             printf '%s' "$github_token" | "$HERDR_SANDBOX_SBX" secret set github --sandbox "$sandbox" >/dev/null
         end
@@ -66,7 +79,8 @@ set -l credential_paths
 for relative in \
     .pi/agent/auth.json \
     .pi/agent/mcp-auth.json \
-    .pi/agent/mcp-oauth
+    .pi/agent/mcp-oauth \
+    .pi/agent/extensions/herdr-agent-state.ts
     if test -e "$HERDR_SANDBOX_HOST_HOME/$relative"
         set -a credential_paths "$relative"
     end
@@ -95,6 +109,9 @@ set -l temporary "$registration."(random)
 chmod 600 "$temporary"
 mv -f "$temporary" "$registration"
 
+"$HERDR_SANDBOX_SBX" exec -u root "$sandbox" mkdir -p (dirname "$checkout")
+"$HERDR_SANDBOX_SBX" exec -u root "$sandbox" ln -sfn "$repo_root" "$checkout"
+
 set -l terminal xterm-256color
 if set -q TERM
     set terminal "$TERM"
@@ -109,11 +126,13 @@ set -l exec_env \
     -e "HERDR_HOST_PROFILE=$HERDR_SANDBOX_HOST_PROFILE" \
     -e "HERDR_HOST_HOME_FILES=$HERDR_SANDBOX_HOME_FILES" \
     -e "HERDR_HOST_HOME=$HERDR_SANDBOX_HOST_HOME" \
+    -e "PWD=$checkout" \
     -e "TERM=$terminal" \
     -e "LANG=C.UTF-8"
 if set -q COLORTERM
     set -a exec_env -e "COLORTERM=$COLORTERM"
 end
 
-exec "$HERDR_SANDBOX_SBX" exec -it -u agent $exec_env \
-    "$sandbox" /home/agent/.local/bin/herdr-sandbox-fish
+exec "$HERDR_SANDBOX_SBX" exec -it -u agent -w "$repo_root" $exec_env \
+    "$sandbox" "$HERDR_SANDBOX_HOST_PROFILE/bin/fish" \
+    /home/agent/.local/bin/herdr-sandbox-fish

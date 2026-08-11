@@ -49,7 +49,7 @@ The last successfully resolved pull request identity, mergeability, and CI state
 _Avoid_: PR metadata, sidebar tokens
 
 **Sandboxed Herdr Workspace**:
-One linked-worktree Herdr workspace whose panes share a single isolated guest lifecycle and the same explicitly projected worktree. Top-level Herdr workspaces remain local.
+One linked-worktree Herdr workspace whose panes share a single isolated guest and its private working copy. Top-level Herdr workspaces remain local.
 _Avoid_: Sandboxed pane, remote shell
 
 **Herdr Capability Broker**:
@@ -71,7 +71,7 @@ _Avoid_: Docker container, custom VM controller
 - The **AI Tool Inventory** is translated by the Pi and Claude Code Adapters with explicit membership per Adapter.
 - **Syncthing Desired State** is consumed declaratively on NixOS and reconciled through local HTTP on Darwin.
 - **Workspace PR Status** remains unchanged when directory, Git, or GitHub lookup is unavailable and is cleared when Git confirms no branch or GitHub confirms no pull request.
-- A linked-worktree **Sandboxed Herdr Workspace** owns one guest shared by all of its panes and never falls back to a host shell; top-level Herdr workspaces intentionally use the local shell.
+- A linked-worktree **Sandboxed Herdr Workspace** owns one Docker Sandbox and private working copy shared by all of its panes; top-level Herdr workspaces intentionally use the local shell.
 - The **Herdr Capability Broker** derives pane and workspace authority from the real Herdr state rather than trusting caller-provided identifiers.
 - The **Docker Sandbox Backend** supplies one persistent guest per **Sandboxed Herdr Workspace**, while Herdr remains authoritative for workspace lifetime.
 
