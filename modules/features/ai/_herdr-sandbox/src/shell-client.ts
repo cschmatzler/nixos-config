@@ -46,6 +46,7 @@ const DEPENDENCY_CACHE_MARKER = ".herdr-sandbox-dependencies-v2";
 const DEVENV_CACHE_MARKER = ".herdr-sandbox-devenv-v2";
 const SANDBOX_HOSTNAME = "herdr-sandbox";
 const SANDBOX_WORKSPACE_ROOT = "/home/agent/workspace";
+const SANDBOX_PROJECTION_VERSION = 2;
 
 const DEPENDENCY_INPUT_NAMES = new Set([
   ".npmrc",
@@ -77,10 +78,21 @@ const DEVENV_INPUT_NAMES = new Set([
 
 const config = readConfig();
 
+function pathWithin(root: string, candidate: string): boolean {
+  const relative = path.relative(root, candidate);
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`));
+}
+
 function cwdWithin(root: string): string {
-  const cwd = process.cwd();
-  if (cwd.startsWith(root)) return cwd;
-  return root;
+  const cwd = fs.realpathSync(process.cwd());
+  return pathWithin(root, cwd) ? cwd : root;
+}
+
+function mountPath(hostPath: string, access: "read-write" | "read-only"): string {
+  if (hostPath.includes(":") || hostPath.includes("\n") || hostPath.includes("\0")) {
+    throw new Error(`unsupported mount path: ${hostPath}`);
+  }
+  return access === "read-only" ? `${hostPath}:ro` : hostPath;
 }
 
 function hostHomeFiles(): string | undefined {
@@ -103,6 +115,14 @@ function openHostShell(): never {
 
 async function sandboxState(name: string): Promise<SandboxState | undefined> {
   return (await listSandboxes(config)).get(name);
+}
+
+function projectionMarker(name: string): string {
+  return path.join(
+    config.stateDirectory,
+    "projections",
+    `${name}-v${SANDBOX_PROJECTION_VERSION}`,
+  );
 }
 
 async function copyHome(name: string, paths: ReadonlyArray<string>): Promise<void> {
@@ -342,27 +362,68 @@ async function seedFromCompatibleCaches(root: string): Promise<void> {
   await seedDependencyCache(root, fingerprints.dependencies);
 }
 
-async function createSandbox(name: string, root: string): Promise<void> {
+async function gitMounts(root: string, repositoryGitDirectory: string): Promise<ReadonlyArray<string>> {
+  const reportedCommonDirectory = path.resolve(
+    root,
+    (await run("git", ["-C", root, "rev-parse", "--git-common-dir"])).stdout.trim(),
+  );
+  const commonDirectory = fs.realpathSync(reportedCommonDirectory);
+  if (commonDirectory !== repositoryGitDirectory) {
+    throw new Error("worktree Git metadata does not belong to Herdr's repository root");
+  }
+  const reportedWorktreeDirectory = path.resolve(
+    root,
+    (await run("git", ["-C", root, "rev-parse", "--git-dir"])).stdout.trim(),
+  );
+  const worktreeDirectory = fs.realpathSync(reportedWorktreeDirectory);
+  if (!pathWithin(commonDirectory, worktreeDirectory)) {
+    throw new Error("worktree Git administration directory is outside the common repository");
+  }
+
+  const worktreeConfig = path.join(worktreeDirectory, "config.worktree");
+  const worktreeConfigEnabled = await run(
+    "git",
+    ["-C", root, "config", "--bool", "--get", "extensions.worktreeConfig"],
+  ).then(({ stdout }) => stdout.trim() === "true", () => false);
+  if (worktreeConfigEnabled && !fs.existsSync(worktreeConfig)) {
+    throw new Error("worktree-specific Git config must exist before sandbox projection");
+  }
+
+  const protectedPaths = [
+    path.join(root, ".git"),
+    path.join(commonDirectory, "config"),
+    path.join(commonDirectory, "hooks"),
+    path.join(worktreeDirectory, "commondir"),
+    path.join(worktreeDirectory, "gitdir"),
+    worktreeConfig,
+  ].filter((candidate) => fs.existsSync(candidate));
+
+  return [
+    mountPath(commonDirectory, "read-write"),
+    ...protectedPaths.map((candidate) => mountPath(candidate, "read-only")),
+  ];
+}
+
+async function createSandbox(
+  name: string,
+  root: string,
+  repositoryGitDirectory: string,
+): Promise<void> {
   const lockDir = path.join(config.stateDirectory, "locks", `${name}.lock`);
   await withLock(lockDir, async () => {
     if ((await sandboxState(name)) !== undefined) return;
     process.stdout.write("[herdr-sandbox] creating the sandbox for this worktree…\n");
-    const gitDir = path.resolve(
-      root,
-      (await run("git", ["-C", root, "rev-parse", "--git-common-dir"])).stdout.trim(),
-    );
     const template = await ensureSandboxTemplate(config);
     await seedFromCompatibleCaches(root);
-    const mounts = [root];
-    if (!gitDir.startsWith(`${root}${path.sep}`)) mounts.push(gitDir);
+    const mounts = [mountPath(root, "read-write"), ...await gitMounts(root, repositoryGitDirectory)];
     for (const extra of [
-      "/nix:ro",
-      `${config.hostHome}/.pi/agent/npm:ro`,
-      `${config.hostHome}/.pi/agent/git:ro`,
-      `${config.hostHome}/.cache/nix:ro`,
-      `${config.hostHome}/.cache/ms-playwright:ro`,
+      "/nix",
+      `${config.hostHome}/.pi/agent/npm`,
+      `${config.hostHome}/.pi/agent/git`,
+      `${config.hostHome}/.cache/nix`,
+      `${config.hostHome}/.cache/ms-playwright`,
     ]) {
-      if (fs.existsSync(extra.replace(/:ro$/, ""))) mounts.push(extra);
+      if (fs.existsSync(extra)) mounts.push(mountPath(extra, "read-only"));
     }
     await run(config.sbxPath, [
       "create", "--quiet",
@@ -375,6 +436,9 @@ async function createSandbox(name: string, root: string): Promise<void> {
     ]);
     await seedProxyCredentials(config, name);
     await copyHome(name, RUNTIME_COPY_PATHS);
+    const marker = projectionMarker(name);
+    fs.mkdirSync(path.dirname(marker), { recursive: true, mode: 0o700 });
+    fs.writeFileSync(marker, "protected host projection\n", { mode: 0o600 });
   });
 }
 
@@ -454,13 +518,19 @@ async function main(): Promise<void> {
   const worktree = snap.workspaces?.find((w: any) => w.workspace_id === workspaceId)?.worktree;
   if (worktree?.is_linked_worktree !== true) openHostShell();
 
-  const root: string = worktree.checkout_path;
+  const root = fs.realpathSync(worktree.checkout_path);
+  const repositoryGitDirectory = fs.realpathSync(path.join(worktree.repo_root, ".git"));
   const name = `herdr-${createHash("sha256").update(root).digest("hex").slice(0, 20)}`;
   const sandboxes = await ensureSbxDaemon(config);
   await enforceRestrictiveNetworkPolicy(config);
   let state = sandboxes.get(name);
+  if (state !== undefined && !fs.existsSync(projectionMarker(name))) {
+    process.stdout.write("[herdr-sandbox] replacing the legacy host projection…\n");
+    await run(config.sbxPath, ["rm", "--force", name]);
+    state = undefined;
+  }
   if (state === undefined) {
-    await createSandbox(name, root);
+    await createSandbox(name, root, repositoryGitDirectory);
     state = "running";
   }
 
