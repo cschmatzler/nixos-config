@@ -11,6 +11,7 @@ import {
   tokenSecretPath,
   verifyWorkspaceToken,
 } from "./common";
+import { ensureSandboxTemplate } from "./sandbox-template";
 import {
   authorize,
   call,
@@ -32,6 +33,15 @@ function loadTokenSecret(): string {
 }
 
 const tokenSecret = loadTokenSecret();
+
+async function prepareSandboxTemplate(): Promise<void> {
+  try {
+    await listSandboxes(config);
+  } catch {
+    await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "balanced"]);
+  }
+  await ensureSandboxTemplate(config);
+}
 
 function sendJson(response: http.ServerResponse, status: number, body: unknown): void {
   const encoded = JSON.stringify(body);
@@ -146,6 +156,10 @@ async function reconcile(): Promise<void> {
 setInterval(() => {
   reconcile().catch((cause: unknown) => console.error("[herdr-sandbox] reconcile failed", cause));
 }, 30_000);
+
+prepareSandboxTemplate().catch((cause: unknown) => {
+  console.error("[herdr-sandbox] template preparation failed", cause);
+});
 
 server.listen(config.listenPort, "127.0.0.1", () => {
   console.log(`[herdr-sandbox] bridge ready on 127.0.0.1:${config.listenPort}`);

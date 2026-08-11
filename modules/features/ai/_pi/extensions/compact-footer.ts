@@ -1,5 +1,5 @@
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { truncateToWidth } from "@earendil-works/pi-tui";
 
 const ANSI_ESCAPE = /\x1b\[[0-?]*[ -/]*[@-~]/g;
 
@@ -77,16 +77,6 @@ function memoryConnection(status: string | undefined): MemoryConnection | undefi
   return undefined;
 }
 
-function fitLine(left: string, right: string, width: number): string {
-  if (width <= 0) return "";
-  if (visibleWidth(right) >= width) return truncateToWidth(right, width, "");
-
-  const maxLeftWidth = width - visibleWidth(right) - 1;
-  const fittedLeft = truncateToWidth(left, maxLeftWidth, "");
-  const padding = " ".repeat(Math.max(1, width - visibleWidth(fittedLeft) - visibleWidth(right)));
-  return truncateToWidth(`${fittedLeft}${padding}${right}`, width, "");
-}
-
 /** Installs a one-line footer with only actionable session and connection information. */
 export default function compactFooter(pi: ExtensionAPI): void {
   pi.on("session_start", (_event, ctx) => {
@@ -96,7 +86,12 @@ export default function compactFooter(pi: ExtensionAPI): void {
       invalidate() {},
       render(width: number): string[] {
         const statuses = footerData.getExtensionStatuses();
-        const parts = [theme.fg("dim", formatTokens(sessionTokens(ctx)))];
+        const model = ctx.model?.id ?? "no model";
+        const parts = [
+          theme.fg("muted", model),
+          theme.fg("muted", pi.getThinkingLevel()),
+          theme.fg("dim", formatTokens(sessionTokens(ctx))),
+        ];
 
         const context = formatContext(ctx);
         if (context) parts.push(theme.fg("dim", context));
@@ -112,9 +107,7 @@ export default function compactFooter(pi: ExtensionAPI): void {
         if (memory === "connected") parts.push(theme.fg("success", "memory ✓"));
         if (memory === "disconnected") parts.push(theme.fg("warning", "memory ✗"));
 
-        const model = ctx.model?.id ?? "no model";
-        const right = theme.fg("muted", `${model} • ${pi.getThinkingLevel()}`);
-        return [fitLine(parts.join(theme.fg("dim", " · ")), right, width)];
+        return [truncateToWidth(parts.join(theme.fg("dim", " · ")), width, "")];
       },
     }));
   });

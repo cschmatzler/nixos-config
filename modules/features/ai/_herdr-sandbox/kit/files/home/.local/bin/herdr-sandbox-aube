@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -u
+
+real_aube="$HERDR_WORKSPACE_ROOT/.devenv/profile/bin/aube"
+if [[ "${HERDR_DEPENDENCY_CACHE_REUSED:-}" == 1 &&
+  "${1:-}" == install &&
+  -x "$real_aube" ]] &&
+  "$real_aube" check >/dev/null 2>&1; then
+  echo "aube cache reused · ✓ Already up to date"
+  exit 0
+fi
+
+exec "$real_aube" "$@"

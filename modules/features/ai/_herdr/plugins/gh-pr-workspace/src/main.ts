@@ -48,6 +48,15 @@ type BranchLookup =
   | { readonly _tag: "no-branch" }
   | Unavailable;
 
+type RevisionLookup = { readonly _tag: "found"; readonly revision: string } | Unavailable;
+
+type RepositoryLookup = { readonly _tag: "found"; readonly repository: string } | Unavailable;
+
+type PullRequestReferenceLookup =
+  | { readonly _tag: "found"; readonly number: number }
+  | { readonly _tag: "not-found" }
+  | Unavailable;
+
 type PullRequestLookup =
   | { readonly _tag: "found"; readonly tokens: SidebarTokens }
   | { readonly _tag: "not-found" }
@@ -199,10 +208,105 @@ async function currentBranch(cwd: string): Promise<BranchLookup> {
   return { _tag: "found", branch };
 }
 
-async function lookupPullRequest(cwd: string, branch: string): Promise<PullRequestLookup> {
+async function currentRevision(cwd: string): Promise<RevisionLookup> {
+  const result = await runCommand("git", ["-C", cwd, "rev-parse", "HEAD"]);
+  if (result._tag === "failure") {
+    return { _tag: "unavailable", reason: failureReason(result) };
+  }
+
+  const revision = result.stdout.trim();
+  if (!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(revision)) {
+    return { _tag: "unavailable", reason: "invalid Git revision" };
+  }
+  return { _tag: "found", revision };
+}
+
+async function currentRepository(cwd: string): Promise<RepositoryLookup> {
+  const result = await runCommand("gh", ["repo", "view", "--json", "nameWithOwner"], cwd);
+  if (result._tag === "failure") {
+    return { _tag: "unavailable", reason: failureReason(result) };
+  }
+
+  const json = parseJson(result.stdout);
+  if (
+    json._tag === "unavailable" ||
+    !isRecord(json.value) ||
+    typeof json.value.nameWithOwner !== "string" ||
+    !/^[^/\s]+\/[^/\s]+$/.test(json.value.nameWithOwner)
+  ) {
+    return { _tag: "unavailable", reason: "invalid GitHub repository response" };
+  }
+  return { _tag: "found", repository: json.value.nameWithOwner };
+}
+
+function parseRevisionPullRequest(
+  input: unknown,
+  revision: string,
+): PullRequestReferenceLookup {
+  if (!Array.isArray(input)) {
+    return { _tag: "unavailable", reason: "invalid GitHub commit pull request response" };
+  }
+
+  const matching: Array<{ readonly number: number; readonly state: "open" | "closed" }> = [];
+  for (const item of input) {
+    if (
+      !isRecord(item) ||
+      typeof item.number !== "number" ||
+      !Number.isSafeInteger(item.number) ||
+      item.number < 1 ||
+      (item.state !== "open" && item.state !== "closed") ||
+      !isRecord(item.head) ||
+      typeof item.head.sha !== "string"
+    ) {
+      return { _tag: "unavailable", reason: "invalid GitHub commit pull request entry" };
+    }
+    if (item.head.sha === revision) {
+      matching.push({ number: item.number, state: item.state });
+    }
+  }
+
+  const open = matching.filter((pullRequest) => pullRequest.state === "open");
+  const [onlyOpen] = open;
+  if (open.length === 1 && onlyOpen !== undefined) {
+    return { _tag: "found", number: onlyOpen.number };
+  }
+  if (open.length > 1) {
+    return {
+      _tag: "unavailable",
+      reason: "multiple open pull requests share the current revision",
+    };
+  }
+
+  const [onlyMatch] = matching;
+  if (matching.length === 1 && onlyMatch !== undefined) {
+    return { _tag: "found", number: onlyMatch.number };
+  }
+  if (matching.length === 0) return { _tag: "not-found" };
+  return { _tag: "unavailable", reason: "multiple pull requests share the current revision" };
+}
+
+async function findPullRequestByRevision(cwd: string): Promise<PullRequestReferenceLookup> {
+  const revision = await currentRevision(cwd);
+  if (revision._tag === "unavailable") return revision;
+
+  const repository = await currentRepository(cwd);
+  if (repository._tag === "unavailable") return repository;
+
+  const endpoint = `repos/${repository.repository}/commits/${revision.revision}/pulls?per_page=100`;
+  const result = await runCommand("gh", ["api", endpoint], cwd);
+  if (result._tag === "failure") {
+    return { _tag: "unavailable", reason: failureReason(result) };
+  }
+
+  const json = parseJson(result.stdout);
+  if (json._tag === "unavailable") return json;
+  return parseRevisionPullRequest(json.value, revision.revision);
+}
+
+async function viewPullRequest(cwd: string, selector: string): Promise<PullRequestLookup> {
   const result = await runCommand(
     "gh",
-    ["pr", "view", branch, "--json", PULL_REQUEST_FIELDS],
+    ["pr", "view", selector, "--json", PULL_REQUEST_FIELDS],
     cwd,
   );
   if (result._tag === "failure") {
@@ -219,6 +323,17 @@ async function lookupPullRequest(cwd: string, branch: string): Promise<PullReque
     return { _tag: "unavailable", reason: parsed.error.message };
   }
   return { _tag: "found", tokens: parsed.value };
+}
+
+async function lookupPullRequest(cwd: string, branch: string): Promise<PullRequestLookup> {
+  const branchPullRequest = await viewPullRequest(cwd, branch);
+  if (branchPullRequest._tag !== "not-found") return branchPullRequest;
+
+  // An agent may push a Herdr worktree under a PR-specific remote branch while
+  // retaining the generated local branch name. Match only an exact PR head revision.
+  const revisionPullRequest = await findPullRequestByRevision(cwd);
+  if (revisionPullRequest._tag !== "found") return revisionPullRequest;
+  return viewPullRequest(cwd, String(revisionPullRequest.number));
 }
 
 async function writeWorkspaceStatus(

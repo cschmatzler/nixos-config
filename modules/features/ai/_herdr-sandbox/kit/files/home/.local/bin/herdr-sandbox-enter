@@ -2,7 +2,8 @@
 set -u
 
 unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
-  XAI_API_KEY MISTRAL_API_KEY GOOGLE_API_KEY SBX_CRED_ANTHROPIC_MODE
+  XAI_API_KEY MISTRAL_API_KEY GOOGLE_API_KEY GH_TOKEN GITHUB_TOKEN \
+  GH_ENTERPRISE_TOKEN GITHUB_ENTERPRISE_TOKEN SBX_CRED_ANTHROPIC_MODE
 
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 export PATH="$HOME/.nix-profile/bin:$PATH"
@@ -13,16 +14,68 @@ if [[ -n "$host_system" ]]; then
   # /run/current-system/sw/bin; recreate both so the system profile's tools
   # resolve while Ubuntu's setuid sudo still shadows the non-setuid Nix one.
   sudo sh -c "ln -sfn '$host_system' /run/current-system &&
-    mkdir -p /run/wrappers/bin && ln -sfn /usr/bin/sudo /run/wrappers/bin/sudo"
-  export PATH="$PATH:/run/current-system/sw/bin"
+    mkdir -p /run/wrappers/bin &&
+    ln -sfn '$HOME/.local/bin/herdr-sandbox-sudo' /run/wrappers/bin/sudo"
+  export PATH="/run/wrappers/bin:$PATH:/run/current-system/sw/bin"
 fi
+
+host_workspace_cwd="$PWD"
+case "$host_workspace_cwd" in
+  "$HERDR_HOST_WORKSPACE_ROOT" | "$HERDR_HOST_WORKSPACE_ROOT"/*) ;;
+  *) host_workspace_cwd="$HERDR_HOST_WORKSPACE_ROOT" ;;
+esac
+if ! mountpoint -q "$HERDR_WORKSPACE_ROOT"; then
+  sudo mkdir -p "$HERDR_WORKSPACE_ROOT"
+  sudo mount --bind "$HERDR_HOST_WORKSPACE_ROOT" "$HERDR_WORKSPACE_ROOT"
+fi
+if [[ "$(hostname)" != "$HERDR_SANDBOX_HOSTNAME" ]] ||
+  ! getent hosts "$HERDR_SANDBOX_HOSTNAME" >/dev/null 2>&1; then
+  sudo sh -eu -c '
+    hosts=/run/herdr-sandbox-hosts
+    cp /etc/hosts "$hosts.new"
+    printf "127.0.1.1 %s\n" "$1" >>"$hosts.new"
+    mv "$hosts.new" "$hosts"
+    mount --bind "$hosts" /etc/hosts
+    hostname "$1"
+  ' sh "$HERDR_SANDBOX_HOSTNAME"
+fi
+
+mount_cache_overlay() {
+  guest_path="$1"
+  lower_path="$2"
+  overlay_name="$3"
+  [[ -d "$lower_path" ]] || return
+  mkdir -p "$guest_path"
+  if ! mountpoint -q "$guest_path"; then
+    overlay_root="/run/herdr-cache-overlays/$overlay_name"
+    sudo mkdir -p "$overlay_root/upper" "$overlay_root/work"
+    sudo mount -t overlay overlay \
+      -o "lowerdir=$lower_path,upperdir=$overlay_root/upper,workdir=$overlay_root/work" \
+      "$guest_path"
+  fi
+}
+
+mount_cache_overlay "$HOME/.cache/nix" "$HERDR_HOST_HOME/.cache/nix" nix
 
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
 for entry in .pi/agent/sessions .pi/agent/npm .pi/agent/git; do
   [[ -d "$HOME/$entry" && ! -L "$HOME/$entry" ]] ||
     ln -sfn "$HERDR_HOST_HOME/$entry" "$HOME/$entry"
 done
-export PLAYWRIGHT_BROWSERS_PATH="$HERDR_HOST_HOME/.cache/ms-playwright"
+
+host_playwright_cache="$HERDR_HOST_HOME/.cache/ms-playwright"
+guest_playwright_cache="$HOME/.cache/ms-playwright"
+mkdir -p "$guest_playwright_cache"
+if [[ -d "$host_playwright_cache" ]]; then
+  for browser in "$host_playwright_cache"/*; do
+    [[ -d "$browser" ]] || continue
+    target="$guest_playwright_cache/$(basename "$browser")"
+    if [[ -L "$target" && ! -e "$target" ]]; then rm -f "$target"; fi
+    [[ -e "$target" || -L "$target" ]] || ln -s "$browser" "$target"
+  done
+fi
+export PLAYWRIGHT_BROWSERS_PATH="$guest_playwright_cache"
+export PLAYWRIGHT_SKIP_BROWSER_GC=1
 
 state="$HOME/.local/state/herdr-sandbox"
 relay="$state/relay"
@@ -41,21 +94,61 @@ if [[ "$(cat "$relay/token" 2>/dev/null)" != "$HERDR_SANDBOX_TOKEN" ]] ||
   for _ in $(seq 1 100); do [[ -S $socket ]] && break; sleep 0.05; done
 fi
 
-boot=$(cat /proc/sys/kernel/random/boot_id)
-if mkdir "$state/boot-$boot" 2>/dev/null; then
-  (
-    cd "$HERDR_WORKSPACE_ROOT" || exit
-    if [[ -e "$state/setup-done" ]]; then
-      if [[ -x .agents/resume ]]; then
-        .agents/resume || echo "[herdr-sandbox] .agents/resume failed; continuing." >&2
-      fi
-    else
-      if [[ -x .agents/setup ]]; then
-        .agents/setup || echo "[herdr-sandbox] .agents/setup failed; continuing." >&2
-      fi
-      touch "$state/setup-done"
-    fi
-  )
+aube_wrapper=""
+if [[ "${HERDR_DEPENDENCY_CACHE_REUSED:-}" == 1 &&
+  -d "$HERDR_WORKSPACE_ROOT/node_modules/.bin" &&
+  ! -e "$HERDR_WORKSPACE_ROOT/node_modules/.bin/aube" ]]; then
+  aube_wrapper="$HERDR_WORKSPACE_ROOT/node_modules/.bin/aube"
+  ln -s "$HOME/.local/bin/herdr-sandbox-aube" "$aube_wrapper"
 fi
+
+boot=$(cat /proc/sys/kernel/random/boot_id)
+boot_marker="$state/boot-$boot"
+lifecycle_status=0
+if mkdir "$boot_marker" 2>/dev/null; then
+  if [[ -e "$state/setup-done" ]]; then
+    if [[ -x "$HERDR_WORKSPACE_ROOT/.agents/resume" ]]; then
+      (cd "$HERDR_WORKSPACE_ROOT" && .agents/resume)
+      lifecycle_status=$?
+      if ((lifecycle_status != 0)); then
+        echo "[herdr-sandbox] .agents/resume failed; continuing." >&2
+      fi
+    fi
+  else
+    if [[ -x "$HERDR_WORKSPACE_ROOT/.agents/setup" ]]; then
+      (cd "$HERDR_WORKSPACE_ROOT" && .agents/setup)
+      lifecycle_status=$?
+      if ((lifecycle_status != 0)); then
+        echo "[herdr-sandbox] .agents/setup failed; continuing." >&2
+      fi
+    fi
+    if ((lifecycle_status == 0)); then touch "$state/setup-done"; fi
+  fi
+  if ((lifecycle_status != 0)); then rmdir "$boot_marker"; fi
+fi
+if [[ -n "$aube_wrapper" && -L "$aube_wrapper" ]]; then rm -f "$aube_wrapper"; fi
+
+devenv_status=0
+if [[ -e "$HERDR_WORKSPACE_ROOT/devenv.nix" ]] && command -v devenv >/dev/null 2>&1; then
+  if devenv_environment=$(cd "$HERDR_WORKSPACE_ROOT" && devenv print-dev-env); then
+    eval "$devenv_environment"
+  else
+    devenv_status=1
+    echo "[herdr-sandbox] failed to activate the cached devenv environment; continuing." >&2
+  fi
+fi
+if ((lifecycle_status == 0 && devenv_status == 0)); then
+  if [[ -d "$HERDR_WORKSPACE_ROOT/.devenv" && -n "${HERDR_DEVENV_CACHE_FINGERPRINT:-}" ]]; then
+    devenv_marker="$HERDR_WORKSPACE_ROOT/.devenv/.herdr-sandbox-devenv-v2"
+    printf '%s\n' "$HERDR_DEVENV_CACHE_FINGERPRINT" >"$devenv_marker.$$"
+    mv -f "$devenv_marker.$$" "$devenv_marker"
+  fi
+  if [[ -d "$HERDR_WORKSPACE_ROOT/node_modules" && -n "${HERDR_DEPENDENCY_CACHE_FINGERPRINT:-}" ]]; then
+    dependency_marker="$HERDR_WORKSPACE_ROOT/node_modules/.herdr-sandbox-dependencies-v2"
+    printf '%s\n' "$HERDR_DEPENDENCY_CACHE_FINGERPRINT" >"$dependency_marker.$$"
+    mv -f "$dependency_marker.$$" "$dependency_marker"
+  fi
+fi
+cd "$host_workspace_cwd" 2>/dev/null || cd "$HERDR_HOST_WORKSPACE_ROOT" || exit
 
 exec fish -l

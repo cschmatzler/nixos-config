@@ -1,7 +1,7 @@
 schemaVersion: "2"
 kind: mixin
 name: herdr-pi-workspace
-version: "0.3.0"
+version: "0.7.0"
 displayName: Herdr Pi Workspace
 description: Herdr workspace sandboxes running the host Nix profile
 requires:
@@ -28,15 +28,11 @@ permissions:
 setup:
   install:
     - command: >-
-        apt-get update &&
-        DEBIAN_FRONTEND=noninteractive apt-get install -y
-        build-essential ca-certificates curl git jq sudo unzip xz-utils &&
-        printf 'agent ALL=(ALL) NOPASSWD:ALL\n' > /etc/sudoers.d/agent &&
-        chmod 0440 /etc/sudoers.d/agent &&
-        chmod 0755 /home/agent/.local/bin/herdr-sandbox-enter &&
-        rm -rf /var/lib/apt/lists/*
+        chmod 0755 /home/agent/.local/bin/herdr-sandbox-aube
+        /home/agent/.local/bin/herdr-sandbox-enter
+        /home/agent/.local/bin/herdr-sandbox-sudo
       user: "0"
-      description: Install base build tooling and passwordless sudo
+      description: Make the sandbox entrypoints executable
 
 environment:
   variables:
