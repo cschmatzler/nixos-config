@@ -7,6 +7,7 @@ import { backup, DatabaseSync } from "node:sqlite";
 
 import {
   causeMessage,
+  enforceRestrictiveNetworkPolicy,
   ensureSbxDaemon,
   listSandboxes,
   mappingsDirectory,
@@ -455,7 +456,9 @@ async function main(): Promise<void> {
 
   const root: string = worktree.checkout_path;
   const name = `herdr-${createHash("sha256").update(root).digest("hex").slice(0, 20)}`;
-  let state = (await ensureSbxDaemon(config)).get(name);
+  const sandboxes = await ensureSbxDaemon(config);
+  await enforceRestrictiveNetworkPolicy(config);
+  let state = sandboxes.get(name);
   if (state === undefined) {
     await createSandbox(name, root);
     state = "running";

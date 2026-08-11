@@ -126,7 +126,7 @@ export async function ensureSbxDaemon(config: Config): Promise<Map<string, Sandb
   try {
     return await listSandboxes(config);
   } catch {
-    await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "balanced"]);
+    await run(config.sbxPath, ["daemon", "start", "--detach", "--policy", "deny-all"]);
   }
   for (let attempt = 0; attempt < 40; attempt += 1) {
     try {
@@ -136,6 +136,55 @@ export async function ensureSbxDaemon(config: Config): Promise<Map<string, Sandb
     }
   }
   throw new Error("Docker Sandboxes daemon did not come up; try `sbx daemon start`");
+}
+
+const BALANCED_NETWORK_RULE_IDS = [
+  "default-ai-services",
+  "default-package-managers",
+  "default-code-and-containers",
+  "default-cloud-infrastructure",
+  "default-os-packages",
+  "default-cert-validation",
+] as const;
+
+/**
+ * Remove Docker Sandbox's broad default network grants.
+ *
+ * Herdr workspace guests receive their required destinations from their kit policy.
+ * Existing installations retain their initial policy, so removing the known balanced
+ * rules is required in addition to selecting `deny-all` for new daemon initialization.
+ *
+ * @param config - Parsed Herdr sandbox runtime configuration.
+ */
+export async function enforceRestrictiveNetworkPolicy(config: Config): Promise<void> {
+  const marker = path.join(config.stateDirectory, "network-policy-v1");
+  if (fs.existsSync(marker)) return;
+  const lockDir = path.join(config.stateDirectory, "locks", "network-policy.lock");
+  await withLock(lockDir, async () => {
+    if (fs.existsSync(marker)) return;
+    const listed = await run(config.sbxPath, [
+      "policy", "ls", "--source", "local", "--type", "network", "--json",
+    ]);
+    const response: unknown = JSON.parse(listed.stdout);
+    if (typeof response !== "object" || response === null || !("rules" in response)) {
+      throw new Error("Docker Sandbox returned an invalid network policy response");
+    }
+    const rules = (response as { readonly rules?: unknown }).rules;
+    if (!Array.isArray(rules)) {
+      throw new Error("Docker Sandbox returned an invalid network policy rule list");
+    }
+    const activeIds = new Set(
+      rules.flatMap((rule) => {
+        if (typeof rule !== "object" || rule === null || !("id" in rule)) return [];
+        const id = (rule as { readonly id?: unknown }).id;
+        return typeof id === "string" ? [id] : [];
+      }),
+    );
+    for (const id of BALANCED_NETWORK_RULE_IDS) {
+      if (activeIds.has(id)) await run(config.sbxPath, ["policy", "rm", "network", "--id", id]);
+    }
+    fs.writeFileSync(marker, "deny-all with kit-scoped grants\n", { mode: 0o600 });
+  });
 }
 
 export async function dockerRequest(config: Config, path: string): Promise<any> {

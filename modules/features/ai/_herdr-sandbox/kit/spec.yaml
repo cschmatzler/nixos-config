@@ -11,19 +11,32 @@ permissions:
   network:
     allow:
       - localhost:18743
+      - api.anthropic.com:443
+      - api.browserbase.com:443
+      - api.linear.app:443
+      - api.openai.com:443
       - api.supermemory.ai:443
+      - auth.openai.com:443
       - cache.nixos.org:443
       - cdn.playwright.dev:443
       - channels.nixos.org:443
+      - chatgpt.com:443
+      - claude.com:443
       - codeload.github.com:443
+      - downloads.claude.ai:443
       - executor.sh:443
+      - github.com:443
+      - mcp-proxy.anthropic.com:443
       - nixos.org:443
+      - nodejs.org:443
+      - platform.claude.com:443
+      - registry.npmjs.org:443
       - releases.nixos.org:443
+      - statsig.anthropic.com:443
       - "*.cachix.org:443"
       - "*.executor.sh:443"
       - "*.github.com:443"
       - "*.githubusercontent.com:443"
-      - "**.ts.net:443"
 
 setup:
   install:

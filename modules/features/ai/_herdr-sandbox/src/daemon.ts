@@ -5,6 +5,7 @@ import { randomBytes } from "node:crypto";
 
 import {
   causeMessage,
+  enforceRestrictiveNetworkPolicy,
   ensureSbxDaemon,
   listSandboxes,
   mappingsDirectory,
@@ -46,6 +47,7 @@ class BodyTooLarge extends Error {}
 
 async function prepareHost(): Promise<void> {
   const sandboxes = await ensureSbxDaemon(config);
+  await enforceRestrictiveNetworkPolicy(config);
   await removeLegacyGlobalProxyCredentials(config);
   await Promise.all(
     readMappings()
