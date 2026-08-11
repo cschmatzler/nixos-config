@@ -14,6 +14,8 @@ permissions:
       - chatgpt.com:443
       - auth.openai.com:443
       - api.openai.com:443
+      - api.anthropic.com:443
+      - claude.ai:443
       - github.com:443
       - api.github.com:443
       - codeload.github.com:443
