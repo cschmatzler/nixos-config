@@ -175,8 +175,20 @@ function fingerprintFiles(
   const digest = createHash("sha256").update(namespace).update("\0").update(context);
   for (const relativePath of files) {
     const absolutePath = path.join(root, relativePath);
-    if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) continue;
-    digest.update("\0").update(relativePath).update("\0").update(fs.readFileSync(absolutePath));
+    if (!pathWithin(root, absolutePath) || !fs.existsSync(absolutePath)) continue;
+    const metadata = fs.lstatSync(absolutePath);
+    if (metadata.isSymbolicLink()) {
+      throw new Error(`cache input must not be a symbolic link: ${relativePath}`);
+    }
+    if (!metadata.isFile()) continue;
+    if (metadata.size > 16 * 1024 * 1024) {
+      throw new Error(`cache input exceeds 16 MiB: ${relativePath}`);
+    }
+    const physicalPath = fs.realpathSync(absolutePath);
+    if (!pathWithin(root, physicalPath)) {
+      throw new Error(`cache input resolves outside the worktree: ${relativePath}`);
+    }
+    digest.update("\0").update(relativePath).update("\0").update(fs.readFileSync(physicalPath));
   }
   return digest.digest("hex");
 }
