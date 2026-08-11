@@ -4,12 +4,38 @@ set -gx HOME /home/agent
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 set -gx PATH (dirname "$HERDR_NIX") "$HOME/.nix-profile/bin" $PATH
 
-if test -d "$HERDR_HOST_HOME_FILES"
+set -l state_dir "$HOME/.local/state/herdr-sandbox"
+mkdir -p "$state_dir"
+
+# Bind-mount the private clone at the worktree checkout. Mounts do not survive
+# sandbox restarts, so this re-checks on every attach; the check itself is free.
+if test -n "$HERDR_CHECKOUT"; and not mountpoint -q "$HERDR_CHECKOUT"
+    sudo -n sh -ceu '
+        checkout=$1
+        repo_root=$2
+        mkdir -p "$(dirname "$checkout")"
+        if test -L "$checkout"; then
+            rm "$checkout"
+        fi
+        mkdir -p "$checkout"
+        mountpoint -q "$checkout" || mount --bind "$repo_root" "$checkout"
+    ' sh "$HERDR_CHECKOUT" "$HERDR_REPO_ROOT"; or begin
+        echo "[herdr-sandbox] failed to mount the workspace checkout" >&2
+        exit 1
+    end
+end
+if test -n "$HERDR_CHECKOUT"
+    cd "$HERDR_CHECKOUT"; or exit 1
+end
+
+# Mirror the Home Manager generation once per generation, not per pane.
+if test -d "$HERDR_HOST_HOME_FILES"; and test "$HERDR_HOST_HOME_FILES" != "$(cat $state_dir/home-files 2>/dev/null)"
     for relative in (find "$HERDR_HOST_HOME_FILES" -mindepth 1 -not -type d -printf '%P\0' | string split0)
         set -l target "$HOME/$relative"
         mkdir -p (dirname "$target")
         ln -sfn "$HERDR_HOST_HOME_FILES/$relative" "$target"
     end
+    printf '%s' "$HERDR_HOST_HOME_FILES" >"$state_dir/home-files"
 end
 
 mkdir -p "$HOME/.pi/agent" "$HOME/.config/herdr"
@@ -23,7 +49,7 @@ for cache in .pi/agent/npm .pi/agent/git
 end
 
 set -gx HERDR_SOCKET_PATH "$HOME/.config/herdr/herdr.sock"
-set -l relay_state "$HOME/.local/state/herdr-sandbox/relay"
+set -l relay_state "$state_dir/relay"
 mkdir -p "$relay_state"
 set -l relay_pid (cat "$relay_state/pid" 2>/dev/null)
 set -l relay_token (cat "$relay_state/token" 2>/dev/null)
@@ -48,20 +74,25 @@ if test -d "$HERDR_HOST_HOME/.cache/ms-playwright"
     end
 end
 
-for _attempt in (seq 60)
-    pgrep -x apt-get >/dev/null; or break
-    sleep 1
-end
-
-if test -x .agents/resume
-    if not .agents/resume
-        if test -x .agents/setup
-            echo "[herdr-sandbox] resume failed; running .agents/setup"
-            .agents/setup; or exit 1
-        end
+# Project provisioning runs once per sandbox boot; later panes attach directly.
+set -l boot_id (cat /proc/sys/kernel/random/boot_id 2>/dev/null)
+if test -n "$boot_id"; and test "$boot_id" != "$(cat $state_dir/provision-boot 2>/dev/null)"
+    for _attempt in (seq 60)
+        pgrep -x apt-get >/dev/null; or break
+        sleep 1
     end
-else if test -x .agents/setup
-    .agents/setup; or exit 1
+
+    if test -x .agents/resume
+        if not .agents/resume
+            if test -x .agents/setup
+                echo "[herdr-sandbox] resume failed; running .agents/setup"
+                .agents/setup; or exit 1
+            end
+        end
+    else if test -x .agents/setup
+        .agents/setup; or exit 1
+    end
+    printf '%s' "$boot_id" >"$state_dir/provision-boot"
 end
 
 set -l startup_command "source $HOME/.local/lib/herdr-sandbox/remap-session-home.fish"

@@ -30,10 +30,20 @@ The guest uses the read-only host Nix profile and Home Manager generation under
 Fish. The only additional read-only mounts are `/nix`, Pi's npm and Git caches, the Nix
 cache, and the Playwright browser cache.
 
+Pane attach is a single `sbx exec`; every `sbx` CLI invocation scrypt-decrypts the whole
+secret store (~0.35s per entry) plus fixed startup cost, so per-pane work is stamped
+away. A host stamp (`state/provisioned/<sandbox>`, containing a digest of the kit store
+path and credential mtimes) gates creation checks and the credential/guest-script sync;
+after `sbx rm <sandbox>`, remove its stamp too. The guest gates the Home Manager symlink
+mirror per generation and `.agents/resume` per VM boot, and re-establishes the checkout
+bind-mount itself via passwordless sudo (mounts do not survive sandbox restarts).
+
 The dispatcher copies Pi and Claude credentials, Pi's trust decisions, and the Herdr Pi
-state integration into private guest storage. GitHub uses an `sbx` service secret.
-Supermemory uses a sandbox-scoped custom secret registered before sandbox creation so
-`sbx` injects only its placeholder. Pi sessions remain inside the guest.
+state integration into private guest storage; the same sync stream carries the guest
+scripts, so existing sandboxes pick up script changes without a kit version bump.
+GitHub and Supermemory use global `sbx` secrets — one store entry each instead of one
+per sandbox, because every entry slows every CLI call — and `sbx` injects only the
+Supermemory placeholder. Pi sessions remain inside the guest.
 
 The kit allows only the endpoints required by Nix, Devenv, the configured model
 providers and MCPs, GitHub, Supermemory, and the local Herdr broker.
