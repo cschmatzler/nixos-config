@@ -5,11 +5,109 @@ import { randomUUID } from "node:crypto";
 
 import { timeoutForMethod } from "./common";
 
-type Json = Record<string, unknown>;
+export type RpcRequest = {
+  readonly id: string;
+  readonly method: string;
+  readonly params: Record<string, unknown>;
+};
 
-export async function call(socketPath: string, method: string, params: Json = {}): Promise<any> {
+type Worktree = {
+  readonly checkout_path: string;
+};
+
+type Workspace = {
+  readonly workspace_id: string;
+  readonly worktree?: Worktree;
+};
+
+type Tab = {
+  readonly tab_id: string;
+  readonly workspace_id: string;
+};
+
+type Pane = {
+  readonly pane_id: string;
+  readonly workspace_id: string;
+};
+
+type Agent = {
+  readonly name?: string;
+  readonly workspace_id: string;
+};
+
+type SessionSnapshot = {
+  readonly focused_workspace_id?: string;
+  readonly focused_tab_id?: string;
+  readonly focused_pane_id?: string;
+  readonly workspaces: ReadonlyArray<Workspace>;
+  readonly tabs: ReadonlyArray<Tab>;
+  readonly panes: ReadonlyArray<Pane>;
+  readonly layouts?: ReadonlyArray<{ readonly workspace_id: string }>;
+  readonly agents: ReadonlyArray<Agent>;
+};
+
+type HerdrResponse<T> = {
+  readonly result: T;
+  readonly error?: { readonly message?: string };
+};
+
+type WorkspaceListResult = { readonly workspaces: ReadonlyArray<Workspace> };
+type TabListResult = { readonly tabs: ReadonlyArray<Tab> };
+type PaneListResult = { readonly panes: ReadonlyArray<Pane> };
+type AgentListResult = { readonly agents: ReadonlyArray<Agent> };
+type SnapshotResult = { readonly snapshot: SessionSnapshot };
+
+export type Scope = {
+  readonly workspaceId: string;
+  readonly checkoutPath: string;
+  readonly tabIds: ReadonlySet<string>;
+  readonly paneIds: ReadonlySet<string>;
+  readonly agentNames: ReadonlySet<string>;
+};
+
+const ALLOWED_METHODS = new Set([
+  "ping", "session.snapshot",
+  "workspace.list", "workspace.get", "workspace.focus", "workspace.report_metadata",
+  "tab.list", "tab.get", "tab.create", "tab.focus", "tab.rename", "tab.close",
+  "pane.list", "pane.current", "pane.get", "pane.layout", "pane.process_info",
+  "pane.neighbor", "pane.edges", "pane.read", "pane.wait_for_output",
+  "pane.split", "pane.zoom", "pane.focus_direction", "pane.resize", "pane.rename",
+  "pane.send_text", "pane.send_keys", "pane.send_input", "pane.report_agent",
+  "pane.report_agent_session", "pane.report_metadata", "pane.clear_agent_authority",
+  "pane.release_agent", "pane.close",
+  "agent.list", "agent.get", "agent.read", "agent.explain", "agent.wait",
+  "agent.start", "agent.prompt", "agent.send_keys", "agent.rename", "agent.focus",
+  "notification.show",
+]);
+
+const WORKSPACE_TARGET_METHODS = new Set([
+  "workspace.get", "workspace.focus", "workspace.report_metadata",
+]);
+const TAB_TARGET_METHODS = new Set([
+  "tab.get", "tab.focus", "tab.rename", "tab.close",
+]);
+const PANE_TARGET_METHODS = new Set([
+  "pane.get", "pane.read", "pane.wait_for_output", "pane.rename", "pane.send_text",
+  "pane.send_keys", "pane.send_input", "pane.report_agent", "pane.report_agent_session",
+  "pane.report_metadata", "pane.clear_agent_authority", "pane.release_agent", "pane.close",
+]);
+const OPTIONAL_PANE_METHODS = new Set([
+  "pane.layout", "pane.process_info", "pane.neighbor", "pane.edges", "pane.zoom",
+  "pane.focus_direction", "pane.resize",
+]);
+const AGENT_TARGET_METHODS = new Set([
+  "agent.get", "agent.read", "agent.explain", "agent.wait", "agent.prompt",
+  "agent.send_keys", "agent.rename", "agent.focus",
+]);
+
+/** Send one request to the host Herdr socket. */
+export async function call(
+  socketPath: string,
+  method: string,
+  params: Record<string, unknown> = {},
+): Promise<unknown> {
   const request = { id: `herdr-sandbox:${randomUUID()}`, method, params };
-  const line: string = await new Promise((resolve, reject) => {
+  const line = await new Promise<string>((resolve, reject) => {
     const socket = net.createConnection(socketPath);
     const timeout = setTimeout(() => {
       socket.destroy();
@@ -30,170 +128,181 @@ export async function call(socketPath: string, method: string, params: Json = {}
       reject(cause);
     });
   });
-  const response = JSON.parse(line);
-  if (response.error) throw new Error(`herdr ${method}: ${response.error.message ?? "error"}`);
+  const response: HerdrResponse<unknown> = JSON.parse(line);
+  if (response.error !== undefined) {
+    throw new Error(`herdr ${method}: ${response.error.message ?? "error"}`);
+  }
   return response.result;
 }
 
-export async function snapshot(socketPath: string): Promise<any> {
-  return (await call(socketPath, "session.snapshot")).snapshot;
+/** Read the live topology used to derive sandbox authority. */
+export async function snapshot(socketPath: string): Promise<SessionSnapshot> {
+  const result = await call(socketPath, "session.snapshot");
+  // SAFETY: This response comes from the pinned Herdr host process and is consumed immediately.
+  return (result as SnapshotResult).snapshot;
 }
 
-export type Scope = {
-  readonly workspaceId: string;
-  readonly checkoutPath: string;
-  readonly tabIds: ReadonlySet<string>;
-  readonly paneIds: ReadonlySet<string>;
-  readonly agentNames: ReadonlySet<string>;
-};
-
-export function scopeFromSnapshot(snap: any, workspaceId: string): Scope | undefined {
-  const workspace = snap.workspaces?.find((candidate: any) =>
+/** Derive one workspace's live authority from a Herdr snapshot. */
+export function scopeFromSnapshot(
+  snapshotValue: SessionSnapshot,
+  workspaceId: string,
+): Scope | undefined {
+  const workspace = snapshotValue.workspaces.find((candidate) =>
     candidate.workspace_id === workspaceId
   );
-  if (typeof workspace?.worktree?.checkout_path !== "string") return undefined;
-  const tabIds = new Set<string>();
-  for (const tab of snap.tabs ?? []) {
-    if (tab.workspace_id === workspaceId && typeof tab.tab_id === "string") {
-      tabIds.add(tab.tab_id);
-    }
-  }
-  const paneIds = new Set<string>();
-  for (const pane of snap.panes ?? []) {
-    if (pane.workspace_id === workspaceId && typeof pane.pane_id === "string") {
-      paneIds.add(pane.pane_id);
-    }
-  }
-  const agentNames = new Set<string>();
-  for (const agent of snap.agents ?? []) {
-    if (agent.workspace_id === workspaceId && typeof agent.name === "string") {
-      agentNames.add(agent.name);
-    }
-  }
+  if (workspace?.worktree === undefined) return undefined;
   return {
     workspaceId,
     checkoutPath: fs.realpathSync(workspace.worktree.checkout_path),
-    tabIds,
-    paneIds,
-    agentNames,
+    tabIds: new Set(
+      snapshotValue.tabs
+        .filter((tab) => tab.workspace_id === workspaceId)
+        .map((tab) => tab.tab_id),
+    ),
+    paneIds: new Set(
+      snapshotValue.panes
+        .filter((pane) => pane.workspace_id === workspaceId)
+        .map((pane) => pane.pane_id),
+    ),
+    agentNames: new Set(
+      snapshotValue.agents
+        .filter((agent) => agent.workspace_id === workspaceId && agent.name !== undefined)
+        .map((agent) => agent.name ?? ""),
+    ),
   };
 }
 
-const ALLOWED_METHODS = new Set([
-  "ping", "session.snapshot",
-  "workspace.list", "workspace.get", "workspace.focus", "workspace.report_metadata",
-  "tab.list", "tab.get", "tab.create", "tab.focus", "tab.rename", "tab.close",
-  "pane.list", "pane.current", "pane.get", "pane.layout", "pane.process_info",
-  "pane.neighbor", "pane.edges", "pane.read", "pane.wait_for_output",
-  "pane.split", "pane.zoom", "pane.focus_direction", "pane.resize", "pane.rename",
-  "pane.send_text", "pane.send_keys", "pane.send_input", "pane.report_agent",
-  "pane.report_agent_session", "pane.report_metadata", "pane.clear_agent_authority",
-  "pane.release_agent", "pane.close",
-  "agent.list", "agent.get", "agent.read", "agent.explain", "agent.wait",
-  "agent.start", "agent.prompt", "agent.send_keys", "agent.rename", "agent.focus",
-  "notification.show",
-]);
-
-const EXPLICIT_PANE_METHODS = new Set([
-  "pane.current", "pane.layout", "pane.process_info", "pane.neighbor", "pane.edges",
-  "pane.zoom", "pane.focus_direction", "pane.resize",
-]);
-
-function identifiersInScope(value: unknown, scope: Scope, key?: string): boolean {
-  if (typeof value === "string") {
-    if (key === "workspace_id") return value === scope.workspaceId;
-    if (key === "tab_id") return scope.tabIds.has(value);
-    if (key === "pane_id" || key === "target_pane_id" || key === "caller_pane_id") {
-      return scope.paneIds.has(value);
-    }
-    if (key === "target") return scope.paneIds.has(value) || scope.agentNames.has(value);
-    return true;
-  }
-  if (Array.isArray(value)) return value.every((entry) => identifiersInScope(entry, scope, key));
-  if (typeof value !== "object" || value === null) return true;
-  return Object.entries(value).every(([nestedKey, entry]) =>
-    identifiersInScope(entry, scope, nestedKey)
-  );
-}
-
-function physicalPathWithin(root: string, candidate: unknown): boolean {
-  if (typeof candidate !== "string") return false;
+function pathIsWithin(root: string, candidate: string): boolean {
   try {
-    const physical = fs.realpathSync(candidate);
-    const relative = path.relative(root, physical);
-    return relative === "" || (!relative.startsWith(`..${path.sep}`) && relative !== "..");
+    const relative = path.relative(root, fs.realpathSync(candidate));
+    return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`));
   } catch {
     return false;
   }
 }
 
-function sanitizeLaunch(request: any, scope: Scope): string | undefined {
-  if (request.method !== "pane.split" && request.method !== "tab.create") return undefined;
-  delete request.params.env;
-  request.params.workspace_id = scope.workspaceId;
-  if (request.params.cwd !== undefined && !physicalPathWithin(scope.checkoutPath, request.params.cwd)) {
-    return "cwd is outside the workspace";
-  }
-  return undefined;
-}
-
-function hasExplicitPaneTarget(request: any): boolean {
-  if (request.method === "pane.current") return typeof request.params.caller_pane_id === "string";
-  return typeof request.params.pane_id === "string";
-}
-
-export function authorize(request: any, scope: Scope): string | undefined {
-  if (
-    typeof request?.method !== "string" ||
-    typeof request?.params !== "object" ||
-    request.params === null ||
-    Array.isArray(request.params)
-  ) {
-    return "invalid request envelope";
-  }
+/** Apply the workspace capability policy and remove unsafe launch parameters. */
+export function authorize(request: RpcRequest, scope: Scope): string | undefined {
   if (!ALLOWED_METHODS.has(request.method)) return `method ${request.method} is not available`;
-  const unsafeLaunch = sanitizeLaunch(request, scope);
-  if (unsafeLaunch !== undefined) return unsafeLaunch;
-  if (EXPLICIT_PANE_METHODS.has(request.method) && !hasExplicitPaneTarget(request)) {
+
+  if (request.method === "pane.split" || request.method === "tab.create") {
+    delete request.params.env;
+    request.params.workspace_id = scope.workspaceId;
+    const cwd = request.params.cwd;
+    if (cwd !== undefined && !pathIsWithin(scope.checkoutPath, String(cwd))) {
+      return "cwd is outside the workspace";
+    }
+    const targetPane = request.params.target_pane_id;
+    if (targetPane !== undefined && !scope.paneIds.has(String(targetPane))) {
+      return "target is outside the workspace";
+    }
+  }
+
+  if (
+    WORKSPACE_TARGET_METHODS.has(request.method) &&
+    request.params.workspace_id !== scope.workspaceId
+  ) {
+    return "target is outside the workspace";
+  }
+  if (
+    TAB_TARGET_METHODS.has(request.method) &&
+    !scope.tabIds.has(String(request.params.tab_id))
+  ) {
+    return "target is outside the workspace";
+  }
+  if (
+    PANE_TARGET_METHODS.has(request.method) &&
+    !scope.paneIds.has(String(request.params.pane_id))
+  ) {
+    return "target is outside the workspace";
+  }
+  if (
+    OPTIONAL_PANE_METHODS.has(request.method) &&
+    !scope.paneIds.has(String(request.params.pane_id))
+  ) {
     return "explicit pane target required";
   }
-  if (!identifiersInScope(request.params, scope)) return "target is outside the workspace";
+  if (
+    request.method === "pane.current" &&
+    !scope.paneIds.has(String(request.params.caller_pane_id))
+  ) {
+    return "explicit pane target required";
+  }
+  if (
+    request.method === "agent.start" &&
+    !scope.paneIds.has(String(request.params.pane_id))
+  ) {
+    return "target is outside the workspace";
+  }
+  if (
+    AGENT_TARGET_METHODS.has(request.method) &&
+    !scope.paneIds.has(String(request.params.target)) &&
+    !scope.agentNames.has(String(request.params.target))
+  ) {
+    return "target is outside the workspace";
+  }
   return undefined;
 }
 
-// Herdr shelves reports from "herdr:*" sources until its host-side process
-// detection sees the agent, which never happens for processes inside the VM.
-export function demotePrivilegedReportSource(request: any): void {
-  if (
-    typeof request?.method === "string" &&
-    request.method.startsWith("pane.report_") &&
-    typeof request.params?.source === "string" &&
-    request.params.source.startsWith("herdr:")
-  ) {
-    request.params.source = `sandbox:${request.params.source.slice("herdr:".length)}`;
+/** Demote host-only report sources emitted by agents running inside the sandbox. */
+export function demotePrivilegedReportSource(request: RpcRequest): void {
+  const source = String(request.params.source ?? "");
+  if (request.method.startsWith("pane.report_") && source.startsWith("herdr:")) {
+    request.params.source = `sandbox:${source.slice("herdr:".length)}`;
   }
 }
 
-const FILTERED = Symbol("filtered");
-
-function filterValue(value: unknown, workspaceId: string): unknown {
-  if (Array.isArray(value)) {
-    return value.map((entry) => filterValue(entry, workspaceId)).filter((v) => v !== FILTERED);
+/** Remove cross-workspace entries from global list and snapshot responses. */
+export function filterResponse(
+  value: unknown,
+  workspaceId: string,
+  method: string,
+): unknown {
+  // SAFETY: Herdr result shapes are pinned by the flake and selected by the method name.
+  if (method === "workspace.list") {
+    const result = value as WorkspaceListResult;
+    return {
+      ...result,
+      workspaces: result.workspaces.filter((entry) => entry.workspace_id === workspaceId),
+    };
   }
-  if (typeof value !== "object" || value === null) return value;
-  const record = value as Record<string, unknown>;
-  if (typeof record.workspace_id === "string" && record.workspace_id !== workspaceId) {
-    return FILTERED;
+  if (method === "tab.list") {
+    const result = value as TabListResult;
+    return { ...result, tabs: result.tabs.filter((entry) => entry.workspace_id === workspaceId) };
   }
-  const filtered: Record<string, unknown> = {};
-  for (const [key, entry] of Object.entries(record)) {
-    const result = filterValue(entry, workspaceId);
-    if (result !== FILTERED) filtered[key] = result;
+  if (method === "pane.list") {
+    const result = value as PaneListResult;
+    return { ...result, panes: result.panes.filter((entry) => entry.workspace_id === workspaceId) };
   }
-  return filtered;
-}
-
-export function filterResponse(value: unknown, workspaceId: string): unknown {
-  const filtered = filterValue(value, workspaceId);
-  return filtered === FILTERED ? {} : filtered;
+  if (method === "agent.list") {
+    const result = value as AgentListResult;
+    return { ...result, agents: result.agents.filter((entry) => entry.workspace_id === workspaceId) };
+  }
+  if (method === "session.snapshot") {
+    const result = value as SnapshotResult;
+    const tabs = result.snapshot.tabs.filter((entry) => entry.workspace_id === workspaceId);
+    const panes = result.snapshot.panes.filter((entry) => entry.workspace_id === workspaceId);
+    const tabIds = new Set(tabs.map((entry) => entry.tab_id));
+    const paneIds = new Set(panes.map((entry) => entry.pane_id));
+    return {
+      snapshot: {
+        ...result.snapshot,
+        focused_workspace_id: result.snapshot.focused_workspace_id === workspaceId
+          ? workspaceId
+          : undefined,
+        focused_tab_id: tabIds.has(result.snapshot.focused_tab_id ?? "")
+          ? result.snapshot.focused_tab_id
+          : undefined,
+        focused_pane_id: paneIds.has(result.snapshot.focused_pane_id ?? "")
+          ? result.snapshot.focused_pane_id
+          : undefined,
+        workspaces: result.snapshot.workspaces.filter((entry) => entry.workspace_id === workspaceId),
+        tabs,
+        panes,
+        layouts: result.snapshot.layouts?.filter((entry) => entry.workspace_id === workspaceId),
+        agents: result.snapshot.agents.filter((entry) => entry.workspace_id === workspaceId),
+      },
+    };
+  }
+  return value;
 }

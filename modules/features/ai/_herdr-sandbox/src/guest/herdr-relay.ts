@@ -15,10 +15,10 @@ if (socketPath === undefined || bridgeUrl === undefined || capability === undefi
 
 function parseEnvelope(input: string): { id: string; timeout: number } {
   try {
-    const parsed: any = JSON.parse(input);
+    const parsed: { readonly id?: unknown; readonly method?: unknown } = JSON.parse(input);
     return {
-      id: typeof parsed?.id === "string" ? parsed.id : "herdr-sandbox:invalid",
-      timeout: timeoutForMethod(parsed?.method),
+      id: String(parsed.id ?? "herdr-sandbox:invalid"),
+      timeout: timeoutForMethod(String(parsed.method ?? "")),
     };
   } catch {
     return { id: "herdr-sandbox:invalid", timeout: 5_000 };

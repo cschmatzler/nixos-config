@@ -11,6 +11,7 @@ import {
   filterResponse,
   scopeFromSnapshot,
   snapshot,
+  type RpcRequest,
 } from "./herdr";
 
 const MAX_BODY_BYTES = 1024 * 1024;
@@ -21,12 +22,6 @@ type Registration = {
   readonly sandboxName: string;
   readonly checkoutPath: string;
   readonly token: string;
-};
-
-type RpcRequest = {
-  readonly id: string;
-  readonly method: string;
-  readonly params: Record<string, unknown>;
 };
 
 class BodyTooLarge extends Error {}
@@ -119,7 +114,7 @@ async function handleRpc(request: http.IncomingMessage, response: http.ServerRes
   const result = await call(config.herdrSocketPath, rpcRequest.method, rpcRequest.params);
   sendJson(response, 200, {
     id: rpcRequest.id,
-    result: filterResponse(result, registration.workspaceId),
+    result: filterResponse(result, registration.workspaceId, rpcRequest.method),
   });
 }
 
