@@ -48,7 +48,7 @@ if test -d "$HERDR_HOST_HOME/.cache/ms-playwright"
     end
 end
 
-for attempt in (seq 1 60)
+for _attempt in (seq 60)
     pgrep -x apt-get >/dev/null; or break
     sleep 1
 end

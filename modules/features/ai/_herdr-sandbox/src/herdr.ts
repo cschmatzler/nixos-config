@@ -3,8 +3,9 @@ import net from "node:net";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
-import { timeoutForMethod } from "./common";
+import { timeoutForMethod } from "./rpc";
 
+/** RPC request accepted from a sandbox relay. */
 export type RpcRequest = {
   readonly id: string;
   readonly method: string;
@@ -42,7 +43,7 @@ type SessionSnapshot = {
   readonly workspaces: ReadonlyArray<Workspace>;
   readonly tabs: ReadonlyArray<Tab>;
   readonly panes: ReadonlyArray<Pane>;
-  readonly layouts?: ReadonlyArray<{ readonly workspace_id: string }>;
+  readonly layouts: ReadonlyArray<{ readonly workspace_id: string }>;
   readonly agents: ReadonlyArray<Agent>;
 };
 
@@ -57,6 +58,7 @@ type PaneListResult = { readonly panes: ReadonlyArray<Pane> };
 type AgentListResult = { readonly agents: ReadonlyArray<Agent> };
 type SnapshotResult = { readonly snapshot: SessionSnapshot };
 
+/** Live Herdr resources granted to one sandbox. */
 export type Scope = {
   readonly workspaceId: string;
   readonly checkoutPath: string;
@@ -144,10 +146,10 @@ export async function snapshot(socketPath: string): Promise<SessionSnapshot> {
 
 /** Derive one workspace's live authority from a Herdr snapshot. */
 export function scopeFromSnapshot(
-  snapshotValue: SessionSnapshot,
+  session: SessionSnapshot,
   workspaceId: string,
 ): Scope | undefined {
-  const workspace = snapshotValue.workspaces.find((candidate) =>
+  const workspace = session.workspaces.find((candidate) =>
     candidate.workspace_id === workspaceId
   );
   if (workspace?.worktree === undefined) return undefined;
@@ -155,19 +157,19 @@ export function scopeFromSnapshot(
     workspaceId,
     checkoutPath: fs.realpathSync(workspace.worktree.checkout_path),
     tabIds: new Set(
-      snapshotValue.tabs
+      session.tabs
         .filter((tab) => tab.workspace_id === workspaceId)
         .map((tab) => tab.tab_id),
     ),
     paneIds: new Set(
-      snapshotValue.panes
+      session.panes
         .filter((pane) => pane.workspace_id === workspaceId)
         .map((pane) => pane.pane_id),
     ),
     agentNames: new Set(
-      snapshotValue.agents
-        .filter((agent) => agent.workspace_id === workspaceId && agent.name !== undefined)
-        .map((agent) => agent.name ?? ""),
+      session.agents
+        .filter((agent) => agent.workspace_id === workspaceId)
+        .flatMap((agent) => agent.name === undefined ? [] : [agent.name]),
     ),
   };
 }
@@ -299,7 +301,7 @@ export function filterResponse(
         workspaces: result.snapshot.workspaces.filter((entry) => entry.workspace_id === workspaceId),
         tabs,
         panes,
-        layouts: result.snapshot.layouts?.filter((entry) => entry.workspace_id === workspaceId),
+        layouts: result.snapshot.layouts.filter((entry) => entry.workspace_id === workspaceId),
         agents: result.snapshot.agents.filter((entry) => entry.workspace_id === workspaceId),
       },
     };

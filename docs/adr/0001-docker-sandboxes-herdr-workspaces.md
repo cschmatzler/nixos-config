@@ -6,81 +6,55 @@
 
 ## Context
 
-Herdr starts panes through one configured shell command. Linked-worktree workspaces should
-run Pi inside Docker Sandboxes, while top-level workspaces should remain local. The guest
-needs the Home Manager Fish environment, Pi credentials and package caches, and scoped
-access to its own Herdr workspace.
+Herdr uses one configured shell command for new panes. Linked-worktree workspaces should
+run inside Docker Sandboxes with the user's Fish and Pi configuration, while top-level
+workspaces should remain local.
 
-Docker Sandboxes already owns guest creation, private Git clones, persistence, resource
-limits, network policy, and attachment. Reimplementing those responsibilities creates a
-second sandbox controller with different lifecycle and security rules.
+Docker Sandboxes already provides private Git clones, persistence, resource limits,
+network policy, and attachment. The integration should not duplicate that lifecycle.
 
 ## Decision
 
-A small Fish dispatcher is Herdr's default shell.
+Herdr uses a Fish dispatcher that:
 
-- A top-level Herdr workspace directly opens the local Home Manager Fish.
-- A linked-worktree workspace maps deterministically to one `sbx` shell sandbox.
-- The dispatcher creates missing guests with `sbx create --clone` and attaches with
-  `sbx exec`.
-- Because `sbx --clone` rejects linked worktrees, it clones the main repository and
-  selects the linked worktree's branch inside the private clone.
-- The private clone is bind-mounted inside the guest at the linked checkout path. Fish
-  starts there so its `PWD` and Devenv's canonical project root agree while the Herdr
-  worktree identity remains visible.
-- Git isolation and publication use Docker Sandboxes' clone mode. Host Git exposes the
-  guest's commits through the `sandbox-<name>` remote supplied by `sbx`.
+- opens top-level workspaces in the local Home Manager Fish;
+- maps each linked worktree to one deterministic `sbx` shell sandbox;
+- clones the main checkout because `sbx --clone` rejects linked worktrees, then selects
+  the linked worktree's branch;
+- bind-mounts the private clone at the linked checkout path so Fish and Devenv resolve the
+  same project root; and
+- leaves Git isolation and commit publication to `sbx` clone mode.
 
-The guest launches Fish from the read-only host Nix profile. It mirrors the current Home
-Manager generation as read-only links under `/home/agent`, giving Fish and Pi their normal
-configuration without mounting the host home directory. Before opening Fish, it runs the
-repository's `.agents/resume` contract and falls back to `.agents/setup` when the working
-copy is not ready.
+The guest uses the read-only host Nix profile and Home Manager generation under
+`/home/agent`. It runs `.agents/resume`, falling back to `.agents/setup`, before opening
+Fish. The only additional read-only mounts are `/nix`, Pi's npm and Git caches, the Nix
+cache, and the Playwright browser cache.
 
-Only established caches are added as read-only `sbx` workspace mounts:
+The dispatcher copies Pi and Claude credentials, Pi's trust decisions, and the Herdr Pi
+state integration into private guest storage. GitHub uses an `sbx` service secret.
+Supermemory uses a sandbox-scoped custom secret registered before sandbox creation so
+`sbx` injects only its placeholder. Pi sessions remain inside the guest.
 
-- `/nix`
-- Pi npm and Git package caches
-- the Nix cache
-- the Playwright browser cache
+The kit allows only the endpoints required by Nix, Devenv, the configured model
+providers and MCPs, GitHub, Supermemory, and the local Herdr broker.
 
-There is no custom cache fingerprinting, copying, hardlinking, reflinking, or overlay
-policy. Sandbox persistence and the mounted caches provide reuse.
-
-The dispatcher copies Pi OAuth and MCP credentials, Pi's saved project-trust decisions,
-Claude Code's credential file, and Herdr's Pi state integration into the guest's private
-home on attachment. GitHub and Supermemory use sandbox-scoped Docker Sandbox proxy
-secrets. Pi sessions remain private to the sandbox.
-
-The kit extends Docker Sandboxes' shell policy with the endpoints required by Nix and
-Devenv, Pi's model provider, the configured MCPs, Supermemory, and the local Herdr broker.
-Other egress remains denied by the sandbox network policy.
-
-The real Herdr socket is never mounted. A host broker accepts a random capability written
-by the dispatcher, derives live workspace authority from Herdr for every request, removes
-unsafe launch environment values, scopes targets and responses to that workspace, and
-forwards allowed RPC calls. A small guest relay presents the Unix socket expected by the
-Herdr CLI and `pi-herdr`.
-
-Docker Sandboxes remains authoritative for Git, filesystem isolation, networking,
-lifecycle, and sandbox cleanup. The integration does not call the sandboxd Docker socket
-or maintain a parallel reconciler.
+The host Herdr socket is never mounted. A host broker authenticates a random sandbox
+capability, derives its scope from live Herdr state, rejects out-of-scope operations, and
+filters global responses. A guest relay exposes the Unix socket expected by the Herdr CLI
+and `pi-herdr`.
 
 ## Consequences
 
-- Uncommitted guest edits live in the private clone rather than the host linked worktree.
-  Commits are retrieved through the `sbx`-managed remote.
-- The hot path invokes `sbx exec`; no custom Docker fast path is maintained.
-- Cache behavior follows `sbx` plus the four explicit read-only cache mounts.
-- Pi and Claude Code credentials are intentionally available to Pi processes inside the
-  guest. They are copied into private guest storage, are not mounted back into the host,
-  and do not grant access to unrelated host files.
-- Herdr API compatibility remains the only custom protocol integration.
+- Uncommitted guest edits remain in the private clone; commits are retrieved through the
+  `sbx`-managed remote.
+- Sandbox persistence and the four read-only cache mounts provide reuse.
+- Pi and Claude credentials are available inside the guest but are not mounted back into
+  the host.
+- Herdr API compatibility is the only custom protocol boundary.
 
 ## Rejected
 
-- A TypeScript sandbox shell client, lifecycle reconciler, or direct sandboxd Docker API.
-- Custom Git mounts, wrappers, ref publication, or worktree synchronization.
-- Custom template images, privileged root helpers, hostname changes, and sudo wrappers.
-- Cross-worktree dependency and devenv cache cloning.
-- Mounting the real Herdr socket or the writable host Pi session directory.
+- A second sandbox lifecycle controller or direct sandboxd Docker API.
+- Custom Git publication, worktree synchronization, or cache replication.
+- Custom images, privileged guest helpers, or mounting the host Herdr socket.
+- Mounting writable host Pi sessions into the guest.

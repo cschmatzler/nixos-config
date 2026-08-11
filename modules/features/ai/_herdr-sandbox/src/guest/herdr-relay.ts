@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import net from "node:net";
 
-import { timeoutForMethod } from "../common";
+import { timeoutForMethod } from "../rpc";
 
 const MAX_LINE_BYTES = 1024 * 1024;
 const socketPath = process.env.HERDR_SOCKET_PATH;
@@ -58,11 +58,7 @@ async function forward(line: string): Promise<string> {
   }
 }
 
-try {
-  fs.rmSync(socketPath, { force: true });
-} catch {
-  // The server bind below reports an actionable failure when cleanup was insufficient.
-}
+fs.rmSync(socketPath, { force: true });
 
 const server = net.createServer((socket) => {
   let buffered = "";

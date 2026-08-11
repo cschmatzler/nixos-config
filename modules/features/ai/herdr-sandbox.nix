@@ -7,15 +7,15 @@
   }: let
     local = import ../../_lib/local.nix;
     jsonFormat = pkgs.formats.json {};
-    package = import ./_herdr-sandbox/package.nix {inherit lib pkgs;};
+    sandboxPackage = import ./_herdr-sandbox/package.nix {inherit lib pkgs;};
     sbxPackage = import ./_herdr-sandbox/sbx-package.nix {inherit lib pkgs;};
     stateDirectory = "${config.xdg.stateHome}/herdr-sandbox";
     listenPort = 18743;
-    controllerConfig = jsonFormat.generate "herdr-sandbox.json" {
+    brokerConfig = jsonFormat.generate "herdr-sandbox.json" {
       herdrSocketPath = "${config.xdg.configHome}/herdr/herdr.sock";
       inherit stateDirectory listenPort;
     };
-    shell = pkgs.writeShellScript "herdr-sandbox-shell" ''
+    sandboxShell = pkgs.writeShellScript "herdr-sandbox-shell" ''
       export DOCKER_SANDBOXES_ROOT_SIZE=20g
       export DOCKER_SANDBOXES_DOCKER_SIZE=20g
       export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=1
@@ -28,9 +28,10 @@
       export HERDR_SANDBOX_GH=${lib.getExe pkgs.gh}
       export HERDR_SANDBOX_GIT=${lib.getExe pkgs.git}
       export HERDR_SANDBOX_NIX=${lib.getExe pkgs.nix}
-      export HERDR_SANDBOX_KIT=${package}/share/herdr-sandbox/kit
+      export HERDR_SANDBOX_KIT=${sandboxPackage}/share/herdr-sandbox/kit
       export HERDR_SANDBOX_HOST_SHELL=${lib.getExe pkgs.fish}
       export HERDR_SANDBOX_HOST_HOME=${lib.escapeShellArg config.home.homeDirectory}
+      export HERDR_SANDBOX_HOST_NAME="$(${lib.getExe pkgs.hostname})"
       export HERDR_SANDBOX_HOST_PROFILE="$(${pkgs.coreutils}/bin/readlink -f ${lib.escapeShellArg "${config.home.homeDirectory}/.nix-profile"})"
       export HERDR_SANDBOX_HOME_FILES="$(${pkgs.coreutils}/bin/readlink -f ${lib.escapeShellArg "${config.xdg.stateHome}/home-manager/gcroots/current-home/home-files"})"
       export HERDR_SANDBOX_STATE_DIRECTORY=${lib.escapeShellArg stateDirectory}
@@ -41,10 +42,10 @@
       exec ${lib.getExe pkgs.fish} ${./_herdr-sandbox/shell.fish}
     '';
   in {
-    herdrSandbox.shell = "${shell}";
+    herdrSandbox.shell = "${sandboxShell}";
 
     home.packages = [
-      package
+      sandboxPackage
       sbxPackage
     ];
 
@@ -54,7 +55,7 @@
         X-SwitchMethod = "restart";
       };
       Service = {
-        ExecStart = "${package}/bin/herdr-sandboxd --config ${controllerConfig}";
+        ExecStart = "${sandboxPackage}/bin/herdr-sandboxd --config ${brokerConfig}";
         Restart = "on-failure";
         RestartSec = 2;
         NoNewPrivileges = true;

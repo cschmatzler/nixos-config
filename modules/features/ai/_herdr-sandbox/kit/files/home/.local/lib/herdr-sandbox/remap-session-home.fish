@@ -1,5 +1,5 @@
 if set -q HERDR_HOST_HOME; and test -n "$HERDR_HOST_HOME"
-    for __herdr_var in (set --names)
+    for __herdr_var in (set --names --export)
         contains -- $__herdr_var PATH PWD; and continue
         string match -q -- 'HERDR_*' $__herdr_var; and continue
         string match -q -- 'fish_*' $__herdr_var; and continue

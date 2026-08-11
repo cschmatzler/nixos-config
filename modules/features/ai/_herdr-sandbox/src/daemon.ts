@@ -3,7 +3,6 @@ import http from "node:http";
 import path from "node:path";
 import { timingSafeEqual } from "node:crypto";
 
-import { causeMessage, readConfig } from "./common";
 import {
   authorize,
   call,
@@ -15,7 +14,12 @@ import {
 } from "./herdr";
 
 const MAX_BODY_BYTES = 1024 * 1024;
-const config = readConfig();
+
+type BrokerConfig = {
+  readonly herdrSocketPath: string;
+  readonly stateDirectory: string;
+  readonly listenPort: number;
+};
 
 type Registration = {
   readonly workspaceId: string;
@@ -26,9 +30,18 @@ type Registration = {
 
 class BodyTooLarge extends Error {}
 
+function readConfig(): BrokerConfig {
+  const flag = process.argv.indexOf("--config");
+  const configPath = flag === -1 ? undefined : process.argv[flag + 1];
+  if (configPath === undefined) throw new Error("usage: --config PATH");
+  return JSON.parse(fs.readFileSync(configPath, "utf8"));
+}
+
+const config = readConfig();
+
 function readRegistration(registrationPath: string): Registration | undefined {
   try {
-    // Registrations are written atomically by the trusted host dispatcher.
+    // SAFETY: The host dispatcher writes registrations atomically with this exact shape.
     return JSON.parse(fs.readFileSync(registrationPath, "utf8")) as Registration;
   } catch {
     return undefined;
@@ -128,7 +141,8 @@ const server = http.createServer((request, response) => {
     return;
   }
   handleRpc(request, response).catch((cause: unknown) => {
-    console.error(`[herdr-sandbox] broker request failed: ${causeMessage(cause)}`);
+    const message = cause instanceof Error ? cause.message : String(cause);
+    console.error(`[herdr-sandbox] broker request failed: ${message}`);
     if (!response.headersSent) sendJson(response, 500, { error: "bridge request failed" });
   });
 });
