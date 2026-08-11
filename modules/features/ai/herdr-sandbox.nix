@@ -21,8 +21,8 @@
       hostHome = config.home.homeDirectory;
       ghPath = lib.getExe pkgs.gh;
       supermemoryApiKeyPath = local.secretPath "supermemory-api-key";
-      guestCpus = 2;
-      guestMemory = "4g";
+      guestCpus = 4;
+      guestMemory = "8g";
       idleMinutes = 10;
     };
     shell = pkgs.writeShellScript "herdr-sandbox-shell" ''
