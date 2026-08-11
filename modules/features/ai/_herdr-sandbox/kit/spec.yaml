@@ -1,7 +1,7 @@
 schemaVersion: "2"
 kind: mixin
 name: herdr-pi-workspace
-version: "1.0.2"
+version: "1.0.3"
 displayName: Herdr Pi Workspace
 description: Home Manager Fish and scoped Herdr access for Pi
 requires:
@@ -33,6 +33,10 @@ permissions:
       - archive.ubuntu.com:80
       - security.ubuntu.com:80
       - download.docker.com:443
+      - registry-1.docker.io:443
+      - auth.docker.io:443
+      - production.cloudfront.docker.com:443
+      - production.cloudflare.docker.com:443
       - cdn.playwright.dev:443
       - playwright.download.prss.microsoft.com:443
       - executor.manticore-hippocampus.ts.net:443
