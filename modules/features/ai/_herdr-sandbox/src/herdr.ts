@@ -1,4 +1,6 @@
+import fs from "node:fs";
 import net from "node:net";
+import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import { timeoutForMethod } from "./common";
@@ -39,15 +41,28 @@ export async function snapshot(socketPath: string): Promise<any> {
 
 export type Scope = {
   readonly workspaceId: string;
+  readonly checkoutPath: string;
+  readonly tabIds: ReadonlySet<string>;
   readonly paneIds: ReadonlySet<string>;
   readonly agentNames: ReadonlySet<string>;
 };
 
 export function scopeFromSnapshot(snap: any, workspaceId: string): Scope | undefined {
-  if (!snap.workspaces?.some((w: any) => w.workspace_id === workspaceId)) return undefined;
+  const workspace = snap.workspaces?.find((candidate: any) =>
+    candidate.workspace_id === workspaceId
+  );
+  if (typeof workspace?.worktree?.checkout_path !== "string") return undefined;
+  const tabIds = new Set<string>();
+  for (const tab of snap.tabs ?? []) {
+    if (tab.workspace_id === workspaceId && typeof tab.tab_id === "string") {
+      tabIds.add(tab.tab_id);
+    }
+  }
   const paneIds = new Set<string>();
   for (const pane of snap.panes ?? []) {
-    if (pane.workspace_id === workspaceId) paneIds.add(pane.pane_id);
+    if (pane.workspace_id === workspaceId && typeof pane.pane_id === "string") {
+      paneIds.add(pane.pane_id);
+    }
   }
   const agentNames = new Set<string>();
   for (const agent of snap.agents ?? []) {
@@ -55,7 +70,13 @@ export function scopeFromSnapshot(snap: any, workspaceId: string): Scope | undef
       agentNames.add(agent.name);
     }
   }
-  return { workspaceId, paneIds, agentNames };
+  return {
+    workspaceId,
+    checkoutPath: fs.realpathSync(workspace.worktree.checkout_path),
+    tabIds,
+    paneIds,
+    agentNames,
+  };
 }
 
 const ALLOWED_METHODS = new Set([
@@ -70,30 +91,72 @@ const ALLOWED_METHODS = new Set([
   "pane.release_agent", "pane.close",
   "agent.list", "agent.get", "agent.read", "agent.explain", "agent.wait",
   "agent.start", "agent.prompt", "agent.send_keys", "agent.rename", "agent.focus",
-  "agent.view.set", "agent.view.clear",
   "notification.show",
+]);
+
+const EXPLICIT_PANE_METHODS = new Set([
+  "pane.current", "pane.layout", "pane.process_info", "pane.neighbor", "pane.edges",
+  "pane.zoom", "pane.focus_direction", "pane.resize",
 ]);
 
 function identifiersInScope(value: unknown, scope: Scope, key?: string): boolean {
   if (typeof value === "string") {
-    const isId = key !== undefined && (key.endsWith("_id") || key === "target");
-    if (!isId || !value.startsWith("w")) return true;
-    const colon = value.indexOf(":");
-    if (colon === -1) return value === scope.workspaceId || scope.agentNames.has(value);
-    if (!value.startsWith(`${scope.workspaceId}:`)) return false;
-    const isPaneRef = value.slice(colon + 1).startsWith("p");
-    return !isPaneRef || scope.paneIds.has(value) || scope.agentNames.has(value);
+    if (key === "workspace_id") return value === scope.workspaceId;
+    if (key === "tab_id") return scope.tabIds.has(value);
+    if (key === "pane_id" || key === "target_pane_id" || key === "caller_pane_id") {
+      return scope.paneIds.has(value);
+    }
+    if (key === "target") return scope.paneIds.has(value) || scope.agentNames.has(value);
+    return true;
   }
   if (Array.isArray(value)) return value.every((entry) => identifiersInScope(entry, scope, key));
   if (typeof value !== "object" || value === null) return true;
-  return Object.entries(value).every(([k, entry]) => identifiersInScope(entry, scope, k));
+  return Object.entries(value).every(([nestedKey, entry]) =>
+    identifiersInScope(entry, scope, nestedKey)
+  );
+}
+
+function physicalPathWithin(root: string, candidate: unknown): boolean {
+  if (typeof candidate !== "string") return false;
+  try {
+    const physical = fs.realpathSync(candidate);
+    const relative = path.relative(root, physical);
+    return relative === "" || (!relative.startsWith(`..${path.sep}`) && relative !== "..");
+  } catch {
+    return false;
+  }
+}
+
+function sanitizeLaunch(request: any, scope: Scope): string | undefined {
+  if (request.method !== "pane.split" && request.method !== "tab.create") return undefined;
+  delete request.params.env;
+  request.params.workspace_id = scope.workspaceId;
+  if (request.params.cwd !== undefined && !physicalPathWithin(scope.checkoutPath, request.params.cwd)) {
+    return "cwd is outside the workspace";
+  }
+  return undefined;
+}
+
+function hasExplicitPaneTarget(request: any): boolean {
+  if (request.method === "pane.current") return typeof request.params.caller_pane_id === "string";
+  return typeof request.params.pane_id === "string";
 }
 
 export function authorize(request: any, scope: Scope): string | undefined {
-  if (typeof request?.method !== "string" || typeof request?.params !== "object") {
+  if (
+    typeof request?.method !== "string" ||
+    typeof request?.params !== "object" ||
+    request.params === null ||
+    Array.isArray(request.params)
+  ) {
     return "invalid request envelope";
   }
   if (!ALLOWED_METHODS.has(request.method)) return `method ${request.method} is not available`;
+  const unsafeLaunch = sanitizeLaunch(request, scope);
+  if (unsafeLaunch !== undefined) return unsafeLaunch;
+  if (EXPLICIT_PANE_METHODS.has(request.method) && !hasExplicitPaneTarget(request)) {
+    return "explicit pane target required";
+  }
   if (!identifiersInScope(request.params, scope)) return "target is outside the workspace";
   return undefined;
 }
