@@ -47,10 +47,19 @@ type SessionSnapshot = {
   readonly agents: ReadonlyArray<Agent>;
 };
 
+type HerdrErrorBody = { readonly code?: string; readonly message?: string };
+
 type HerdrResponse<T> = {
   readonly result: T;
-  readonly error?: { readonly message?: string };
+  readonly error?: HerdrErrorBody;
 };
+
+/** Error response returned by the Herdr host for a well-formed request. */
+export class HerdrError extends Error {
+  constructor(readonly body: HerdrErrorBody) {
+    super(body.message ?? "herdr error");
+  }
+}
 
 type WorkspaceListResult = { readonly workspaces: ReadonlyArray<Workspace> };
 type TabListResult = { readonly tabs: ReadonlyArray<Tab> };
@@ -132,7 +141,7 @@ export async function call(
   });
   const response: HerdrResponse<unknown> = JSON.parse(line);
   if (response.error !== undefined) {
-    throw new Error(`herdr ${method}: ${response.error.message ?? "error"}`);
+    throw new HerdrError(response.error);
   }
   return response.result;
 }
@@ -248,9 +257,17 @@ export function authorize(request: RpcRequest, scope: Scope): string | undefined
 
 /** Demote host-only report sources emitted by agents running inside the sandbox. */
 export function demotePrivilegedReportSource(request: RpcRequest): void {
-  const source = String(request.params.source ?? "");
-  if (request.method.startsWith("pane.report_") && source.startsWith("herdr:")) {
-    request.params.source = `sandbox:${source.slice("herdr:".length)}`;
+  if (
+    !request.method.startsWith("pane.report_") &&
+    request.method !== "workspace.report_metadata"
+  ) {
+    return;
+  }
+  for (const key of ["source", "applies_to_source"]) {
+    const value = request.params[key];
+    if (typeof value === "string" && value.startsWith("herdr:")) {
+      request.params[key] = `sandbox:${value.slice("herdr:".length)}`;
+    }
   }
 }
 

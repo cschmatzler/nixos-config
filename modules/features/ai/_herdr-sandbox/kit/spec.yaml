@@ -1,7 +1,7 @@
 schemaVersion: "2"
 kind: mixin
 name: herdr-pi-workspace
-version: "1.0.0"
+version: "1.0.2"
 displayName: Herdr Pi Workspace
 description: Home Manager Fish and scoped Herdr access for Pi
 requires:

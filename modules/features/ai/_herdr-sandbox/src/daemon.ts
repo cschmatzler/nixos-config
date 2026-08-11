@@ -8,6 +8,7 @@ import {
   call,
   demotePrivilegedReportSource,
   filterResponse,
+  HerdrError,
   scopeFromSnapshot,
   snapshot,
   type RpcRequest,
@@ -124,7 +125,16 @@ async function handleRpc(request: http.IncomingMessage, response: http.ServerRes
     return;
   }
   demotePrivilegedReportSource(rpcRequest);
-  const result = await call(config.herdrSocketPath, rpcRequest.method, rpcRequest.params);
+  let result: unknown;
+  try {
+    result = await call(config.herdrSocketPath, rpcRequest.method, rpcRequest.params);
+  } catch (cause: unknown) {
+    if (cause instanceof HerdrError) {
+      sendJson(response, 200, { id: rpcRequest.id, error: cause.body });
+      return;
+    }
+    throw cause;
+  }
   sendJson(response, 200, {
     id: rpcRequest.id,
     result: filterResponse(result, registration.workspaceId, rpcRequest.method),

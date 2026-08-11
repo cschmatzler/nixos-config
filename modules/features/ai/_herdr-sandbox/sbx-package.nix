@@ -17,6 +17,12 @@
     pkgs.openssh
     pkgs.util-linux
   ];
+  wrapperFlags = lib.concatStringsSep " " [
+    ''--set NIX_LD "${pkgs.stdenv.cc.bintools.dynamicLinker}"''
+    ''--set NIX_LD_LIBRARY_PATH "${runtimeLibraries}"''
+    ''--set LD_LIBRARY_PATH "${runtimeLibraries}"''
+    ''--prefix PATH : "${runtimePath}"''
+  ];
 in
   pkgs.stdenvNoCC.mkDerivation {
     pname = "docker-sbx";
@@ -47,11 +53,14 @@ in
       install -m 0644 apparmor-profile "$out/libexec/"
       install -m 0644 LICENSE THIRD-PARTY-NOTICES "$out/"
 
-      makeWrapper "$out/bin/sbx-unwrapped" "$out/bin/sbx" \
-        --set NIX_LD "${pkgs.stdenv.cc.bintools.dynamicLinker}" \
-        --set NIX_LD_LIBRARY_PATH "${runtimeLibraries}" \
-        --set LD_LIBRARY_PATH "${runtimeLibraries}" \
-        --prefix PATH : "${runtimePath}"
+      makeWrapper "$out/bin/sbx-unwrapped" "$out/bin/sbx" ${wrapperFlags}
+
+      # Herdr only starts agents in panes whose foreground process is named
+      # like a shell, and Linux takes that name from the basename of the
+      # execve path. Interactive pane attaches exec sbx through this
+      # fish-named link so `agent.start` accepts sandboxed panes.
+      ln -s "$out/bin/sbx-unwrapped" "$out/libexec/fish"
+      makeWrapper "$out/libexec/fish" "$out/bin/sbx-pane-shell" ${wrapperFlags}
 
       runHook postInstall
     '';

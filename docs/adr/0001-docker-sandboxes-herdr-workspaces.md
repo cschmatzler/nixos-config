@@ -39,9 +39,16 @@ The kit allows only the endpoints required by Nix, Devenv, the configured model
 providers and MCPs, GitHub, Supermemory, and the local Herdr broker.
 
 The host Herdr socket is never mounted. A host broker authenticates a random sandbox
-capability, derives its scope from live Herdr state, rejects out-of-scope operations, and
-filters global responses. A guest relay exposes the Unix socket expected by the Herdr CLI
-and `pi-herdr`.
+capability, derives its scope from live Herdr state, rejects out-of-scope operations,
+passes Herdr error responses through unchanged, and filters global responses. A guest
+relay exposes the Unix socket expected by the Herdr CLI and `pi-herdr`. The capability
+reaches the guest as `sbx exec` environment; `sbx exec --env-file` (0.38.0) parses but
+silently drops the variables, so the token stays on the exec command line.
+
+Herdr starts pane agents only in panes whose host-side foreground process is named like
+a shell, so the interactive attach execs `sbx` through a fish-named path. Sandboxed
+agents therefore start through Herdr's native `agent.start`, with launch readiness
+driven by the guest's reported agent state.
 
 ## Consequences
 

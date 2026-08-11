@@ -8,7 +8,7 @@ const socketPath = process.env.HERDR_SOCKET_PATH;
 const bridgeUrl = process.env.HERDR_SANDBOX_BRIDGE_URL;
 const capability = process.env.HERDR_SANDBOX_TOKEN;
 
-if (socketPath === undefined || bridgeUrl === undefined || capability === undefined) {
+if (socketPath === undefined || bridgeUrl === undefined || capability === undefined || capability === "") {
   console.error("herdr relay configuration is incomplete");
   process.exit(2);
 }
@@ -22,6 +22,15 @@ function parseEnvelope(input: string): { id: string; timeout: number } {
     };
   } catch {
     return { id: "herdr-sandbox:invalid", timeout: 5_000 };
+  }
+}
+
+function rejectionDetail(body: string): string {
+  try {
+    const parsed: { readonly error?: unknown } = JSON.parse(body);
+    return typeof parsed.error === "string" ? `: ${parsed.error}` : "";
+  } catch {
+    return "";
   }
 }
 
@@ -49,7 +58,7 @@ async function forward(line: string): Promise<string> {
     });
     const body = await response.text();
     if (!response.ok) {
-      return errorEnvelope(id, `sandbox bridge rejected request (${response.status})`);
+      return errorEnvelope(id, `sandbox bridge rejected request (${response.status})${rejectionDetail(body)}`);
     }
     JSON.parse(body);
     return body;
@@ -65,9 +74,11 @@ const server = net.createServer((socket) => {
   let queue = Promise.resolve();
   socket.on("error", () => socket.destroy());
   socket.setEncoding("utf8");
-  socket.on("data", (chunk: string) => {
+  const onData = (chunk: string): void => {
     buffered += chunk;
     if (Buffer.byteLength(buffered, "utf8") > MAX_LINE_BYTES) {
+      socket.off("data", onData);
+      buffered = "";
       socket.end(`${errorEnvelope("herdr-sandbox:oversized", "request exceeds one MiB")}\n`);
       return;
     }
@@ -83,7 +94,8 @@ const server = net.createServer((socket) => {
       }
       newline = buffered.indexOf("\n");
     }
-  });
+  };
+  socket.on("data", onData);
 });
 
 server.on("error", () => {

@@ -20,6 +20,7 @@
       export DOCKER_SANDBOXES_DOCKER_SIZE=20g
       export DOCKER_SANDBOXES_ENABLE_VIRTIOFS_CACHE=1
       export HERDR_SANDBOX_SBX=${sbxPackage}/bin/sbx
+      export HERDR_SANDBOX_SBX_PANE_SHELL=${sbxPackage}/bin/sbx-pane-shell
       export HERDR_SANDBOX_HERDR="$(command -v herdr)"
       export HERDR_SANDBOX_JQ=${lib.getExe pkgs.jq}
       export HERDR_SANDBOX_SHA256SUM=${pkgs.coreutils}/bin/sha256sum

@@ -156,6 +156,8 @@ if set -q COLORTERM
     set -a exec_env -e "COLORTERM=$COLORTERM"
 end
 
-exec "$HERDR_SANDBOX_SBX" exec -it -u agent -w "$checkout" $exec_env \
+# The pane-shell wrapper execs sbx through a fish-named path so Herdr treats
+# the attached pane as an available shell for `agent.start`.
+exec "$HERDR_SANDBOX_SBX_PANE_SHELL" exec -it -u agent -w "$checkout" $exec_env \
     "$sandbox" "$HERDR_SANDBOX_HOST_PROFILE/bin/fish" \
     /home/agent/.local/bin/herdr-sandbox-fish
