@@ -2,7 +2,7 @@
 
 set -gx HOME /home/agent
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
-set -gx PATH "$HOME/.nix-profile/bin" $PATH
+set -gx PATH (dirname "$HERDR_NIX") "$HOME/.nix-profile/bin" $PATH
 
 if test -d "$HERDR_HOST_HOME_FILES"
     for relative in (find "$HERDR_HOST_HOME_FILES" -mindepth 1 -not -type d -printf '%P\0' | string split0)
@@ -39,8 +39,29 @@ if test "$relay_token" != "$HERDR_SANDBOX_TOKEN"; or \
 end
 
 if test -d "$HERDR_HOST_HOME/.cache/ms-playwright"
-    set -gx PLAYWRIGHT_BROWSERS_PATH "$HERDR_HOST_HOME/.cache/ms-playwright"
+    set -gx PLAYWRIGHT_BROWSERS_PATH "$HOME/.cache/ms-playwright"
     set -gx PLAYWRIGHT_SKIP_BROWSER_GC 1
+    mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
+    for browser in "$HERDR_HOST_HOME/.cache/ms-playwright"/*
+        set -l target "$PLAYWRIGHT_BROWSERS_PATH/"(basename "$browser")
+        test -e "$target"; or ln -s "$browser" "$target"
+    end
+end
+
+for attempt in (seq 1 60)
+    pgrep -x apt-get >/dev/null; or break
+    sleep 1
+end
+
+if test -x .agents/resume
+    if not .agents/resume
+        if test -x .agents/setup
+            echo "[herdr-sandbox] resume failed; running .agents/setup"
+            .agents/setup; or exit 1
+        end
+    end
+else if test -x .agents/setup
+    .agents/setup; or exit 1
 end
 
 set -l startup_command "source $HOME/.local/lib/herdr-sandbox/remap-session-home.fish"

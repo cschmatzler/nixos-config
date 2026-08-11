@@ -33,6 +33,17 @@ set -l state "$HERDR_SANDBOX_STATE_DIRECTORY"
 mkdir -p "$state/registrations"
 chmod 700 "$state" "$state/registrations"
 
+function store_sandbox_secret
+    set -l errors "$HERDR_SANDBOX_STATE_DIRECTORY/secret-errors-"(random)".log"
+    command $argv >/dev/null 2>"$errors"
+    set -l result $status
+    if test $result -ne 0
+        cat "$errors" >&2
+    end
+    rm -f "$errors"
+    return $result
+end
+
 set -l exists ("$HERDR_SANDBOX_SBX" ls --json | "$HERDR_SANDBOX_JQ" -r --arg name "$sandbox" '.sandboxes | any(.name == $name)')
 if test "$exists" != true
     set -l mounts "/nix:ro"
@@ -61,16 +72,17 @@ if test "$exists" != true
             exit 1
         end
         if set -l github_token ("$HERDR_SANDBOX_GH" auth token 2>/dev/null)
-            printf '%s' "$github_token" | "$HERDR_SANDBOX_SBX" secret set github --sandbox "$sandbox" >/dev/null
+            printf '%s' "$github_token" | store_sandbox_secret \
+                "$HERDR_SANDBOX_SBX" secret set github --sandbox "$sandbox"; or exit 1
         end
         if test -f "$HERDR_SANDBOX_SUPERMEMORY_KEY"
             set -l supermemory_key (string trim <"$HERDR_SANDBOX_SUPERMEMORY_KEY")
-            "$HERDR_SANDBOX_SBX" secret set-custom \
+            store_sandbox_secret "$HERDR_SANDBOX_SBX" secret set-custom \
                 --sandbox "$sandbox" \
                 --host api.supermemory.ai \
                 --env SUPERMEMORY_API_KEY \
                 --placeholder "herdr-supermemory-$sandbox" \
-                --value "$supermemory_key" >/dev/null
+                --value "$supermemory_key"; or exit 1
         end
     end
 end
@@ -125,6 +137,7 @@ set -l exec_env \
     -e "HERDR_SANDBOX_BRIDGE_URL=http://host.docker.internal:$HERDR_SANDBOX_LISTEN_PORT" \
     -e "HERDR_HOST_PROFILE=$HERDR_SANDBOX_HOST_PROFILE" \
     -e "HERDR_HOST_HOME_FILES=$HERDR_SANDBOX_HOME_FILES" \
+    -e "HERDR_NIX=$HERDR_SANDBOX_NIX" \
     -e "HERDR_HOST_HOME=$HERDR_SANDBOX_HOST_HOME" \
     -e "PWD=$checkout" \
     -e "TERM=$terminal" \

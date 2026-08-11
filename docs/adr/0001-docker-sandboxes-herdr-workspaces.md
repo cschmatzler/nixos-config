@@ -30,7 +30,9 @@ A small Fish dispatcher is Herdr's default shell.
 
 The guest launches Fish from the read-only host Nix profile. It mirrors the current Home
 Manager generation as read-only links under `/home/agent`, giving Fish and Pi their normal
-configuration without mounting the host home directory.
+configuration without mounting the host home directory. Before opening Fish, it runs the
+repository's `.agents/resume` contract and falls back to `.agents/setup` when the working
+copy is not ready.
 
 Only established caches are added as read-only `sbx` workspace mounts:
 
@@ -46,9 +48,9 @@ The dispatcher copies Pi OAuth and MCP credential files and Herdr's Pi state int
 into the guest's private home on attachment. GitHub and Supermemory use sandbox-scoped
 Docker Sandbox proxy secrets. Pi sessions remain private to the sandbox.
 
-The kit allows unrestricted egress because Nix inputs, model providers, and project MCP
-servers are not a closed host inventory. The scoped broker capability, rather than a
-network allowlist, protects host Herdr access.
+The kit extends Docker Sandboxes' shell policy with the endpoints required by Nix and
+Devenv, Pi's model provider, the configured MCPs, Supermemory, and the local Herdr broker.
+Other egress remains denied by the sandbox network policy.
 
 The real Herdr socket is never mounted. A host broker accepts a random capability written
 by the dispatcher, derives live workspace authority from Herdr for every request, removes
