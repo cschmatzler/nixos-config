@@ -11,4 +11,5 @@ if [[ -e /etc/herdr-playwright-deps-v1 &&
   exit 0
 fi
 
-exec /usr/bin/sudo "$@"
+echo "[herdr-sandbox] sudo is unavailable inside the workspace sandbox." >&2
+exit 126

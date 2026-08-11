@@ -36,7 +36,7 @@ const DEPENDENCY_CACHE_MARKER = ".herdr-sandbox-dependencies-v2";
 const DEVENV_CACHE_MARKER = ".herdr-sandbox-devenv-v2";
 const SANDBOX_HOSTNAME = "herdr-sandbox";
 const SANDBOX_WORKSPACE_ROOT = "/home/agent/workspace";
-const SANDBOX_PROJECTION_VERSION = 3;
+const SANDBOX_PROJECTION_VERSION = 4;
 
 const DEPENDENCY_INPUT_NAMES = new Set([
   ".npmrc",
@@ -107,11 +107,11 @@ async function sandboxState(name: string): Promise<SandboxState | undefined> {
   return (await listSandboxes(config)).get(name);
 }
 
-function projectionMarker(name: string): string {
+function projectionMarker(name: string, identity: string): string {
   return path.join(
     config.stateDirectory,
     "projections",
-    `${name}-v${SANDBOX_PROJECTION_VERSION}`,
+    `${name}-v${SANDBOX_PROJECTION_VERSION}-${identity}`,
   );
 }
 
@@ -364,7 +364,108 @@ async function seedFromCompatibleCaches(root: string): Promise<void> {
   await seedDependencyCache(root, fingerprints.dependencies);
 }
 
-async function gitMounts(root: string, repositoryGitDirectory: string): Promise<ReadonlyArray<string>> {
+function registeredWorktreeDirectory(
+  root: string,
+  commonDirectory: string,
+): string | undefined {
+  const registrations = path.join(commonDirectory, "worktrees");
+  if (!fs.existsSync(registrations)) return undefined;
+  const expectedGitFile = path.join(root, ".git");
+  const matches = fs.readdirSync(registrations, { withFileTypes: true }).flatMap((entry) => {
+    if (!entry.isDirectory()) return [];
+    const administrationDirectory = path.join(registrations, entry.name);
+    const pointer = path.join(administrationDirectory, "gitdir");
+    if (!fs.existsSync(pointer)) return [];
+    const target = fs.readFileSync(pointer, "utf8").trim();
+    return path.resolve(administrationDirectory, target) === expectedGitFile
+      ? [administrationDirectory]
+      : [];
+  });
+  return matches.length === 1 ? matches[0] : undefined;
+}
+
+type ProjectionAccess = "read-write" | "read-only";
+
+type ProjectedPath = {
+  readonly path: string;
+  readonly access: ProjectionAccess;
+};
+
+type GitConfigEntry = {
+  readonly origin: string | undefined;
+  readonly key: string;
+  readonly value: string;
+};
+
+type GitProjection = {
+  readonly identity: string;
+  readonly paths: ReadonlyArray<ProjectedPath>;
+};
+
+function canonicalDirectory(candidate: string, description: string): string {
+  const metadata = fs.lstatSync(candidate);
+  if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
+    throw new Error(`${description} must be a real directory`);
+  }
+  const canonical = fs.realpathSync(candidate);
+  if (canonical !== candidate) throw new Error(`${description} must use its canonical path`);
+  return canonical;
+}
+
+async function effectiveGitConfig(root: string): Promise<ReadonlyArray<GitConfigEntry>> {
+  const listed = await run("git", [
+    "-C", root, "config", "--includes", "--show-origin", "--null", "--list",
+  ]);
+  const fields = listed.stdout.split("\0").filter((field) => field.length > 0);
+  const entries: Array<GitConfigEntry> = [];
+  for (let index = 0; index < fields.length; index += 2) {
+    const originField = fields[index];
+    const setting = fields[index + 1];
+    if (originField === undefined || setting === undefined) {
+      throw new Error("Git returned an invalid effective configuration");
+    }
+    const newline = setting.indexOf("\n");
+    if (newline === -1) throw new Error("Git returned an invalid configuration entry");
+    entries.push({
+      origin: originField.startsWith("file:") ? originField.slice("file:".length) : undefined,
+      key: setting.slice(0, newline),
+      value: setting.slice(newline + 1),
+    });
+  }
+  return entries;
+}
+
+function assertSafeExecutableGitConfig(
+  entries: ReadonlyArray<GitConfigEntry>,
+  writableRoots: ReadonlyArray<string>,
+): void {
+  const executableKey = /^(?:core\.fsmonitor|core\.sshcommand|credential\..*\.helper|credential\.helper|diff\..*\.command|filter\..*\.(?:clean|smudge|process)|gpg\..*\.program|merge\..*\.driver)$/i;
+  for (const entry of entries) {
+    const origin = entry.origin === undefined || !fs.existsSync(entry.origin)
+      ? undefined
+      : fs.realpathSync(entry.origin);
+    const wasGuestWritable = origin !== undefined && writableRoots.some((root) =>
+      pathWithin(root, origin)
+    );
+    if (!wasGuestWritable) continue;
+    if (entry.key.startsWith("alias.") && entry.value.startsWith("!")) {
+      throw new Error(`shell Git alias is not safe to project: ${entry.key}`);
+    }
+    if (!executableKey.test(entry.key) || entry.value === "false") continue;
+    if (writableRoots.some((root) => entry.value.includes(root))) {
+      throw new Error(`Git executable setting references writable host data: ${entry.key}`);
+    }
+    const executable = entry.value.trim().split(/\s+/, 1)[0];
+    if (executable?.startsWith("/nix/store/") && !/[;&|`$]/.test(entry.value)) continue;
+    throw new Error(`Git executable setting is not immutable: ${entry.key}`);
+  }
+}
+
+function uniquePaths(paths: ReadonlyArray<string>): ReadonlyArray<string> {
+  return [...new Set(paths)];
+}
+
+async function gitProjection(root: string, repositoryGitDirectory: string): Promise<GitProjection> {
   const reportedCommonDirectory = path.resolve(
     root,
     (await run("git", ["-C", root, "rev-parse", "--git-common-dir"])).stdout.trim(),
@@ -378,8 +479,12 @@ async function gitMounts(root: string, repositoryGitDirectory: string): Promise<
     (await run("git", ["-C", root, "rev-parse", "--git-dir"])).stdout.trim(),
   );
   const worktreeDirectory = fs.realpathSync(reportedWorktreeDirectory);
-  if (!pathWithin(commonDirectory, worktreeDirectory)) {
-    throw new Error("worktree Git administration directory is outside the common repository");
+  const registeredDirectory = registeredWorktreeDirectory(root, commonDirectory);
+  if (
+    registeredDirectory === undefined ||
+    canonicalDirectory(registeredDirectory, "worktree Git administration directory") !== worktreeDirectory
+  ) {
+    throw new Error("worktree Git administration directory does not match its registration");
   }
 
   const worktreeConfig = path.join(worktreeDirectory, "config.worktree");
@@ -391,25 +496,86 @@ async function gitMounts(root: string, repositoryGitDirectory: string): Promise<
     throw new Error("worktree-specific Git config must exist before sandbox projection");
   }
 
-  const protectedPaths = [
+  const hooksDirectory = fs.realpathSync(
+    path.resolve(root, (await run("git", ["-C", root, "rev-parse", "--git-path", "hooks"])).stdout.trim()),
+  );
+  const activeHooks = fs.readdirSync(hooksDirectory).filter((entry) => !entry.endsWith(".sample"));
+  if (activeHooks.length > 0) {
+    throw new Error("host Git hooks must be removed before sandbox projection");
+  }
+
+  const entries = await effectiveGitConfig(root);
+  assertSafeExecutableGitConfig(entries, [root, commonDirectory]);
+  const configOrigins = entries.flatMap((entry) => {
+    if (entry.origin === undefined || !fs.existsSync(entry.origin)) return [];
+    const canonical = fs.realpathSync(entry.origin);
+    return pathWithin(root, canonical) || pathWithin(commonDirectory, canonical)
+      ? [entry.origin, canonical]
+      : [];
+  });
+  const protectedPaths = uniquePaths([
     path.join(root, ".git"),
-    path.join(commonDirectory, "config"),
-    path.join(commonDirectory, "hooks"),
+    hooksDirectory,
     path.join(worktreeDirectory, "commondir"),
     path.join(worktreeDirectory, "gitdir"),
     worktreeConfig,
-  ].filter((candidate) => fs.existsSync(candidate));
-
-  return [
-    mountPath(commonDirectory, "read-write"),
-    ...protectedPaths.map((candidate) => mountPath(candidate, "read-only")),
+    ...configOrigins,
+  ].filter((candidate) => fs.existsSync(candidate)));
+  const writablePaths = [
+    canonicalDirectory(path.join(commonDirectory, "objects"), "Git object directory"),
+    canonicalDirectory(path.join(commonDirectory, "refs"), "Git refs directory"),
+    canonicalDirectory(path.join(commonDirectory, "logs"), "Git logs directory"),
+    worktreeDirectory,
   ];
+  const paths: ReadonlyArray<ProjectedPath> = [
+    { path: commonDirectory, access: "read-only" },
+    ...writablePaths.map((projectedPath) => ({
+      path: projectedPath,
+      access: "read-write" as const,
+    })),
+    ...protectedPaths.map((projectedPath) => ({
+      path: projectedPath,
+      access: "read-only" as const,
+    })),
+  ];
+  const identity = createHash("sha256")
+    .update(JSON.stringify({ paths, entries }))
+    .digest("hex")
+    .slice(0, 20);
+  return { identity, paths };
+}
+
+async function attestProjection(
+  sandboxName: string,
+  projectedPaths: ReadonlyArray<ProjectedPath>,
+): Promise<void> {
+  for (const projected of projectedPaths) {
+    const [target, options] = await Promise.all([
+      run(
+        config.dockerPath,
+        ["exec", "-u", "agent", sandboxName, "findmnt", "-T", projected.path, "-n", "-o", "TARGET"],
+        { env: sandboxDockerEnvironment(config) },
+      ),
+      run(
+        config.dockerPath,
+        ["exec", "-u", "agent", sandboxName, "findmnt", "-T", projected.path, "-n", "-o", "OPTIONS"],
+        { env: sandboxDockerEnvironment(config) },
+      ),
+    ]);
+    const expectedOption = projected.access === "read-only" ? "ro" : "rw";
+    if (
+      target.stdout.trim() !== projected.path ||
+      !options.stdout.trim().split(",").includes(expectedOption)
+    ) {
+      throw new Error(`sandbox projection does not match ${projected.access}: ${projected.path}`);
+    }
+  }
 }
 
 async function createSandbox(
   name: string,
   root: string,
-  repositoryGitDirectory: string,
+  git: GitProjection,
 ): Promise<void> {
   const lockDir = path.join(config.stateDirectory, "locks", `${name}.lock`);
   await withLock(lockDir, async () => {
@@ -417,7 +583,10 @@ async function createSandbox(
     process.stdout.write("[herdr-sandbox] creating the sandbox for this worktree…\n");
     const template = await ensureSandboxTemplate(config);
     await seedFromCompatibleCaches(root);
-    const mounts = [mountPath(root, "read-write"), ...await gitMounts(root, repositoryGitDirectory)];
+    const mounts = [
+      mountPath(root, "read-write"),
+      ...git.paths.map((projected) => mountPath(projected.path, projected.access)),
+    ];
     for (const extra of [
       "/nix",
       `${config.hostHome}/.pi/agent/npm`,
@@ -435,9 +604,18 @@ async function createSandbox(
       "--kit", config.kitPath,
       "shell", ...mounts,
     ]);
+    try {
+      await attestProjection(name, [
+        { path: root, access: "read-write" },
+        ...git.paths,
+      ]);
+    } catch (cause: unknown) {
+      await run(config.sbxPath, ["rm", "--force", name]);
+      throw cause;
+    }
     await seedProxyCredentials(config, name);
     await copyHome(name, RUNTIME_COPY_PATHS);
-    const marker = projectionMarker(name);
+    const marker = projectionMarker(name, git.identity);
     fs.mkdirSync(path.dirname(marker), { recursive: true, mode: 0o700 });
     fs.writeFileSync(marker, "protected host projection\n", { mode: 0o600 });
   });
@@ -521,17 +699,18 @@ async function main(): Promise<void> {
 
   const root = fs.realpathSync(worktree.checkout_path);
   const repositoryGitDirectory = fs.realpathSync(path.join(worktree.repo_root, ".git"));
+  const git = await gitProjection(root, repositoryGitDirectory);
   const name = `herdr-${createHash("sha256").update(root).digest("hex").slice(0, 20)}`;
   const sandboxes = await ensureSbxDaemon(config);
   await enforceRestrictiveNetworkPolicy(config);
   let state = sandboxes.get(name);
-  if (state !== undefined && !fs.existsSync(projectionMarker(name))) {
+  if (state !== undefined && !fs.existsSync(projectionMarker(name, git.identity))) {
     process.stdout.write("[herdr-sandbox] replacing the legacy host projection…\n");
     await run(config.sbxPath, ["rm", "--force", name]);
     state = undefined;
   }
   if (state === undefined) {
-    await createSandbox(name, root, repositoryGitDirectory);
+    await createSandbox(name, root, git);
     state = "running";
   }
 

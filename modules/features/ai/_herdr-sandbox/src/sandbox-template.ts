@@ -23,10 +23,14 @@ function templateDirectory(config: Config): string {
 }
 
 function templateImage(config: Config): string {
-  const dockerfile = fs.readFileSync(path.join(templateDirectory(config), "Dockerfile"));
+  const directory = templateDirectory(config);
+  const dockerfile = fs.readFileSync(path.join(directory, "Dockerfile"));
+  const rootHelper = fs.readFileSync(path.join(directory, "herdr-sandbox-root"));
   const identity = createHash("sha256")
-    .update("herdr-sandbox-template-v1\0")
+    .update("herdr-sandbox-template-v2\0")
     .update(dockerfile)
+    .update("\0")
+    .update(rootHelper)
     .update("\0")
     .update(fs.realpathSync(config.sbxPath))
     .digest("hex")

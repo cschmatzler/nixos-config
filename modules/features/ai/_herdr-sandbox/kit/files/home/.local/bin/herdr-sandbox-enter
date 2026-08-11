@@ -7,44 +7,22 @@ unset ANTHROPIC_API_KEY OPENAI_API_KEY OPENROUTER_API_KEY NEBIUS_API_KEY \
 ln -sfn "$HERDR_HOST_PROFILE" "$HOME/.nix-profile"
 export PATH="$HOME/.nix-profile/bin:$PATH"
 
-runtime_dir="/run/user/$(id -u)"
-if [[ ! -w "$runtime_dir" ]]; then
-  sudo mkdir -p "$runtime_dir"
-  sudo chown "$(id -u):$(id -g)" "$runtime_dir"
-  sudo chmod 700 "$runtime_dir"
+if ! /usr/bin/sudo /usr/local/sbin/herdr-sandbox-root prepare; then
+  echo "[herdr-sandbox] failed to prepare the guest runtime." >&2
+  exit 1
 fi
-export XDG_RUNTIME_DIR="$runtime_dir"
-
-host_system=$(readlink -f /nix/var/nix/profiles/system 2>/dev/null || true)
-if [[ -n "$host_system" ]]; then
-  # The host fish config prepends /run/wrappers/bin and
-  # /run/current-system/sw/bin; recreate both so the system profile's tools
-  # resolve while Ubuntu's setuid sudo still shadows the non-setuid Nix one.
-  sudo sh -c "ln -sfn '$host_system' /run/current-system &&
-    mkdir -p /run/wrappers/bin &&
-    ln -sfn '$HOME/.local/bin/herdr-sandbox-sudo' /run/wrappers/bin/sudo"
-  export PATH="/run/wrappers/bin:$PATH:/run/current-system/sw/bin"
-fi
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+export PATH="/run/wrappers/bin:$PATH:/run/current-system/sw/bin"
 
 host_workspace_cwd="$PWD"
 case "$host_workspace_cwd" in
   "$HERDR_HOST_WORKSPACE_ROOT" | "$HERDR_HOST_WORKSPACE_ROOT"/*) ;;
   *) host_workspace_cwd="$HERDR_HOST_WORKSPACE_ROOT" ;;
 esac
-if ! mountpoint -q "$HERDR_WORKSPACE_ROOT"; then
-  sudo mkdir -p "$HERDR_WORKSPACE_ROOT"
-  sudo mount --bind "$HERDR_HOST_WORKSPACE_ROOT" "$HERDR_WORKSPACE_ROOT"
-fi
-if [[ "$(hostname)" != "$HERDR_SANDBOX_HOSTNAME" ]] ||
-  ! getent hosts "$HERDR_SANDBOX_HOSTNAME" >/dev/null 2>&1; then
-  sudo sh -eu -c '
-    hosts=/run/herdr-sandbox-hosts
-    cp /etc/hosts "$hosts.new"
-    printf "127.0.1.1 %s\n" "$1" >>"$hosts.new"
-    mv "$hosts.new" "$hosts"
-    mount --bind "$hosts" /etc/hosts
-    hostname "$1"
-  ' sh "$HERDR_SANDBOX_HOSTNAME"
+if [[ ! -L "$HERDR_WORKSPACE_ROOT" ]] ||
+  [[ "$(readlink "$HERDR_WORKSPACE_ROOT")" != "$HERDR_HOST_WORKSPACE_ROOT" ]]; then
+  rm -rf "$HERDR_WORKSPACE_ROOT"
+  ln -s "$HERDR_HOST_WORKSPACE_ROOT" "$HERDR_WORKSPACE_ROOT"
 fi
 
 mirror_home_files() {

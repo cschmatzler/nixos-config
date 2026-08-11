@@ -2,7 +2,10 @@ FROM docker/sandbox-templates:shell-docker
 
 USER root
 
-RUN apt-get update \
+COPY herdr-sandbox-root /usr/local/sbin/herdr-sandbox-root
+
+RUN chmod 0755 /usr/local/sbin/herdr-sandbox-root \
+  && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     build-essential ca-certificates curl git jq sudo unzip xz-utils \
     fonts-freefont-ttf fonts-ipafont-gothic fonts-liberation \
@@ -16,7 +19,10 @@ RUN apt-get update \
     libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 \
     libxi6 libxkbcommon0 libxrandr2 libxrender1 xfonts-cyrillic \
     xfonts-scalable xvfb \
-  && printf 'agent ALL=(ALL) NOPASSWD:ALL\n' > /etc/sudoers.d/agent \
+  && printf '%s\n' \
+    'agent ALL=(root) NOPASSWD: /usr/local/sbin/herdr-sandbox-root prepare' \
+    'agent ALL=(root) NOPASSWD: /usr/local/sbin/herdr-sandbox-root overcommit' \
+    > /etc/sudoers.d/agent \
   && chmod 0440 /etc/sudoers.d/agent \
   && touch /etc/herdr-playwright-deps-v1 \
   && rm -rf /var/lib/apt/lists/*
