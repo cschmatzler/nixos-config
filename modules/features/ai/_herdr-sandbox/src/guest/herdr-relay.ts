@@ -6,9 +6,25 @@ import { timeoutForMethod } from "../rpc";
 const MAX_LINE_BYTES = 1024 * 1024;
 const socketPath = process.env.HERDR_SOCKET_PATH;
 const bridgeUrl = process.env.HERDR_SANDBOX_BRIDGE_URL;
-const capability = process.env.HERDR_SANDBOX_TOKEN;
+const capabilityPath = process.env.HERDR_SANDBOX_TOKEN_FILE;
 
-if (socketPath === undefined || bridgeUrl === undefined || capability === undefined || capability === "") {
+function readCapability(filePath: string | undefined): string | undefined {
+  if (filePath === undefined) return undefined;
+  try {
+    return fs.readFileSync(filePath, "utf8").trim();
+  } catch {
+    return undefined;
+  }
+}
+
+const capability = readCapability(capabilityPath);
+
+if (
+  socketPath === undefined ||
+  bridgeUrl === undefined ||
+  capability === undefined ||
+  !/^[a-f0-9]{64}$/.test(capability)
+) {
   console.error("herdr relay configuration is incomplete");
   process.exit(2);
 }

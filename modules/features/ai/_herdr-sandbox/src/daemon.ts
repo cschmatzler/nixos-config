@@ -3,6 +3,7 @@ import http from "node:http";
 import path from "node:path";
 import { timingSafeEqual } from "node:crypto";
 
+import { startEgressGate, type AllowedEndpoint } from "./egress";
 import {
   authorize,
   call,
@@ -20,6 +21,12 @@ type BrokerConfig = {
   readonly herdrSocketPath: string;
   readonly stateDirectory: string;
   readonly listenPort: number;
+  readonly egressPort: number;
+  readonly proxyPort: number;
+  readonly proxyTokenFile: string;
+  readonly credentialToken: string;
+  readonly credentialPaths: ReadonlyArray<string>;
+  readonly allowedEndpoints: ReadonlyArray<AllowedEndpoint>;
 };
 
 type Registration = {
@@ -39,6 +46,10 @@ function readConfig(): BrokerConfig {
 }
 
 const config = readConfig();
+const proxyToken = fs.readFileSync(config.proxyTokenFile, "utf8").trim();
+if (!/^[a-f0-9]{64}$/.test(proxyToken)) {
+  throw new Error("invalid egress proxy token");
+}
 
 function readRegistration(registrationPath: string): Registration | undefined {
   try {
@@ -155,6 +166,25 @@ const server = http.createServer((request, response) => {
     console.error(`[herdr-sandbox] broker request failed: ${message}`);
     if (!response.headersSent) sendJson(response, 500, { error: "bridge request failed" });
   });
+});
+
+const egressGate = startEgressGate({
+  listenHost: "127.0.0.1",
+  listenPort: config.egressPort,
+  proxyHost: "127.0.0.1",
+  proxyPort: config.proxyPort,
+  proxyToken,
+  credentialToken: config.credentialToken,
+  credentialPaths: config.credentialPaths,
+  allowedEndpoints: config.allowedEndpoints,
+});
+egressGate.on("listening", () => {
+  console.log(`[herdr-sandbox] egress gate ready on 127.0.0.1:${config.egressPort}`);
+});
+egressGate.on("error", (cause: Error) => {
+  console.error(`[herdr-sandbox] egress gate failed: ${cause.message}`);
+  process.exitCode = 1;
+  server.close();
 });
 
 server.listen(config.listenPort, "127.0.0.1", () => {

@@ -5,6 +5,7 @@ in {
     includes = [
       den.aspects.host-nixos-base
       den.aspects.home-assistant
+      den.aspects.herdr-sandbox
       den.aspects.mosh-server
       den.aspects.email
       den.aspects.ynab

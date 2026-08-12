@@ -9,7 +9,7 @@
       ./package-lock.json
       ./tsconfig.json
       ./src
-      ./kit
+      ./guest
     ];
   };
   nodeModules = pkgs.importNpmLock.buildNodeModules {
@@ -18,7 +18,7 @@
   };
 in
   pkgs.stdenvNoCC.mkDerivation {
-    pname = "herdr-docker-sandbox";
+    pname = "herdr-microvm-sandbox";
     version = "0.1.0";
     src = source;
 
@@ -27,7 +27,7 @@ in
       pkgs.nodejs_24
     ];
 
-    # Kit files execute in Ubuntu, not in the NixOS host closure.
+    # Guest files execute in the Ubuntu workspace, not in the NixOS host closure.
     dontPatchShebangs = true;
 
     buildPhase = ''
@@ -41,25 +41,33 @@ in
       runHook preInstall
 
       runtime="$out/libexec/herdr-sandbox"
-      kit="$out/share/herdr-sandbox/kit"
-      mkdir -p "$out/bin" "$runtime/dist" "$kit"
+      guestHome="$out/share/herdr-sandbox/home"
+      mkdir -p "$out/bin" "$out/libexec" "$runtime/dist" "$guestHome"
       cp package.json "$runtime/package.json"
       cp -r dist/. "$runtime/dist/"
 
       makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/herdr-sandboxd" \
         --add-flags "$runtime/dist/daemon.mjs"
 
-      cp -r kit/. "$kit/"
-      mkdir -p "$kit/files/home/.local/lib/herdr-sandbox"
+      # Herdr identifies an attachable shell from the host foreground process.
+      # A real copy keeps Linux's process name `fish` while preserving SSH's
+      # normal argv handling.
+      cp ${pkgs.openssh}/bin/ssh "$out/libexec/fish"
+      chmod 0755 "$out/libexec/fish"
+
+      cp -r guest/home/. "$guestHome/"
+      mkdir -p "$guestHome/.local/lib/herdr-sandbox"
       cp "$runtime/dist/guest/herdr-relay.mjs" \
-        "$kit/files/home/.local/lib/herdr-sandbox/herdr-relay.mjs"
-      chmod 0755 "$kit/files/home/.local/bin/herdr-sandbox-fish"
+        "$guestHome/.local/lib/herdr-sandbox/herdr-relay.mjs"
+      chmod 0755 \
+        "$guestHome/.local/bin/herdr-sandbox-enter" \
+        "$guestHome/.local/bin/herdr-sandbox-fish"
 
       runHook postInstall
     '';
 
     meta = {
-      description = "Docker Sandboxes integration for isolated Herdr workspaces";
+      description = "microvm.nix integration for isolated Herdr workspaces";
       license = lib.licenses.mit;
       mainProgram = "herdr-sandboxd";
       platforms = ["x86_64-linux"];

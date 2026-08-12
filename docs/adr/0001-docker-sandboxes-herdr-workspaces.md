@@ -1,6 +1,6 @@
 # ADR 0001: Docker Sandboxes-backed Herdr workspaces on Tahani
 
-- Status: Accepted
+- Status: Superseded by [ADR 0002](./0002-microvm-nix-herdr-workspaces.md)
 - Date: 2026-08-10
 - Revised: 2026-08-11
 

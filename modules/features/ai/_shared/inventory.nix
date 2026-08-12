@@ -34,7 +34,7 @@
     };
     executor = {
       kind = "remote";
-      url = "https://executor.sh/mcp/toolkits/general";
+      url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
     };
   };
 
