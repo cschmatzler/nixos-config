@@ -110,6 +110,7 @@ _: let
   piFilesystem = {
     deny = sensitivePaths;
     allow = [
+      "@git:common-dir"
       "$HOME/.cache/nvim"
       "$HOME/.local/share/nvim"
       "$HOME/.local/share/opensrc"
@@ -165,6 +166,7 @@ _: let
   claudeFilesystem = {
     deny = sensitivePaths;
     allow = [
+      "@git:common-dir"
       "$HOME/.cache/claude"
       "$HOME/.cache/claude-cli-nodejs"
       "$HOME/.cache/nvim"

@@ -25,11 +25,17 @@ in {
       nonoPackage = inputs'.llm-agents.packages.nono;
       piPackage = inputs'.llm-agents.packages.pi;
       piProfile = "${config.xdg.configHome}/nono/profiles/pi.json";
+      piNixProfile = "${config.xdg.configHome}/nono/profiles/pi-nix.json";
       piTempDir = "${config.home.homeDirectory}/.pi/tmp";
       piCommand = pkgs.writeShellScriptBin "pi" ''
         mkdir -p ${lib.escapeShellArg piTempDir}
         export TMPDIR=${lib.escapeShellArg piTempDir}
         exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piProfile} -- ${piPackage}/bin/pi "$@"
+      '';
+      piNixCommand = pkgs.writeShellScriptBin "pi-nix" ''
+        mkdir -p ${lib.escapeShellArg piTempDir}
+        export TMPDIR=${lib.escapeShellArg piTempDir}
+        exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piNixProfile} -- ${piPackage}/bin/pi "$@"
       '';
       piUnconfinedCommand = pkgs.writeShellScriptBin "pi-unconfined" ''
         exec ${piPackage}/bin/pi "$@"
@@ -110,6 +116,7 @@ in {
       home = {
         packages = [
           piCommand
+          piNixCommand
           piUnconfinedCommand
         ];
 
