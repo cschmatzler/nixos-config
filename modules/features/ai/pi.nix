@@ -1,8 +1,10 @@
-{den, ...}: let
+{
+  den,
+  inputs,
+  ...
+}: let
   local = import ../../_lib/local.nix;
-  inherit (local) secretPath;
   secretLib = import ../../_lib/secrets.nix {};
-  supermemoryApiKeyPath = secretPath "supermemory-api-key";
 in {
   den.aspects.pi = {
     includes = [den.aspects.javascript];
@@ -13,12 +15,25 @@ in {
     };
 
     homeManager = {
+      config,
       inputs',
       lib,
       pkgs,
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
+      nonoPackage = inputs'.llm-agents.packages.nono;
+      piPackage = inputs'.llm-agents.packages.pi;
+      piProfile = "${config.xdg.configHome}/nono/profiles/pi.json";
+      piTempDir = "${config.home.homeDirectory}/.pi/tmp";
+      piCommand = pkgs.writeShellScriptBin "pi" ''
+        mkdir -p ${lib.escapeShellArg piTempDir}
+        export TMPDIR=${lib.escapeShellArg piTempDir}
+        exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piProfile} -- ${piPackage}/bin/pi "$@"
+      '';
+      piUnconfinedCommand = pkgs.writeShellScriptBin "pi-unconfined" ''
+        exec ${piPackage}/bin/pi "$@"
+      '';
       aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "pi";
       mcpServers =
         lib.mapAttrs (
@@ -78,6 +93,7 @@ in {
         defaultThinkingLevel = "high";
         enableInstallTelemetry = false;
         packages = [
+          (toString (inputs.nono-packs + "/pi"))
           "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
           "npm:@awesamarth/pi-supermemory"
           "npm:@ogulcancelik/pi-herdr"
@@ -91,18 +107,10 @@ in {
         skills = ["./skills"];
       };
     in {
-      programs.fish.shellInit = lib.mkAfter ''
-        if test -f "${supermemoryApiKeyPath}"
-          set -gx SUPERMEMORY_API_KEY (string trim -- (cat "${supermemoryApiKeyPath}"))
-        end
-
-        set -gx SUPERMEMORY_API_URL "https://api.supermemory.ai"
-        set -gx PI_SKIP_VERSION_CHECK 1
-      '';
-
       home = {
         packages = [
-          inputs'.llm-agents.packages.pi
+          piCommand
+          piUnconfinedCommand
         ];
 
         file =

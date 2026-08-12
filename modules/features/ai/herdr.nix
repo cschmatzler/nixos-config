@@ -1,5 +1,6 @@
 _: let
   theme = (import ../../_lib/theme.nix).rosePineDawn;
+  herdrConfig = import ./_herdr/config.nix {inherit theme;};
 in {
   flake-file.inputs.herdr = {
     url = "github:ogulcancelik/herdr";
@@ -15,22 +16,10 @@ in {
   }: let
     tomlFormat = pkgs.formats.toml {};
     herdrPackage = inputs'.herdr.packages.herdr;
-    defaultShell =
-      if config.herdrSandbox.shell == null
-      then "fish"
-      else config.herdrSandbox.shell;
-    herdrConfig = import ./_herdr/config.nix {inherit theme defaultShell;};
     pluginId = "gh-pr-workspace";
     pluginRoot = "${config.xdg.configHome}/herdr/local-plugins/${pluginId}";
   in {
-    options.herdrSandbox.shell = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      internal = true;
-      description = "Host command used to attach Herdr panes to an isolated workspace";
-    };
-
-    config.home = {
+    home = {
       packages = with pkgs; [
         bun
         gh

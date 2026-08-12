@@ -32,10 +32,6 @@
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
     };
-    microvm = {
-      url = "github:microvm-nix/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs = {
@@ -48,6 +44,10 @@
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
+    };
+    nono-packs = {
+      url = "github:nolabs-ai/nono-packs";
+      flake = false;
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";

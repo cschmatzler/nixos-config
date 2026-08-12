@@ -5,7 +5,6 @@ in {
     includes = [
       den.aspects.host-nixos-base
       den.aspects.home-assistant
-      den.aspects.herdr-sandbox
       den.aspects.mosh-server
       den.aspects.email
       den.aspects.ynab
@@ -16,7 +15,6 @@ in {
       includes = [
         den.aspects.user-workstation
         den.aspects.user-personal
-        den.aspects.herdr-sandbox
         den.aspects.email
         den.aspects.ynab
       ];
@@ -34,14 +32,12 @@ in {
         ./_parts/tahani/executor.nix
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
-        ./_parts/tahani/pi-web.nix
         ./_parts/tahani/plannotator.nix
       ];
 
       virtualisation.docker.enable = true;
       users.users.${local.user.name}.extraGroups = [
         "docker"
-        "kvm"
       ];
     };
   };

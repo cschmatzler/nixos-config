@@ -34,7 +34,7 @@ _Avoid_: Proxy service, tunnel
 
 **Plannotator Pi Plugin**:
 The Pi plugin that owns Plannotator's local listener and its Tailscale Serve Exposure.
-_Avoid_: Pi Web workload, Plannotator systemd unit
+_Avoid_: Plannotator systemd unit
 
 **AI Tool Inventory**:
 The commands, skills, and MCP endpoints intentionally made available through one or more AI tool Adapters.
@@ -78,7 +78,7 @@ _Avoid_: Docker container, custom VM controller
 ## Example dialogue
 
 > **Dev:** "Which workload owns the Plannotator **Tailscale Serve Exposure**?"
-> **Domain expert:** "The **Plannotator Pi Plugin** owns it; do not invent a systemd workload unit or attach it to Pi Web."
+> **Domain expert:** "The **Plannotator Pi Plugin** owns it; do not invent a separate systemd workload unit."
 >
 > **Dev:** "Must every entry in the **AI Tool Inventory** appear in both Adapters?"
 > **Domain expert:** "No. Membership is explicit because some commands belong only to Pi or Claude Code."

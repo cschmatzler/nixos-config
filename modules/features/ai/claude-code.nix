@@ -1,10 +1,15 @@
-{den, ...}: let
+{
+  den,
+  inputs,
+  ...
+}: let
   local = import ../../_lib/local.nix;
 in {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
 
     homeManager = {
+      config,
       inputs',
       lib,
       pkgs,
@@ -31,6 +36,26 @@ in {
           hash = "sha256-b1o0Z+2crsR5W/eM1HZQfZ+HDH1XuGyUX8szgSZ3L/w=";
         };
       };
+      nonoPackage = inputs'.llm-agents.packages.nono;
+      claudePackage = inputs'.llm-agents.packages.claude-code;
+      claudeProfile = "${config.xdg.configHome}/nono/profiles/claude.json";
+      claudeTempDir = "${config.home.homeDirectory}/.claude/tmp";
+      sandboxedClaudePackage = pkgs.symlinkJoin {
+        name = "claude-code-${claudePackage.version}";
+        paths = [claudePackage];
+        postBuild = ''
+          rm "$out/bin/claude"
+          ln -s ${claudePackage}/bin/claude "$out/bin/claude-unconfined"
+          cat >"$out/bin/claude" <<'EOF'
+          #!${pkgs.runtimeShell}
+          mkdir -p ${lib.escapeShellArg claudeTempDir}
+          export TMPDIR=${lib.escapeShellArg claudeTempDir}
+          exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg claudeProfile} -- ${claudePackage}/bin/claude "$@"
+          EOF
+          chmod +x "$out/bin/claude"
+        '';
+        inherit (claudePackage) meta version;
+      };
       plannotatorPackage = inputs'.llm-agents.packages.plannotator;
       plannotator =
         if pkgs.stdenv.isDarwin
@@ -46,7 +71,8 @@ in {
     in {
       programs.claude-code = {
         enable = true;
-        package = inputs'.llm-agents.packages.claude-code;
+        package = sandboxedClaudePackage;
+        plugins.nono = inputs.nono-packs + "/claude";
         commands = lib.mapAttrs (_: command: command.text) aiTools.commands;
         skills = lib.mapAttrs (_: skill: skill.source) aiTools.skills;
         inherit mcpServers;
@@ -100,6 +126,7 @@ in {
 
       home = {
         sessionVariables = {
+          DISABLE_AUTOUPDATER = "1";
           PLANNOTATOR_PORT = "20000";
           PLANNOTATOR_REMOTE = "1";
         };
