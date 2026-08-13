@@ -22,10 +22,11 @@
       piCommand = pkgs.writeShellScriptBin "pi" ''
         exec ${inputs'.llm-agents.packages.nono}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg "${config.xdg.configHome}/nono/profiles/pi.json"} -- ${inputs'.llm-agents.packages.pi}/bin/pi "$@"
       '';
-      aiTools = (import ./_shared/inventory.nix {
-        inherit lib;
-        local = import ../../_lib/local.nix;
-      }).forAdapter "pi";
+      aiTools =
+        (import ./_shared/inventory.nix {
+          inherit lib;
+          local = import ../../_lib/local.nix;
+        }).pi;
       mcpServers =
         lib.mapAttrs (
           name: endpoint:

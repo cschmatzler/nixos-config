@@ -37,56 +37,61 @@
       url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
     };
   };
-
-  sharedMembership = {
-    commands = [
-      "rmslop"
-      "albanian-lesson"
-      "inbox-triage"
-    ];
-    skills = [
-      "coding-standards"
-      "effect"
-      "wrdn-authz"
-      "wrdn-code-execution"
-      "wrdn-data-exfil"
-      "wrdn-gha-workflows"
-      "wrdn-pii"
-    ];
-    mcp = [
-      "opensrc"
-      "executor"
-    ];
-  };
-
-  adapterMembership = {
-    pi = sharedMembership;
-    "claude-code" =
-      sharedMembership
-      // {
-        commands =
-          sharedMembership.commands
-          ++ [
-            "plannotator-annotate"
-            "plannotator-last"
-            "plannotator-review"
-          ];
-      };
-  };
-
-  select = adapter: kind: entries: names:
-    assert lib.assertMsg (builtins.filter (name: ! builtins.hasAttr name entries) names == []) "AI Tool Inventory Adapter ${adapter} selects unknown ${kind}: ${lib.concatStringsSep ", " (builtins.filter (name: ! builtins.hasAttr name entries) names)}";
-    assert lib.assertMsg (lib.length names == lib.length (lib.unique names)) "AI Tool Inventory Adapter ${adapter} selects duplicate ${kind}";
-      lib.genAttrs names (name: entries.${name});
-
-  validateMcp = name: entry:
-    assert lib.assertMsg (lib.elem entry.kind ["local" "remote"]) "AI Tool Inventory MCP entry ${name} has an unsupported kind";
-    assert lib.assertMsg (entry.kind != "local" || entry.command != []) "AI Tool Inventory local MCP entry ${name} must have a command"; entry;
 in {
-  forAdapter = adapter:
-    assert lib.assertMsg (builtins.hasAttr adapter adapterMembership) "Unknown AI Tool Inventory Adapter: ${adapter}"; {
-      commands = select adapter "commands" commands adapterMembership.${adapter}.commands;
-      skills = select adapter "skills" skills adapterMembership.${adapter}.skills;
-      mcp = lib.mapAttrs validateMcp (select adapter "MCP entries" mcp adapterMembership.${adapter}.mcp);
-    };
+  pi = {
+    commands =
+      lib.getAttrs [
+        "rmslop"
+        "albanian-lesson"
+        "inbox-triage"
+      ]
+      commands;
+    skills =
+      lib.getAttrs [
+        "coding-standards"
+        "effect"
+        "wrdn-authz"
+        "wrdn-code-execution"
+        "wrdn-data-exfil"
+        "wrdn-gha-workflows"
+        "wrdn-pii"
+      ]
+      skills;
+    mcp =
+      lib.getAttrs [
+        "opensrc"
+        "executor"
+      ]
+      mcp;
+  };
+
+  "claude-code" = {
+    commands =
+      lib.getAttrs [
+        "rmslop"
+        "albanian-lesson"
+        "inbox-triage"
+        "plannotator-annotate"
+        "plannotator-last"
+        "plannotator-review"
+      ]
+      commands;
+    skills =
+      lib.getAttrs [
+        "coding-standards"
+        "effect"
+        "wrdn-authz"
+        "wrdn-code-execution"
+        "wrdn-data-exfil"
+        "wrdn-gha-workflows"
+        "wrdn-pii"
+      ]
+      skills;
+    mcp =
+      lib.getAttrs [
+        "opensrc"
+        "executor"
+      ]
+      mcp;
+  };
 }

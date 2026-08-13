@@ -13,10 +13,11 @@
       pkgs,
       ...
     }: let
-      aiTools = (import ./_shared/inventory.nix {
-        inherit lib;
-        local = import ../../_lib/local.nix;
-      }).forAdapter "claude-code";
+      aiTools =
+        (import ./_shared/inventory.nix {
+          inherit lib;
+          local = import ../../_lib/local.nix;
+        })."claude-code";
       mcpServers =
         lib.mapAttrs (
           name: endpoint:
