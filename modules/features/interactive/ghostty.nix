@@ -1,18 +1,5 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-in {
-  den.aspects.ghostty.homeManager = {pkgs, ...}: let
-    settings = import ./_ghostty/settings.nix {inherit pkgs theme;};
-    config =
-      pkgs.lib.generators.toKeyValue {
-        mkKeyValue = key: value: "${key} = ${
-          if builtins.isBool value
-          then pkgs.lib.boolToString value
-          else toString value
-        }";
-      }
-      settings;
-  in {
+_: {
+  den.aspects.ghostty.homeManager = {pkgs, ...}: {
     fonts.fontconfig = {
       enable = true;
       defaultFonts.monospace = ["MonoLisa"];
@@ -22,6 +9,16 @@ in {
       pkgs.ghostty.terminfo
     ];
 
-    xdg.configFile."ghostty/config".text = config;
+    xdg.configFile."ghostty/config".text =
+      pkgs.lib.generators.toKeyValue {
+        mkKeyValue = key: value: "${key} = ${
+          if builtins.isBool value
+          then pkgs.lib.boolToString value
+          else toString value
+        }";
+      } (import ./_ghostty/settings.nix {
+        inherit pkgs;
+        theme = (import ../../_lib/theme.nix).rosePineDawn;
+      });
   };
 }

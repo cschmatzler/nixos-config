@@ -1,20 +1,12 @@
 _: let
   theme = (import ../../_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
-  fishPromptColor = builtins.replaceStrings ["#"] [""] palette.pine;
 in {
   den.aspects.shell.homeManager = {
     lib,
     pkgs,
     ...
-  }: let
-    fishThemeSrc = pkgs.fetchFromGitHub {
-      owner = "rose-pine";
-      repo = "fish";
-      rev = "127a990e5ad4688118c950123787fb0686afa4c8";
-      hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
-    };
-  in {
+  }: {
     home.packages = with pkgs; [
       devenv
       vivid
@@ -26,7 +18,12 @@ in {
       TERM_BACKGROUND = "light";
     };
 
-    xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${fishThemeSrc}/themes/${theme.fishThemeName}.theme";
+    xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${pkgs.fetchFromGitHub {
+      owner = "rose-pine";
+      repo = "fish";
+      rev = "127a990e5ad4688118c950123787fb0686afa4c8";
+      hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
+    }}/themes/${theme.fishThemeName}.theme";
 
     programs.fish = {
       enable = true;
@@ -58,7 +55,7 @@ in {
         fish_mode_prompt = ''
           switch $fish_bind_mode
             case default
-              set_color --bold ${fishPromptColor}
+              set_color --bold ${builtins.replaceStrings ["#"] [""] palette.pine}
               echo -n "· "
               set_color normal
             case insert

@@ -1,17 +1,11 @@
 {lib, ...}: let
-  mkTailscaleServeExposure = import ../../_lib/tailscale-serve-exposure.nix {inherit lib;};
   zigbee2mqttEnvironmentSecret = "zigbee2mqtt-environment";
-  zigbeeAdapter = "/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_76db1eb86012ef11848775b8bf9df066-if00-port0";
 in {
   den.aspects.home-assistant.nixos = {
     config,
     pkgs,
     ...
-  }: let
-    floorplan = pkgs.callPackage ./_home-assistant-packages/ha-floorplan.nix {};
-    betterThermostatUi = pkgs.callPackage ./_home-assistant-packages/better-thermostat-ui-card.nix {};
-    schedulerCard = pkgs.callPackage ./_home-assistant-packages/scheduler-card.nix {};
-  in {
+  }: {
     networking.hosts."127.0.0.1" = ["core-mosquitto"];
 
     sops.secrets.${zigbee2mqttEnvironmentSecret} = {
@@ -46,7 +40,7 @@ in {
           permit_join = false;
           mqtt.server = "mqtt://127.0.0.1:1883";
           serial = {
-            port = zigbeeAdapter;
+            port = "/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_76db1eb86012ef11848775b8bf9df066-if00-port0";
             adapter = "ember";
           };
           advanced = {
@@ -124,9 +118,9 @@ in {
           scheduler
         ];
         customLovelaceModules = [
-          schedulerCard
-          floorplan
-          betterThermostatUi
+          (pkgs.callPackage ./_home-assistant-packages/scheduler-card.nix {})
+          (pkgs.callPackage ./_home-assistant-packages/ha-floorplan.nix {})
+          (pkgs.callPackage ./_home-assistant-packages/better-thermostat-ui-card.nix {})
         ];
       };
     };
@@ -150,7 +144,7 @@ in {
           after = ["go2rtc.service" "mosquitto.service" "zigbee2mqtt.service"];
         };
 
-        home-assistant-tailscale = mkTailscaleServeExposure {
+        home-assistant-tailscale = (import ../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
           inherit pkgs;
           workload = "Home Assistant";
           identity = "svc:ha";

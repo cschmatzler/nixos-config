@@ -1,6 +1,4 @@
-{inputs, ...}: let
-  local = import ../../_lib/local.nix;
-in {
+{inputs, ...}: {
   flake-file.inputs.sops-nix = {
     url = "github:Mic92/sops-nix";
     inputs.nixpkgs.follows = "nixpkgs";
@@ -15,7 +13,7 @@ in {
     darwin = {
       imports = [inputs.sops-nix.darwinModules.sops];
       sops = {
-        age.keyFile = "/Users/${local.user.name}/.config/sops/age/keys.txt";
+        age.keyFile = "/Users/${(import ../../_lib/local.nix).user.name}/.config/sops/age/keys.txt";
         age.sshKeyPaths = [];
         gnupg.sshKeyPaths = [];
       };

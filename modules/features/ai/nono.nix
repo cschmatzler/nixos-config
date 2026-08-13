@@ -1,8 +1,5 @@
 _: let
-  local = import ../../_lib/local.nix;
-  inherit (local) secretPath;
-  executorHost = local.tailscaleHost "executor";
-  sourceHosts = [
+  commonNetworkHosts = [
     "api.github.com"
     "codeload.github.com"
     "crates.io"
@@ -15,6 +12,7 @@ _: let
     "raw.githubusercontent.com"
     "registry.npmjs.org"
     "static.crates.io"
+    ((import ../../_lib/local.nix).tailscaleHost "executor")
   ];
   sensitivePaths = [
     "/nix/var/nix/daemon-socket"
@@ -64,10 +62,9 @@ _: let
       "XDG_STATE_HOME"
     ];
   };
-  commonNetworkHosts = sourceHosts ++ [executorHost];
   supermemoryCredential = {
     upstream = "https://api.supermemory.ai";
-    credential_key = "file://${secretPath "supermemory-api-key"}";
+    credential_key = "file://${(import ../../_lib/local.nix).secretPath "supermemory-api-key"}";
     env_var = "SUPERMEMORY_API_KEY";
     inject_header = "Authorization";
     credential_format = "Bearer {}";

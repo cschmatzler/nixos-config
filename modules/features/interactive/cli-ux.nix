@@ -8,8 +8,6 @@ in {
     ...
   }: let
     glowFiles = import ./_cli-ux/glow.nix {inherit config theme;};
-    jsonFormat = pkgs.formats.json {};
-    yamlFormat = pkgs.formats.yaml {};
     tmThemeSrc = pkgs.fetchFromGitHub {
       owner = "rose-pine";
       repo = "tm-theme";
@@ -55,8 +53,8 @@ in {
     '';
 
     xdg.configFile = {
-      "glow/glow.yml".source = yamlFormat.generate "glow.yml" glowFiles.settings;
-      "glow/${theme.slug}.json".source = jsonFormat.generate "${theme.slug}.json" glowFiles.theme;
+      "glow/glow.yml".source = (pkgs.formats.yaml {}).generate "glow.yml" glowFiles.settings;
+      "glow/${theme.slug}.json".source = (pkgs.formats.json {}).generate "${theme.slug}.json" glowFiles.theme;
       "yazi/flavors/${theme.slug}.yazi".source = "${yaziThemeSrc}/flavors/${theme.slug}.yazi";
       "yazi/theme.toml".text = ''
         [flavor]

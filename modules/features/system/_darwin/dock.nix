@@ -8,7 +8,6 @@ with lib; let
   cfg = config.local.dock;
   inherit (pkgs) dockutil stdenv;
   local = import ../../../_lib/local.nix;
-  userHome = "/Users/${local.user.name}";
 in {
   options = {
     local.dock = {
@@ -41,7 +40,7 @@ in {
           {path = "/System/Applications/Calendar.app/";}
           {path = "/System/Applications/Mail.app/";}
           {
-            path = "${userHome}/Downloads";
+            path = "/Users/${local.user.name}/Downloads";
             section = "others";
             options = "--sort name --view grid --display stack";
           }

@@ -1,7 +1,4 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-  herdrConfig = import ./_herdr/config.nix {inherit theme;};
-in {
+_: {
   flake-file.inputs.herdr = {
     url = "github:ogulcancelik/herdr";
     inputs.nixpkgs.follows = "nixpkgs";
@@ -14,7 +11,6 @@ in {
     pkgs,
     ...
   }: let
-    tomlFormat = pkgs.formats.toml {};
     herdrPackage = inputs'.herdr.packages.herdr;
     pluginId = "gh-pr-workspace";
     pluginRoot = "${config.xdg.configHome}/herdr/local-plugins/${pluginId}";
@@ -28,7 +24,9 @@ in {
       ];
 
       file = {
-        ".config/herdr/config.toml".source = tomlFormat.generate "herdr-config.toml" herdrConfig;
+        ".config/herdr/config.toml".source = (pkgs.formats.toml {}).generate "herdr-config.toml" (import ./_herdr/config.nix {
+          theme = (import ../../_lib/theme.nix).rosePineDawn;
+        });
         ".config/herdr/local-plugins/${pluginId}" = {
           source = ./_herdr/plugins/gh-pr-workspace;
           recursive = true;

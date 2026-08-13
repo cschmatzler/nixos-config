@@ -1,19 +1,14 @@
-_: let
-  local = import ../../_lib/local.nix;
-  inherit (local) secretPath;
-  secretLib = import ../../_lib/secrets.nix {};
-  ynabSecretPath = secretPath "ynab-api-key";
-in {
+_: {
   den.aspects.ynab = {
-    os.sops.secrets.ynab-api-key = secretLib.mkUserBinarySecret {
+    os.sops.secrets.ynab-api-key = (import ../../_lib/secrets.nix {}).mkUserBinarySecret {
       name = "ynab-api-key";
       sopsFile = ../../../secrets/ynab-api-key;
     };
 
     homeManager = {lib, ...}: {
       programs.fish.shellInit = lib.mkAfter ''
-        if test -f "${ynabSecretPath}"
-          set -gx YNAB_API_KEY (string trim -- (cat "${ynabSecretPath}"))
+        if test -f "${(import ../../_lib/local.nix).secretPath "ynab-api-key"}"
+          set -gx YNAB_API_KEY (string trim -- (cat "${(import ../../_lib/local.nix).secretPath "ynab-api-key"}"))
         end
       '';
     };

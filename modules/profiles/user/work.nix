@@ -1,7 +1,5 @@
-_: let
-  local = import ../../_lib/local.nix;
-in {
+_: {
   den.aspects.user-work.homeManager = {
-    programs.git.settings.user.email = local.user.emails.work;
+    programs.git.settings.user.email = (import ../../_lib/local.nix).user.emails.work;
   };
 }

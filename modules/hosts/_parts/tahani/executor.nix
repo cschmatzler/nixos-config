@@ -3,10 +3,7 @@
   pkgs,
   ...
 }: let
-  local = import ../../../_lib/local.nix;
-  mkTailscaleServeExposure = import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;};
   port = 4788;
-  url = "https://${local.tailscaleHost "executor"}";
 in {
   systemd = {
     # 65532 is the distroless image's nonroot UID/GID.
@@ -16,7 +13,7 @@ in {
 
     services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:${toString port}/api/health";
 
-    services.executor-tailscale = mkTailscaleServeExposure {
+    services.executor-tailscale = (import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
       inherit pkgs port;
       workload = "Executor";
       identity = "svc:executor";
@@ -35,7 +32,7 @@ in {
       capabilities.ALL = false;
       environment = {
         EXECUTOR_ALLOW_LOCAL_NETWORK = "false";
-        EXECUTOR_WEB_BASE_URL = url;
+        EXECUTOR_WEB_BASE_URL = "https://${(import ../../../_lib/local.nix).tailscaleHost "executor"}";
         HOME = "/tmp";
         TMPDIR = "/tmp";
       };

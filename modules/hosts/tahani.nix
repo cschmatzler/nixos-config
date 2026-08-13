@@ -1,6 +1,4 @@
-{den, ...}: let
-  local = import ../_lib/local.nix;
-in {
+{den, ...}: {
   den.aspects.tahani = {
     includes = [
       den.aspects.host-nixos-base
@@ -36,7 +34,7 @@ in {
       ];
 
       virtualisation.docker.enable = true;
-      users.users.${local.user.name}.extraGroups = [
+      users.users.${(import ../_lib/local.nix).user.name}.extraGroups = [
         "docker"
       ];
     };

@@ -1,7 +1,6 @@
 # Shared nix-darwin foundation and macOS policy.
 {inputs, ...}: let
   local = import ../../_lib/local.nix;
-  userHome = local.mkHome "aarch64-darwin";
 in {
   flake-file.inputs = {
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
@@ -128,7 +127,7 @@ in {
 
     users.users.${local.user.name} = {
       name = local.user.name;
-      home = userHome;
+      home = local.mkHome "aarch64-darwin";
       isHidden = false;
       shell = pkgs.fish;
     };

@@ -2,10 +2,8 @@
   lib,
   pkgs,
   ...
-}: let
-  mkTailscaleServeExposure = import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;};
-in {
-  systemd.services.plannotator-tailscale = mkTailscaleServeExposure {
+}: {
+  systemd.services.plannotator-tailscale = (import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
     inherit pkgs;
     workload = "Plannotator Pi plugin";
     identity = "svc:plannotator";

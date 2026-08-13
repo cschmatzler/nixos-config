@@ -2,17 +2,15 @@
   pkgs,
   nvim-plugin-sources,
   ...
-}: let
-  code-review-nvim = pkgs.vimUtils.buildVimPlugin {
-    pname = "code-review-nvim";
-    version = "unstable";
-    src = nvim-plugin-sources.code-review-nvim;
-    doCheck = false;
-  };
-in {
+}: {
   programs.nixvim = {
     extraPlugins = [
-      code-review-nvim
+      (pkgs.vimUtils.buildVimPlugin {
+        pname = "code-review-nvim";
+        version = "unstable";
+        src = nvim-plugin-sources.code-review-nvim;
+        doCheck = false;
+      })
     ];
     extraConfigLua = ''
       require('code-review').setup({

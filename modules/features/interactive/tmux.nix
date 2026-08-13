@@ -1,23 +1,22 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-in {
+_: {
   den.aspects.tmux.homeManager = {
     pkgs,
     lib,
     ...
-  }: let
-    clipboardTool =
-      if pkgs.stdenv.isDarwin
-      then "pbcopy"
-      else "${pkgs.wl-clipboard}/bin/wl-copy";
-    tmuxConf = import ./_tmux/default.nix {inherit pkgs theme clipboardTool;};
-  in {
+  }: {
     home.packages = lib.optional (!pkgs.stdenv.isDarwin) pkgs.wl-clipboard;
 
     programs.tmux = {
       enable = true;
       sensibleOnTop = false;
-      extraConfig = tmuxConf;
+      extraConfig = import ./_tmux/default.nix {
+        inherit pkgs;
+        theme = (import ../../_lib/theme.nix).rosePineDawn;
+        clipboardTool =
+          if pkgs.stdenv.isDarwin
+          then "pbcopy"
+          else "${pkgs.wl-clipboard}/bin/wl-copy";
+      };
       plugins = with pkgs.tmuxPlugins; [
         vim-tmux-navigator
         resurrect

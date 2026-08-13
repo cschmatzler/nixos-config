@@ -86,11 +86,9 @@
     assert lib.assertMsg (entry.kind != "local" || entry.command != []) "AI Tool Inventory local MCP entry ${name} must have a command"; entry;
 in {
   forAdapter = adapter:
-    assert lib.assertMsg (builtins.hasAttr adapter adapterMembership) "Unknown AI Tool Inventory Adapter: ${adapter}"; let
-      membership = adapterMembership.${adapter};
-    in {
-      commands = select adapter "commands" commands membership.commands;
-      skills = select adapter "skills" skills membership.skills;
-      mcp = lib.mapAttrs validateMcp (select adapter "MCP entries" mcp membership.mcp);
+    assert lib.assertMsg (builtins.hasAttr adapter adapterMembership) "Unknown AI Tool Inventory Adapter: ${adapter}"; {
+      commands = select adapter "commands" commands adapterMembership.${adapter}.commands;
+      skills = select adapter "skills" skills adapterMembership.${adapter}.skills;
+      mcp = lib.mapAttrs validateMcp (select adapter "MCP entries" mcp adapterMembership.${adapter}.mcp);
     };
 }

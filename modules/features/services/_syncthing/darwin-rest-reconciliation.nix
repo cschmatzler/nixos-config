@@ -36,11 +36,9 @@
     endpoint,
     values,
   }:
-    lib.concatMapStringsSep "\n" (value: let
-      jsonFile = pkgs.writeText "syncthing-${label}-${value.id}.json" (builtins.toJSON value);
-    in ''
+    lib.concatMapStringsSep "\n" (value: ''
       echo "Upserting Syncthing ${label}: ${value.id}"
-      ${jq} . ${jsonFile} | syncthing_request --json @- -X POST ${requestArgs endpoint}
+      ${jq} . ${pkgs.writeText "syncthing-${label}-${value.id}.json" (builtins.toJSON value)} | syncthing_request --json @- -X POST ${requestArgs endpoint}
     '')
     values;
 

@@ -2,9 +2,7 @@
   den,
   inputs,
   ...
-}: let
-  local = import ../../_lib/local.nix;
-in {
+}: {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
 
@@ -15,7 +13,10 @@ in {
       pkgs,
       ...
     }: let
-      aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "claude-code";
+      aiTools = (import ./_shared/inventory.nix {
+        inherit lib;
+        local = import ../../_lib/local.nix;
+      }).forAdapter "claude-code";
       mcpServers =
         lib.mapAttrs (
           name: endpoint:

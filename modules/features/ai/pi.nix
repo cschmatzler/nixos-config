@@ -2,14 +2,11 @@
   den,
   inputs,
   ...
-}: let
-  local = import ../../_lib/local.nix;
-  secretLib = import ../../_lib/secrets.nix {};
-in {
+}: {
   den.aspects.pi = {
     includes = [den.aspects.javascript];
 
-    os.sops.secrets.supermemory-api-key = secretLib.mkUserBinarySecret {
+    os.sops.secrets.supermemory-api-key = (import ../../_lib/secrets.nix {}).mkUserBinarySecret {
       name = "supermemory-api-key";
       sopsFile = ../../../secrets/supermemory-api-key;
     };
@@ -22,13 +19,13 @@ in {
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      nonoPackage = inputs'.llm-agents.packages.nono;
-      piPackage = inputs'.llm-agents.packages.pi;
-      piProfile = "${config.xdg.configHome}/nono/profiles/pi.json";
       piCommand = pkgs.writeShellScriptBin "pi" ''
-        exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piProfile} -- ${piPackage}/bin/pi "$@"
+        exec ${inputs'.llm-agents.packages.nono}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg "${config.xdg.configHome}/nono/profiles/pi.json"} -- ${inputs'.llm-agents.packages.pi}/bin/pi "$@"
       '';
-      aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "pi";
+      aiTools = (import ./_shared/inventory.nix {
+        inherit lib;
+        local = import ../../_lib/local.nix;
+      }).forAdapter "pi";
       mcpServers =
         lib.mapAttrs (
           name: endpoint:

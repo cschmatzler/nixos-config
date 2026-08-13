@@ -1,11 +1,9 @@
-_: let
-  theme = (import ../../../../_lib/theme.nix).rosePineDawn;
-in {
+_: {
   programs.nixvim.plugins.lualine = {
     enable = true;
     settings = {
       options = {
-        theme = theme.neovim.colorscheme;
+        theme = (import ../../../../_lib/theme.nix).rosePineDawn.neovim.colorscheme;
         globalstatus = true;
         component_separators = {
           left = "│";

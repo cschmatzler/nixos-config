@@ -1,5 +1,4 @@
 _: let
-  local = import ../../_lib/local.nix;
   theme = (import ../../_lib/theme.nix).rosePineDawn;
   palette = theme.hex;
 in {
@@ -15,7 +14,7 @@ in {
       enable = true;
       ignores = ["*.swp"];
       settings = {
-        user.name = local.user.fullName;
+        user.name = (import ../../_lib/local.nix).user.fullName;
         init.defaultBranch = "main";
         core = {
           editor = "nvim";
