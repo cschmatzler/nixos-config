@@ -25,20 +25,8 @@ in {
       nonoPackage = inputs'.llm-agents.packages.nono;
       piPackage = inputs'.llm-agents.packages.pi;
       piProfile = "${config.xdg.configHome}/nono/profiles/pi.json";
-      piNixProfile = "${config.xdg.configHome}/nono/profiles/pi-nix.json";
-      piTempDir = "${config.home.homeDirectory}/.pi/tmp";
       piCommand = pkgs.writeShellScriptBin "pi" ''
-        mkdir -p ${lib.escapeShellArg piTempDir}
-        export TMPDIR=${lib.escapeShellArg piTempDir}
         exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piProfile} -- ${piPackage}/bin/pi "$@"
-      '';
-      piNixCommand = pkgs.writeShellScriptBin "pi-nix" ''
-        mkdir -p ${lib.escapeShellArg piTempDir}
-        export TMPDIR=${lib.escapeShellArg piTempDir}
-        exec ${nonoPackage}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg piNixProfile} -- ${piPackage}/bin/pi "$@"
-      '';
-      piUnconfinedCommand = pkgs.writeShellScriptBin "pi-unconfined" ''
-        exec ${piPackage}/bin/pi "$@"
       '';
       aiTools = (import ./_shared/inventory.nix {inherit lib local;}).forAdapter "pi";
       mcpServers =
@@ -114,16 +102,13 @@ in {
       };
     in {
       home = {
-        packages = [
-          piCommand
-          piNixCommand
-          piUnconfinedCommand
-        ];
+        packages = [piCommand];
 
         file =
           {
             ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
 
+            ".pi/tmp/.keep".text = "";
             ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
             ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
               mcp = {

@@ -54,7 +54,6 @@ _: let
       "TERM"
       "TERM_PROGRAM"
       "TERM_PROGRAM_VERSION"
-      "TMPDIR"
       "TZ"
       "USER"
       "VISUAL"
@@ -122,6 +121,12 @@ _: let
     ];
     # pi-claude-auth reads and refreshes this exact Claude Code OAuth file.
     allow_file = ["$HOME/.claude/.credentials.json"];
+    unix_socket = ["/run/nscd/socket"];
+    unix_socket_subtree_bind = ["$HOME/.pi/tmp"];
+    read_file = [
+      "$HOME/.config/gh/config.yml"
+      "$HOME/.config/gh/hosts.yml"
+    ];
     read = [
       "$HOME/.agents/skills"
       "$HOME/.config/nvim"
@@ -131,6 +136,7 @@ _: let
     ];
   };
   piEnvironment = {
+    set_vars.TMPDIR = "$HOME/.pi/tmp";
     allow_vars =
       commonEnvironment.allow_vars
       ++ [
@@ -158,7 +164,7 @@ _: let
       ];
     credentials = ["supermemory"];
     custom_credentials.supermemory = supermemoryCredential;
-    open_port = [
+    listen_port = [
       1455
       20000
     ];
@@ -184,6 +190,12 @@ _: let
       "$HOME/.claude.json.lock"
       "$HOME/.claude.lock"
     ];
+    unix_socket = ["/run/nscd/socket"];
+    unix_socket_subtree_bind = ["$HOME/.claude/tmp"];
+    read_file = [
+      "$HOME/.config/gh/config.yml"
+      "$HOME/.config/gh/hosts.yml"
+    ];
     read = [
       "$HOME/.config/nvim"
       "$HOME/.npm-global"
@@ -192,6 +204,7 @@ _: let
     ];
   };
   claudeEnvironment = {
+    set_vars.TMPDIR = "$HOME/.claude/tmp";
     allow_vars =
       commonEnvironment.allow_vars
       ++ [
@@ -211,7 +224,7 @@ _: let
         "claude.com"
         "platform.claude.com"
       ];
-    open_port = [20000];
+    listen_port = [20000];
   };
 in {
   # Updated through `nix run .#update -- nono-packs`; review pack policy and
