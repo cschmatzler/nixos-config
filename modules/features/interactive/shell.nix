@@ -1,7 +1,5 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-  palette = theme.hex;
-in {
+_:
+with (import ../../_lib/theme.nix).rosePineDawn; {
   den.aspects.shell.homeManager = {
     lib,
     pkgs,
@@ -18,18 +16,18 @@ in {
       TERM_BACKGROUND = "light";
     };
 
-    xdg.configFile."fish/themes/${theme.fishThemeName}.theme".source = "${pkgs.fetchFromGitHub {
+    xdg.configFile."fish/themes/${fishThemeName}.theme".source = "${pkgs.fetchFromGitHub {
       owner = "rose-pine";
       repo = "fish";
       rev = "127a990e5ad4688118c950123787fb0686afa4c8";
       hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
-    }}/themes/${theme.fishThemeName}.theme";
+    }}/themes/${fishThemeName}.theme";
 
     programs.fish = {
       enable = true;
       shellInit =
         ''
-          set -gx LS_COLORS (${pkgs.vivid}/bin/vivid generate ${theme.slug})
+          set -gx LS_COLORS (${pkgs.vivid}/bin/vivid generate ${slug})
           set -gx SHELL ${pkgs.fish}/bin/fish
         ''
         + lib.optionalString pkgs.stdenv.isDarwin ''
@@ -48,14 +46,14 @@ in {
       interactiveShellInit = ''
         set fish_greeting
         fish_vi_key_bindings
-        fish_config theme choose "${theme.fishThemeName}" >/dev/null
+        fish_config theme choose "${fishThemeName}" >/dev/null
         devenv hook fish | source
       '';
       functions = {
         fish_mode_prompt = ''
           switch $fish_bind_mode
             case default
-              set_color --bold ${builtins.replaceStrings ["#"] [""] palette.pine}
+              set_color --bold ${builtins.replaceStrings ["#"] [""] hex.pine}
               echo -n "· "
               set_color normal
             case insert
@@ -124,8 +122,8 @@ in {
           disabled = true;
         };
         character = {
-          error_symbol = "[󰘧](bold ${palette.love})";
-          success_symbol = "[󰘧](bold ${palette.pine})";
+          error_symbol = "[󰘧](bold ${hex.love})";
+          success_symbol = "[󰘧](bold ${hex.pine})";
         };
         directory = {
           truncate_to_repo = false;

@@ -1,7 +1,6 @@
 # Shared nix-darwin foundation and macOS policy.
-{inputs, ...}: let
-  local = import ../../_lib/local.nix;
-in {
+{inputs, ...}:
+with import ../../_lib/local.nix; {
   flake-file.inputs = {
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
   };
@@ -13,7 +12,7 @@ in {
       ./_darwin/dock.nix
     ];
 
-    system.primaryUser = local.user.name;
+    system.primaryUser = user.name;
 
     environment.systemPackages = with pkgs; [
       dockutil
@@ -117,7 +116,7 @@ in {
     };
 
     nix = {
-      settings.trusted-users = [local.user.name];
+      settings.trusted-users = [user.name];
       gc.interval = {
         Weekday = 0;
         Hour = 2;
@@ -125,16 +124,16 @@ in {
       };
     };
 
-    users.users.${local.user.name} = {
-      name = local.user.name;
-      home = local.mkHome "aarch64-darwin";
+    users.users.${user.name} = {
+      name = user.name;
+      home = mkHome "aarch64-darwin";
       isHidden = false;
       shell = pkgs.fish;
     };
 
     nix-homebrew = {
       enable = true;
-      user = local.user.name;
+      user = user.name;
       mutableTaps = true;
     };
 

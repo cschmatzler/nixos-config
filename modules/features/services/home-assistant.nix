@@ -1,6 +1,4 @@
-{lib, ...}: let
-  zigbee2mqttEnvironmentSecret = "zigbee2mqtt-environment";
-in {
+{lib, ...}: {
   den.aspects.home-assistant.nixos = {
     config,
     pkgs,
@@ -8,7 +6,7 @@ in {
   }: {
     networking.hosts."127.0.0.1" = ["core-mosquitto"];
 
-    sops.secrets.${zigbee2mqttEnvironmentSecret} = {
+    sops.secrets.zigbee2mqtt-environment = {
       format = "binary";
       sopsFile = ../../../secrets/zigbee2mqtt-environment;
       restartUnits = ["zigbee2mqtt.service"];
@@ -136,7 +134,7 @@ in {
         zigbee2mqtt = {
           requires = ["mosquitto.service"];
           after = ["mosquitto.service"];
-          serviceConfig.EnvironmentFile = config.sops.secrets.${zigbee2mqttEnvironmentSecret}.path;
+          serviceConfig.EnvironmentFile = config.sops.secrets.zigbee2mqtt-environment.path;
         };
 
         home-assistant = {

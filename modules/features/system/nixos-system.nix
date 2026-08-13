@@ -1,14 +1,12 @@
-{inputs, ...}: let
-  local = import ../../_lib/local.nix;
-  userHome = local.mkHome "x86_64-linux";
-in {
+{inputs, ...}:
+with import ../../_lib/local.nix; {
   den.aspects.nixos-system.nixos = {pkgs, ...}: {
     imports = [inputs.home-manager.nixosModules.home-manager];
 
     security.sudo.enable = true;
     security.sudo.extraRules = [
       {
-        users = [local.user.name];
+        users = [user.name];
         commands = [
           {
             command = "/run/current-system/sw/bin/nix-env";
@@ -29,18 +27,18 @@ in {
     time.timeZone = "UTC";
 
     nix = {
-      settings.trusted-users = [local.user.name];
+      settings.trusted-users = [user.name];
       gc.dates = "weekly";
       nixPath = [
-        "nixos-config=${userHome}/.local/share/src/nixos-config"
+        "nixos-config=${mkHome "x86_64-linux"}/.local/share/src/nixos-config"
         "/etc/nixos"
       ];
     };
 
     users.users = {
-      ${local.user.name} = {
+      ${user.name} = {
         isNormalUser = true;
-        home = userHome;
+        home = mkHome "x86_64-linux";
         extraGroups = [
           "wheel"
           "sudo"
@@ -48,7 +46,7 @@ in {
           "systemd-journal"
         ];
         shell = pkgs.fish;
-        openssh.authorizedKeys.keys = local.user.ssh.authorizedKeys;
+        openssh.authorizedKeys.keys = user.ssh.authorizedKeys;
       };
     };
   };

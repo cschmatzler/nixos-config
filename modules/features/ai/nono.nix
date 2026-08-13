@@ -235,39 +235,7 @@ in {
     inputs',
     pkgs,
     ...
-  }: let
-    jsonFormat = pkgs.formats.json {};
-    piProfile = mkProfile {
-      name = "pi";
-      description = "Pi with explicit filesystem, environment, and network capabilities";
-      filesystem = piFilesystem;
-      environment = piEnvironment;
-      network = piNetwork;
-      openUrls = {
-        allow_origins = [
-          "https://auth.openai.com"
-          "https://claude.ai"
-          "https://github.com"
-        ];
-        allow_localhost = true;
-      };
-    };
-    claudeProfile = mkProfile {
-      name = "claude";
-      description = "Claude Code with explicit filesystem, environment, and network capabilities";
-      filesystem = claudeFilesystem;
-      environment = claudeEnvironment;
-      network = claudeNetwork;
-      openUrls = {
-        allow_origins = [
-          "https://claude.ai"
-          "https://claude.com"
-          "https://platform.claude.com"
-        ];
-        allow_localhost = true;
-      };
-    };
-  in {
+  }: {
     home = {
       packages = [inputs'.llm-agents.packages.nono];
       sessionVariables = {
@@ -275,8 +243,36 @@ in {
         NONO_NO_UPDATE_CHECK = "1";
       };
       file = {
-        ".config/nono/profiles/pi.json".source = jsonFormat.generate "nono-pi-profile.json" piProfile;
-        ".config/nono/profiles/claude.json".source = jsonFormat.generate "nono-claude-profile.json" claudeProfile;
+        ".config/nono/profiles/pi.json".source = (pkgs.formats.json {}).generate "nono-pi-profile.json" (mkProfile {
+          name = "pi";
+          description = "Pi with explicit filesystem, environment, and network capabilities";
+          filesystem = piFilesystem;
+          environment = piEnvironment;
+          network = piNetwork;
+          openUrls = {
+            allow_origins = [
+              "https://auth.openai.com"
+              "https://claude.ai"
+              "https://github.com"
+            ];
+            allow_localhost = true;
+          };
+        });
+        ".config/nono/profiles/claude.json".source = (pkgs.formats.json {}).generate "nono-claude-profile.json" (mkProfile {
+          name = "claude";
+          description = "Claude Code with explicit filesystem, environment, and network capabilities";
+          filesystem = claudeFilesystem;
+          environment = claudeEnvironment;
+          network = claudeNetwork;
+          openUrls = {
+            allow_origins = [
+              "https://claude.ai"
+              "https://claude.com"
+              "https://platform.claude.com"
+            ];
+            allow_localhost = true;
+          };
+        });
         ".config/nono/profile-drafts/.keep".text = "";
       };
     };

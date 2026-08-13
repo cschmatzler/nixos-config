@@ -2,9 +2,8 @@
   inputs',
   lib,
   ...
-}: let
-  theme = (import ../../../_lib/theme.nix).rosePineDawn;
-in {
+}:
+with (import ../../../_lib/theme.nix).rosePineDawn; {
   imports = [
     ./autocmd.nix
     ./mappings.nix
@@ -47,10 +46,10 @@ in {
         '';
     });
     luaLoader.enable = true;
-    colorschemes.${theme.neovim.colorscheme} = {
+    colorschemes.${neovim.colorscheme} = {
       enable = true;
       settings = {
-        variant = theme.neovim.variant;
+        variant = neovim.variant;
         styles = {
           italic = false;
           transparency = false;

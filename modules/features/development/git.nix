@@ -1,7 +1,5 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-  palette = theme.hex;
-in {
+_:
+with (import ../../_lib/theme.nix).rosePineDawn; {
   den.aspects.git.homeManager = {pkgs, ...}: {
     home.packages = with pkgs; [
       delta
@@ -61,7 +59,7 @@ in {
           navigate = true;
           line-numbers = true;
           light = true;
-          syntax-theme = theme.deltaSyntaxTheme;
+          syntax-theme = deltaSyntaxTheme;
           side-by-side = true;
           pager = "less -FRX";
         };
@@ -86,18 +84,18 @@ in {
         gui = {
           theme = {
             lightTheme = true;
-            activeBorderColor = [palette.iris "bold"];
-            inactiveBorderColor = [palette.muted];
-            searchingActiveBorderColor = [palette.foam "bold"];
-            optionsTextColor = [palette.pine];
-            selectedLineBgColor = [palette.overlay];
-            inactiveViewSelectedLineBgColor = [palette.surface];
-            cherryPickedCommitFgColor = [palette.pine];
-            cherryPickedCommitBgColor = [palette.foam];
-            markedBaseCommitFgColor = [palette.rose];
-            markedBaseCommitBgColor = [palette.gold];
-            unstagedChangesColor = [palette.love];
-            defaultFgColor = [palette.text];
+            activeBorderColor = [hex.iris "bold"];
+            inactiveBorderColor = [hex.muted];
+            searchingActiveBorderColor = [hex.foam "bold"];
+            optionsTextColor = [hex.pine];
+            selectedLineBgColor = [hex.overlay];
+            inactiveViewSelectedLineBgColor = [hex.surface];
+            cherryPickedCommitFgColor = [hex.pine];
+            cherryPickedCommitBgColor = [hex.foam];
+            markedBaseCommitFgColor = [hex.rose];
+            markedBaseCommitBgColor = [hex.gold];
+            unstagedChangesColor = [hex.love];
+            defaultFgColor = [hex.text];
           };
           nerdFontsVersion = "3";
         };

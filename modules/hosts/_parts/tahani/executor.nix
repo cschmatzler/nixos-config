@@ -2,19 +2,18 @@
   lib,
   pkgs,
   ...
-}: let
-  port = 4788;
-in {
+}: {
   systemd = {
     # 65532 is the distroless image's nonroot UID/GID.
     tmpfiles.rules = [
       "d /var/lib/executor 0700 65532 65532 -"
     ];
 
-    services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:${toString port}/api/health";
+    services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:4788/api/health";
 
     services.executor-tailscale = (import ../../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
-      inherit pkgs port;
+      inherit pkgs;
+      port = 4788;
       workload = "Executor";
       identity = "svc:executor";
       orderingUnits = ["docker-executor.service"];
@@ -26,7 +25,7 @@ in {
     containers.executor = {
       image = "ghcr.io/usefulsoftwareco/executor-selfhost:1.5.40";
       pull = "always";
-      ports = ["127.0.0.1:${toString port}:${toString port}"];
+      ports = ["127.0.0.1:4788:4788"];
       volumes = ["/var/lib/executor:/data"];
       user = "65532:65532";
       capabilities.ALL = false;

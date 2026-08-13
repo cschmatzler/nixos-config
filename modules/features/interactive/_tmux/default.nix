@@ -2,9 +2,8 @@
   pkgs,
   theme,
   clipboardTool,
-}: let
-  palette = theme.hex;
-in ''
+}:
+with theme.hex; ''
   # vim: set ft=tmux:
 
   # tmux sensible see: https://github.com/tmux-plugins/tmux-sensible
@@ -92,18 +91,18 @@ in ''
   # Status bar positioning
   set-option -g status-position top
   set-option -g status-justify absolute-centre
-  set-option -g status-style "fg=${palette.text},bg=${palette.base}"
+  set-option -g status-style "fg=${text},bg=${base}"
   set-option -g status-left-length 80
   set-option -g status-right-length 140
-  set-option -g status-left "#[fg=${palette.base},bg=${palette.pine},bold] #S #[fg=${palette.subtle},bg=${palette.base}] "
-  set-option -g status-right "#[fg=${palette.subtle},bg=${palette.base}] #{b:pane_current_path}  #[fg=${palette.base},bg=${palette.iris},bold] %a %d %b %H:%M "
+  set-option -g status-left "#[fg=${base},bg=${pine},bold] #S #[fg=${subtle},bg=${base}] "
+  set-option -g status-right "#[fg=${subtle},bg=${base}] #{b:pane_current_path}  #[fg=${base},bg=${iris},bold] %a %d %b %H:%M "
   set-window-option -g window-status-separator ""
-  set-window-option -g window-status-format "#[fg=${palette.muted},bg=${palette.base}] #I #W "
-  set-window-option -g window-status-current-format "#[fg=${palette.base},bg=${palette.rose},bold] #I #W "
-  set-option -g pane-border-style "fg=${palette.highlightHigh}"
-  set-option -g pane-active-border-style "fg=${palette.pine}"
-  set-option -g message-style "fg=${palette.base},bg=${palette.gold},bold"
-  set-window-option -g mode-style "fg=${palette.base},bg=${palette.iris}"
+  set-window-option -g window-status-format "#[fg=${muted},bg=${base}] #I #W "
+  set-window-option -g window-status-current-format "#[fg=${base},bg=${rose},bold] #I #W "
+  set-option -g pane-border-style "fg=${highlightHigh}"
+  set-option -g pane-active-border-style "fg=${pine}"
+  set-option -g message-style "fg=${base},bg=${gold},bold"
+  set-window-option -g mode-style "fg=${base},bg=${iris}"
 
   # Start window and pane numbering at 1 (more intuitive than 0)
   set -g base-index 1

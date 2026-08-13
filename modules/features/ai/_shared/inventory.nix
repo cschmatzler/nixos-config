@@ -74,10 +74,8 @@
       };
   };
 
-  select = adapter: kind: entries: names: let
-    unknownNames = builtins.filter (name: ! builtins.hasAttr name entries) names;
-  in
-    assert lib.assertMsg (unknownNames == []) "AI Tool Inventory Adapter ${adapter} selects unknown ${kind}: ${lib.concatStringsSep ", " unknownNames}";
+  select = adapter: kind: entries: names:
+    assert lib.assertMsg (builtins.filter (name: ! builtins.hasAttr name entries) names == []) "AI Tool Inventory Adapter ${adapter} selects unknown ${kind}: ${lib.concatStringsSep ", " (builtins.filter (name: ! builtins.hasAttr name entries) names)}";
     assert lib.assertMsg (lib.length names == lib.length (lib.unique names)) "AI Tool Inventory Adapter ${adapter} selects duplicate ${kind}";
       lib.genAttrs names (name: entries.${name});
 

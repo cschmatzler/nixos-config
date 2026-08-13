@@ -1,9 +1,8 @@
 {
   config,
   theme,
-}: let
-  palette = theme.hex;
-in {
+}:
+with theme.hex; {
   settings = {
     style = "${config.xdg.configHome}/glow/${theme.slug}.json";
     mouse = false;
@@ -16,22 +15,22 @@ in {
     document = {
       block_prefix = "\n";
       block_suffix = "\n";
-      color = palette.text;
+      color = text;
       margin = 2;
     };
     block_quote = {
-      color = palette.subtle;
+      color = subtle;
       italic = true;
       indent = 1;
       indent_token = "│ ";
     };
     list = {
-      color = palette.text;
+      color = text;
       level_indent = 2;
     };
     heading = {
       block_suffix = "\n";
-      color = palette.iris;
+      color = iris;
       bold = true;
     };
     h1 = {
@@ -46,78 +45,78 @@ in {
     strikethrough.crossed_out = true;
     emph = {
       italic = true;
-      color = palette.rose;
+      color = rose;
     };
     strong = {
       bold = true;
-      color = palette.pine;
+      color = pine;
     };
     hr = {
-      color = palette.highlightMed;
+      color = highlightMed;
       format = "\n--------\n";
     };
     item.block_prefix = "• ";
     enumeration = {
       block_prefix = ". ";
-      color = palette.pine;
+      color = pine;
     };
     task = {
       ticked = "[✓] ";
       unticked = "[ ] ";
     };
     link = {
-      color = palette.pine;
+      color = pine;
       underline = true;
     };
-    link_text.color = palette.foam;
+    link_text.color = foam;
     image = {
-      color = palette.pine;
+      color = pine;
       underline = true;
     };
     image_text = {
-      color = palette.foam;
+      color = foam;
       format = "Image: {{.text}} →";
     };
     code = {
-      color = palette.gold;
-      background_color = palette.overlay;
+      color = gold;
+      background_color = overlay;
       prefix = " ";
       suffix = " ";
     };
     code_block = {
-      color = palette.gold;
+      color = gold;
       margin = 2;
       chroma = {
-        text.color = palette.text;
+        text.color = text;
         error = {
-          color = palette.base;
-          background_color = palette.love;
+          color = base;
+          background_color = love;
         };
-        comment.color = palette.muted;
-        comment_preproc.color = palette.foam;
-        keyword.color = palette.love;
-        keyword_reserved.color = palette.love;
-        keyword_namespace.color = palette.love;
-        keyword_type.color = palette.iris;
-        operator.color = palette.foam;
-        punctuation.color = palette.subtle;
-        name.color = palette.pine;
-        name_constant.color = palette.iris;
-        name_builtin.color = palette.rose;
-        name_tag.color = palette.love;
-        name_attribute.color = palette.rose;
-        name_class.color = palette.iris;
-        name_decorator.color = palette.foam;
-        name_function.color = palette.pine;
-        literal_number.color = palette.gold;
-        literal_string.color = palette.gold;
-        literal_string_escape.color = palette.rose;
-        generic_deleted.color = palette.love;
+        comment.color = muted;
+        comment_preproc.color = foam;
+        keyword.color = love;
+        keyword_reserved.color = love;
+        keyword_namespace.color = love;
+        keyword_type.color = iris;
+        operator.color = foam;
+        punctuation.color = subtle;
+        name.color = pine;
+        name_constant.color = iris;
+        name_builtin.color = rose;
+        name_tag.color = love;
+        name_attribute.color = rose;
+        name_class.color = iris;
+        name_decorator.color = foam;
+        name_function.color = pine;
+        literal_number.color = gold;
+        literal_string.color = gold;
+        literal_string_escape.color = rose;
+        generic_deleted.color = love;
         generic_emph.italic = true;
-        generic_inserted.color = palette.pine;
+        generic_inserted.color = pine;
         generic_strong.bold = true;
-        generic_subheading.color = palette.iris;
-        background.background_color = palette.overlay;
+        generic_subheading.color = iris;
+        background.background_color = overlay;
       };
     };
     table = {};

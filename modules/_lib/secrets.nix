@@ -1,11 +1,10 @@
-_: let
-  local = import ./local.nix;
-in {
+_:
+with import ./local.nix; {
   mkUserBinarySecret = {
     name,
     sopsFile,
-    owner ? local.user.name,
-    path ? local.secretPath name,
+    owner ? user.name,
+    path ? secretPath name,
   }: {
     inherit owner path sopsFile;
     format = "binary";

@@ -1,26 +1,10 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-  palette = theme.hex;
-in {
+_:
+with (import ../../_lib/theme.nix).rosePineDawn; {
   den.aspects.cli-ux.homeManager = {
     config,
     pkgs,
     ...
-  }: let
-    glowFiles = import ./_cli-ux/glow.nix {inherit config theme;};
-    tmThemeSrc = pkgs.fetchFromGitHub {
-      owner = "rose-pine";
-      repo = "tm-theme";
-      rev = "6d556734541ccb04172e81fd58de4a35fff72d19";
-      hash = "sha256-5+fG21KbB7bdPvszkz9Ftl6fCDGs17fJNTAXFRFWZGo=";
-    };
-    yaziThemeSrc = pkgs.fetchFromGitHub {
-      owner = "rose-pine";
-      repo = "yazi";
-      rev = "c89d745573d4fcfe0550fe6646f9f9ab1c0e51db";
-      hash = "sha256-9e3dXViWl1rK9BPrGAFfs9ZL/tsG6Njz6ksuU6AIrFY=";
-    };
-  in {
+  }: {
     home.packages = with pkgs; [
       dust
       fastfetch
@@ -45,20 +29,35 @@ in {
       --preview-window='border-rounded' --prompt='  ' --marker=' ' --pointer=' '
       --separator='─' --scrollbar='┃'
 
-      --color=bg+:${palette.overlay},bg:${palette.base},spinner:${palette.gold},hl:${palette.rose}
-      --color=fg:${palette.subtle},header:${palette.pine},info:${palette.foam},pointer:${palette.iris}
-      --color=marker:${palette.love},fg+:${palette.text},prompt:${palette.subtle},hl+:${palette.rose}
-      --color=selected-bg:${palette.overlay}
-      --color=border:${palette.highlightMed},label:${palette.text}
+      --color=bg+:${hex.overlay},bg:${hex.base},spinner:${hex.gold},hl:${hex.rose}
+      --color=fg:${hex.subtle},header:${hex.pine},info:${hex.foam},pointer:${hex.iris}
+      --color=marker:${hex.love},fg+:${hex.text},prompt:${hex.subtle},hl+:${hex.rose}
+      --color=selected-bg:${hex.overlay}
+      --color=border:${hex.highlightMed},label:${hex.text}
     '';
 
     xdg.configFile = {
-      "glow/glow.yml".source = (pkgs.formats.yaml {}).generate "glow.yml" glowFiles.settings;
-      "glow/${theme.slug}.json".source = (pkgs.formats.json {}).generate "${theme.slug}.json" glowFiles.theme;
-      "yazi/flavors/${theme.slug}.yazi".source = "${yaziThemeSrc}/flavors/${theme.slug}.yazi";
+      "glow/glow.yml".source =
+        (pkgs.formats.yaml {}).generate "glow.yml"
+        (import ./_cli-ux/glow.nix {
+          inherit config;
+          theme = (import ../../_lib/theme.nix).rosePineDawn;
+        }).settings;
+      "glow/${slug}.json".source =
+        (pkgs.formats.json {}).generate "${slug}.json"
+        (import ./_cli-ux/glow.nix {
+          inherit config;
+          theme = (import ../../_lib/theme.nix).rosePineDawn;
+        }).theme;
+      "yazi/flavors/${slug}.yazi".source = "${pkgs.fetchFromGitHub {
+        owner = "rose-pine";
+        repo = "yazi";
+        rev = "c89d745573d4fcfe0550fe6646f9f9ab1c0e51db";
+        hash = "sha256-9e3dXViWl1rK9BPrGAFfs9ZL/tsG6Njz6ksuU6AIrFY=";
+      }}/flavors/${slug}.yazi";
       "yazi/theme.toml".text = ''
         [flavor]
-        light = "${theme.slug}"
+        light = "${slug}"
       '';
     };
 
@@ -66,12 +65,17 @@ in {
       bat = {
         enable = true;
         config = {
-          theme = theme.displayName;
+          theme = displayName;
           pager = "ov";
         };
-        themes."${theme.displayName}" = {
-          src = tmThemeSrc;
-          file = "dist/${theme.slug}.tmTheme";
+        themes."${displayName}" = {
+          src = pkgs.fetchFromGitHub {
+            owner = "rose-pine";
+            repo = "tm-theme";
+            rev = "6d556734541ccb04172e81fd58de4a35fff72d19";
+            hash = "sha256-5+fG21KbB7bdPvszkz9Ftl6fCDGs17fJNTAXFRFWZGo=";
+          };
+          file = "dist/${slug}.tmTheme";
         };
       };
 
