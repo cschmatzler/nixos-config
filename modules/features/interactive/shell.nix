@@ -47,7 +47,9 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         set fish_greeting
         fish_vi_key_bindings
         fish_config theme choose "${fishThemeName}" >/dev/null
-        devenv hook fish | source
+        if not set -q HERDR_SKIP_DEVENV_AUTOACTIVATE
+          devenv hook fish | source
+        end
       '';
       functions = {
         fish_mode_prompt = ''

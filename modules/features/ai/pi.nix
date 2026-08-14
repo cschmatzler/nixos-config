@@ -41,7 +41,7 @@
         packages = [
           "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
           "npm:@awesamarth/pi-supermemory"
-          "npm:@ogulcancelik/pi-herdr"
+          "./packages/pi-herdr"
           "npm:@plannotator/pi-extension"
           "npm:@tunnckocore/pi-gpt-fast-mode"
           "npm:pi-cache-optimizer"
@@ -59,7 +59,6 @@
           ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
 
           ".pi/tmp/.keep".text = "";
-          ".pi/agent/APPEND_SYSTEM.md".source = ./_pi/APPEND_SYSTEM.md;
           ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
           ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
             mcp = {
@@ -82,6 +81,11 @@
                 };
               };
             };
+          };
+
+          ".pi/agent/packages/pi-herdr" = {
+            source = ./_pi/packages/pi-herdr;
+            recursive = true;
           };
 
           ".pi/agent/prompts/rmslop.md".text = commandPayloads.rmslop;

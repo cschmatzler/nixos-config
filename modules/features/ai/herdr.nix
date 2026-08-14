@@ -11,7 +11,9 @@ _: {
     pkgs,
     ...
   }: let
-    herdrPackage = inputs'.herdr.packages.herdr;
+    herdrPackage = inputs'.herdr.packages.herdr.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [./_herdr/subagent-visibility.patch];
+    });
     pluginId = "gh-pr-workspace";
     pluginRoot = "${config.xdg.configHome}/herdr/local-plugins/${pluginId}";
   in {

@@ -30,7 +30,13 @@
           "workspace"
           "$pr"
         ]
-        ["agent"]
+        [
+          "agent"
+          {
+            token = "$subagent";
+            dim = true;
+          }
+        ]
       ];
       spaces.rows = [
         [
