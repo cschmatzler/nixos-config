@@ -10,7 +10,7 @@ Pi-native tools for controlling [Herdr](https://github.com/ogulcancelik/herdr) l
 
 The proactive delegation policy lives in the Herdr tools' prompt guidelines. Because those tools are excluded from Pi helpers, only the user-facing Pi receives that policy.
 
-Before starting an agent, the extension marks its pane with the `subagent` metadata token. The local Herdr configuration renders that token as `↳` in the Agents panel, while the local Herdr patch excludes marked panes from Spaces-panel state aggregation and completion/attention notifications.
+Before starting an agent, the extension marks its pane with the `subagent` metadata token. The local Herdr configuration renders that token as a bold, accent-colored leading `↳ subagent` label in the Agents panel, while the local Herdr patch excludes marked panes from Spaces-panel state aggregation and completion/attention notifications.
 
 Herdr-created shells receive `HERDR_SKIP_DEVENV_AUTOACTIVATE=1`, keeping the shell idle and available for agent startup. Commands that need the project environment can run through `devenv shell -- …`.
 

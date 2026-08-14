@@ -92,7 +92,7 @@ const DirectionEnum = StringEnum(["right", "down"] as const, {
 
 const AutomationShellEnvironment = "HERDR_SKIP_DEVENV_AUTOACTIVATE=1";
 const HelperExcludedTools = ["herdr_layout", "herdr_pane", "herdr_agent"] as const;
-const SubagentMetadataToken = "subagent=↳";
+const SubagentMetadataToken = "subagent=↳ subagent";
 
 const AgentKindEnum = StringEnum(
 	[

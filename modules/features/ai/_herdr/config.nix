@@ -31,11 +31,13 @@
           "$pr"
         ]
         [
-          "agent"
           {
             token = "$subagent";
-            dim = true;
+            fg = theme.hex.iris;
+            bold = true;
+            dim = false;
           }
+          "agent"
         ]
       ];
       spaces.rows = [
