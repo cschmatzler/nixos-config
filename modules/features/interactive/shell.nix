@@ -23,6 +23,8 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
       hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
     }}/themes/${fishThemeName}.theme";
 
+    programs.direnv.enable = true;
+
     programs.fish = {
       enable = true;
       shellInit =
@@ -47,9 +49,6 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         set fish_greeting
         fish_vi_key_bindings
         fish_config theme choose "${fishThemeName}" >/dev/null
-        if not set -q HERDR_SKIP_DEVENV_AUTOACTIVATE
-          devenv hook fish | source
-        end
       '';
       functions = {
         fish_mode_prompt = ''
