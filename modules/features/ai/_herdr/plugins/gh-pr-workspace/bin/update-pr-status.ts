@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { updateWorkspacePullRequests } from "../src/main";
+import { refreshWorkspacePrStatus } from "../src/workspace-pr-status";
 
 const herdrBin = process.env.HERDR_BIN_PATH ?? "herdr";
 let workspaceId: string | undefined;
@@ -8,7 +8,7 @@ if (process.env.HERDR_PLUGIN_EVENT !== "startup") {
 }
 
 try {
-  await updateWorkspacePullRequests(herdrBin, workspaceId);
+  await refreshWorkspacePrStatus(herdrBin, workspaceId);
 } catch (cause) {
   console.error("[gh-pr-workspace] unexpected refresh failure", cause);
   process.exitCode = 1;

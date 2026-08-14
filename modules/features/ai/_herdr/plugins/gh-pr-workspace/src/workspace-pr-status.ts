@@ -1,5 +1,3 @@
-import { parseWorkspacePrStatus, type SidebarTokens } from "./pr-status";
-
 const SOURCE = "gh-pr-workspace";
 const TOKEN_NAMES = ["pr", "merge", "ci"] as const;
 const PULL_REQUEST_FIELDS = [
@@ -27,14 +25,14 @@ type CommandFailure = {
 
 type CommandResult = CommandSuccess | CommandFailure;
 
-type Workspace = {
-  readonly id: string;
-  readonly worktreeCwd?: string;
-};
-
 type Unavailable = {
   readonly _tag: "unavailable";
   readonly reason: string;
+};
+
+type Workspace = {
+  readonly id: string;
+  readonly worktreeCwd?: string;
 };
 
 type WorkspaceList =
@@ -58,13 +56,63 @@ type PullRequestReferenceLookup =
   | Unavailable;
 
 type PullRequestLookup =
-  | { readonly _tag: "found"; readonly tokens: SidebarTokens }
+  | { readonly _tag: "found"; readonly status: WorkspacePrStatus }
   | { readonly _tag: "not-found" }
   | Unavailable;
 
-type WorkspaceStatusWrite =
+type WorkspaceStatus =
   | { readonly _tag: "clear" }
-  | { readonly _tag: "report"; readonly tokens: SidebarTokens };
+  | { readonly _tag: "report"; readonly status: WorkspacePrStatus };
+
+type WorkspaceStatusDecision =
+  | WorkspaceStatus
+  | { readonly _tag: "preserve"; readonly reason: string; readonly branch?: string };
+
+type StatusWrite = { readonly _tag: "written" } | Unavailable;
+
+type Result<T, E> =
+  | { readonly _tag: "ok"; readonly value: T }
+  | { readonly _tag: "err"; readonly error: E };
+
+type PullRequestState = "OPEN" | "CLOSED" | "MERGED";
+type Mergeability = "MERGEABLE" | "CONFLICTING" | "UNKNOWN";
+type MergeState =
+  | "BEHIND"
+  | "BLOCKED"
+  | "CLEAN"
+  | "DIRTY"
+  | "DRAFT"
+  | "HAS_HOOKS"
+  | "UNKNOWN"
+  | "UNSTABLE";
+type CheckState = "pass" | "fail" | "pending";
+type CiState = CheckState | "none";
+
+type PullRequest = {
+  readonly number: number;
+  readonly state: PullRequestState;
+  readonly isDraft: boolean;
+  readonly mergeability: Mergeability;
+  readonly mergeState: MergeState;
+  readonly checks: ReadonlyArray<CheckState>;
+};
+
+type PullRequestIdentity = {
+  readonly number: number;
+};
+
+type WorkspacePrMergeability = "merged" | "mergeable" | "not-mergeable" | "unknown";
+
+type WorkspacePrStatus = {
+  readonly pullRequest: PullRequestIdentity;
+  readonly mergeability: WorkspacePrMergeability;
+  readonly ci: CiState;
+};
+
+type InvalidPullRequest = {
+  readonly _tag: "invalid-pull-request";
+  readonly field: string;
+};
 
 function isRecord(input: unknown): input is Readonly<Record<string, unknown>> {
   return typeof input === "object" && input !== null && !Array.isArray(input);
@@ -78,6 +126,7 @@ function spawnCommand(command: string, args: ReadonlyArray<string>, cwd?: string
   return Bun.spawn(commandLine, { cwd, stdout: "pipe", stderr: "pipe" });
 }
 
+/** Concrete process seam shared by the private GitHub, Git, and Herdr adapters. */
 async function runCommand(
   command: string,
   args: ReadonlyArray<string>,
@@ -108,13 +157,15 @@ function failureReason(result: CommandFailure): string {
   return `${result.command} exited ${result.exitCode}`;
 }
 
-function parseJson(output: string): { readonly _tag: "ok"; readonly value: unknown } | Unavailable {
+function parseJson(output: string): Result<unknown, Unavailable> {
   try {
     return { _tag: "ok", value: JSON.parse(output) };
   } catch {
-    return { _tag: "unavailable", reason: "invalid JSON response" };
+    return { _tag: "err", error: { _tag: "unavailable", reason: "invalid JSON response" } };
   }
 }
+
+// Herdr adapter: discovers workspace inputs and renders the final owned status.
 
 function parseWorkspaceList(input: unknown): WorkspaceList {
   if (!isRecord(input) || !isRecord(input.result) || !Array.isArray(input.result.workspaces)) {
@@ -160,7 +211,7 @@ function parsePaneCwd(input: unknown): WorkspaceCwd {
   return { _tag: "unavailable", reason: "workspace has no available directory" };
 }
 
-async function listWorkspaces(
+async function discoverWorkspaces(
   herdrBin: string,
   workspaceId?: string,
 ): Promise<WorkspaceList> {
@@ -170,7 +221,7 @@ async function listWorkspaces(
   }
 
   const json = parseJson(result.stdout);
-  if (json._tag === "unavailable") return json;
+  if (json._tag === "err") return json.error;
 
   const parsed = parseWorkspaceList(json.value);
   if (parsed._tag === "unavailable" || workspaceId === undefined) return parsed;
@@ -193,9 +244,77 @@ async function resolveWorkspaceCwd(
   }
 
   const json = parseJson(result.stdout);
-  if (json._tag === "unavailable") return json;
+  if (json._tag === "err") return json.error;
   return parsePaneCwd(json.value);
 }
+
+type SidebarTokens = {
+  readonly pr: string;
+  readonly merge: string;
+  readonly ci: string;
+};
+
+function renderSidebarTokens(status: WorkspacePrStatus): SidebarTokens {
+  const mergeLabels: Readonly<Record<WorkspacePrMergeability, string>> = {
+    merged: "◆",
+    mergeable: "✓",
+    "not-mergeable": "✗",
+    unknown: "?",
+  };
+  const ciLabels: Readonly<Record<CiState, string>> = {
+    pass: "CI ✓",
+    fail: "CI ✗",
+    pending: "CI ●",
+    none: "CI —",
+  };
+
+  return {
+    pr: `#${status.pullRequest.number}`,
+    merge: mergeLabels[status.mergeability],
+    ci: ciLabels[status.ci],
+  };
+}
+
+async function renderWorkspaceStatus(
+  herdrBin: string,
+  workspaceId: string,
+  sequence: bigint,
+  status: WorkspaceStatus,
+): Promise<StatusWrite> {
+  const args = [
+    "workspace",
+    "report-metadata",
+    workspaceId,
+    "--source",
+    SOURCE,
+    "--seq",
+    String(sequence),
+  ];
+  if (status._tag === "report") {
+    const tokens = renderSidebarTokens(status.status);
+    for (const token of TOKEN_NAMES) {
+      args.push("--token", `${token}=${tokens[token]}`);
+    }
+  } else {
+    for (const token of TOKEN_NAMES) {
+      args.push("--clear-token", token);
+    }
+  }
+
+  const result = await runCommand(herdrBin, args);
+  if (result._tag === "failure") {
+    return { _tag: "unavailable", reason: failureReason(result) };
+  }
+  return { _tag: "written" };
+}
+
+const herdrAdapter = {
+  discoverWorkspaces,
+  resolveWorkspaceCwd,
+  renderWorkspaceStatus,
+};
+
+// Git adapter: resolves repository state without treating detached HEAD as unavailable.
 
 async function currentBranch(cwd: string): Promise<BranchLookup> {
   const result = await runCommand("git", ["-C", cwd, "branch", "--show-current"]);
@@ -221,6 +340,153 @@ async function currentRevision(cwd: string): Promise<RevisionLookup> {
   return { _tag: "found", revision };
 }
 
+const gitAdapter = {
+  currentBranch,
+  currentRevision,
+};
+
+// GitHub adapter: owns CLI requests, response parsing, and exact-revision fallback.
+
+function invalidPullRequest(field: string): Result<never, InvalidPullRequest> {
+  return { _tag: "err", error: { _tag: "invalid-pull-request", field } };
+}
+
+function parseState(input: unknown): PullRequestState | undefined {
+  if (input === "OPEN" || input === "CLOSED" || input === "MERGED") return input;
+  return undefined;
+}
+
+function parseMergeability(input: unknown): Mergeability | undefined {
+  if (input === "MERGEABLE" || input === "CONFLICTING" || input === "UNKNOWN") return input;
+  return undefined;
+}
+
+function parseMergeState(input: unknown): MergeState | undefined {
+  if (
+    input === "BEHIND" ||
+    input === "BLOCKED" ||
+    input === "CLEAN" ||
+    input === "DIRTY" ||
+    input === "DRAFT" ||
+    input === "HAS_HOOKS" ||
+    input === "UNKNOWN" ||
+    input === "UNSTABLE"
+  ) {
+    return input;
+  }
+  return undefined;
+}
+
+function parseCheckState(input: unknown): CheckState | undefined {
+  if (!isRecord(input)) return undefined;
+
+  if (input.__typename === "StatusContext") {
+    if (input.state === "ERROR" || input.state === "FAILURE") return "fail";
+    if (input.state === "EXPECTED" || input.state === "PENDING") return "pending";
+    if (input.state === "SUCCESS") return "pass";
+    return undefined;
+  }
+
+  if (input.__typename !== "CheckRun") return undefined;
+  if (
+    input.status === "IN_PROGRESS" ||
+    input.status === "PENDING" ||
+    input.status === "QUEUED" ||
+    input.status === "REQUESTED" ||
+    input.status === "WAITING"
+  ) {
+    return "pending";
+  }
+  if (input.status !== "COMPLETED") return undefined;
+
+  if (
+    input.conclusion === "ACTION_REQUIRED" ||
+    input.conclusion === "CANCELLED" ||
+    input.conclusion === "FAILURE" ||
+    input.conclusion === "STARTUP_FAILURE" ||
+    input.conclusion === "TIMED_OUT"
+  ) {
+    return "fail";
+  }
+  if (
+    input.conclusion === "NEUTRAL" ||
+    input.conclusion === "SKIPPED" ||
+    input.conclusion === "STALE" ||
+    input.conclusion === "SUCCESS"
+  ) {
+    return "pass";
+  }
+  return undefined;
+}
+
+function parsePullRequest(input: unknown): Result<PullRequest, InvalidPullRequest> {
+  if (!isRecord(input)) return invalidPullRequest("root");
+  if (typeof input.number !== "number" || !Number.isSafeInteger(input.number) || input.number < 1) {
+    return invalidPullRequest("number");
+  }
+
+  const state = parseState(input.state);
+  if (!state) return invalidPullRequest("state");
+  if (typeof input.isDraft !== "boolean") return invalidPullRequest("isDraft");
+
+  const mergeability = parseMergeability(input.mergeable);
+  if (!mergeability) return invalidPullRequest("mergeable");
+  const mergeState = parseMergeState(input.mergeStateStatus);
+  if (!mergeState) return invalidPullRequest("mergeStateStatus");
+  if (!Array.isArray(input.statusCheckRollup)) return invalidPullRequest("statusCheckRollup");
+
+  const checks: Array<CheckState> = [];
+  for (const [index, check] of input.statusCheckRollup.entries()) {
+    const state = parseCheckState(check);
+    if (!state) return invalidPullRequest(`statusCheckRollup[${index}]`);
+    checks.push(state);
+  }
+
+  return {
+    _tag: "ok",
+    value: {
+      number: input.number,
+      state,
+      isDraft: input.isDraft,
+      mergeability,
+      mergeState,
+      checks,
+    },
+  };
+}
+
+function rollupChecks(checks: ReadonlyArray<CheckState>): CiState {
+  const states = new Set(checks);
+  if (states.has("fail")) return "fail";
+  if (states.has("pending")) return "pending";
+  if (states.has("pass")) return "pass";
+  return "none";
+}
+
+function workspacePrMergeability(pr: PullRequest): WorkspacePrMergeability {
+  if (pr.state === "MERGED") return "merged";
+  if (pr.state === "CLOSED" || pr.isDraft) return "not-mergeable";
+  if (pr.mergeability === "UNKNOWN" || pr.mergeState === "UNKNOWN") return "unknown";
+  if (pr.mergeability === "MERGEABLE" && pr.mergeState === "CLEAN") return "mergeable";
+  return "not-mergeable";
+}
+
+function parseWorkspacePrStatus(
+  input: unknown,
+): Result<WorkspacePrStatus, InvalidPullRequest> {
+  const parsed = parsePullRequest(input);
+  if (parsed._tag === "err") return parsed;
+
+  return {
+    _tag: "ok",
+    value: {
+      pullRequest: { number: parsed.value.number },
+      mergeability: workspacePrMergeability(parsed.value),
+      ci: rollupChecks(parsed.value.checks),
+    },
+  };
+}
+
 async function currentRepository(cwd: string): Promise<RepositoryLookup> {
   const result = await runCommand("gh", ["repo", "view", "--json", "nameWithOwner"], cwd);
   if (result._tag === "failure") {
@@ -229,7 +495,7 @@ async function currentRepository(cwd: string): Promise<RepositoryLookup> {
 
   const json = parseJson(result.stdout);
   if (
-    json._tag === "unavailable" ||
+    json._tag === "err" ||
     !isRecord(json.value) ||
     typeof json.value.nameWithOwner !== "string" ||
     !/^[^/\s]+\/[^/\s]+$/.test(json.value.nameWithOwner)
@@ -286,7 +552,7 @@ function parseRevisionPullRequest(
 }
 
 async function findPullRequestByRevision(cwd: string): Promise<PullRequestReferenceLookup> {
-  const revision = await currentRevision(cwd);
+  const revision = await gitAdapter.currentRevision(cwd);
   if (revision._tag === "unavailable") return revision;
 
   const repository = await currentRepository(cwd);
@@ -299,7 +565,7 @@ async function findPullRequestByRevision(cwd: string): Promise<PullRequestRefere
   }
 
   const json = parseJson(result.stdout);
-  if (json._tag === "unavailable") return json;
+  if (json._tag === "err") return json.error;
   return parseRevisionPullRequest(json.value, revision.revision);
 }
 
@@ -316,13 +582,16 @@ async function viewPullRequest(cwd: string, selector: string): Promise<PullReque
   }
 
   const json = parseJson(result.stdout);
-  if (json._tag === "unavailable") return json;
+  if (json._tag === "err") return json.error;
 
   const parsed = parseWorkspacePrStatus(json.value);
   if (parsed._tag === "err") {
-    return { _tag: "unavailable", reason: parsed.error.message };
+    return {
+      _tag: "unavailable",
+      reason: `Invalid GitHub pull request field: ${parsed.error.field}`,
+    };
   }
-  return { _tag: "found", tokens: parsed.value };
+  return { _tag: "found", status: parsed.value };
 }
 
 async function lookupPullRequest(cwd: string, branch: string): Promise<PullRequestLookup> {
@@ -336,74 +605,57 @@ async function lookupPullRequest(cwd: string, branch: string): Promise<PullReque
   return viewPullRequest(cwd, String(revisionPullRequest.number));
 }
 
-async function writeWorkspaceStatus(
+const githubAdapter = {
+  lookupPullRequest,
+};
+
+async function decideWorkspaceStatus(
   herdrBin: string,
-  workspaceId: string,
-  sequence: bigint,
-  status: WorkspaceStatusWrite,
-): Promise<void> {
-  const args = [
-    "workspace",
-    "report-metadata",
-    workspaceId,
-    "--source",
-    SOURCE,
-    "--seq",
-    String(sequence),
-  ];
-  for (const token of TOKEN_NAMES) {
-    if (status._tag === "report") {
-      args.push("--token", `${token}=${status.tokens[token]}`);
-    } else {
-      args.push("--clear-token", token);
-    }
+  workspace: Workspace,
+): Promise<WorkspaceStatusDecision> {
+  const cwd = await herdrAdapter.resolveWorkspaceCwd(herdrBin, workspace);
+  if (cwd._tag === "unavailable") {
+    return { _tag: "preserve", reason: cwd.reason };
   }
 
-  const result = await runCommand(herdrBin, args);
-  if (result._tag === "failure") {
-    console.error(
-      `[gh-pr-workspace] failed to ${status._tag} ${workspaceId}: ${failureReason(result)}`,
-    );
+  const branch = await gitAdapter.currentBranch(cwd.cwd);
+  if (branch._tag === "unavailable") {
+    return { _tag: "preserve", reason: branch.reason };
   }
+  if (branch._tag === "no-branch") return { _tag: "clear" };
+
+  const pullRequest = await githubAdapter.lookupPullRequest(cwd.cwd, branch.branch);
+  if (pullRequest._tag === "found") {
+    return { _tag: "report", status: pullRequest.status };
+  }
+  if (pullRequest._tag === "not-found") return { _tag: "clear" };
+  return { _tag: "preserve", reason: pullRequest.reason, branch: branch.branch };
 }
 
-async function updateWorkspace(
+async function refreshWorkspace(
   herdrBin: string,
   workspace: Workspace,
   sequence: bigint,
 ): Promise<void> {
-  const cwd = await resolveWorkspaceCwd(herdrBin, workspace);
-  if (cwd._tag === "unavailable") {
-    console.error(`[gh-pr-workspace] ${workspace.id}: ${cwd.reason}; preserving current status`);
+  const decision = await decideWorkspaceStatus(herdrBin, workspace);
+  if (decision._tag === "preserve") {
+    const context =
+      decision.branch === undefined ? workspace.id : `${workspace.id} (${decision.branch})`;
+    console.error(`[gh-pr-workspace] ${context}: ${decision.reason}; preserving current status`);
     return;
   }
 
-  const branch = await currentBranch(cwd.cwd);
-  if (branch._tag === "unavailable") {
-    console.error(`[gh-pr-workspace] ${workspace.id}: ${branch.reason}; preserving current status`);
-    return;
-  }
-  if (branch._tag === "no-branch") {
-    await writeWorkspaceStatus(herdrBin, workspace.id, sequence, { _tag: "clear" });
-    return;
-  }
-
-  const pullRequest = await lookupPullRequest(cwd.cwd, branch.branch);
-  if (pullRequest._tag === "found") {
-    await writeWorkspaceStatus(herdrBin, workspace.id, sequence, {
-      _tag: "report",
-      tokens: pullRequest.tokens,
-    });
-    return;
-  }
-  if (pullRequest._tag === "not-found") {
-    await writeWorkspaceStatus(herdrBin, workspace.id, sequence, { _tag: "clear" });
-    return;
-  }
-
-  console.error(
-    `[gh-pr-workspace] ${workspace.id} (${branch.branch}): ${pullRequest.reason}; preserving current status`,
+  const write = await herdrAdapter.renderWorkspaceStatus(
+    herdrBin,
+    workspace.id,
+    sequence,
+    decision,
   );
+  if (write._tag === "unavailable") {
+    console.error(
+      `[gh-pr-workspace] failed to ${decision._tag} ${workspace.id}: ${write.reason}`,
+    );
+  }
 }
 
 function currentSequence(): bigint {
@@ -412,19 +664,16 @@ function currentSequence(): bigint {
 }
 
 /**
- * Refreshes GitHub pull request status for open Herdr workspaces.
+ * Refreshes Workspace PR Status for one event workspace or every open workspace.
  *
- * Unavailable workspace, Git, or GitHub data preserves the last successfully reported status.
- * A successful no-branch result or confirmed missing pull request clears the owned status.
- *
- * @param herdrBin - Herdr binary injected into the plugin runtime.
- * @param workspaceId - Optional event workspace to refresh instead of every open workspace.
+ * Expected directory, Git, GitHub, and Herdr failures are handled as tagged outcomes here.
+ * Only unexpected failures escape to the executable entry point.
  */
-export async function updateWorkspacePullRequests(
+export async function refreshWorkspacePrStatus(
   herdrBin: string,
   workspaceId?: string,
 ): Promise<void> {
-  const workspaces = await listWorkspaces(herdrBin, workspaceId);
+  const workspaces = await herdrAdapter.discoverWorkspaces(herdrBin, workspaceId);
   if (workspaces._tag === "unavailable") {
     console.error(`[gh-pr-workspace] unable to list workspaces: ${workspaces.reason}`);
     return;
@@ -432,6 +681,6 @@ export async function updateWorkspacePullRequests(
 
   const sequence = currentSequence();
   await Promise.all(
-    workspaces.workspaces.map((workspace) => updateWorkspace(herdrBin, workspace, sequence)),
+    workspaces.workspaces.map((workspace) => refreshWorkspace(herdrBin, workspace, sequence)),
   );
 }

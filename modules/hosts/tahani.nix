@@ -7,6 +7,7 @@
       den.aspects.email
       den.aspects.ynab
       den.aspects.syncthing
+      den.aspects.plannotator
     ];
 
     provides.to-users = {
@@ -30,7 +31,6 @@
         ./_parts/tahani/executor.nix
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
-        ./_parts/tahani/plannotator.nix
       ];
 
       virtualisation.docker.enable = true;
