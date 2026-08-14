@@ -1,8 +1,4 @@
-{
-  den,
-  inputs,
-  ...
-}: {
+{den, ...}: {
   den.aspects.pi = {
     includes = [den.aspects.javascript];
 
@@ -12,54 +8,12 @@
     };
 
     homeManager = {
-      config,
       inputs',
-      lib,
       pkgs,
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      piCommand = pkgs.writeShellScriptBin "pi" ''
-        exec ${inputs'.llm-agents.packages.nono}/bin/nono run --allow-cwd --profile ${lib.escapeShellArg "${config.xdg.configHome}/nono/profiles/pi.json"} -- ${inputs'.llm-agents.packages.pi}/bin/pi "$@"
-      '';
-      aiTools =
-        (import ./_shared/inventory.nix {
-          inherit lib;
-          local = import ../../_lib/local.nix;
-        }).pi;
-      mcpServers =
-        lib.mapAttrs (
-          name: endpoint:
-            if endpoint.kind == "local"
-            then {
-              type = "local";
-              inherit (endpoint) command;
-              enabled = true;
-            }
-            else if endpoint.kind == "remote"
-            then {
-              type = "remote";
-              inherit (endpoint) url;
-              enabled = true;
-            }
-            else throw "Unsupported Pi MCP kind for ${name}: ${endpoint.kind}"
-        )
-        aiTools.mcp;
-      promptFiles =
-        lib.mapAttrs' (
-          name: command:
-            lib.nameValuePair ".pi/agent/prompts/${name}.md" {inherit (command) text;}
-        )
-        aiTools.commands;
-      skillFiles =
-        lib.mapAttrs' (
-          name: skill:
-            lib.nameValuePair ".pi/agent/skills/${name}" {
-              inherit (skill) source;
-              recursive = true;
-            }
-        )
-        aiTools.skills;
+      commandPayloads = import ./_shared/commands.nix;
       plannotatorConfig = {
         diffOptions = {
           defaultDiffType = "since-base";
@@ -85,7 +39,6 @@
         defaultThinkingLevel = "high";
         enableInstallTelemetry = false;
         packages = [
-          (toString (inputs.nono-packs + "/pi"))
           "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
           "npm:@awesamarth/pi-supermemory"
           "npm:@ogulcancelik/pi-herdr"
@@ -100,32 +53,78 @@
       };
     in {
       home = {
-        packages = [piCommand];
+        packages = [inputs'.llm-agents.packages.pi];
 
-        file =
-          {
-            ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
+        file = {
+          ".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
 
-            ".pi/tmp/.keep".text = "";
-            ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
-            ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
-              mcp = {
-                toolMode = "direct";
-                startup = "eager";
-                servers = mcpServers;
+          ".pi/tmp/.keep".text = "";
+          ".pi/agent/APPEND_SYSTEM.md".source = ./_pi/APPEND_SYSTEM.md;
+          ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
+          ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
+            mcp = {
+              toolMode = "direct";
+              startup = "eager";
+              servers = {
+                opensrc = {
+                  type = "local";
+                  command = [
+                    "npx"
+                    "-y"
+                    "opensrc-mcp"
+                  ];
+                  enabled = true;
+                };
+                executor = {
+                  type = "remote";
+                  url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
+                  enabled = true;
+                };
               };
             };
+          };
 
-            ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-            ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
-            ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
-            ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
-            ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
-            ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
-            ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
-          }
-          // promptFiles
-          // skillFiles;
+          ".pi/agent/prompts/rmslop.md".text = commandPayloads.rmslop;
+          ".pi/agent/prompts/albanian-lesson.md".text = commandPayloads."albanian-lesson";
+          ".pi/agent/prompts/inbox-triage.md".text = commandPayloads."inbox-triage";
+
+          ".pi/agent/skills/coding-standards" = {
+            source = ./_skills/coding-standards;
+            recursive = true;
+          };
+          ".pi/agent/skills/effect" = {
+            source = ./_skills/effect;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-authz" = {
+            source = ./_skills/wrdn-authz;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-code-execution" = {
+            source = ./_skills/wrdn-code-execution;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-data-exfil" = {
+            source = ./_skills/wrdn-data-exfil;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-gha-workflows" = {
+            source = ./_skills/wrdn-gha-workflows;
+            recursive = true;
+          };
+          ".pi/agent/skills/wrdn-pii" = {
+            source = ./_skills/wrdn-pii;
+            recursive = true;
+          };
+
+          ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
+          ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
+          ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
+          ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
+          ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;
+          ".pi/agent/extensions/todos.ts".source = ./_pi/extensions/todos.ts;
+          ".pi/agent/extensions/whimsical.ts".source = ./_pi/extensions/whimsical.ts;
+        };
       };
     };
   };

@@ -45,10 +45,6 @@
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
     };
-    nono-packs = {
-      url = "github:nolabs-ai/nono-packs";
-      flake = false;
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

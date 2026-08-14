@@ -1,36 +1,13 @@
-{
-  den,
-  inputs,
-  ...
-}: {
+{den, ...}: {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
 
     homeManager = {
-      config,
       inputs',
-      lib,
       pkgs,
       ...
     }: let
-      aiTools =
-        (import ./_shared/inventory.nix {
-          inherit lib;
-          local = import ../../_lib/local.nix;
-        })."claude-code";
-      mcpServers =
-        lib.mapAttrs (
-          name: endpoint:
-            if endpoint.kind == "local"
-            then {
-              command = builtins.head endpoint.command;
-              args = builtins.tail endpoint.command;
-            }
-            else if endpoint.kind == "remote"
-            then {inherit (endpoint) url;}
-            else throw "Unsupported Claude Code MCP kind for ${name}: ${endpoint.kind}"
-        )
-        aiTools.mcp;
+      commandPayloads = import ./_shared/commands.nix;
       bunForPlannotator = pkgs.bun.overrideAttrs {
         version = "1.3.11";
         src = pkgs.fetchurl {
@@ -54,10 +31,33 @@
       programs.claude-code = {
         enable = true;
         package = inputs'.llm-agents.packages.claude-code;
-        plugins.nono = inputs.nono-packs + "/claude";
-        commands = lib.mapAttrs (_: command: command.text) aiTools.commands;
-        skills = lib.mapAttrs (_: skill: skill.source) aiTools.skills;
-        inherit mcpServers;
+        commands = {
+          rmslop = commandPayloads.rmslop;
+          albanian-lesson = commandPayloads."albanian-lesson";
+          inbox-triage = commandPayloads."inbox-triage";
+          plannotator-annotate = commandPayloads."plannotator-annotate";
+          plannotator-last = commandPayloads."plannotator-last";
+          plannotator-review = commandPayloads."plannotator-review";
+        };
+        skills = {
+          coding-standards = ./_skills/coding-standards;
+          effect = ./_skills/effect;
+          wrdn-authz = ./_skills/wrdn-authz;
+          wrdn-code-execution = ./_skills/wrdn-code-execution;
+          wrdn-data-exfil = ./_skills/wrdn-data-exfil;
+          wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
+          wrdn-pii = ./_skills/wrdn-pii;
+        };
+        mcpServers = {
+          opensrc = {
+            command = "npx";
+            args = [
+              "-y"
+              "opensrc-mcp"
+            ];
+          };
+          executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
+        };
         settings = {
           extraKnownMarketplaces.phase0-skills = {
             source = {
