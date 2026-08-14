@@ -17,7 +17,7 @@
       };
       plannotatorPackage = inputs'.llm-agents.packages.plannotator;
       plannotator =
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then
           plannotatorPackage.overrideAttrs (oldAttrs: {
             nativeBuildInputs = map (input:

@@ -32,10 +32,10 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
           set -gx LS_COLORS (${pkgs.vivid}/bin/vivid generate ${slug})
           set -gx SHELL ${pkgs.fish}/bin/fish
         ''
-        + lib.optionalString pkgs.stdenv.isDarwin ''
+        + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
           fish_add_path --prepend "$HOME/.nix-profile/bin" /run/current-system/sw/bin
         ''
-        + lib.optionalString pkgs.stdenv.isLinux ''
+        + lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
           fish_add_path --prepend \
             /run/wrappers/bin \
             "$HOME/.nix-profile/bin" \

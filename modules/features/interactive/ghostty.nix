@@ -5,7 +5,7 @@ _: {
       defaultFonts.monospace = ["MonoLisa"];
     };
 
-    home.packages = pkgs.lib.optionals pkgs.stdenv.isLinux [
+    home.packages = pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       pkgs.ghostty.terminfo
     ];
 

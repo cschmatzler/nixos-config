@@ -5,7 +5,7 @@ _: {
     ...
   }: {
     # System utilities
-    environment.systemPackages = lib.optionals pkgs.stdenv.isLinux [
+    environment.systemPackages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       pkgs.lm_sensors
     ];
 

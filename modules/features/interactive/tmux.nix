@@ -4,7 +4,7 @@ _: {
     lib,
     ...
   }: {
-    home.packages = lib.optional (!pkgs.stdenv.isDarwin) pkgs.wl-clipboard;
+    home.packages = lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) pkgs.wl-clipboard;
 
     programs.tmux = {
       enable = true;
@@ -13,7 +13,7 @@ _: {
         inherit pkgs;
         theme = (import ../../_lib/theme.nix).rosePineDawn;
         clipboardTool =
-          if pkgs.stdenv.isDarwin
+          if pkgs.stdenv.hostPlatform.isDarwin
           then "pbcopy"
           else "${pkgs.wl-clipboard}/bin/wl-copy";
       };

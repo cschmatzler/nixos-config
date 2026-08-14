@@ -14,15 +14,15 @@ _: {
         tokei
         tree-sitter
       ]
-      ++ lib.optionals stdenv.isDarwin [
+      ++ lib.optionals stdenv.hostPlatform.isDarwin [
         xcodes
       ]
-      ++ lib.optionals stdenv.isLinux [
+      ++ lib.optionals stdenv.hostPlatform.isLinux [
         chromium
         gcc15
       ];
 
-    home.sessionVariables = lib.optionalAttrs pkgs.stdenv.isLinux {
+    home.sessionVariables = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       CHROMIUM_EXECUTABLE_PATH = "${pkgs.chromium}/bin/chromium";
     };
   };
