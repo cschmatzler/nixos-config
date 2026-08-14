@@ -29,17 +29,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 host="$(resolve_host "$requested_host")"
-kind="$(require_host_kind "$host")"
 
 print_info "Building configuration for $host"
-
-if [[ "$kind" == "darwin" ]]; then
-  target=".#darwinConfigurations.${host}.system"
-else
-  target=".#nixosConfigurations.${host}.config.system.build.toplevel"
-fi
-
-nix build "$target" --show-trace "${build_args[@]}"
+build_host "$host" "${build_args[@]}"
 
 if [[ -e ./result || -L ./result ]]; then
   rm ./result

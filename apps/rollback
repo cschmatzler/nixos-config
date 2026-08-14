@@ -31,16 +31,8 @@ if [[ -z "$generation" ]]; then
   exit 1
 fi
 
-read -r host kind < <(resolve_local_host)
+host="$(resolve_local_host)"
+
 print_warning "Rolling back $host to generation $generation"
-
-if [[ "$kind" == "darwin" ]]; then
-  run_as_root darwin-rebuild switch --switch-generation "$generation"
-else
-  run_as_root nix-env \
-    --profile /nix/var/nix/profiles/system \
-    --switch-generation "$generation"
-  run_as_root /nix/var/nix/profiles/system/bin/switch-to-configuration switch
-fi
-
+rollback_local_host "$host" "$generation"
 print_success "Rollback to generation $generation complete"

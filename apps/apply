@@ -3,7 +3,6 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-read -r host kind < <(resolve_local_host)
 apply_args=()
 
 while [[ $# -gt 0 ]]; do
@@ -36,12 +35,8 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+host="$(resolve_local_host)"
+
 print_info "Applying configuration for $host"
-
-if [[ "$kind" == "darwin" ]]; then
-  run_as_root darwin-rebuild switch --flake ".#${host}" "${apply_args[@]}"
-else
-  run_as_root nixos-rebuild switch --flake ".#${host}" "${apply_args[@]}"
-fi
-
+apply_local_host "$host" "${apply_args[@]}"
 print_success "Configuration applied successfully"
