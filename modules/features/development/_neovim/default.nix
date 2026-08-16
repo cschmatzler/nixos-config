@@ -3,7 +3,7 @@
   lib,
   ...
 }:
-with (import ../../../_lib/theme.nix).rosePineDawn; {
+with (import ../../../_lib/theme.nix).rosePine; {
   imports = [
     ./autocmd.nix
     ./mappings.nix

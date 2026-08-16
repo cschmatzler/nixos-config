@@ -27,7 +27,7 @@ _: {
 
       file = {
         ".config/herdr/config.toml".source = (pkgs.formats.toml {}).generate "herdr-config.toml" (import ./_herdr/config.nix {
-          theme = (import ../../_lib/theme.nix).rosePineDawn;
+          theme = (import ../../_lib/theme.nix).rosePine;
         });
         ".config/herdr/local-plugins/${pluginId}" = {
           source = ./_herdr/plugins/gh-pr-workspace;

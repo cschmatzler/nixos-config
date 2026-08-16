@@ -1,5 +1,5 @@
 _:
-with (import ../../_lib/theme.nix).rosePineDawn; {
+with (import ../../_lib/theme.nix).rosePine; {
   den.aspects.cli-ux.homeManager = {
     config,
     pkgs,
@@ -41,13 +41,13 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         (pkgs.formats.yaml {}).generate "glow.yml"
         (import ./_cli-ux/glow.nix {
           inherit config;
-          theme = (import ../../_lib/theme.nix).rosePineDawn;
+          theme = (import ../../_lib/theme.nix).rosePine;
         }).settings;
       "glow/${slug}.json".source =
         (pkgs.formats.json {}).generate "${slug}.json"
         (import ./_cli-ux/glow.nix {
           inherit config;
-          theme = (import ../../_lib/theme.nix).rosePineDawn;
+          theme = (import ../../_lib/theme.nix).rosePine;
         }).theme;
       "yazi/flavors/${slug}.yazi".source = "${pkgs.fetchFromGitHub {
         owner = "rose-pine";
@@ -57,6 +57,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
       }}/flavors/${slug}.yazi";
       "yazi/theme.toml".text = ''
         [flavor]
+        dark = "${slug}"
         light = "${slug}"
       '';
     };
@@ -92,15 +93,15 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
           "--hidden"
           "--smart-case"
           "--colors=column:none"
-          "--colors=column:fg:0x28,0x69,0x83"
+          "--colors=column:fg:0x31,0x74,0x8f"
           "--colors=column:style:underline"
           "--colors=line:none"
-          "--colors=line:fg:0x28,0x69,0x83"
+          "--colors=line:fg:0x31,0x74,0x8f"
           "--colors=match:none"
-          "--colors=match:bg:0xf2,0xe9,0xe1"
-          "--colors=match:fg:0x56,0x94,0x9f"
+          "--colors=match:bg:0x26,0x23,0x3a"
+          "--colors=match:fg:0x9c,0xcf,0xd8"
           "--colors=path:none"
-          "--colors=path:fg:0x56,0x94,0x9f"
+          "--colors=path:fg:0x9c,0xcf,0xd8"
           "--colors=path:style:bold"
         ];
       };

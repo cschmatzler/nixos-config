@@ -21,7 +21,7 @@ with import ../../_lib/local.nix; {
 
     system.defaults = {
       NSGlobalDomain = {
-        AppleInterfaceStyle = null;
+        AppleInterfaceStyle = "Dark";
         AppleShowAllExtensions = true;
         ApplePressAndHoldEnabled = false;
         KeyRepeat = 2;

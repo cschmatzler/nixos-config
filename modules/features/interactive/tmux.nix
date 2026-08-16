@@ -11,7 +11,7 @@ _: {
       sensibleOnTop = false;
       extraConfig = import ./_tmux/default.nix {
         inherit pkgs;
-        theme = (import ../../_lib/theme.nix).rosePineDawn;
+        theme = (import ../../_lib/theme.nix).rosePine;
         clipboardTool =
           if pkgs.stdenv.hostPlatform.isDarwin
           then "pbcopy"

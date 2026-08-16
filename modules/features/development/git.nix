@@ -1,5 +1,5 @@
 _:
-with (import ../../_lib/theme.nix).rosePineDawn; {
+with (import ../../_lib/theme.nix).rosePine; {
   den.aspects.git.homeManager = {pkgs, ...}: {
     home.packages = with pkgs; [
       delta
@@ -58,7 +58,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         delta = {
           navigate = true;
           line-numbers = true;
-          light = true;
+          light = false;
           syntax-theme = deltaSyntaxTheme;
           side-by-side = true;
           pager = "less -FRX";
@@ -83,7 +83,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         ];
         gui = {
           theme = {
-            lightTheme = true;
+            lightTheme = false;
             activeBorderColor = [hex.iris "bold"];
             inactiveBorderColor = [hex.muted];
             searchingActiveBorderColor = [hex.foam "bold"];

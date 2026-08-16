@@ -1,5 +1,5 @@
 _:
-with (import ../../_lib/theme.nix).rosePineDawn; {
+with (import ../../_lib/theme.nix).rosePine; {
   den.aspects.shell.homeManager = {
     lib,
     pkgs,
@@ -12,8 +12,8 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
 
     home.sessionVariables = {
       COLORTERM = "truecolor";
-      COLORFGBG = "0;15";
-      TERM_BACKGROUND = "light";
+      COLORFGBG = "15;0";
+      TERM_BACKGROUND = "dark";
     };
 
     xdg.configFile."fish/themes/${fishThemeName}.theme".source = "${pkgs.fetchFromGitHub {

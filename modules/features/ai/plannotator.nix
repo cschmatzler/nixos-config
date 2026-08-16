@@ -43,7 +43,10 @@
         '';
       };
     in {
-      den.aspects.pi.packageDeclarations = ["npm:@plannotator/pi-extension"];
+      den.aspects.pi.packageDeclarations = [
+        "npm:@plannotator/pi-extension"
+        "${./_plannotator/hide-progress.ts}"
+      ];
 
       programs.claude-code = {
         commands = {

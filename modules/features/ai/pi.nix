@@ -16,8 +16,9 @@
     }: let
       jsonFormat = pkgs.formats.json {};
       commandPayloads = import ./_shared/commands.nix;
+      theme = (import ../../_lib/theme.nix).rosePine;
       settings = {
-        theme = "light";
+        theme = theme.slug;
         quietStartup = true;
         hideThinkingBlock = true;
         showCacheMissNotices = true;
@@ -28,16 +29,13 @@
         packages =
           [
             "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
-            "npm:@awesamarth/pi-supermemory"
-            "./packages/pi-herdr"
-          ]
-          ++ config.den.aspects.pi.packageDeclarations
-          ++ [
             "npm:@tunnckocore/pi-gpt-fast-mode"
-            "npm:pi-cache-optimizer"
+            "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:pi-claude-auth"
-          ];
+            "./packages/pi-herdr"
+          ]
+          ++ config.den.aspects.pi.packageDeclarations;
         prompts = ["./prompts"];
         skills = ["./skills"];
       };
@@ -54,6 +52,12 @@
         file = {
           ".pi/tmp/.keep".text = "";
           ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
+          ".pi/agent/themes/${theme.slug}.json".source = jsonFormat.generate "${theme.slug}.json" {
+            "$schema" = "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
+            name = theme.slug;
+            vars = theme.hex;
+            inherit (theme.pi) colors export;
+          };
           ".pi/agent/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
             mcp = {
               toolMode = "direct";
@@ -92,6 +96,10 @@
           };
           ".pi/agent/skills/effect" = {
             source = ./_skills/effect;
+            recursive = true;
+          };
+          ".pi/agent/skills/life-os" = {
+            source = ./_skills/life-os;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-authz" = {
