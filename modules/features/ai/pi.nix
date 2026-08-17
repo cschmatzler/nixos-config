@@ -29,7 +29,6 @@
         packages =
           [
             "git:github.com/dmmulroy/pi-mcp"
-            "npm:@tunnckocore/pi-gpt-fast-mode"
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:pi-claude-auth"
