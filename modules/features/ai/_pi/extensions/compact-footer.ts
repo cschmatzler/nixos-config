@@ -8,8 +8,6 @@ type FormattedContext = {
   readonly text: string;
 };
 
-type MemoryConnection = "checking" | "connected" | "disconnected";
-
 function plainText(value: string | undefined): string | undefined {
   return value?.replace(ANSI_ESCAPE, "");
 }
@@ -74,14 +72,6 @@ function formatMcp(status: string | undefined): { readonly text: string; readonl
   return count ? { text: `MCP ${count}`, connected: Number(count) > 0 } : undefined;
 }
 
-function memoryConnection(status: string | undefined): MemoryConnection | undefined {
-  const plain = plainText(status)?.toLowerCase();
-  if (!plain) return undefined;
-  if (plain.includes("not configured") || plain.includes("error")) return "disconnected";
-  if (plain.includes("recalling")) return "checking";
-  if (plain.includes("remote") || plain.includes("local") || plain.includes("recalled")) return "connected";
-  return undefined;
-}
 
 /** Installs a one-line footer with only actionable session and connection information. */
 export default function compactFooter(pi: ExtensionAPI): void {
@@ -111,11 +101,6 @@ export default function compactFooter(pi: ExtensionAPI): void {
 
         const mcp = formatMcp(statuses.get("mcp"));
         if (mcp) parts.push(theme.fg(mcp.connected ? "success" : "warning", mcp.text));
-
-        const memory = memoryConnection(statuses.get("supermemory"));
-        if (memory === "checking") parts.push(theme.fg("dim", "memory ?"));
-        if (memory === "connected") parts.push(theme.fg("success", "memory ✓"));
-        if (memory === "disconnected") parts.push(theme.fg("warning", "memory ✗"));
 
         return [truncateToWidth(parts.join(theme.fg("dim", " · ")), width, "")];
       },
