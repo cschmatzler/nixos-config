@@ -2,21 +2,40 @@
 {inputs, ...}:
 with import ../../_lib/local.nix; {
   flake-file.inputs = {
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    brew-api = {
+      url = "github:BatteredBunny/brew-api";
+      flake = false;
+    };
+    brew-nix = {
+      url = "github:BatteredBunny/brew-nix";
+      inputs = {
+        brew-api.follows = "brew-api";
+        nix-darwin.follows = "darwin";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
   den.aspects.darwin-system.darwin = {pkgs, ...}: {
     imports = [
-      inputs.nix-homebrew.darwinModules.nix-homebrew
+      inputs.brew-nix.darwinModules.default
       inputs.home-manager.darwinModules.home-manager
       ./_darwin/dock.nix
     ];
 
+    brew-nix.enable = true;
+
     system.primaryUser = user.name;
 
     environment.systemPackages = with pkgs; [
+      _1password-gui
+      alcove
+      brewCasks."ghostty@tip"
+      brewCasks.helium-browser
       dockutil
       mas
+      obsidian
+      whatsapp-for-mac
     ];
 
     system.defaults = {
@@ -129,34 +148,6 @@ with import ../../_lib/local.nix; {
       home = mkHome "aarch64-darwin";
       isHidden = false;
       shell = pkgs.fish;
-    };
-
-    nix-homebrew = {
-      enable = true;
-      user = user.name;
-      mutableTaps = true;
-    };
-
-    homebrew = {
-      enable = true;
-      onActivation = {
-        autoUpdate = true;
-        cleanup = "uninstall";
-        extraEnv = {
-          # Homebrew overwrites HOMEBREW_MACOS_VERSION from sw_vers internally;
-          # HOMEBREW_FAKE_MACOS is the supported override for cask version checks.
-          HOMEBREW_FAKE_MACOS = "26";
-        };
-        upgrade = true;
-      };
-      casks = [
-        "1password"
-        "alcove"
-        "ghostty@tip"
-        "helium-browser"
-        "obsidian"
-        "whatsapp"
-      ];
     };
   };
 }

@@ -13,17 +13,18 @@
       homeManager.home.stateVersion = "25.11";
     };
 
-    darwin = {
+    darwin = {pkgs, ...}: {
       system.stateVersion = 6;
       networking.hostName = "chidi";
       networking.computerName = "chidi";
       documentation.doc.enable = false;
 
-      homebrew.casks = [
-        "granola"
-        "linear"
-        "notion"
-        "slack"
+      environment.systemPackages = with pkgs; [
+        brewCasks.granola
+        linear
+        notion-app
+        brewCasks.notion-calendar
+        slack
       ];
     };
   };

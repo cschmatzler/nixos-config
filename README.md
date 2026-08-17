@@ -55,7 +55,7 @@ Host aspects use den's native `provides.to-users` routing. Hardware facts, state
 | Tahani composition or lifecycle version | [`modules/hosts/tahani.nix`](modules/hosts/tahani.nix) |
 | Tahani boot, filesystems, or swap | [`modules/hosts/_parts/tahani/hardware.nix`](modules/hosts/_parts/tahani/hardware.nix) |
 | Shared Nix policy | [`modules/features/system/core.nix`](modules/features/system/core.nix) |
-| macOS policy and Homebrew apps | [`modules/features/system/darwin-system.nix`](modules/features/system/darwin-system.nix) |
+| macOS policy and applications | [`modules/features/system/darwin-system.nix`](modules/features/system/darwin-system.nix) |
 | User profile membership | [`modules/profiles/user/`](modules/profiles/user) |
 | Development capabilities | [`modules/features/development/`](modules/features/development) |
 | Interactive shell and terminal capabilities | [`modules/features/interactive/`](modules/features/interactive) |

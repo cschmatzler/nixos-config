@@ -7,6 +7,8 @@ _: {
       useRoutingFeatures = "server";
     };
 
-    darwin.homebrew.casks = ["tailscale-app"];
+    darwin = {pkgs, ...}: {
+      environment.systemPackages = [pkgs.tailscale-gui];
+    };
   };
 }
