@@ -33,6 +33,7 @@
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:pi-claude-auth"
+            "npm:@juicesharp/rpiv-ask-user-question"
             "./packages/pi-herdr"
           ]
           ++ config.den.aspects.pi.packageDeclarations;
