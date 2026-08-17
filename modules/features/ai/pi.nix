@@ -24,7 +24,7 @@
         showCacheMissNotices = true;
         defaultProvider = "openai-codex";
         defaultModel = "gpt-5.6-sol";
-        defaultThinkingLevel = "high";
+        defaultThinkingLevel = "medium";
         enableInstallTelemetry = false;
         packages =
           [
