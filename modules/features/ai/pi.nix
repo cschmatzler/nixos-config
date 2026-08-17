@@ -28,7 +28,7 @@
         enableInstallTelemetry = false;
         packages =
           [
-            "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
+            "git:github.com/dmmulroy/pi-mcp"
             "npm:@tunnckocore/pi-gpt-fast-mode"
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
