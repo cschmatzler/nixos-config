@@ -4,5 +4,6 @@
     den.aspects.claude-code
     den.aspects.plannotator
     den.aspects.herdr
+    den.aspects.entire
   ];
 }
