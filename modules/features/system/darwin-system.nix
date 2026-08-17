@@ -42,6 +42,7 @@ in {
     environment.systemPackages = with pkgs; [
       _1password-gui
       alcove
+      brewCasks.cleanshot
       brewCasks."ghostty@tip"
       brewCasks.helium-browser
       mas
