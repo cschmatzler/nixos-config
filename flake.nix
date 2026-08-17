@@ -4,6 +4,18 @@
   outputs = inputs: inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./modules);
 
   inputs = {
+    brew-api = {
+      url = "github:BatteredBunny/brew-api";
+      flake = false;
+    };
+    brew-nix = {
+      url = "github:BatteredBunny/brew-nix";
+      inputs = {
+        brew-api.follows = "brew-api";
+        nix-darwin.follows = "darwin";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     code-review-nvim = {
       url = "github:choplin/code-review.nvim";
       flake = false;
@@ -39,7 +51,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
       url = "github:nix-community/nixvim";

@@ -14,11 +14,16 @@
       homeManager.home.stateVersion = "25.11";
     };
 
-    darwin = {
+    darwin = {pkgs, ...}: {
       system.stateVersion = 6;
       networking.hostName = "janet";
       networking.computerName = "janet";
       documentation.doc.enable = false;
+
+      environment.systemPackages = with pkgs; [
+        notion-app
+        brewCasks.notion-calendar
+      ];
     };
   };
 }
