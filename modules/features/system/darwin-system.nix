@@ -1,6 +1,9 @@
 # Shared nix-darwin foundation and macOS policy.
 {inputs, ...}:
-with import ../../_lib/local.nix; {
+with import ../../_lib/local.nix; let
+  theme = (import ../../_lib/theme.nix).rosePine;
+  toArgb = alpha: color: "0x${alpha}${builtins.substring 1 6 color}";
+in {
   flake-file.inputs = {
     brew-api = {
       url = "github:BatteredBunny/brew-api";
@@ -20,19 +23,27 @@ with import ../../_lib/local.nix; {
     imports = [
       inputs.brew-nix.darwinModules.default
       inputs.home-manager.darwinModules.home-manager
-      ./_darwin/dock.nix
     ];
 
     brew-nix.enable = true;
 
     system.primaryUser = user.name;
 
+    security.pam.services.sudo_local.touchIdAuth = true;
+
+    services.jankyborders = {
+      enable = true;
+      width = 4.0;
+      hidpi = true;
+      active_color = toArgb "ff" theme.hex.iris;
+      inactive_color = toArgb "00" theme.hex.muted;
+    };
+
     environment.systemPackages = with pkgs; [
       _1password-gui
       alcove
       brewCasks."ghostty@tip"
       brewCasks.helium-browser
-      dockutil
       mas
       obsidian
       whatsapp-for-mac
@@ -41,10 +52,15 @@ with import ../../_lib/local.nix; {
     system.defaults = {
       NSGlobalDomain = {
         AppleInterfaceStyle = "Dark";
+        AppleKeyboardUIMode = 2;
         AppleShowAllExtensions = true;
         ApplePressAndHoldEnabled = false;
         KeyRepeat = 2;
         InitialKeyRepeat = 15;
+        NSAutomaticInlinePredictionEnabled = false;
+        NSStatusItemSelectionPadding = 4;
+        NSStatusItemSpacing = 8;
+        NSWindowShouldDragOnGesture = true;
         "com.apple.mouse.tapBehavior" = 1;
         "com.apple.sound.beep.volume" = 0.0;
         "com.apple.sound.beep.feedback" = 0;
@@ -63,13 +79,34 @@ with import ../../_lib/local.nix; {
 
       dock = {
         autohide = true;
+        autohide-delay = 0.0;
+        autohide-time-modifier = 0.15;
         show-recents = false;
         launchanim = true;
         orientation = "left";
         tilesize = 60;
+        expose-animation-duration = 0.15;
+        mineffect = "scale";
         minimize-to-application = true;
         mru-spaces = false;
         expose-group-apps = true;
+        persistent-apps = [
+          "/Applications/Nix Apps/Helium.app"
+          "/Applications/Nix Apps/Ghostty.app"
+          "/System/Applications/Music.app"
+          "/System/Applications/Calendar.app"
+          "/System/Applications/Mail.app"
+        ];
+        persistent-others = [
+          {
+            folder = {
+              path = "${mkHome "aarch64-darwin"}/Downloads";
+              arrangement = "name";
+              displayas = "stack";
+              showas = "grid";
+            };
+          }
+        ];
         wvous-bl-corner = 1;
         wvous-br-corner = 1;
         wvous-tl-corner = 1;
@@ -79,10 +116,15 @@ with import ../../_lib/local.nix; {
       finder = {
         _FXShowPosixPathInTitle = false;
         AppleShowAllFiles = true;
+        FXDefaultSearchScope = "SCcf";
         FXEnableExtensionChangeWarning = false;
         FXPreferredViewStyle = "clmv";
+        FXRemoveOldTrashItems = true;
+        NewWindowTarget = "Home";
         ShowPathbar = true;
         ShowStatusBar = true;
+        _FXEnableColumnAutoSizing = true;
+        _FXSortFoldersFirst = true;
       };
 
       trackpad = {
@@ -108,7 +150,13 @@ with import ../../_lib/local.nix; {
 
       spaces.spans-displays = false;
 
-      WindowManager.StandardHideWidgets = true;
+      WindowManager = {
+        EnableStandardClickToShowDesktop = false;
+        EnableTiledWindowMargins = false;
+        StandardHideWidgets = true;
+      };
+
+      controlcenter.BatteryShowPercentage = true;
 
       menuExtraClock = {
         Show24Hour = true;
@@ -134,12 +182,25 @@ with import ../../_lib/local.nix; {
       };
     };
 
+    system.keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToEscape = true;
+    };
+
     nix = {
       settings.trusted-users = [user.name];
       gc.interval = {
         Weekday = 0;
         Hour = 2;
         Minute = 0;
+      };
+      optimise = {
+        automatic = true;
+        interval = {
+          Weekday = 0;
+          Hour = 3;
+          Minute = 0;
+        };
       };
     };
 

@@ -4,6 +4,5 @@
     den.aspects.ghostty
     den.aspects.cli-ux
     den.aspects.atuin
-    den.aspects.tmux
   ];
 }
