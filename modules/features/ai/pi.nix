@@ -20,6 +20,7 @@
       settings = {
         theme = theme.slug;
         quietStartup = true;
+        tuiMode = "fullscreen";
         hideThinkingBlock = true;
         showCacheMissNotices = true;
         defaultProvider = "openai-codex";

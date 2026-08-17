@@ -14,7 +14,4 @@ fi
 print_info "Regenerating flake.nix"
 nix run .#write-flake
 
-print_info "Formatting"
-alejandra .
-
 print_success "Flake updated"
