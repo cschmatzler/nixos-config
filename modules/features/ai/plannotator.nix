@@ -20,11 +20,13 @@
         if pkgs.stdenv.hostPlatform.isDarwin
         then
           plannotatorPackage.overrideAttrs (oldAttrs: {
-            nativeBuildInputs = map (input:
-              if (input.pname or null) == "bun"
-              then bunForPlannotator
-              else input)
-            oldAttrs.nativeBuildInputs;
+            nativeBuildInputs =
+              [pkgs.darwin.autoSignDarwinBinariesHook]
+              ++ map (input:
+                if (input.pname or null) == "bun"
+                then bunForPlannotator
+                else input)
+              oldAttrs.nativeBuildInputs;
           })
         else plannotatorPackage;
       plannotatorConfig = {
