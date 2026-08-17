@@ -34,13 +34,13 @@ in {
             };
           });
         default = [
-          {path = "/Applications/Helium.app/";}
-          {path = "/Applications/Ghostty.app/";}
+          {path = "/Applications/Nix Apps/Helium.app/";}
+          {path = "/Applications/Nix Apps/Ghostty.app/";}
           {path = "/System/Applications/Music.app/";}
           {path = "/System/Applications/Calendar.app/";}
           {path = "/System/Applications/Mail.app/";}
           {
-            path = "/Users/${local.user.name}/Downloads";
+            path = "/Users/${local.user.name}/Downloads/";
             section = "others";
             options = "--sort name --view grid --display stack";
           }
