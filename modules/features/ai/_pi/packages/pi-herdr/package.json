@@ -1,17 +1,15 @@
 {
   "name": "@cschmatzler/pi-herdr",
-  "version": "0.4.0-fork.1",
+  "version": "0.4.0-fork.2",
   "private": true,
-  "description": "Local pi-herdr fork with single-level Pi delegation enforcement.",
+  "description": "Subagent-only Herdr tools for Pi with runtime scope enforcement.",
   "type": "module",
   "keywords": [
     "pi-package",
     "pi-extension",
     "herdr",
-    "pane-management",
+    "subagents",
     "agent-workflows",
-    "dev-server",
-    "watch",
     "coding-agent"
   ],
   "author": "Can Celik",

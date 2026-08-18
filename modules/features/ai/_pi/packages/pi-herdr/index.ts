@@ -6,16 +6,8 @@ import { Type } from "typebox";
 
 type AgentStatus = "idle" | "working" | "blocked" | "done" | "unknown";
 type ReadSource = "visible" | "recent" | "recent-unwrapped" | "detection";
-type WaitOutputSource = Exclude<ReadSource, "detection">;
 type SplitDirection = "right" | "down";
 type OutputFormat = "text" | "ansi";
-
-interface WorkspaceInfo {
-	workspace_id: string;
-	label: string;
-	focused: boolean;
-	agent_status: AgentStatus;
-}
 
 interface TabInfo {
 	tab_id: string;
@@ -92,7 +84,9 @@ const DirectionEnum = StringEnum(["right", "down"] as const, {
 
 const AutomationShellEnvironment = "HERDR_SKIP_DEVENV_AUTOACTIVATE=1";
 const HelperExcludedTools = ["herdr_layout", "herdr_pane", "herdr_agent"] as const;
+const SubagentTabLabel = "subagents";
 const SubagentMetadataToken = "subagent=↳ subagent";
+const AllowedLayoutActions = new Set(["tab_list", "tab_create", "pane_list", "pane_split"]);
 
 const AgentKindEnum = StringEnum(
 	[
@@ -215,16 +209,6 @@ function summarizeTab(tab: TabInfo): string {
 	return `${tab.label}: [${tab.tab_id}]${flags ? ` (${flags})` : ""}`;
 }
 
-function summarizeWorkspace(workspace: WorkspaceInfo): string {
-	const flags = [
-		workspace.focused ? "focused" : null,
-		workspace.agent_status !== "unknown" ? workspace.agent_status : null,
-	]
-		.filter(Boolean)
-		.join(", ");
-	return `${workspace.label}: [${workspace.workspace_id}]${flags ? ` (${flags})` : ""}`;
-}
-
 function renderToolCall(tool: string, args: Record<string, any>, theme: any, context: any) {
 	const component = (context.lastComponent as Text | undefined) ?? new Text("", 0, 0);
 	let text = theme.fg("toolTitle", theme.bold(`${tool} `));
@@ -323,6 +307,33 @@ export default function (pi: ExtensionAPI) {
 		return response.result.pane;
 	}
 
+	async function getTabs(workspaceId: string, signal?: AbortSignal): Promise<TabInfo[]> {
+		const response = await execHerdrJson<{ result: { tabs: TabInfo[] } }>(
+			["tab", "list", "--workspace", workspaceId],
+			signal,
+		);
+		return response.result.tabs || [];
+	}
+
+	async function requireSubagentPane(pane: PaneInfo, signal?: AbortSignal): Promise<void> {
+		const current = await getCurrentPane(signal);
+		if (pane.workspace_id !== current.workspace_id) {
+			throw new Error(`Herdr is restricted to subagents in the current workspace; pane ${pane.pane_id} is elsewhere.`);
+		}
+		const tabs = await getTabs(current.workspace_id, signal);
+		const tab = tabs.find((candidate) => candidate.tab_id === pane.tab_id);
+		if (tab?.label !== SubagentTabLabel) {
+			throw new Error(`Herdr is restricted to subagents; pane ${pane.pane_id} is not in the ${SubagentTabLabel} tab.`);
+		}
+	}
+
+	async function getSubagent(target: string, signal?: AbortSignal): Promise<AgentInfo> {
+		const response = await execHerdrJson<{ result: { agent: AgentInfo } }>(["agent", "get", target], signal);
+		const agent = response.result.agent;
+		await requireSubagentPane(await getPane(agent.pane_id, signal), signal);
+		return agent;
+	}
+
 	async function getPaneLayout(paneId: string, signal?: AbortSignal): Promise<PaneLayoutSnapshot> {
 		const response = await execHerdrJson<{ result: { layout: PaneLayoutSnapshot } }>(
 			["pane", "layout", "--pane", paneId],
@@ -335,93 +346,29 @@ export default function (pi: ExtensionAPI) {
 		name: "herdr_layout",
 		label: "Herdr Layout",
 		description:
-			"Create and inspect Herdr terminal topology. Workspaces contain tabs; tabs contain panes. Creating a workspace or tab also creates a root pane, while splitting creates another pane. Layout actions never start an agent or ordinary command. Read pane IDs from results and pass them to herdr_pane or herdr_agent. Creation defaults to the caller's cwd, preserves UI focus, and suppresses automatic Devenv activation so the shell remains available for agent startup. pane_split defaults to the caller's pane and chooses right or down from its geometry.",
-		promptSnippet: "Inspect or create Herdr workspaces, tabs, and pane topology",
+			"Create and inspect only the background topology needed to host coding subagents. Herdr must never be used for shell commands, tests, builds, deployments, servers, logs, search, file printing, or any other ordinary process. Only tab_list, tab_create, pane_list, and pane_split are permitted; created and split panes are confined to the current workspace's subagents tab.",
+		promptSnippet: "Create subagent panes only; never run ordinary processes through Herdr",
 		promptGuidelines: [
-			"Use Herdr proactively for substantive tasks that benefit from independent investigation, implementation, review, or verification; work directly only for trivial questions and tiny mechanical edits.",
-			"Default to two or three Pi helpers when parallel work materially improves speed or confidence. Keep the primary Pi responsible for coordination, integration, verification, and the final answer; prefer read-only helpers and one writer unless files are clearly disjoint.",
-			"Use herdr_layout to create terminal topology before starting a process or agent.",
-			"For helper agents, create one background tab named subagents in the current workspace, use its root pane for the first helper, and split only inside that tab for additional helpers. Reuse the tab throughout the task and keep the caller's tab unsplit.",
-			"Read opaque workspace, tab, and pane IDs from herdr_layout results instead of constructing them, and preserve UI focus unless the user asks to switch context.",
-			"Herdr shells created by herdr_layout skip automatic Devenv activation. Run project commands explicitly through devenv shell -- when they require the project environment.",
+			"Use Herdr exclusively to spawn and control coding subagents. Never use it for commands, tests, builds, deployments, servers, logs, grep/search, file printing, or any non-agent process.",
+			"Use herdr_layout only to create or find the background tab named subagents and panes inside it, then use herdr_agent to start the helper.",
+			"Keep the caller's tab unsplit and preserve UI focus.",
+			"Read opaque tab and pane IDs from tool results instead of constructing them.",
 		],
 		parameters: Type.Object({
-			action: StringEnum(
-				[
-					"current",
-					"workspace_list",
-					"workspace_create",
-					"workspace_focus",
-					"tab_list",
-					"tab_create",
-					"tab_focus",
-					"pane_list",
-					"pane_layout",
-					"pane_split",
-				] as const,
-				{ description: "Layout action" },
-			),
-			workspace: Type.Optional(Type.String({ description: "Opaque workspace ID" })),
-			tab: Type.Optional(Type.String({ description: "Opaque tab ID" })),
-			pane: Type.Optional(
-				Type.String({ description: "Opaque source pane ID. Omit for current, pane_layout, or pane_split to use the caller's pane." }),
-			),
-			label: Type.Optional(Type.String({ description: "Label for a new workspace or tab" })),
+			action: StringEnum(["tab_list", "tab_create", "pane_list", "pane_split"] as const, {
+				description: "Subagent layout action",
+			}),
+			pane: Type.Optional(Type.String({ description: "Opaque source pane ID in the subagents tab; required for pane_split" })),
 			direction: Type.Optional(DirectionEnum),
-			cwd: Type.Optional(Type.String({ description: "Working directory. Defaults to the caller pane's foreground cwd." })),
-			focus: Type.Optional(Type.Boolean({ description: "Change UI focus after creation. Defaults to false." })),
 		}),
 		async execute(_toolCallId, params, signal, _onUpdate, _ctx) {
+			if (!AllowedLayoutActions.has(params.action)) {
+				throw new Error(`Herdr is restricted to subagents; layout action ${params.action} is not allowed.`);
+			}
 			switch (params.action) {
-				case "current": {
-					const pane = await getCurrentPane(signal);
-					return {
-						content: [{ type: "text", text: summarizePane(pane, pane.pane_id) }],
-						details: { action: "current", pane },
-					};
-				}
-				case "workspace_list": {
-					const response = await execHerdrJson<{ result: { workspaces: WorkspaceInfo[] } }>(
-						["workspace", "list"],
-						signal,
-					);
-					const workspaces = response.result.workspaces || [];
-					return {
-						content: [{ type: "text", text: workspaces.length ? workspaces.map(summarizeWorkspace).join("\n") : "No workspaces." }],
-						details: { action: "workspace_list", workspaces },
-					};
-				}
-				case "workspace_create": {
-					const current = await getCurrentPane(signal);
-					const args = ["workspace", "create", "--cwd", params.cwd || current.foreground_cwd || current.cwd || process.cwd()];
-					args.push("--env", AutomationShellEnvironment);
-					if (params.label) args.push("--label", params.label);
-					args.push(params.focus === true ? "--focus" : "--no-focus");
-					const response = await execHerdrJson<{
-						result: { workspace: WorkspaceInfo; tab: TabInfo; root_pane: PaneInfo };
-					}>(args, signal);
-					const { workspace, tab, root_pane: rootPane } = response.result;
-					return {
-						content: [{ type: "text", text: `Created workspace ${workspace.workspace_id}, tab ${tab.tab_id}, root pane ${rootPane.pane_id}` }],
-						details: { action: "workspace_create", workspace, tab, pane: rootPane },
-					};
-				}
-				case "workspace_focus": {
-					if (!params.workspace) throw new Error("'workspace' is required for workspace_focus");
-					const response = await execHerdrJson<{ result: { workspace: WorkspaceInfo } }>(
-						["workspace", "focus", params.workspace],
-						signal,
-					);
-					return {
-						content: [{ type: "text", text: `Focused workspace ${response.result.workspace.workspace_id}` }],
-						details: { action: "workspace_focus", workspace: response.result.workspace },
-					};
-				}
 				case "tab_list": {
-					const args = ["tab", "list"];
-					if (params.workspace) args.push("--workspace", params.workspace);
-					const response = await execHerdrJson<{ result: { tabs: TabInfo[] } }>(args, signal);
-					const tabs = response.result.tabs || [];
+					const current = await getCurrentPane(signal);
+					const tabs = (await getTabs(current.workspace_id, signal)).filter((tab) => tab.label === SubagentTabLabel);
 					return {
 						content: [{ type: "text", text: tabs.length ? tabs.map(summarizeTab).join("\n") : "No tabs." }],
 						details: { action: "tab_list", tabs },
@@ -429,11 +376,9 @@ export default function (pi: ExtensionAPI) {
 				}
 				case "tab_create": {
 					const current = await getCurrentPane(signal);
-					const args = ["tab", "create", "--workspace", params.workspace || current.workspace_id];
-					args.push("--cwd", params.cwd || current.foreground_cwd || current.cwd || process.cwd());
-					args.push("--env", AutomationShellEnvironment);
-					if (params.label) args.push("--label", params.label);
-					args.push(params.focus === true ? "--focus" : "--no-focus");
+					const args = ["tab", "create", "--workspace", current.workspace_id];
+					args.push("--cwd", current.foreground_cwd || current.cwd || process.cwd());
+					args.push("--env", AutomationShellEnvironment, "--label", SubagentTabLabel, "--no-focus");
 					const response = await execHerdrJson<{ result: { tab: TabInfo; root_pane: PaneInfo } }>(args, signal);
 					const { tab, root_pane: rootPane } = response.result;
 					return {
@@ -441,43 +386,32 @@ export default function (pi: ExtensionAPI) {
 						details: { action: "tab_create", tab, pane: rootPane },
 					};
 				}
-				case "tab_focus": {
-					if (!params.tab) throw new Error("'tab' is required for tab_focus");
-					const response = await execHerdrJson<{ result: { tab: TabInfo } }>(["tab", "focus", params.tab], signal);
-					return {
-						content: [{ type: "text", text: `Focused tab ${response.result.tab.tab_id}` }],
-						details: { action: "tab_focus", tab: response.result.tab },
-					};
-				}
 				case "pane_list": {
 					const current = await getCurrentPane(signal);
-					const workspaceId = params.workspace || current.workspace_id;
+					const workspaceId = current.workspace_id;
+					const subagentTabIds = new Set(
+						(await getTabs(workspaceId, signal))
+							.filter((tab) => tab.label === SubagentTabLabel)
+							.map((tab) => tab.tab_id),
+					);
 					const response = await execHerdrJson<{ result: { panes: PaneInfo[] } }>(
 						["pane", "list", "--workspace", workspaceId],
 						signal,
 					);
-					const panes = response.result.panes || [];
+					const panes = (response.result.panes || []).filter((pane) => subagentTabIds.has(pane.tab_id));
 					return {
 						content: [{ type: "text", text: panes.length ? panes.map((pane) => summarizePane(pane, current.pane_id)).join("\n") : "No panes." }],
 						details: { action: "pane_list", panes, workspaceId },
 					};
 				}
-				case "pane_layout": {
-					const paneId = params.pane || (await getCurrentPane(signal)).pane_id;
-					const layout = await getPaneLayout(paneId, signal);
-					return {
-						content: [{ type: "text", text: JSON.stringify(layout, null, 2) }],
-						details: { action: "pane_layout", layout },
-					};
-				}
 				case "pane_split": {
-					const current = await getCurrentPane(signal);
-					const source = params.pane ? await getPane(params.pane, signal) : current;
+					if (!params.pane) throw new Error("'pane' is required for pane_split");
+					const source = await getPane(params.pane, signal);
+					await requireSubagentPane(source, signal);
 					const direction = params.direction || chooseSplitDirection(await getPaneLayout(source.pane_id, signal), source.pane_id);
-					const cwd = params.cwd || source.foreground_cwd || source.cwd || current.foreground_cwd || current.cwd || process.cwd();
+					const cwd = source.foreground_cwd || source.cwd || process.cwd();
 					const args = ["pane", "split", source.pane_id, "--direction", direction, "--cwd", cwd];
-					args.push("--env", AutomationShellEnvironment);
-					args.push(params.focus === true ? "--focus" : "--no-focus");
+					args.push("--env", AutomationShellEnvironment, "--no-focus");
 					const response = await execHerdrJson<{ result: { pane: PaneInfo } }>(args, signal);
 					const pane = response.result.pane;
 					return {
@@ -496,141 +430,20 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	pi.registerTool({
-		name: "herdr_pane",
-		label: "Herdr Pane",
-		description:
-			"Control a raw Herdr terminal pane. Use for shells, tests, servers, builds, logs, and other ordinary processes: run a command, read output, wait for matching output, send literal text or terminal keys, inspect, or close. Pane actions target opaque pane IDs and do not validate agent identity or interpret agent lifecycle. Use herdr_agent instead when controlling a recognized coding agent. Read output is truncated to 2000 lines or 50KB.",
-		promptSnippet: "Run and inspect ordinary commands in Herdr terminal panes",
-		promptGuidelines: [
-			"Use herdr_pane for ordinary commands and raw terminal control; use herdr_agent for coding-agent prompts, lifecycle waits, reads, and interactive keys.",
-			"Use herdr_pane wait_output for tests, servers, builds, and watchers. It searches existing output immediately; use recent-unwrapped for logs and transcripts.",
-			"Do not close a Herdr pane you did not create unless the user explicitly asks. herdr_pane always refuses to close the pane running the current pi process.",
-		],
-		parameters: Type.Object({
-			action: StringEnum(["get", "run", "read", "wait_output", "send_text", "send_keys", "close"] as const, {
-				description: "Raw pane action",
-			}),
-			pane: Type.String({ description: "Opaque pane ID returned by herdr_layout" }),
-			command: Type.Optional(Type.String({ description: "Shell command to submit atomically with Enter for run" })),
-			text: Type.Optional(Type.String({ description: "Literal text to send without Enter for send_text" })),
-			keys: Type.Optional(
-				Type.Array(Type.String(), { description: "Logical terminal keys for send_keys, such as esc, enter, up, or ctrl+c" }),
-			),
-			match: Type.Optional(Type.String({ description: "Literal substring or Rust regular expression for wait_output" })),
-			regex: Type.Optional(Type.Boolean({ description: "Treat match as a Rust regular expression" })),
-			source: Type.Optional(ReadSourceEnum),
-			lines: Type.Optional(Type.Integer({ minimum: 1, description: "Rendered terminal rows to read or search" })),
-			format: Type.Optional(OutputFormatEnum),
-			raw: Type.Optional(Type.Boolean({ description: "Keep ANSI escapes while matching wait_output" })),
-			timeout: Type.Optional(Type.Integer({ minimum: 1, description: "Wait timeout in milliseconds; omitted means indefinite" })),
-		}),
-		async execute(_toolCallId, params, signal, onUpdate, _ctx) {
-			switch (params.action) {
-				case "get": {
-					const pane = await getPane(params.pane, signal);
-					return {
-						content: [{ type: "text", text: summarizePane(pane) }],
-						details: { action: "get", pane },
-					};
-				}
-				case "run": {
-					if (!params.command) throw new Error("'command' is required for run");
-					await execHerdrJson(["pane", "run", params.pane, params.command], signal);
-					return {
-						content: [{ type: "text", text: `Submitted command to pane ${params.pane}` }],
-						details: { action: "run", pane: params.pane, command: params.command },
-					};
-				}
-				case "read": {
-					const args = ["pane", "read", params.pane, "--source", params.source || "recent-unwrapped"];
-					if (params.lines != null) args.push("--lines", String(params.lines));
-					if (params.format) args.push("--format", params.format);
-					const output = await execHerdrText(args, signal);
-					return {
-						content: [{ type: "text", text: formatOutput(output) }],
-						details: { action: "read", pane: params.pane, read: true, source: params.source || "recent-unwrapped" },
-					};
-				}
-				case "wait_output": {
-					if (!params.match) throw new Error("'match' is required for wait_output");
-					if (params.source === "detection") throw new Error("wait_output does not support the detection source; use read");
-					const startedAt = Date.now();
-					onUpdate?.({
-						content: [{ type: "text", text: `Waiting for output in ${params.pane}...` }],
-						details: { action: "wait_output", pane: params.pane, waiting: true },
-					});
-					const args = ["pane", "wait-output", params.pane, params.regex ? "--regex" : "--match", params.match];
-					if (params.source) args.push("--source", params.source as WaitOutputSource);
-					if (params.lines != null) args.push("--lines", String(params.lines));
-					if (params.timeout != null) args.push("--timeout", String(params.timeout));
-					if (params.raw) args.push("--raw");
-					const response = await execHerdrJson<{
-						result: { pane_id: string; matched_line: string; read?: { text?: string } };
-					}>(args, signal);
-					const matched = response.result;
-					const output = matched.read?.text || matched.matched_line;
-					return {
-						content: [{ type: "text", text: `Matched: ${matched.matched_line}\n\n${formatOutput(output)}` }],
-						details: {
-							action: "wait_output",
-							pane: params.pane,
-							matchedLine: matched.matched_line,
-							elapsedMs: Date.now() - startedAt,
-						},
-					};
-				}
-				case "send_text": {
-					if (!params.text) throw new Error("'text' is required for send_text");
-					await execHerdrJson(["pane", "send-text", params.pane, params.text], signal);
-					return {
-						content: [{ type: "text", text: `Sent literal text to pane ${params.pane}` }],
-						details: { action: "send_text", pane: params.pane },
-					};
-				}
-				case "send_keys": {
-					if (!params.keys?.length) throw new Error("'keys' is required for send_keys");
-					await execHerdrJson(["pane", "send-keys", params.pane, ...params.keys], signal);
-					return {
-						content: [{ type: "text", text: `Sent ${params.keys.join(" ")} to pane ${params.pane}` }],
-						details: { action: "send_keys", pane: params.pane, keys: params.keys },
-					};
-				}
-				case "close": {
-					const current = await getCurrentPane(signal);
-					if (params.pane === current.pane_id) throw new Error("Refusing to close the pane pi is running in.");
-					await execHerdrJson(["pane", "close", params.pane], signal);
-					return {
-						content: [{ type: "text", text: `Closed pane ${params.pane}` }],
-						details: { action: "close", pane: params.pane },
-					};
-				}
-			}
-		},
-		renderCall(args, theme, context) {
-			return renderToolCall("herdr_pane", args, theme, context);
-		},
-		renderResult(result, options, theme) {
-			return renderToolResult(result, options, theme);
-		},
-	});
-
-	pi.registerTool({
 		name: "herdr_agent",
 		label: "Herdr Agent",
 		description:
-			"Control a recognized coding agent occupying an existing Herdr pane. Starting requires an available interactive shell pane created through herdr_layout and never creates or changes layout. Agent targets are unique live names or the pane ID currently hosting the agent, never terminal IDs or bare kind labels. Use prompt, wait, read, and send_keys instead of raw pane input. Lifecycle states are working, blocked, done, idle, and unknown; prompt and wait default to the first settled idle, done, or blocked state. Read output is truncated to 2000 lines or 50KB.",
-		promptSnippet: "Start, prompt, wait for, read, and interact with coding agents in Herdr",
+			"Spawn and control coding subagents in panes from the current workspace's subagents tab. This tool cannot control agents elsewhere, and Herdr provides no raw pane or command tool. Never use Herdr for shell commands, tests, builds, deployments, servers, logs, grep/search, file printing, or any non-agent process. Lifecycle states are working, blocked, done, idle, and unknown; prompt and wait default to the first settled idle, done, or blocked state.",
+		promptSnippet: "Spawn and control coding subagents only",
 		promptGuidelines: [
-			"Use herdr_agent for recognized coding agents. Use herdr_layout to create an available shell pane first; herdr_agent start never creates or moves terminal layout.",
-			"Start helper agents with kind pi unless the user explicitly requests another agent kind. Pi helpers start without Herdr tools, preventing recursive delegation through the normal Pi tool path.",
-			"For normal helper work, create or reuse the task's subagents tab with herdr_layout, then use herdr_agent start, herdr_agent prompt with wait enabled, and herdr_agent read. Use herdr_pane only for ordinary processes or intentional raw terminal control.",
-			"If herdr_agent start immediately rejects a pane as unavailable, close exactly that pane when it was created for the failed start. On a timeout, inspect the pane and agent state before cleanup because startup may have succeeded.",
-			"Treat herdr_agent idle and done as ready states, blocked as requiring inspection or input, and unknown as uncertain rather than completed. CLI reads do not mark done work as seen.",
-			"After a helper settles and its result has been read and incorporated, close the exact pane created for it with herdr_pane. Close only helper panes created for the current task, and keep a pane open while its agent is working, blocked, or has unread output.",
-			"If herdr_agent read cannot recover a full alternate-screen response after increasing lines, ask the agent to write its complete response to a temporary Markdown file and return the path, then read that file directly.",
+			"Use Herdr exclusively to spawn and control coding subagents. Do not use it as a terminal, process runner, deployment mechanism, search tool, or file viewer.",
+			"Create or reuse the current workspace's background subagents tab with herdr_layout, then start the helper with herdr_agent.",
+			"Start helpers with kind pi unless the user explicitly requests another coding-agent kind. Pi helpers cannot use Herdr, preventing recursive delegation.",
+			"Use prompt, wait, read, and send_keys only to interact with a recognized subagent in the subagents tab.",
+			"Treat idle and done as ready, blocked as requiring inspection or input, and unknown as uncertain rather than completed.",
 		],
 		parameters: Type.Object({
-			action: StringEnum(["list", "get", "start", "prompt", "wait", "read", "send_keys", "focus", "rename"] as const, {
+			action: StringEnum(["list", "get", "start", "prompt", "wait", "read", "send_keys"] as const, {
 				description: "Agent lifecycle action",
 			}),
 			target: Type.Optional(Type.String({ description: "Unique live agent name or pane ID currently hosting the agent" })),
@@ -638,7 +451,7 @@ export default function (pi: ExtensionAPI) {
 			name: Type.Optional(
 				Type.String({
 					pattern: "^[a-z][a-z0-9_-]{0,31}$",
-					description: "Unique agent name for start or replacement name for rename",
+					description: "Unique subagent name for start",
 				}),
 			),
 			kind: Type.Optional(AgentKindEnum),
@@ -655,13 +468,20 @@ export default function (pi: ExtensionAPI) {
 			lines: Type.Optional(Type.Integer({ minimum: 1, description: "Rendered terminal rows to read" })),
 			format: Type.Optional(OutputFormatEnum),
 			keys: Type.Optional(Type.Array(Type.String(), { description: "Logical UI keys such as esc, enter, up, or ctrl+c" })),
-			clearName: Type.Optional(Type.Boolean({ description: "Clear the current agent name for rename" })),
 		}),
 		async execute(_toolCallId, params, signal, onUpdate, _ctx) {
 			switch (params.action) {
 				case "list": {
+					const current = await getCurrentPane(signal);
+					const subagentTabIds = new Set(
+						(await getTabs(current.workspace_id, signal))
+							.filter((tab) => tab.label === SubagentTabLabel)
+							.map((tab) => tab.tab_id),
+					);
 					const response = await execHerdrJson<{ result: { agents: AgentInfo[] } }>(["agent", "list"], signal);
-					const agents = response.result.agents || [];
+					const agents = (response.result.agents || []).filter(
+						(agent) => agent.workspace_id === current.workspace_id && subagentTabIds.has(agent.tab_id),
+					);
 					return {
 						content: [{ type: "text", text: agents.length ? agents.map(summarizeAgent).join("\n") : "No agents." }],
 						details: { action: "list", agents },
@@ -669,10 +489,10 @@ export default function (pi: ExtensionAPI) {
 				}
 				case "get": {
 					if (!params.target) throw new Error("'target' is required for get");
-					const response = await execHerdrJson<{ result: { agent: AgentInfo } }>(["agent", "get", params.target], signal);
+					const agent = await getSubagent(params.target, signal);
 					return {
-						content: [{ type: "text", text: summarizeAgent(response.result.agent) }],
-						details: { action: "get", agent: response.result.agent },
+						content: [{ type: "text", text: summarizeAgent(agent) }],
+						details: { action: "get", agent },
 					};
 				}
 				case "start": {
@@ -681,6 +501,8 @@ export default function (pi: ExtensionAPI) {
 					if (params.timeout != null && (params.timeout <= 3000 || params.timeout > 300000)) {
 						throw new Error("start timeout must be greater than 3000ms and at most 300000ms");
 					}
+					const pane = await getPane(params.pane, signal);
+					await requireSubagentPane(pane, signal);
 					const kind = params.kind ?? "pi";
 					await execHerdr(
 						["pane", "report-metadata", params.pane, "--source", "pi-herdr", "--token", SubagentMetadataToken],
@@ -703,6 +525,7 @@ export default function (pi: ExtensionAPI) {
 				case "prompt": {
 					if (!params.target) throw new Error("'target' is required for prompt");
 					if (!params.prompt) throw new Error("'prompt' is required for prompt");
+					await getSubagent(params.target, signal);
 					const shouldWait = params.wait !== false;
 					if (!shouldWait && params.until?.length) throw new Error("'until' requires wait for prompt");
 					if (!shouldWait && params.timeout != null) throw new Error("'timeout' requires wait for prompt");
@@ -724,6 +547,7 @@ export default function (pi: ExtensionAPI) {
 				}
 				case "wait": {
 					if (!params.target) throw new Error("'target' is required for wait");
+					await getSubagent(params.target, signal);
 					const args = ["agent", "wait", params.target];
 					for (const status of params.until || []) args.push("--until", status);
 					if (params.timeout != null) args.push("--timeout", String(params.timeout));
@@ -739,6 +563,7 @@ export default function (pi: ExtensionAPI) {
 				}
 				case "read": {
 					if (!params.target) throw new Error("'target' is required for read");
+					await getSubagent(params.target, signal);
 					const args = ["agent", "read", params.target, "--source", params.source || "recent-unwrapped"];
 					if (params.lines != null) args.push("--lines", String(params.lines));
 					if (params.format) args.push("--format", params.format as OutputFormat);
@@ -751,29 +576,11 @@ export default function (pi: ExtensionAPI) {
 				case "send_keys": {
 					if (!params.target) throw new Error("'target' is required for send_keys");
 					if (!params.keys?.length) throw new Error("'keys' is required for send_keys");
+					await getSubagent(params.target, signal);
 					await execHerdrJson(["agent", "send-keys", params.target, ...params.keys], signal);
 					return {
 						content: [{ type: "text", text: `Sent ${params.keys.join(" ")} to ${params.target}` }],
 						details: { action: "send_keys", target: params.target, keys: params.keys },
-					};
-				}
-				case "focus": {
-					if (!params.target) throw new Error("'target' is required for focus");
-					const response = await execHerdrJson<{ result: { agent: AgentInfo } }>(["agent", "focus", params.target], signal);
-					return {
-						content: [{ type: "text", text: `Focused ${agentDisplayName(response.result.agent)}` }],
-						details: { action: "focus", agent: response.result.agent },
-					};
-				}
-				case "rename": {
-					if (!params.target) throw new Error("'target' is required for rename");
-					if (!params.clearName && !params.name) throw new Error("'name' or 'clearName' is required for rename");
-					const args = ["agent", "rename", params.target];
-					args.push(params.clearName ? "--clear" : params.name!);
-					const response = await execHerdrJson<{ result: { agent: AgentInfo } }>(args, signal);
-					return {
-						content: [{ type: "text", text: params.clearName ? `Cleared agent name for ${params.target}` : `Renamed agent to ${params.name}` }],
-						details: { action: "rename", agent: response.result.agent },
 					};
 				}
 			}
