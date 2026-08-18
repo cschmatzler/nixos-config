@@ -34,6 +34,7 @@
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:pi-claude-auth"
             "npm:@juicesharp/rpiv-ask-user-question"
+            "npm:pi-web-access"
             "./packages/pi-herdr"
           ]
           ++ config.den.aspects.pi.packageDeclarations;
