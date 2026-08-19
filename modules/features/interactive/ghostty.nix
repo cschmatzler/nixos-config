@@ -2,7 +2,7 @@ _: {
   den.aspects.ghostty.homeManager = {pkgs, ...}: {
     fonts.fontconfig = {
       enable = true;
-      defaultFonts.monospace = ["MonoLisa"];
+      defaultFonts.monospace = ["TX-02"];
     };
 
     home.packages = pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
