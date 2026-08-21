@@ -16,7 +16,7 @@
     }: let
       jsonFormat = pkgs.formats.json {};
       commandPayloads = import ./_shared/commands.nix;
-      theme = (import ../../_lib/theme.nix).rosePine;
+      theme = (import ../../_lib/theme.nix).rosePineDawn;
       settings = {
         theme = theme.slug;
         quietStartup = true;

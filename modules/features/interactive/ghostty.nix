@@ -18,7 +18,7 @@ _: {
         }";
       } (import ./_ghostty/settings.nix {
         inherit pkgs;
-        theme = (import ../../_lib/theme.nix).rosePine;
+        theme = (import ../../_lib/theme.nix).rosePineDawn;
       });
   };
 }

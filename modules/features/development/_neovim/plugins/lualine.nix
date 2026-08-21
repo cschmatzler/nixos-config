@@ -3,7 +3,7 @@ _: {
     enable = true;
     settings = {
       options = {
-        theme = (import ../../../../_lib/theme.nix).rosePine.neovim.colorscheme;
+        theme = (import ../../../../_lib/theme.nix).rosePineDawn.neovim.colorscheme;
         globalstatus = true;
         component_separators = {
           left = "│";

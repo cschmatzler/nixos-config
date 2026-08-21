@@ -1,7 +1,7 @@
 # Shared nix-darwin foundation and macOS policy.
 {inputs, ...}:
 with import ../../_lib/local.nix; let
-  theme = (import ../../_lib/theme.nix).rosePine;
+  theme = (import ../../_lib/theme.nix).rosePineDawn;
   toArgb = alpha: color: "0x${alpha}${builtins.substring 1 6 color}";
 in {
   flake-file.inputs = {
@@ -52,7 +52,7 @@ in {
 
     system.defaults = {
       NSGlobalDomain = {
-        AppleInterfaceStyle = "Dark";
+        AppleInterfaceStyle = null;
         AppleKeyboardUIMode = 2;
         AppleShowAllExtensions = true;
         ApplePressAndHoldEnabled = false;
