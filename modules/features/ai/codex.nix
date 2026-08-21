@@ -6,17 +6,15 @@
       programs.codex = {
         enable = true;
         package = inputs'.llm-agents.packages.codex;
-        settings = {
-          mcp_servers = {
-            opensrc = {
-              command = "npx";
-              args = [
-                "-y"
-                "opensrc-mcp"
-              ];
-            };
-            executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
+        settings.mcp_servers = {
+          opensrc = {
+            command = "npx";
+            args = [
+              "-y"
+              "opensrc-mcp"
+            ];
           };
+          executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
         };
         skills = {
           coding-standards = ./_skills/coding-standards;
