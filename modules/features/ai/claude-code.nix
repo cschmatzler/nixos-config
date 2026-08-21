@@ -16,6 +16,7 @@
         skills = {
           coding-standards = ./_skills/coding-standards;
           effect = ./_skills/effect;
+          life-os = ./_skills/life-os;
           wrdn-authz = ./_skills/wrdn-authz;
           wrdn-code-execution = ./_skills/wrdn-code-execution;
           wrdn-data-exfil = ./_skills/wrdn-data-exfil;
