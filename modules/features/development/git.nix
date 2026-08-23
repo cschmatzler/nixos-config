@@ -4,6 +4,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
     home.packages = with pkgs; [
       delta
       gh
+      glab
       serie
       tea
     ];
