@@ -16,6 +16,7 @@
 
     darwin = {
       inputs',
+      lib,
       pkgs,
       ...
     }: {
@@ -28,6 +29,10 @@
         notion-app
         brewCasks.notion-calendar
         inputs'.llm-agents.packages.t3code-desktop
+      ];
+
+      system.defaults.dock.persistent-apps = lib.mkAfter [
+        "/Applications/Nix Apps/T3 Code (Alpha).app"
       ];
     };
   };
