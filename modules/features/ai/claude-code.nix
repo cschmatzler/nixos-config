@@ -34,13 +34,6 @@
           executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
         };
         settings = {
-          extraKnownMarketplaces.phase0-skills = {
-            source = {
-              source = "github";
-              repo = "wefario/ai-agents-skills";
-            };
-            autoUpdate = true;
-          };
           extraKnownMarketplaces.mattpocock = {
             source = {
               source = "github";
@@ -49,7 +42,6 @@
             autoUpdate = true;
           };
           enabledPlugins = {
-            "phase0-skills@phase0-skills" = true;
             "mattpocock-skills@mattpocock" = true;
           };
         };
