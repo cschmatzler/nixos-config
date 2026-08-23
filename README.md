@@ -39,7 +39,7 @@ The repository is feature/aspect-centric. Read it in this order:
 | `host-nixos-base` | NixOS foundation, shared core, OpenSSH, Tailscale |
 | `user-base` | SOPS tools, shell, SSH client |
 | `user-interactive` | base user, Ghostty, CLI UX, Atuin, tmux |
-| `user-developer` | Git, Nix/JavaScript/container/database tooling, mise, Neovim |
+| `user-developer` | Git, Nix/JavaScript/container/database tooling, Neovim |
 | `user-ai` | JavaScript runtime, Pi, Claude Code, Herdr |
 | `user-workstation` | interactive, developer, and AI roles plus zk |
 | `user-personal` | personal Git identity |
