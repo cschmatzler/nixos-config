@@ -2,11 +2,6 @@
   den.aspects.pi = {
     includes = [den.aspects.javascript];
 
-    os.sops.secrets.supermemory-api-key = (import ../../_lib/secrets.nix {}).mkUserBinarySecret {
-      name = "supermemory-api-key";
-      sopsFile = ../../../secrets/supermemory-api-key;
-    };
-
     homeManager = {
       config,
       inputs',
@@ -32,7 +27,6 @@
             "git:github.com/dmmulroy/pi-mcp@761c81dc5d4e0745f4ae77dcacb1be5517b18101"
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
-            "npm:pi-claude-auth"
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:pi-web-access"
             "./packages/pi-herdr"
