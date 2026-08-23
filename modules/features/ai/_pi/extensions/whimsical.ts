@@ -506,12 +506,6 @@ const searchingMessages = [
   "Dusting the codebase for fingerprints...",
 ] as const;
 
-const memoryMessages = [
-  "Consulting the elephant...",
-  "Opening the scrapbook...",
-  "Asking past me what present me forgot...",
-] as const;
-
 const herdingMessages = [
   "Rallying the herd...",
   "Counting agents before they hatch...",
@@ -560,12 +554,6 @@ function messagesForTool(toolName: string): readonly string[] {
     case "find":
     case "ls":
       return searchingMessages;
-    case "supermemory_save":
-    case "supermemory_search":
-    case "supermemory_forget":
-    case "supermemory_profile":
-    case "supermemory_status":
-      return memoryMessages;
     case "herdr_layout":
     case "herdr_pane":
     case "herdr_agent":
