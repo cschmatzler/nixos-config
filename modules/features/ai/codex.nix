@@ -2,11 +2,9 @@
   den.aspects.codex = {
     includes = [den.aspects.javascript];
 
-    homeManager = {inputs', ...}: {
-      programs.codex = {
-        enable = true;
-        package = inputs'.llm-agents.packages.codex;
-        settings.mcp_servers = {
+    os = {pkgs, ...}: {
+      environment.etc."codex/config.toml".source = (pkgs.formats.toml {}).generate "codex-system-config" {
+        mcp_servers = {
           opensrc = {
             command = "npx";
             args = [
@@ -16,6 +14,13 @@
           };
           executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
         };
+      };
+    };
+
+    homeManager = {inputs', ...}: {
+      programs.codex = {
+        enable = true;
+        package = inputs'.llm-agents.packages.codex;
         skills = {
           coding-standards = ./_skills/coding-standards;
           effect = ./_skills/effect;
