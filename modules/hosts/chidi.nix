@@ -13,7 +13,11 @@
       homeManager.home.stateVersion = "25.11";
     };
 
-    darwin = {pkgs, ...}: {
+    darwin = {
+      inputs',
+      pkgs,
+      ...
+    }: {
       system.stateVersion = 6;
       networking.hostName = "chidi";
       networking.computerName = "chidi";
@@ -25,6 +29,7 @@
         notion-app
         brewCasks.notion-calendar
         slack
+        inputs'.llm-agents.packages.t3code-desktop
       ];
     };
   };
