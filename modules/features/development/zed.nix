@@ -1,4 +1,4 @@
-{den, ...}: let
+let
   local = import ../../_lib/local.nix;
   theme = (import ../../_lib/theme.nix).rosePineDawn;
 in {
