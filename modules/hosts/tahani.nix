@@ -5,7 +5,6 @@
       den.aspects.home-assistant
       den.aspects.mosh-server
       den.aspects.email
-      den.aspects.ynab
       den.aspects.syncthing
       den.aspects.plannotator
     ];
@@ -15,7 +14,6 @@
         den.aspects.user-workstation
         den.aspects.user-personal
         den.aspects.email
-        den.aspects.ynab
       ];
       homeManager.home.stateVersion = "25.11";
     };
