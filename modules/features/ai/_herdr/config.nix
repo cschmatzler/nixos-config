@@ -49,11 +49,6 @@
           "branch"
           "git_status"
         ]
-        [
-          "$pr"
-          "$merge"
-        ]
-        ["$ci"]
       ];
     };
 

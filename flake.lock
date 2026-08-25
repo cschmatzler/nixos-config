@@ -198,6 +198,22 @@
         "type": "github"
       }
     },
+    "herdr-plugin-gh-pr": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784237871,
+        "narHash": "sha256-N/8MolaNsr8+XRYJYV5xGDmPbmX7fd8CzbzHRy1ONoM=",
+        "owner": "wyattjoh",
+        "repo": "herdr-plugin-gh-pr",
+        "rev": "6fe22de9a90c569f2186595cfddc3707f55ba1bd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wyattjoh",
+        "repo": "herdr-plugin-gh-pr",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -378,6 +394,7 @@
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
         "herdr": "herdr",
+        "herdr-plugin-gh-pr": "herdr-plugin-gh-pr",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "llm-agents": "llm-agents",

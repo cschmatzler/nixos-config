@@ -29,7 +29,7 @@
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:pi-web-access"
-            "./packages/pi-herdr"
+            "npm:pi-subagents"
           ]
           ++ config.den.aspects.pi.packageDeclarations;
         prompts = ["./prompts"];
@@ -46,7 +46,6 @@
         packages = [inputs'.llm-agents.packages.pi];
 
         file = {
-          ".pi/tmp/.keep".text = "";
           ".pi/agent/settings.json".source = jsonFormat.generate "pi-settings.json" settings;
           ".pi/agent/themes/${theme.slug}.json".source = jsonFormat.generate "${theme.slug}.json" {
             "$schema" = "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
@@ -120,7 +119,6 @@
           };
 
           ".pi/agent/extensions/review.ts".source = ./_pi/extensions/review.ts;
-          ".pi/agent/extensions/answer.ts".source = ./_pi/extensions/answer.ts;
           ".pi/agent/extensions/compact-footer.ts".source = ./_pi/extensions/compact-footer.ts;
           ".pi/agent/extensions/executor-resume-approval.ts".source = ./_pi/extensions/executor-resume-approval.ts;
           ".pi/agent/extensions/git-interceptor.ts".source = ./_pi/extensions/git-interceptor.ts;

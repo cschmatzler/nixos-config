@@ -29,7 +29,6 @@
         ./_parts/tahani/executor.nix
         ./_parts/tahani/hardware.nix
         ./_parts/tahani/networking.nix
-        ./_parts/tahani/t3-code.nix
       ];
 
       virtualisation.docker.enable = true;

@@ -35,6 +35,10 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr-plugin-gh-pr = {
+      url = "github:wyattjoh/herdr-plugin-gh-pr";
+      flake = false;
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
