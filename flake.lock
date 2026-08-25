@@ -214,6 +214,23 @@
         "type": "github"
       }
     },
+    "herdr-plugin-worktree-bootstrap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785750178,
+        "narHash": "sha256-I4PVs2tg6/veI67rPnwgCfsJJnUUNcS0qzXrJXSFyk0=",
+        "owner": "zerodice0",
+        "repo": "herdr-plugin-worktree-bootstrap",
+        "rev": "85427a6adfa883c7c001602f879cccdc95201e45",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zerodice0",
+        "ref": "v0.4.0",
+        "repo": "herdr-plugin-worktree-bootstrap",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -395,6 +412,7 @@
         "flake-parts": "flake-parts",
         "herdr": "herdr",
         "herdr-plugin-gh-pr": "herdr-plugin-gh-pr",
+        "herdr-plugin-worktree-bootstrap": "herdr-plugin-worktree-bootstrap",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "llm-agents": "llm-agents",

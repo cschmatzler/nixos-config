@@ -39,6 +39,10 @@
       url = "github:wyattjoh/herdr-plugin-gh-pr";
       flake = false;
     };
+    herdr-plugin-worktree-bootstrap = {
+      url = "github:zerodice0/herdr-plugin-worktree-bootstrap/v0.4.0";
+      flake = false;
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
