@@ -1,10 +1,15 @@
-{pkgs, ...}:
+{
+  inputs',
+  lib,
+  ...
+}:
 with (import ../../../_lib/theme.nix).rosePineDawn; {
   imports = [
     ./autocmd.nix
     ./mappings.nix
     ./options.nix
     ./plugins/blink-cmp.nix
+    ./plugins/code-review.nix
     ./plugins/codediff.nix
     ./plugins/conform.nix
     ./plugins/flash.nix
@@ -29,7 +34,17 @@ with (import ../../../_lib/theme.nix).rosePineDawn; {
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
-    package = pkgs.neovim-unwrapped;
+    package = inputs'.neovim-nightly-overlay.packages.default.overrideAttrs (old: {
+      # TODO: Remove this filter once the nightly source accepts Nixpkgs' CVE-2026-11487 patch.
+      patches = lib.filter (patch: !(lib.hasInfix "CVE-2026-11487" (builtins.baseNameOf (toString patch)))) (old.patches or []);
+      postInstall =
+        (old.postInstall or "")
+        + ''
+          if [ -e "$out/share/applications/org.neovim.nvim.desktop" ] && [ ! -e "$out/share/applications/nvim.desktop" ]; then
+            ln -s org.neovim.nvim.desktop $out/share/applications/nvim.desktop
+          fi
+        '';
+    });
     luaLoader.enable = true;
     colorschemes.${neovim.colorscheme} = {
       enable = true;

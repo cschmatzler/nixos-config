@@ -4,6 +4,15 @@
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
     };
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    code-review-nvim = {
+      url = "github:choplin/code-review.nvim";
+      flake = false;
+    };
   };
 
   den.aspects.neovim.homeManager = {
@@ -15,6 +24,10 @@
       inputs.nixvim.homeModules.nixvim
       ./_neovim/default.nix
     ];
+
+    _module.args.nvim-plugin-sources = {
+      inherit (inputs) code-review-nvim;
+    };
 
     home.sessionVariables = {
       EDITOR = "nvim";

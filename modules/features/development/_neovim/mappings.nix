@@ -70,6 +70,17 @@ in {
     (normal "<leader>vR" ":CodeDiff origin/HEAD...HEAD --inline<CR>" "Review branch")
     (normal "<leader>vs" ":Neogit<CR>" "Status")
 
+    # r - review
+    (normalVisual "<leader>rc" (luaFunction "require(\"code-review\").add_comment(vim.v.count > 0 and vim.v.count or nil)") "Add comment")
+    (normal "<leader>rd" ":CodeReviewDeleteComment<CR>" "Delete comment")
+    (normal "<leader>rl" ":CodeReviewList<CR>" "List comments")
+    (normal "<leader>ro" ":CodeReviewResolve<CR>" "Resolve thread")
+    (normal "<leader>rp" ":CodeReviewPreview<CR>" "Preview review")
+    (normal "<leader>rr" ":CodeReviewReply<CR>" "Reply to comment")
+    (normal "<leader>rs" ":CodeReviewShowComment<CR>" "Show comment")
+    (normal "<leader>rx" ":CodeReviewClear<CR>" "Clear all comments")
+    (normal "<leader>ry" ":CodeReviewCopy<CR>" "Copy review to clipboard")
+
     # l - lsp/formatter
     (normal "<leader>la" ":lua vim.lsp.buf.code_action()<CR>" "Actions")
     (normal "<leader>ld" ":lua vim.diagnostic.open_float({ severity = { min = vim.diagnostic.severity.HINT } })<CR>" "Diagnostics popup")

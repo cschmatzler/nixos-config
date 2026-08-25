@@ -29,6 +29,7 @@
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:pi-web-access"
+            "./packages/pi-herdr"
           ]
           ++ config.den.aspects.pi.packageDeclarations;
         prompts = ["./prompts"];
@@ -74,6 +75,11 @@
                 };
               };
             };
+          };
+
+          ".pi/agent/packages/pi-herdr" = {
+            source = ./_pi/packages/pi-herdr;
+            recursive = true;
           };
 
           ".pi/agent/prompts/rmslop.md".text = commandPayloads.rmslop;
