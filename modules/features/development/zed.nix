@@ -42,6 +42,13 @@ in {
             inlay_hints.enabled = true;
 
             edit_predictions.provider = "none";
+
+            agent.tool_permissions.default = "allow";
+            which_key = {
+              enabled = true;
+              delay_ms = 500;
+            };
+
             telemetry = {
               diagnostics = false;
               metrics = false;
@@ -101,9 +108,18 @@ in {
             {
               context = "VimControl && !menu";
               bindings = {
+                "space a a" = "agent::ToggleFocus";
+                "space a c" = "agent::AddSelectionToThread";
+                "space a m" = "agent::ToggleModelSelector";
+                "space a n" = "agent::NewThread";
+                "space a r" = "agent::OpenAgentDiff";
+                "space a s" = "agent::OpenSettings";
+
                 "space e f" = "project_panel::ToggleFocus";
+                "space e t" = "terminal_panel::Toggle";
 
                 "space f b" = "tab_switcher::ToggleAll";
+                "space f d" = "diagnostics::Deploy";
                 "space f f" = "file_finder::Toggle";
                 "space f g" = "pane::DeploySearch";
                 "space f r" = "editor::FindAllReferences";
@@ -114,10 +130,18 @@ in {
                 "space l d" = "editor::GoToDiagnostic";
                 "space l f" = "editor::Format";
                 "space l i" = "editor::Hover";
+                "space l j" = "editor::GoToDiagnostic";
+                "space l k" = "editor::GoToPreviousDiagnostic";
                 "space l r" = "editor::Rename";
                 "space l shift-r" = "editor::FindAllReferences";
                 "space l s" = "editor::GoToDefinition";
 
+                "space t c" = "pane::CloseActiveItem";
+                "space t h" = "pane::ActivatePreviousItem";
+                "space t l" = "pane::ActivateNextItem";
+
+                "space v d" = "git::Diff";
+                "space v r" = "git::ReviewDiff";
                 "space v s" = "git_panel::ToggleFocus";
 
                 "space w c" = "pane::CloseActiveItem";
