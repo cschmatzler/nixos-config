@@ -43,7 +43,7 @@ in {
       _1password-gui
       alcove
       brewCasks.cleanshot
-      brewCasks.ghostty
+      ghostty-bin
       brewCasks.helium-browser
       mas
       obsidian
