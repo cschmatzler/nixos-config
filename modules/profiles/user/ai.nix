@@ -5,7 +5,6 @@
     den.aspects.claude-code
     den.aspects.opencode
     den.aspects.plannotator
-    den.aspects.herdr
     den.aspects.entire
   ];
 }

@@ -16,10 +16,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    code-review-nvim = {
-      url = "github:choplin/code-review.nvim";
-      flake = false;
-    };
     darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,10 +27,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    herdr = {
-      url = "github:ogulcancelik/herdr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,13 +35,6 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
-    };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs = {
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-      };
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
