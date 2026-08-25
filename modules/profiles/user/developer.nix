@@ -7,5 +7,6 @@
     den.aspects.database-cli
     den.aspects.dev-cli
     den.aspects.neovim
+    den.aspects.zed
   ];
 }

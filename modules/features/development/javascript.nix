@@ -7,6 +7,7 @@ _: {
     home.packages = with pkgs; [
       bun
       nodejs_24
+      oxfmt
       pnpm
     ];
     home.sessionVariables.NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
