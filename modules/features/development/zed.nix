@@ -1,4 +1,5 @@
 {den, ...}: let
+  local = import ../../_lib/local.nix;
   theme = (import ../../_lib/theme.nix).rosePineDawn;
 in {
   den.aspects.zed = {
@@ -45,6 +46,21 @@ in {
               diagnostics = false;
               metrics = false;
             };
+
+            ssh_connections = [
+              {
+                host = local.tailscaleHost "tahani";
+                username = local.user.name;
+                nickname = "tahani";
+                projects = map (path: {paths = [path];}) [
+                  "~/Projects/Phase0/be-wefar-webapi"
+                  "~/Projects/Phase0/wefar-monorepo"
+                  "~/Projects/Personal/reverie"
+                  "~/Projects/Personal/roasted"
+                  "~/nixos-config"
+                ];
+              }
+            ];
 
             project_panel = {
               dock = "left";
