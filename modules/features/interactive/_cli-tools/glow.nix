@@ -1,6 +1,6 @@
 {
-  config,
   theme,
+  config,
 }:
 with theme.hex; {
   settings = {

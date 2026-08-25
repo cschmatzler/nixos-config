@@ -7,7 +7,6 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
   }: {
     home.packages = with pkgs; [
       devenv
-      vivid
     ];
 
     home.sessionVariables = {
@@ -25,11 +24,19 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
 
     programs.direnv.enable = true;
 
+    programs.vivid = {
+      enable = true;
+      activeTheme = slug;
+      enableBashIntegration = false;
+      enableFishIntegration = true;
+      enableNushellIntegration = false;
+      enableZshIntegration = false;
+    };
+
     programs.fish = {
       enable = true;
       shellInit =
         ''
-          set -gx LS_COLORS (${pkgs.vivid}/bin/vivid generate ${slug})
           set -gx SHELL ${pkgs.fish}/bin/fish
         ''
         + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
