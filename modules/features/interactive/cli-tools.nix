@@ -1,10 +1,14 @@
-_:
-with (import ../../_lib/theme.nix).rosePineDawn; {
-  den.aspects.cli-ux.homeManager = {
+_: let
+  theme = (import ../../_lib/theme.nix).rosePineDawn;
+  inherit (theme) displayName hex slug;
+in {
+  den.aspects.cli-tools.homeManager = {
     config,
     pkgs,
     ...
-  }: {
+  }: let
+    glowConfig = import ./_cli-tools/glow.nix {inherit config theme;};
+  in {
     home.packages = with pkgs; [
       dust
       fastfetch
@@ -39,26 +43,10 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
     xdg.configFile = {
       "glow/glow.yml".source =
         (pkgs.formats.yaml {}).generate "glow.yml"
-        (import ./_cli-ux/glow.nix {
-          inherit config;
-          theme = (import ../../_lib/theme.nix).rosePineDawn;
-        }).settings;
+        glowConfig.settings;
       "glow/${slug}.json".source =
         (pkgs.formats.json {}).generate "${slug}.json"
-        (import ./_cli-ux/glow.nix {
-          inherit config;
-          theme = (import ../../_lib/theme.nix).rosePineDawn;
-        }).theme;
-      "yazi/flavors/${slug}.yazi".source = "${pkgs.fetchFromGitHub {
-        owner = "rose-pine";
-        repo = "yazi";
-        rev = "c89d745573d4fcfe0550fe6646f9f9ab1c0e51db";
-        hash = "sha256-9e3dXViWl1rK9BPrGAFfs9ZL/tsG6Njz6ksuU6AIrFY=";
-      }}/flavors/${slug}.yazi";
-      "yazi/theme.toml".text = ''
-        [flavor]
-        light = "${slug}"
-      '';
+        glowConfig.theme;
     };
 
     programs = {
@@ -114,6 +102,13 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
         enable = true;
         enableFishIntegration = true;
         shellWrapperName = "y";
+        flavors.${slug} = "${pkgs.fetchFromGitHub {
+          owner = "rose-pine";
+          repo = "yazi";
+          rev = "c89d745573d4fcfe0550fe6646f9f9ab1c0e51db";
+          hash = "sha256-9e3dXViWl1rK9BPrGAFfs9ZL/tsG6Njz6ksuU6AIrFY=";
+        }}/flavors/${slug}.yazi";
+        theme.flavor.light = slug;
         settings.manager = {
           show_hidden = true;
           sort_by = "natural";

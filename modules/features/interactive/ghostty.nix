@@ -1,4 +1,6 @@
-_: {
+_: let
+  theme = (import ../../_lib/theme.nix).rosePineDawn;
+in {
   den.aspects.ghostty.homeManager = {pkgs, ...}: {
     fonts.fontconfig = {
       enable = true;
@@ -9,16 +11,29 @@ _: {
       pkgs.ghostty.terminfo
     ];
 
-    xdg.configFile."ghostty/config".text =
-      pkgs.lib.generators.toKeyValue {
-        mkKeyValue = key: value: "${key} = ${
-          if builtins.isBool value
-          then pkgs.lib.boolToString value
-          else toString value
-        }";
-      } (import ./_ghostty/settings.nix {
-        inherit pkgs;
-        theme = (import ../../_lib/theme.nix).rosePineDawn;
-      });
+    programs.ghostty = {
+      enable = true;
+      package = null;
+      systemd.enable = false;
+      enableBashIntegration = false;
+      enableFishIntegration = false;
+      enableZshIntegration = false;
+      settings = {
+        command = "${pkgs.fish}/bin/fish";
+        theme = theme.ghosttyThemeName;
+        window-padding-x = 12;
+        window-padding-y = 3;
+        window-padding-balance = true;
+        font-family = "TX-02";
+        font-size = 14;
+        cursor-style = "block";
+        mouse-hide-while-typing = true;
+        mouse-scroll-multiplier = 1.25;
+        shell-integration = "none";
+        shell-integration-features = "no-cursor";
+        clipboard-read = "allow";
+        clipboard-write = "allow";
+      };
+    };
   };
 }
