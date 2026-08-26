@@ -12,6 +12,7 @@
   worktrees.directory = "~/Projects/worktrees";
 
   ui = {
+    agent_panel_sort = "priority";
     sidebar_width = 32;
     sidebar_min_width = 18;
     sidebar_max_width = 36;
