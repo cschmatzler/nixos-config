@@ -1,5 +1,10 @@
 _: {
   flake-file.inputs = {
+    dmmulroy-skills = {
+      url = "github:dmmulroy/skills";
+      flake = false;
+    };
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";

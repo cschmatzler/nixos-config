@@ -127,6 +127,22 @@
         "type": "github"
       }
     },
+    "dmmulroy-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784813721,
+        "narHash": "sha256-NNMxSfBtNDiwNimMNlk9fbDQa7bxsCwweHNzFsI3JTc=",
+        "owner": "dmmulroy",
+        "repo": "skills",
+        "rev": "8603380821fee6a77c82639f364ce8fe4f5a92be",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dmmulroy",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "flake-aspects": {
       "locked": {
         "lastModified": 1773552804,
@@ -423,6 +439,7 @@
         "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
+        "dmmulroy-skills": "dmmulroy-skills",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",

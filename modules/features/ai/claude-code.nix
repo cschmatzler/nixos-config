@@ -3,7 +3,7 @@
   inputs,
   ...
 }: let
-  mattpocockSkills = import ./_shared/mattpocock-skills.nix inputs;
+  externalSkills = import ./_shared/external-skills.nix inputs;
 in {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
@@ -30,7 +30,7 @@ in {
             wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
             wrdn-pii = ./_skills/wrdn-pii;
           }
-          // mattpocockSkills;
+          // externalSkills;
         mcpServers = {
           opensrc = {
             command = "npx";
