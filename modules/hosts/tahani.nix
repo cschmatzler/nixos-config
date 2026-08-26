@@ -7,6 +7,7 @@
       den.aspects.email
       den.aspects.syncthing
       den.aspects.plannotator
+      den.aspects.vscode-remote
     ];
 
     provides.to-users = {
@@ -14,6 +15,7 @@
         den.aspects.user-workstation
         den.aspects.user-personal
         den.aspects.email
+        den.aspects.vscode-remote
       ];
       homeManager.home.stateVersion = "25.11";
     };
@@ -23,7 +25,6 @@
       networking.hostName = "tahani";
 
       environment.systemPackages = [pkgs._1password-cli];
-      programs.nix-ld.enable = true;
 
       imports = [
         ./_parts/tahani/executor.nix
