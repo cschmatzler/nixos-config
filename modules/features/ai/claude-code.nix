@@ -1,4 +1,10 @@
-{den, ...}: {
+{
+  den,
+  inputs,
+  ...
+}: let
+  mattpocockSkills = import ./_shared/mattpocock-skills.nix inputs;
+in {
   den.aspects.claude-code = {
     includes = [den.aspects.javascript];
 
@@ -13,16 +19,18 @@
           albanian-lesson = commandPayloads."albanian-lesson";
           inbox-triage = commandPayloads."inbox-triage";
         };
-        skills = {
-          coding-standards = ./_skills/coding-standards;
-          effect = ./_skills/effect;
-          life-os = ./_skills/life-os;
-          wrdn-authz = ./_skills/wrdn-authz;
-          wrdn-code-execution = ./_skills/wrdn-code-execution;
-          wrdn-data-exfil = ./_skills/wrdn-data-exfil;
-          wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
-          wrdn-pii = ./_skills/wrdn-pii;
-        };
+        skills =
+          {
+            coding-standards = ./_skills/coding-standards;
+            effect = ./_skills/effect;
+            life-os = ./_skills/life-os;
+            wrdn-authz = ./_skills/wrdn-authz;
+            wrdn-code-execution = ./_skills/wrdn-code-execution;
+            wrdn-data-exfil = ./_skills/wrdn-data-exfil;
+            wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
+            wrdn-pii = ./_skills/wrdn-pii;
+          }
+          // mattpocockSkills;
         mcpServers = {
           opensrc = {
             command = "npx";
@@ -32,18 +40,6 @@
             ];
           };
           executor.url = "https://executor.manticore-hippocampus.ts.net/mcp/toolkits/general";
-        };
-        settings = {
-          extraKnownMarketplaces.mattpocock = {
-            source = {
-              source = "github";
-              repo = "mattpocock/skills";
-            };
-            autoUpdate = true;
-          };
-          enabledPlugins = {
-            "mattpocock-skills@mattpocock" = true;
-          };
         };
       };
 

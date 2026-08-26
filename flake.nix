@@ -52,6 +52,10 @@
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
     };
+    mattpocock-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
+    };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs = {

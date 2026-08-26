@@ -1,4 +1,10 @@
-{den, ...}: {
+{
+  den,
+  inputs,
+  ...
+}: let
+  mattpocockSkills = import ./_shared/mattpocock-skills.nix inputs;
+in {
   den.aspects.codex = {
     includes = [den.aspects.javascript];
 
@@ -21,16 +27,18 @@
       programs.codex = {
         enable = true;
         package = inputs'.llm-agents.packages.codex;
-        skills = {
-          coding-standards = ./_skills/coding-standards;
-          effect = ./_skills/effect;
-          life-os = ./_skills/life-os;
-          wrdn-authz = ./_skills/wrdn-authz;
-          wrdn-code-execution = ./_skills/wrdn-code-execution;
-          wrdn-data-exfil = ./_skills/wrdn-data-exfil;
-          wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
-          wrdn-pii = ./_skills/wrdn-pii;
-        };
+        skills =
+          {
+            coding-standards = ./_skills/coding-standards;
+            effect = ./_skills/effect;
+            life-os = ./_skills/life-os;
+            wrdn-authz = ./_skills/wrdn-authz;
+            wrdn-code-execution = ./_skills/wrdn-code-execution;
+            wrdn-data-exfil = ./_skills/wrdn-data-exfil;
+            wrdn-gha-workflows = ./_skills/wrdn-gha-workflows;
+            wrdn-pii = ./_skills/wrdn-pii;
+          }
+          // mattpocockSkills;
       };
     };
   };
