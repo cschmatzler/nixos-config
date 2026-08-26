@@ -25,6 +25,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     den.url = "github:denful/den";
+    dmmulroy-skills = {
+      url = "github:dmmulroy/skills";
+      flake = false;
+    };
     flake-aspects.url = "github:vic/flake-aspects";
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
@@ -51,6 +55,10 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
+    };
+    mattpocock-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
     };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
