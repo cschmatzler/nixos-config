@@ -9,13 +9,29 @@ in
   // {
     # Appearance and editor behavior mirror the shared Neovim configuration.
     "workbench.colorTheme" = theme.displayName;
-    "workbench.iconTheme" = "material-icon-theme";
+    "workbench.iconTheme" = "vs-seti";
     "window.autoDetectColorScheme" = false;
     "window.commandCenter" = false;
     "breadcrumbs.enabled" = false;
     "workbench.startupEditor" = "none";
+    "workbench.secondarySideBar.defaultVisibility" = "hidden";
+    "workbench.layoutControl.enabled" = false;
+    "workbench.activityBar.showAccounts" = false;
+    "workbench.tips.enabled" = false;
+    "workbench.welcomePage.walkthroughs.openOnInstall" = false;
+    "workbench.enableExperiments" = false;
     "workbench.editor.enablePreview" = false;
     "workbench.editor.enablePreviewFromQuickOpen" = false;
+
+    # Keep AI, recommendations, release notes, and telemetry out of the UI.
+    "chat.disableAIFeatures" = true;
+    "chat.commandCenter.enabled" = false;
+    "workbench.settings.showAISearchToggle" = false;
+    "extensions.ignoreRecommendations" = true;
+    "extensions.showRecommendationsOnlyOnDemand" = true;
+    "extensions.autoUpdate" = false;
+    "update.showReleaseNotes" = false;
+    "telemetry.telemetryLevel" = "off";
 
     "editor.fontFamily" = "TX-02, monospace";
     "editor.fontSize" = 14;
@@ -64,9 +80,6 @@ in
 
     "git.confirmSync" = false;
     "git.openRepositoryInParentFolders" = "always";
-    "gitlens.currentLine.enabled" = false;
-    "gitlens.codeLens.enabled" = false;
-    "gitlens.plusFeatures.enabled" = false;
 
     # vscode-neovim runs on the Mac even while the workspace is on tahani.
     "vscode-neovim.neovimExecutablePaths.darwin" = "${config.programs.nixvim.build.package}/bin/nvim";
@@ -77,19 +90,7 @@ in
 
     "remote.SSH.remotePlatform".tahani = "linux";
     "remote.SSH.defaultExtensions" = [
-      "DavidAnson.vscode-markdownlint"
-      "eamodio.gitlens"
-      "github.vscode-pull-request-github"
       "jnoortheen.nix-ide"
-      "mkhl.direnv"
-      "ms-azuretools.vscode-docker"
       "oxc.oxc-vscode"
-      "redhat.vscode-yaml"
-      "usernamehw.errorlens"
     ];
-
-    "whichkey.delay" = 150;
-    "whichkey.showButtons" = false;
-    "whichkey.sortOrder" = "custom";
-    "whichkey.bindings" = import ./which-key.nix;
   }

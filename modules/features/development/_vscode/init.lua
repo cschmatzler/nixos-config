@@ -78,30 +78,16 @@ action("n", "<leader>fv", "workbench.action.openRecent", "Recent files")
 action("n", "<leader>fV", "workbench.action.openRecent", "Recent files in workspace")
 
 -- v: version control
-action("n", "<leader>va", "gitlens.toggleFileBlame", "Toggle blame")
 action("n", "<leader>vd", "git.openChange", "Diff current file")
 action("n", "<leader>vD", "git.openAllChanges", "Diff all changes")
 action("n", "<leader>ve", "git.commit", "Commit")
 action("n", "<leader>vf", "git.fetchAll", "Fetch")
 action("n", "<leader>vv", "workbench.view.scm", "Source control")
 action("n", "<leader>vh", "git.openHEADFile", "Open HEAD version")
-action("n", "<leader>vl", "workbench.view.extension.gitlens", "Git log")
 action("n", "<leader>vn", "git.checkout", "Branch")
 action("n", "<leader>vp", "git.push", "Push")
 action("n", "<leader>vq", "workbench.action.closeActiveEditor", "Close diff")
-action("n", "<leader>vR", "workbench.view.extension.github-pull-requests", "Review branch")
 action("n", "<leader>vs", "workbench.view.scm", "Status")
-
--- r: review
-action({ "n", "x" }, "<leader>rc", "pr.addFileComment", "Add review comment")
-action("n", "<leader>rd", "pr.deleteComment", "Delete review comment")
-action("n", "<leader>rl", "workbench.view.extension.github-pull-requests", "Pull requests")
-action("n", "<leader>ro", "pr.resolveReviewThread", "Resolve review thread")
-action("n", "<leader>rp", "pr.openAllDiffs", "Open review diffs")
-action("n", "<leader>rr", "pr.addFileComment", "Reply to review comment")
-action("n", "<leader>rs", "pr.openDescription", "Show pull request")
-action("n", "<leader>rx", "pr.closeRelatedEditors", "Close review editors")
-action("n", "<leader>ry", "review.copyPrLink", "Copy pull request link")
 
 -- l: language/LSP
 action("n", "<leader>la", "editor.action.quickFix", "Code actions")
@@ -144,14 +130,13 @@ map("n", "<leader>j", function()
   end
 end, { desc = "Jump to character", silent = true })
 
--- Bookmarks approximate Harpoon's fast file list; editor indexes are its slots.
-action("n", "<leader>a", "bookmarks.toggle", "Add bookmark")
-action("n", "<C-e>", "bookmarks.listFromAllFiles", "Bookmarks")
+-- Open and pinned editors provide a lightweight Harpoon-style file list.
+action("n", "<leader>a", "workbench.action.pinEditor", "Pin editor")
+action("n", "<C-e>", "workbench.action.showAllEditors", "Open editors")
 action("n", "<leader>1", "workbench.action.openEditorAtIndex1", "Go to editor 1")
 action("n", "<leader>2", "workbench.action.openEditorAtIndex2", "Go to editor 2")
 action("n", "<leader>3", "workbench.action.openEditorAtIndex3", "Go to editor 3")
 action("n", "<leader>4", "workbench.action.openEditorAtIndex4", "Go to editor 4")
-action("n", "<leader>?", "whichkey.show", "Show leader bindings")
 
 -- z: zk notes, implemented as user tasks so they work locally and over SSH.
 task("n", "<leader>zn", "zk: New note", "New note")
