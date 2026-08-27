@@ -4,11 +4,6 @@
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
     };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     code-review-nvim = {
       url = "github:choplin/code-review.nvim";
       flake = false;

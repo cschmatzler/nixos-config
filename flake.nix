@@ -52,13 +52,6 @@
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
     };
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs = {
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
       url = "github:nix-community/nixvim";
