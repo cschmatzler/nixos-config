@@ -30,6 +30,7 @@
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:pi-web-access"
             "npm:pi-subagents"
+            "npm:@gotgenes/pi-anthropic-auth"
           ]
           ++ config.den.aspects.pi.packageDeclarations;
         prompts = ["./prompts"];
