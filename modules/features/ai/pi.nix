@@ -10,7 +10,7 @@
       ...
     }: let
       jsonFormat = pkgs.formats.json {};
-      commandPayloads = import ./_shared/commands.nix;
+      commandPayloads = import ./_pi/commands.nix;
       theme = (import ../../_lib/theme.nix).rosePineDawn;
       settings = {
         theme = theme.slug;
@@ -81,40 +81,43 @@
             recursive = true;
           };
 
+          ".pi/agent/prompts/learn.md".text = commandPayloads.learn;
+          ".pi/agent/prompts/commit.md".text = commandPayloads.commit;
+          ".pi/agent/prompts/pr.md".text = commandPayloads.pr;
           ".pi/agent/prompts/rmslop.md".text = commandPayloads.rmslop;
           ".pi/agent/prompts/albanian-lesson.md".text = commandPayloads."albanian-lesson";
           ".pi/agent/prompts/inbox-triage.md".text = commandPayloads."inbox-triage";
 
           ".pi/agent/skills/coding-standards" = {
-            source = ./_skills/coding-standards;
+            source = ./_pi/skills/coding-standards;
             recursive = true;
           };
           ".pi/agent/skills/effect" = {
-            source = ./_skills/effect;
+            source = ./_pi/skills/effect;
             recursive = true;
           };
           ".pi/agent/skills/life-os" = {
-            source = ./_skills/life-os;
+            source = ./_pi/skills/life-os;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-authz" = {
-            source = ./_skills/wrdn-authz;
+            source = ./_pi/skills/wrdn-authz;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-code-execution" = {
-            source = ./_skills/wrdn-code-execution;
+            source = ./_pi/skills/wrdn-code-execution;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-data-exfil" = {
-            source = ./_skills/wrdn-data-exfil;
+            source = ./_pi/skills/wrdn-data-exfil;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-gha-workflows" = {
-            source = ./_skills/wrdn-gha-workflows;
+            source = ./_pi/skills/wrdn-gha-workflows;
             recursive = true;
           };
           ".pi/agent/skills/wrdn-pii" = {
-            source = ./_skills/wrdn-pii;
+            source = ./_pi/skills/wrdn-pii;
             recursive = true;
           };
 

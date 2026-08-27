@@ -5,7 +5,6 @@
       pkgs,
       ...
     }: let
-      commandPayloads = import ./_plannotator/commands.nix;
       jsonFormat = pkgs.formats.json {};
       local = import ../../_lib/local.nix;
       bunForPlannotator = pkgs.bun.overrideAttrs {
@@ -49,40 +48,6 @@
         "npm:@plannotator/pi-extension"
         "${./_plannotator/hide-progress.ts}"
       ];
-
-      programs.claude-code = {
-        commands = {
-          plannotator-annotate = commandPayloads.annotate;
-          plannotator-last = commandPayloads.last;
-          plannotator-review = commandPayloads.review;
-        };
-        settings.hooks = {
-          PreToolUse = [
-            {
-              matcher = "EnterPlanMode";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${plannotator}/bin/plannotator improve-context";
-                  timeout = 5;
-                }
-              ];
-            }
-          ];
-          PermissionRequest = [
-            {
-              matcher = "ExitPlanMode";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${plannotator}/bin/plannotator";
-                  timeout = 345600;
-                }
-              ];
-            }
-          ];
-        };
-      };
 
       home = {
         file.".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;

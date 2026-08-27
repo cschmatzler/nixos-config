@@ -127,22 +127,6 @@
         "type": "github"
       }
     },
-    "dmmulroy-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1784813721,
-        "narHash": "sha256-NNMxSfBtNDiwNimMNlk9fbDQa7bxsCwweHNzFsI3JTc=",
-        "owner": "dmmulroy",
-        "repo": "skills",
-        "rev": "8603380821fee6a77c82639f364ce8fe4f5a92be",
-        "type": "github"
-      },
-      "original": {
-        "owner": "dmmulroy",
-        "repo": "skills",
-        "type": "github"
-      }
-    },
     "flake-aspects": {
       "locked": {
         "lastModified": 1773552804,
@@ -306,22 +290,6 @@
         "type": "github"
       }
     },
-    "mattpocock-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1787581197,
-        "narHash": "sha256-N5tpUIHO2VFeJntBTl6/VLDIVpqoshwFxNJlfXXUwsQ=",
-        "owner": "mattpocock",
-        "repo": "skills",
-        "rev": "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mattpocock",
-        "repo": "skills",
-        "type": "github"
-      }
-    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-parts": [
@@ -439,7 +407,6 @@
         "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
-        "dmmulroy-skills": "dmmulroy-skills",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
@@ -449,7 +416,6 @@
         "home-manager": "home-manager",
         "import-tree": "import-tree",
         "llm-agents": "llm-agents",
-        "mattpocock-skills": "mattpocock-skills",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
