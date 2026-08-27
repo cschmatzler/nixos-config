@@ -19,9 +19,6 @@
     pkgs,
     ...
   }: let
-    herdrPackage = inputs'.herdr.packages.herdr.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [./_herdr/subagent-visibility.patch];
-    });
     plugins = {
       gh-pr = inputs.herdr-plugin-gh-pr;
       worktree-bootstrap = inputs.herdr-plugin-worktree-bootstrap;
@@ -42,7 +39,7 @@
         bun
         gh
         git
-        herdrPackage
+        inputs'.herdr.packages.herdr
       ];
 
       file = {
