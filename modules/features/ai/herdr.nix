@@ -4,10 +4,6 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    herdr-plugin-gh-pr = {
-      url = "github:wyattjoh/herdr-plugin-gh-pr";
-      flake = false;
-    };
     herdr-plugin-worktree-bootstrap = {
       url = "github:zerodice0/herdr-plugin-worktree-bootstrap/v0.4.0";
       flake = false;
@@ -20,7 +16,7 @@
     ...
   }: let
     plugins = {
-      gh-pr = inputs.herdr-plugin-gh-pr;
+      gh-pr-workspace = ./_herdr/plugins/gh-pr-workspace;
       worktree-bootstrap = inputs.herdr-plugin-worktree-bootstrap;
     };
     pluginRegistry = builtins.map (source: let
