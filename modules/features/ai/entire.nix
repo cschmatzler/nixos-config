@@ -46,11 +46,6 @@
       home = {
         packages = [entire];
         sessionVariables.ENTIRE_NO_AUTO_UPDATE = "1";
-
-        file.".pi/agent/extensions/entire" = {
-          source = ./_entire/extension;
-          recursive = true;
-        };
       };
     };
   };

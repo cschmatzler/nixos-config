@@ -2,6 +2,7 @@
   den.aspects.chidi = {
     includes = [
       den.aspects.host-darwin-base
+      den.aspects.t3code
     ];
 
     provides.to-users = {
@@ -12,11 +13,7 @@
       homeManager.home.stateVersion = "25.11";
     };
 
-    darwin = {
-      inputs',
-      pkgs,
-      ...
-    }: {
+    darwin = {pkgs, ...}: {
       system.stateVersion = 6;
       networking.hostName = "chidi";
       networking.computerName = "chidi";
@@ -28,7 +25,6 @@
         notion-app
         brewCasks.notion-calendar
         slack
-        inputs'.llm-agents.packages.t3code-desktop
       ];
     };
   };

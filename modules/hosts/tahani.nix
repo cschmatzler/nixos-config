@@ -7,7 +7,7 @@ in {
       den.aspects.home-assistant
       den.aspects.email
       den.aspects.syncthing
-      den.aspects.plannotator
+      den.aspects.t3code
       den.aspects.vscode-remote
     ];
 

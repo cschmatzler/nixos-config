@@ -25,19 +25,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     den.url = "github:denful/den";
+    dmmulroy-skills = {
+      url = "github:dmmulroy/skills";
+      flake = false;
+    };
     flake-aspects.url = "github:vic/flake-aspects";
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    herdr = {
-      url = "github:ogulcancelik/herdr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    herdr-plugin-worktree-bootstrap = {
-      url = "github:zerodice0/herdr-plugin-worktree-bootstrap/v0.4.0";
-      flake = false;
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -47,6 +43,10 @@
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
+    };
+    mattpocock-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {

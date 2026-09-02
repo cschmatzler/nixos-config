@@ -26,10 +26,7 @@ in {
       den.aspects.dev-tools
       den.aspects.neovim
       den.aspects.vscode
-      den.aspects.pi
-      den.aspects.claude-code
-      den.aspects.plannotator
-      den.aspects.herdr
+      den.aspects.agents
       den.aspects.entire
       den.aspects.zk
     ];
