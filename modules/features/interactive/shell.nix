@@ -1,5 +1,5 @@
 _:
-with (import ../../_lib/theme.nix).rosePineDawn; {
+with import ../../_lib/theme.nix; {
   den.aspects.shell.homeManager = {
     lib,
     pkgs,
@@ -15,14 +15,26 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
       TERM_BACKGROUND = "light";
     };
 
-    xdg.configFile."fish/themes/${fishThemeName}.theme".source = "${pkgs.fetchFromGitHub {
+    xdg.configFile."fish/themes/${name}.theme".source = "${pkgs.fetchFromGitHub {
       owner = "rose-pine";
       repo = "fish";
       rev = "127a990e5ad4688118c950123787fb0686afa4c8";
       hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
-    }}/themes/${fishThemeName}.theme";
+    }}/themes/${name}.theme";
 
     programs.direnv.enable = true;
+
+    programs.atuin = {
+      enable = true;
+      enableFishIntegration = true;
+      flags = ["--disable-up-arrow"];
+      settings = {
+        style = "compact";
+        inline_height = 0;
+        show_help = false;
+        show_tabs = false;
+      };
+    };
 
     programs.vivid = {
       enable = true;
@@ -55,7 +67,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
       interactiveShellInit = ''
         set fish_greeting
         fish_vi_key_bindings
-        fish_config theme choose "${fishThemeName}" >/dev/null
+        fish_config theme choose "${name}" >/dev/null
       '';
       functions = {
         fish_mode_prompt = ''

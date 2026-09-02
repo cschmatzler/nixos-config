@@ -1,34 +1,41 @@
-{
+_: let
+  local = import ../../_lib/local.nix;
+in {
   den.aspects.plannotator = {
     homeManager = {
       inputs',
       pkgs,
       ...
     }: let
-      jsonFormat = pkgs.formats.json {};
-      local = import ../../_lib/local.nix;
-      bunForPlannotator = pkgs.bun.overrideAttrs {
+      # Upstream's bun is broken on aarch64-darwin for this package; pin one that works.
+      bun = pkgs.bun.overrideAttrs {
         version = "1.3.11";
         src = pkgs.fetchurl {
           url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.11/bun-darwin-aarch64.zip";
           hash = "sha256-b1o0Z+2crsR5W/eM1HZQfZ+HDH1XuGyUX8szgSZ3L/w=";
         };
       };
-      plannotatorPackage = inputs'.llm-agents.packages.plannotator;
+      upstream = inputs'.llm-agents.packages.plannotator;
       plannotator =
         if pkgs.stdenv.hostPlatform.isDarwin
         then
-          plannotatorPackage.overrideAttrs (oldAttrs: {
+          upstream.overrideAttrs (old: {
             nativeBuildInputs =
               [pkgs.darwin.autoSignDarwinBinariesHook]
               ++ map (input:
                 if (input.pname or null) == "bun"
-                then bunForPlannotator
+                then bun
                 else input)
-              oldAttrs.nativeBuildInputs;
+              old.nativeBuildInputs;
           })
-        else plannotatorPackage;
-      plannotatorConfig = {
+        else upstream;
+    in {
+      home.packages = [plannotator];
+      home.sessionVariables = {
+        PLANNOTATOR_PORT = "20000";
+        PLANNOTATOR_REMOTE = "1";
+      };
+      home.file.".plannotator/config.json".source = (pkgs.formats.json {}).generate "plannotator-config.json" {
         diffOptions = {
           defaultDiffType = "since-base";
           diffStyle = "split";
@@ -43,30 +50,11 @@
           Review only the submitted comments. Do not independently review the rest of the diff or search for issues that were not submitted.
         '';
       };
-    in {
-      den.aspects.pi.packageDeclarations = [
-        "npm:@plannotator/pi-extension"
-        "${./_plannotator/hide-progress.ts}"
-      ];
-
-      home = {
-        file.".plannotator/config.json".source = jsonFormat.generate "plannotator-config.json" plannotatorConfig;
-        sessionVariables = {
-          PLANNOTATOR_PORT = "20000";
-          PLANNOTATOR_REMOTE = "1";
-        };
-        packages = [plannotator];
-      };
     };
 
-    nixos = {
-      lib,
-      pkgs,
-      ...
-    }: {
-      systemd.services.plannotator-tailscale = (import ../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
+    nixos = {pkgs, ...}: {
+      systemd.services.plannotator-tailscale = import ../../_lib/tailscale-serve.nix {
         inherit pkgs;
-        workload = "Plannotator Pi plugin";
         identity = "svc:plannotator";
         port = 20000;
       };

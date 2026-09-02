@@ -1,6 +1,4 @@
-_: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-in {
+_: {
   den.aspects.ghostty.homeManager = {pkgs, ...}: {
     fonts.fontconfig = {
       enable = true;
@@ -20,7 +18,7 @@ in {
       enableZshIntegration = false;
       settings = {
         command = "${pkgs.fish}/bin/fish";
-        theme = theme.ghosttyThemeName;
+        theme = "Rose Pine Dawn";
         window-padding-x = 12;
         window-padding-y = 3;
         window-padding-balance = true;

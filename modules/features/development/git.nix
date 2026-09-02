@@ -1,5 +1,5 @@
 _:
-with (import ../../_lib/theme.nix).rosePineDawn; {
+with import ../../_lib/theme.nix; {
   den.aspects.git.homeManager = {pkgs, ...}: {
     home.packages = with pkgs; [
       delta
@@ -60,7 +60,7 @@ with (import ../../_lib/theme.nix).rosePineDawn; {
           navigate = true;
           line-numbers = true;
           light = true;
-          syntax-theme = deltaSyntaxTheme;
+          syntax-theme = name;
           side-by-side = true;
           pager = "less -FRX";
         };

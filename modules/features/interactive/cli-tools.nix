@@ -1,6 +1,6 @@
 _: let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
-  inherit (theme) displayName hex slug;
+  theme = import ../../_lib/theme.nix;
+  inherit (theme) name hex slug;
 in {
   den.aspects.cli-tools.homeManager = {
     config,
@@ -53,10 +53,10 @@ in {
       bat = {
         enable = true;
         config = {
-          theme = displayName;
+          theme = name;
           pager = "ov";
         };
-        themes."${displayName}" = {
+        themes.${name} = {
           src = pkgs.fetchFromGitHub {
             owner = "rose-pine";
             repo = "tm-theme";

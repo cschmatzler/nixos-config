@@ -1,4 +1,4 @@
-{lib, ...}: {
+_: {
   den.aspects.home-assistant.nixos = {
     config,
     pkgs,
@@ -142,12 +142,11 @@
           after = ["go2rtc.service" "mosquitto.service" "zigbee2mqtt.service"];
         };
 
-        home-assistant-tailscale = (import ../../_lib/tailscale-serve-exposure.nix {inherit lib;}) {
+        home-assistant-tailscale = import ../../_lib/tailscale-serve.nix {
           inherit pkgs;
-          workload = "Home Assistant";
           identity = "svc:ha";
           port = 8123;
-          orderingUnits = ["home-assistant.service"];
+          after = ["home-assistant.service"];
         };
       };
     };

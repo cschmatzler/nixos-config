@@ -1,7 +1,7 @@
 # Shared nix-darwin foundation and macOS policy.
 {inputs, ...}:
 with import ../../_lib/local.nix; let
-  theme = (import ../../_lib/theme.nix).rosePineDawn;
+  theme = import ../../_lib/theme.nix;
   toArgb = alpha: color: "0x${alpha}${builtins.substring 1 6 color}";
 in {
   flake-file.inputs = {

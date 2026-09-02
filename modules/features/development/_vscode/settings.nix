@@ -2,13 +2,13 @@
   config,
   pkgs,
 }: let
-  theme = (import ../../../_lib/theme.nix).rosePineDawn;
+  theme = import ../../../_lib/theme.nix;
   toolSettings = import ./tool-settings.nix {inherit pkgs;};
 in
   toolSettings
   // {
     # Appearance and editor behavior mirror the shared Neovim configuration.
-    "workbench.colorTheme" = theme.displayName;
+    "workbench.colorTheme" = theme.name;
     "workbench.iconTheme" = "vs-seti";
     "window.autoDetectColorScheme" = false;
     "window.commandCenter" = false;

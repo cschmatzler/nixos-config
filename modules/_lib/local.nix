@@ -13,13 +13,10 @@ rec {
     ];
   };
 
-  secretPath = name: "/run/secrets/${name}";
-
   mkHome = system:
     if builtins.match ".*-darwin" system != null
     then "/Users/${user.name}"
     else "/home/${user.name}";
 
-  tailscaleDomain = "manticore-hippocampus.ts.net";
-  tailscaleHost = name: "${name}.${tailscaleDomain}";
+  tailscaleHost = name: "${name}.manticore-hippocampus.ts.net";
 }
