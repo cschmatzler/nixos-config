@@ -1,9 +1,6 @@
 # Shared nix-darwin foundation and macOS policy.
 {inputs, ...}:
-with import ../../_lib/local.nix; let
-  theme = import ../../_lib/theme.nix;
-  toArgb = alpha: color: "0x${alpha}${builtins.substring 1 6 color}";
-in {
+with import ../../_lib/local.nix; {
   flake-file.inputs = {
     brew-api = {
       url = "github:BatteredBunny/brew-api";
@@ -30,14 +27,6 @@ in {
     system.primaryUser = user.name;
 
     security.pam.services.sudo_local.touchIdAuth = true;
-
-    services.jankyborders = {
-      enable = true;
-      width = 4.0;
-      hidpi = true;
-      active_color = toArgb "ff" theme.hex.iris;
-      inactive_color = toArgb "00" theme.hex.muted;
-    };
 
     environment.systemPackages = with pkgs; [
       _1password-gui
