@@ -86,7 +86,8 @@ in {
           user = "65532:65532";
           capabilities.ALL = false;
           environment = {
-            EXECUTOR_ALLOW_LOCAL_NETWORK = "false";
+            # Required for the Paper MCP upstream exposed privately from Janet.
+            EXECUTOR_ALLOW_LOCAL_NETWORK = "true";
             EXECUTOR_WEB_BASE_URL = "https://${local.tailscaleHost "executor"}";
             HOME = "/tmp";
             TMPDIR = "/tmp";
