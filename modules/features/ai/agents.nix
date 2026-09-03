@@ -10,10 +10,6 @@ in {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
     };
-    mattpocock-skills = {
-      url = "github:mattpocock/skills";
-      flake = false;
-    };
     dmmulroy-skills = {
       url = "github:dmmulroy/skills";
       flake = false;
@@ -33,8 +29,6 @@ in {
         (lib.filterAttrs (_: type: type == "directory") (builtins.readDir path));
       skills =
         skillDirs ./_agents/skills
-        // skillDirs (inputs.mattpocock-skills + "/skills/engineering")
-        // skillDirs (inputs.mattpocock-skills + "/skills/productivity")
         // {
           bro = inputs.dmmulroy-skills + "/bro";
           effect-service-design = inputs.dmmulroy-skills + "/effect-service-design";
