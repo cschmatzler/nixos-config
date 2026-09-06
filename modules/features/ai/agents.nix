@@ -41,7 +41,7 @@ in {
             command = "npx";
             args = ["-y" "opensrc-mcp"];
           };
-          executor.url = "https://${local.tailscaleHost "executor"}/mcp/toolkits/general";
+          executor.url = "https://${local.tailscaleHost "executor"}/mcp?elicitation_mode=native&search_tools=true";
         };
       };
 
