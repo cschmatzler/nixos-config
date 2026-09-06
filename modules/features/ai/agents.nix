@@ -19,6 +19,12 @@ in {
   den.aspects.agents = {
     includes = [den.aspects.dev-tools];
 
+    os = {config, ...}: {
+      # Use Codex's system defaults layer so its user config remains writable.
+      environment.etc."codex/config.toml".source =
+        config.home-manager.users.${local.user.name}.home.file.".codex/config.toml".source;
+    };
+
     homeManager = {
       inputs',
       lib,
@@ -59,6 +65,10 @@ in {
         enableMcpIntegration = true;
         inherit skills;
       };
+      # Keep Home Manager's generated config (including MCP transformations),
+      # but install it through environment.etc above. Codex writes trust and
+      # interactive settings to ~/.codex/config.toml itself.
+      home.file.".codex/config.toml".enable = false;
       home.file.".codex/prompts".source = ./_agents/prompts;
 
       programs.opencode = {

@@ -19,6 +19,11 @@ Every `.nix` file under `modules/` is a flake-parts module, auto-imported by imp
 - `modules/_lib/` — user constants, theme palette, one systemd helper
 - `secrets/` — SOPS-encrypted files (see `.sops.yaml`)
 
+Codex's Nix-generated settings (including shared MCP servers) are installed at
+`/etc/codex/config.toml`. Its user config, `~/.codex/config.toml`, stays writable
+for trust decisions and interactive preferences, which override system defaults.
+Applying this configuration removes the previous Home Manager symlink automatically.
+
 ## Commands
 
 ```bash
