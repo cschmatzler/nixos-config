@@ -19,6 +19,11 @@ in {
   den.aspects.agents = {
     includes = [den.aspects.dev-tools];
 
+    os = {config, ...}: {
+      environment.etc."codex/config.toml".source =
+        config.home-manager.users.${local.user.name}.home.file.".codex/config.toml".source;
+    };
+
     homeManager = {
       inputs',
       lib,
@@ -59,6 +64,7 @@ in {
         enableMcpIntegration = true;
         inherit skills;
       };
+      home.file.".codex/config.toml".enable = false;
       home.file.".codex/prompts".source = ./_agents/prompts;
 
       programs.opencode = {
