@@ -5,6 +5,7 @@ in {
     includes = [
       den.aspects.host-nixos-base
       den.aspects.home-assistant
+      den.aspects.instagram-mcp
       den.aspects.email
       den.aspects.syncthing
       den.aspects.t3code
