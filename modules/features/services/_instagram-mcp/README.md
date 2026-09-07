@@ -10,9 +10,19 @@ Its firewall already trusts `docker0`. No Tailscale Serve endpoint is needed.
 The MCP server has no separate authentication and shares one Instagram account
 among callers that can reach the bridge listener, including other local containers.
 
-Use `instagram_login_with_sessionid` to authenticate, then
-`instagram_get_login_status` to check the session. Credentials are supplied at
-runtime, never through Nix configuration.
+Browser cookies can be rejected by Instagram's mobile API even when they work
+on the website. On Tahani, use `login.py` with the running service's Python
+environment to enter a password and, if requested, an authenticator code:
+
+```bash
+instagram_python=$(systemctl show instagram-mcp.service -p ExecStart --value | sed -n 's/.*path=\([^ ;]*\).*/\1/p')
+"$instagram_python" modules/features/services/_instagram-mcp/login.py
+```
+
+This logs into the running service and checks the resulting account. Passwords
+are entered with terminal echo disabled and are not written to the repository.
+The upstream email/SMS challenge handler is not reliable; the helper reports
+that case rather than treating its code as an authenticator code.
 
 Upstream stores session data in `$HOME/.instagram_mcp_session.json`. The service
 sets `$HOME` to its persistent `/var/lib/instagram-mcp` state directory, with
