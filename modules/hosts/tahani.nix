@@ -22,7 +22,9 @@ in {
       homeManager.home.stateVersion = "25.11";
     };
 
-    nixos = {pkgs, ...}: {
+    nixos = {pkgs, ...}: let
+      dockerBridgeAddress = "172.17.0.1";
+    in {
       system.stateVersion = "25.11";
       networking.hostName = "tahani";
 
@@ -74,6 +76,8 @@ in {
 
       environment.systemPackages = [pkgs._1password-cli];
       virtualisation.docker.enable = true;
+      # Keep the host-side MCP listener and Docker's host-gateway in sync.
+      virtualisation.docker.daemon.settings.bip = "${dockerBridgeAddress}/16";
       users.users.${local.user.name}.extraGroups = ["docker"];
 
       # Executor (self-hosted), exposed as https://executor.<tailnet>
@@ -87,13 +91,14 @@ in {
           user = "65532:65532";
           capabilities.ALL = false;
           environment = {
-            # Required for the Paper MCP upstream exposed privately from Janet.
+            # Required for Instagram on the Docker bridge and Paper on Janet.
             EXECUTOR_ALLOW_LOCAL_NETWORK = "true";
             EXECUTOR_WEB_BASE_URL = "https://${local.tailscaleHost "executor"}";
             HOME = "/tmp";
             TMPDIR = "/tmp";
           };
           extraOptions = [
+            "--add-host=host.docker.internal:host-gateway"
             # The upstream distroless image's shell-form health check cannot run.
             "--no-healthcheck"
             "--read-only"
@@ -107,6 +112,11 @@ in {
         };
       };
       systemd = {
+        services.instagram-mcp = {
+          environment.INSTAGRAM_MCP_HOST = dockerBridgeAddress;
+          after = ["docker.service"];
+          wants = ["docker.service"];
+        };
         # 65532 is the distroless image's nonroot UID/GID.
         tmpfiles.rules = ["d /var/lib/executor 0700 65532 65532 -"];
         services.docker-executor.serviceConfig.ExecStartPost = "${pkgs.curl}/bin/curl --fail --silent --show-error --connect-timeout 2 --max-time 5 --retry 12 --retry-delay 5 --retry-max-time 60 --retry-connrefused --retry-all-errors http://127.0.0.1:4788/api/health";

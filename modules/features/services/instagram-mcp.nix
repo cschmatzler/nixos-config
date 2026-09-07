@@ -35,12 +35,6 @@ _: {
           RestrictAddressFamilies = ["AF_UNIX" "AF_INET" "AF_INET6"];
         };
       };
-      instagram-mcp-tailscale = import ../../_lib/tailscale-serve.nix {
-        inherit pkgs;
-        identity = "svc:instagram";
-        port = 8789;
-        after = ["instagram-mcp.service"];
-      };
     };
   };
 }
