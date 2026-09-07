@@ -1,7 +1,7 @@
 # Instagram MCP on Tahani
 
 The `instagram-mcp` systemd service listens on Tahani's Docker bridge at
-`172.17.0.1:8789`. Executor maps `host.docker.internal` to Docker's host gateway,
+`172.18.0.1:8789`. Executor maps `host.docker.internal` to Docker's host gateway,
 so add **`http://host.docker.internal:8789/mcp`** as a remote MCP server in Executor
 after deploying. Executor already enables `EXECUTOR_ALLOW_LOCAL_NETWORK`.
 

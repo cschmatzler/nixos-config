@@ -23,7 +23,7 @@ in {
     };
 
     nixos = {pkgs, ...}: let
-      dockerBridgeAddress = "172.17.0.1";
+      dockerBridgeAddress = "172.18.0.1";
     in {
       system.stateVersion = "25.11";
       networking.hostName = "tahani";
