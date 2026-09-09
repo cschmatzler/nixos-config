@@ -14,6 +14,10 @@ in {
       url = "github:dmmulroy/skills";
       flake = false;
     };
+    humanlayer-skills = {
+      url = "github:humanlayer/skills";
+      flake = false;
+    };
   };
 
   den.aspects.agents = {
@@ -37,6 +41,7 @@ in {
         // {
           bro = inputs.dmmulroy-skills + "/bro";
           effect-service-design = inputs.dmmulroy-skills + "/effect-service-design";
+          show-me = inputs.humanlayer-skills + "/plugins/show-me/skills/show-me";
         };
     in {
       programs.mcp = {
