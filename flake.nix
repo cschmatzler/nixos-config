@@ -39,6 +39,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    humanlayer-skills = {
+      url = "github:humanlayer/skills";
+      flake = false;
+    };
     import-tree.url = "github:vic/import-tree";
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
