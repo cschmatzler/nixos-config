@@ -55,3 +55,15 @@ directory across restarts and upgrades. Later edits to the Nix seed or SOPS keys
 do not overwrite the live configuration; rotate live keys through the UI and
 update the encrypted seed separately. The UI assets follow upstream automatic
 updates independently of the pinned server image.
+
+Claude Code and Codex on all three hosts use CLIProxyAPI through the shared
+`agents` aspect. Apply each host's configuration to install the client settings
+and the user-readable SOPS secret `/run/secrets/cliproxyapi-client-api-key`, then
+restart the clients. Home Manager manages Claude's `~/.claude/settings.json`
+through `programs.claude-code.settings`; add persistent Claude preferences there.
+Before the first apply, migrate any existing settings you want to keep into that
+option and move the old file aside. Codex receives a `cliproxyapi` provider in
+`/etc/codex/config.toml`. Both clients read the key on demand.
+User or project Codex settings can override the system-level provider default.
+The proxy must have the corresponding provider accounts connected, and clients
+must be connected to Tailscale.

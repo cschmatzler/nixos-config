@@ -1,6 +1,7 @@
 _: {
   den.aspects.cliproxyapi.nixos = {
     config,
+    lib,
     pkgs,
     ...
   }: {
@@ -49,8 +50,9 @@ _: {
 
     systemd.services = {
       docker-cliproxyapi = {
-        requires = ["sops-install-secrets.service"];
-        after = ["sops-install-secrets.service"];
+        # With script-based activation, secrets exist before systemd starts units.
+        requires = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
+        after = lib.optional config.sops.useSystemdActivation "sops-install-secrets.service";
         serviceConfig = {
           StateDirectory = "cliproxyapi";
           StateDirectoryMode = "0700";

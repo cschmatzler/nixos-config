@@ -4,6 +4,8 @@
   ...
 }: let
   local = import ../../_lib/local.nix;
+  proxyUrl = "https://${local.tailscaleHost "cliproxyapi"}";
+  proxyKeyFile = "/run/secrets/cliproxyapi-client-api-key";
 in {
   flake-file.inputs = {
     llm-agents = {
@@ -24,6 +26,12 @@ in {
     includes = [den.aspects.dev-tools];
 
     os = {config, ...}: {
+      sops.secrets.cliproxyapi-client-api-key = {
+        sopsFile = ../../../secrets/cliproxyapi;
+        key = "api-key";
+        owner = local.user.name;
+        path = proxyKeyFile;
+      };
       environment.etc."codex/config.toml".source =
         config.home-manager.users.${local.user.name}.home.file.".codex/config.toml".source;
     };
@@ -31,6 +39,7 @@ in {
     homeManager = {
       inputs',
       lib,
+      pkgs,
       ...
     }: let
       skillDirs = path:
@@ -58,6 +67,10 @@ in {
       programs.claude-code = {
         enable = true;
         package = inputs'.llm-agents.packages.claude-code;
+        settings = {
+          env.ANTHROPIC_BASE_URL = proxyUrl;
+          apiKeyHelper = "${pkgs.coreutils}/bin/cat ${proxyKeyFile}";
+        };
         enableMcpIntegration = true;
         commandsDir = ./_agents/prompts;
         inherit skills;
@@ -67,6 +80,18 @@ in {
         enable = true;
         package = inputs'.llm-agents.packages.codex;
         enableMcpIntegration = true;
+        settings = {
+          model_provider = "cliproxyapi";
+          model_providers.cliproxyapi = {
+            name = "CLIProxyAPI";
+            base_url = "${proxyUrl}/v1";
+            wire_api = "responses";
+            auth = {
+              command = "${pkgs.coreutils}/bin/cat";
+              args = [proxyKeyFile];
+            };
+          };
+        };
         inherit skills;
       };
       home.file.".codex/config.toml".enable = false;
