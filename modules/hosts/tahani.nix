@@ -8,6 +8,7 @@ in {
       den.aspects.email
       den.aspects.syncthing
       den.aspects.t3code
+      den.aspects.cliproxyapi
       den.aspects.vscode-remote
     ];
 
