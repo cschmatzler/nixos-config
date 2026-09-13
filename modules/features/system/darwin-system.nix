@@ -33,7 +33,6 @@ with import ../../_lib/local.nix; {
       alcove
       brewCasks.cleanshot
       ghostty-bin
-      brewCasks.helium-browser
       mas
       obsidian
       whatsapp-for-mac
@@ -81,7 +80,7 @@ with import ../../_lib/local.nix; {
         mru-spaces = false;
         expose-group-apps = true;
         persistent-apps = [
-          "/Applications/Nix Apps/Helium.app"
+          "/Applications/Safari.app"
           "/Applications/Nix Apps/Ghostty.app"
           "/System/Applications/Music.app"
           "/System/Applications/Calendar.app"
@@ -168,6 +167,19 @@ with import ../../_lib/local.nix; {
         };
         "com.apple.TextInputMenu" = {
           visible = false;
+        };
+        "com.apple.Safari" = {
+          AutoOpenSafeDownloads = false;
+          IncludeDevelopMenu = true;
+          PreloadTopHit = false;
+          ShowFullURLInSmartSearchField = true;
+          ShowOverlayStatusBar = true;
+          SuppressSearchSuggestions = true;
+          UniversalSearchEnabled = false;
+          WarnAboutFraudulentWebsites = true;
+          WebsiteSpecificSearchEnabled = false;
+          WebKitDeveloperExtrasEnabled = true;
+          "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
         };
       };
     };
