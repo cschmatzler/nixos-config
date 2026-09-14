@@ -23,7 +23,6 @@
         brewCasks.granola
         linear
         notion-app
-        brewCasks.notion-calendar
         slack
       ];
     };

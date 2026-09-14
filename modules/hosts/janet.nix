@@ -25,7 +25,6 @@
 
       environment.systemPackages = with pkgs; [
         notion-app
-        brewCasks.notion-calendar
         slack
       ];
     };
