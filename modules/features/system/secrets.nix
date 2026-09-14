@@ -13,7 +13,7 @@
     darwin = {
       imports = [inputs.sops-nix.darwinModules.sops];
       sops = {
-        age.keyFile = "/Users/${(import ../../_lib/local.nix).user.name}/.config/sops/age/keys.txt";
+        age.keyFile = "/Users/${(import ../../_lib/local.nix).user.name}/Library/Application Support/sops/age/keys.txt";
         age.sshKeyPaths = [];
         gnupg.sshKeyPaths = [];
       };

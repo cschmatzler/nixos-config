@@ -168,19 +168,6 @@ with import ../../_lib/local.nix; {
         "com.apple.TextInputMenu" = {
           visible = false;
         };
-        "com.apple.Safari" = {
-          AutoOpenSafeDownloads = false;
-          IncludeDevelopMenu = true;
-          PreloadTopHit = false;
-          ShowFullURLInSmartSearchField = true;
-          ShowOverlayStatusBar = true;
-          SuppressSearchSuggestions = true;
-          UniversalSearchEnabled = false;
-          WarnAboutFraudulentWebsites = true;
-          WebsiteSpecificSearchEnabled = false;
-          WebKitDeveloperExtrasEnabled = true;
-          "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
-        };
       };
     };
 

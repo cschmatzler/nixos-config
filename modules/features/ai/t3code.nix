@@ -2,15 +2,6 @@ _: let
   local = import ../../_lib/local.nix;
 in {
   den.aspects.t3code = {
-    darwin = {
-      inputs',
-      lib,
-      ...
-    }: {
-      environment.systemPackages = [inputs'.llm-agents.packages.t3code-desktop];
-      system.defaults.dock.persistent-apps = lib.mkAfter ["/Applications/Nix Apps/T3 Code (Alpha).app"];
-    };
-
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
     nixos = {
       inputs',
