@@ -11,6 +11,7 @@ in {
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     dmmulroy-skills = {
       url = "github:dmmulroy/skills";
