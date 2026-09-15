@@ -36,6 +36,35 @@ Roll back with `darwin-rebuild --rollback` or `nixos-rebuild switch --rollback`.
 
 Do not bump `system.stateVersion` or `home.stateVersion`.
 
+## T3 Connect on Tahani
+
+The T3 aspect installs `t3` and its relay client, `cloudflared`, through Nix.
+Both login shells and the `t3code` service use `T3CODE_CLOUDFLARED_PATH` to
+select the Nix package. T3 starts and supervises the tunnel itself.
+
+Both environments also receive the production relay URL, Clerk publishable key,
+and CLI OAuth client ID from [upstream's public configuration](https://github.com/pingdotgg/t3code/blob/main/.env.example).
+These public identifiers enable T3 Connect in the source-built Nix package;
+they are separate from the credentials created when you authenticate.
+
+After applying the configuration, open a fresh SSH session to Tahani as
+`cschmatzler` and authenticate:
+
+```bash
+t3 connect link --headless
+sudo systemctl restart t3code
+t3 connect status
+```
+
+Follow the authentication instructions printed by the first command. Use
+`connect link` to authorize the existing Nix-managed server; plain `t3 connect`
+also offers to install an upstream background service. Run authentication as
+your normal user so it shares the server's T3 state directory. Credentials
+remain in T3's writable user state, outside the Nix store.
+
+The existing Tailscale endpoint remains available alongside T3 Connect.
+Inspect tunnel startup with `journalctl -u t3code -f`.
+
 ## CLIProxyAPI on Tahani
 
 CLIProxyAPI runs from a pinned upstream Docker image. Its official management UI
