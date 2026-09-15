@@ -3,12 +3,7 @@ _: let
 in {
   den.aspects.t3code = {
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
-    nixos = {
-      inputs',
-      lib,
-      pkgs,
-      ...
-    }: let
+    nixos = {pkgs, ...}: let
       home = local.mkHome pkgs.stdenv.hostPlatform.system;
     in {
       systemd.services = {
@@ -22,7 +17,7 @@ in {
           serviceConfig = {
             User = local.user.name;
             WorkingDirectory = home;
-            ExecStart = "${lib.getExe inputs'.llm-agents.packages.t3code} serve --host 127.0.0.1 --port 3773";
+            ExecStart = "${pkgs.nodejs_24}/bin/npx --yes t3@nightly serve --host 127.0.0.1 --port 3773";
             Restart = "on-failure";
             RestartSec = "5s";
           };
