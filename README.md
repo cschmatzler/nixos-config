@@ -38,13 +38,17 @@ Do not bump `system.stateVersion` or `home.stateVersion`.
 
 ## T3 Connect on Tahani
 
-The T3 aspect installs `t3` and its relay client, `cloudflared`, through Nix.
+The T3 aspect installs a `t3` launcher and its relay client, `cloudflared`, through Nix.
+Terminal commands and the service use the same launcher, which runs
+`t3@0.0.41-nightly.20260915.1735` through npm with installation scripts disabled
+to preserve the bundled native binaries. npm caches the nightly in the user's home
+directory; the first invocation requires network access.
 Both login shells and the `t3code` service use `T3CODE_CLOUDFLARED_PATH` to
 select the Nix package. T3 starts and supervises the tunnel itself.
 
 Both environments also receive the production relay URL, Clerk publishable key,
 and CLI OAuth client ID from [upstream's public configuration](https://github.com/pingdotgg/t3code/blob/main/.env.example).
-These public identifiers enable T3 Connect in the source-built Nix package;
+These public identifiers configure T3 Connect for both the CLI and server;
 they are separate from the credentials created when you authenticate.
 
 After applying the configuration, open a fresh SSH session to Tahani as

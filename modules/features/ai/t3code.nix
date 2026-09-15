@@ -3,12 +3,19 @@ _: let
 in {
   den.aspects.t3code = {
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
-    nixos = {pkgs, ...}: let
+    nixos = {
+      lib,
+      pkgs,
+      ...
+    }: let
       home = local.mkHome pkgs.stdenv.hostPlatform.system;
-      t3code = inputs'.llm-agents.packages.t3code;
+      t3code = pkgs.writeShellApplication {
+        name = "t3";
+        runtimeInputs = [pkgs.nodejs_24];
+        text = ''exec npx --yes --ignore-scripts t3@0.0.41-nightly.20260915.1735 "$@"'';
+      };
       relayEnvironment = {
         # Public production identifiers from https://github.com/pingdotgg/t3code/blob/main/.env.example.
-        # Source-built packages do not bake these in, so provide them at runtime.
         T3CODE_RELAY_URL = "https://relay.t3.codes";
         T3CODE_CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsudDMuY29kZXMk";
         T3CODE_CLERK_CLI_OAUTH_CLIENT_ID = "hzxSgY2cH10sDU2r";
@@ -31,7 +38,7 @@ in {
           serviceConfig = {
             User = local.user.name;
             WorkingDirectory = home;
-            ExecStart = "${pkgs.nodejs_24}/bin/npx --yes t3@nightly serve --host 127.0.0.1 --port 3773";
+            ExecStart = "${lib.getExe t3code} serve --host 127.0.0.1 --port 3773";
             Restart = "on-failure";
             RestartSec = "5s";
           };
