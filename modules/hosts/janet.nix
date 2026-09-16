@@ -23,7 +23,9 @@
       documentation.doc.enable = false;
 
       environment.systemPackages = with pkgs; [
+        brewCasks.wispr-flow
         notion-app
+        orbstack
         slack
       ];
     };

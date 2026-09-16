@@ -20,8 +20,10 @@
 
       environment.systemPackages = with pkgs; [
         brewCasks.granola
+        brewCasks.wispr-flow
         linear
         notion-app
+        orbstack
         slack
       ];
     };
