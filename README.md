@@ -40,7 +40,7 @@ Do not bump `system.stateVersion` or `home.stateVersion`.
 
 The T3 aspect installs a `t3` launcher and its relay client, `cloudflared`, through Nix.
 Terminal commands and the service use the same launcher, which runs
-`t3@0.0.43-nightly.20260916.1811` through npm with installation scripts disabled
+`t3@0.0.43-nightly.20260919.1962` through npm with installation scripts disabled
 to preserve the bundled native binaries. npm caches the nightly in the user's home
 directory; the first invocation requires network access.
 Both login shells and the `t3code` service use `T3CODE_CLOUDFLARED_PATH` to
