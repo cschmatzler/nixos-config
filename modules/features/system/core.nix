@@ -9,9 +9,9 @@ _: {
       pkgs.lm_sensors
     ];
 
-    programs.fish.enable = true;
+    programs.zsh.enable = true;
     environment.shells = [
-      pkgs.fish
+      pkgs.zsh
     ];
 
     nixpkgs = {

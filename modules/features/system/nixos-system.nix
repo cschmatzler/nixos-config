@@ -45,7 +45,7 @@ with import ../../_lib/local.nix; {
           "network"
           "systemd-journal"
         ];
-        shell = pkgs.fish;
+        shell = pkgs.zsh;
         openssh.authorizedKeys.keys = user.ssh.authorizedKeys;
       };
     };

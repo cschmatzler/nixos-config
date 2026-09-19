@@ -16,10 +16,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    code-review-nvim = {
-      url = "github:choplin/code-review.nvim";
-      flake = false;
-    };
     darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";

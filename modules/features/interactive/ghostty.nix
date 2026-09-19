@@ -14,10 +14,9 @@ _: {
       package = null;
       systemd.enable = false;
       enableBashIntegration = false;
-      enableFishIntegration = false;
       enableZshIntegration = false;
       settings = {
-        command = "${pkgs.fish}/bin/fish";
+        command = "${pkgs.zsh}/bin/zsh";
         theme = "Rose Pine Dawn";
         window-padding-x = 12;
         window-padding-y = 3;

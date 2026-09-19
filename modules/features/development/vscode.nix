@@ -1,6 +1,11 @@
-_: let
+{inputs, ...}: let
   local = import ../../_lib/local.nix;
 in {
+  flake-file.inputs.nixvim = {
+    url = "github:nix-community/nixvim";
+    inputs.flake-parts.follows = "flake-parts";
+  };
+
   den.aspects = {
     vscode = {
       darwin = {pkgs, ...}: {
@@ -14,34 +19,52 @@ in {
         lib,
         pkgs,
         ...
-      }:
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-          xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
+      }: {
+        imports = [inputs.nixvim.homeModules.nixvim];
 
-          programs.ssh.settings.tahani = {
-            HostName = local.tailscaleHost "tahani";
-            User = local.user.name;
-          };
-
-          programs.vscode = {
-            enable = true;
-            package = null;
-            mutableExtensionsDir = false;
-            profiles.default = {
-              enableUpdateCheck = false;
-              enableExtensionUpdateCheck = false;
-              extensions = with pkgs.vscode-extensions; [
-                asvetliakov.vscode-neovim
-                jnoortheen.nix-ide
-                ms-vscode-remote.remote-ssh
-                mvllow.rose-pine
-                oxc.oxc-vscode
-              ];
-              userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
-              userTasks = import ./_vscode/tasks.nix;
+        config = lib.mkMerge [
+          {
+            # Keep Neovim available as a regular CLI editor with only the
+            # plugins used by the vscode-neovim init on Darwin.
+            programs.nixvim = {
+              enable = true;
+              extraPlugins = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs.vimPlugins; [
+                flash-nvim
+                hardtime-nvim
+                mini-nvim
+              ]);
+              version.enableNixpkgsReleaseCheck = false;
             };
-          };
-        };
+          }
+          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+            xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
+
+            programs.ssh.settings.tahani = {
+              HostName = local.tailscaleHost "tahani";
+              User = local.user.name;
+            };
+
+            programs.vscode = {
+              enable = true;
+              package = null;
+              mutableExtensionsDir = false;
+              profiles.default = {
+                enableUpdateCheck = false;
+                enableExtensionUpdateCheck = false;
+                extensions = with pkgs.vscode-extensions; [
+                  asvetliakov.vscode-neovim
+                  jnoortheen.nix-ide
+                  ms-vscode-remote.remote-ssh
+                  mvllow.rose-pine
+                  oxc.oxc-vscode
+                ];
+                userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
+                userTasks = import ./_vscode/tasks.nix;
+              };
+            };
+          })
+        ];
+      };
     };
 
     vscode-remote.nixos = {pkgs, ...}: {
@@ -58,8 +81,8 @@ in {
       home.file.".vscode-server/data/Machine/settings.json".source = (pkgs.formats.json {}).generate "vscode-remote-settings" (
         (import ./_vscode/tool-settings.nix {inherit pkgs;})
         // {
-          "terminal.integrated.profiles.linux".fish.path = "${pkgs.fish}/bin/fish";
-          "terminal.integrated.defaultProfile.linux" = "fish";
+          "terminal.integrated.profiles.linux".zsh.path = "${pkgs.zsh}/bin/zsh";
+          "terminal.integrated.defaultProfile.linux" = "zsh";
         }
       );
     };

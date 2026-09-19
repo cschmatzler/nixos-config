@@ -76,22 +76,6 @@
         "type": "github"
       }
     },
-    "code-review-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1765543014,
-        "narHash": "sha256-WpbQswkUpB4Nblos8+5UE5I/PHUQOi+RQ+hj4CCdL4o=",
-        "owner": "choplin",
-        "repo": "code-review.nvim",
-        "rev": "ed91462e20bd08c3be71efb11a4a7d00459f0b47",
-        "type": "github"
-      },
-      "original": {
-        "owner": "choplin",
-        "repo": "code-review.nvim",
-        "type": "github"
-      }
-    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -329,7 +313,6 @@
       "inputs": {
         "brew-api": "brew-api",
         "brew-nix": "brew-nix",
-        "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
         "dmmulroy-skills": "dmmulroy-skills",
