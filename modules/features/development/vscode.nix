@@ -1,6 +1,11 @@
-_: let
+{inputs, ...}: let
   local = import ../../_lib/local.nix;
 in {
+  flake-file.inputs.nixvim = {
+    url = "github:nix-community/nixvim";
+    inputs.flake-parts.follows = "flake-parts";
+  };
+
   den.aspects = {
     vscode = {
       darwin = {pkgs, ...}: {
@@ -14,9 +19,23 @@ in {
         lib,
         pkgs,
         ...
-      }:
-        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      }: {
+        imports = [inputs.nixvim.homeModules.nixvim];
+
+        config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
           xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
+
+          # vscode-neovim needs a private Neovim runtime. Keeping Nixvim
+          # disabled prevents that runtime from being installed in PATH.
+          programs.nixvim = {
+            enable = false;
+            extraPlugins = with pkgs.vimPlugins; [
+              flash-nvim
+              hardtime-nvim
+              mini-nvim
+            ];
+            version.enableNixpkgsReleaseCheck = false;
+          };
 
           programs.ssh.settings.tahani = {
             HostName = local.tailscaleHost "tahani";
@@ -42,6 +61,7 @@ in {
             };
           };
         };
+      };
     };
 
     vscode-remote.nixos = {pkgs, ...}: {
@@ -58,8 +78,8 @@ in {
       home.file.".vscode-server/data/Machine/settings.json".source = (pkgs.formats.json {}).generate "vscode-remote-settings" (
         (import ./_vscode/tool-settings.nix {inherit pkgs;})
         // {
-          "terminal.integrated.profiles.linux".fish.path = "${pkgs.fish}/bin/fish";
-          "terminal.integrated.defaultProfile.linux" = "fish";
+          "terminal.integrated.profiles.linux".zsh.path = "${pkgs.zsh}/bin/zsh";
+          "terminal.integrated.defaultProfile.linux" = "zsh";
         }
       );
     };

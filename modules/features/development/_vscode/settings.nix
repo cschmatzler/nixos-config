@@ -69,12 +69,12 @@ in
     "terminal.integrated.fontSize" = 14;
     "terminal.integrated.cursorStyle" = "block";
     "terminal.integrated.cursorBlinking" = false;
-    "terminal.integrated.profiles.osx".fish.path = "${pkgs.fish}/bin/fish";
-    "terminal.integrated.profiles.linux".fish.path = "fish";
-    "terminal.integrated.defaultProfile.osx" = "fish";
-    "terminal.integrated.defaultProfile.linux" = "fish";
+    "terminal.integrated.profiles.osx".zsh.path = "${pkgs.zsh}/bin/zsh";
+    "terminal.integrated.profiles.linux".zsh.path = "zsh";
+    "terminal.integrated.defaultProfile.osx" = "zsh";
+    "terminal.integrated.defaultProfile.linux" = "zsh";
 
-    # Keep formatters and language servers aligned with the Neovim setup.
+    # Keep formatters and language servers aligned across local and remote workspaces.
     "[nix]"."editor.defaultFormatter" = "jnoortheen.nix-ide";
     "[javascript][javascriptreact][typescript][typescriptreact]"."editor.defaultFormatter" = "oxc.oxc-vscode";
 

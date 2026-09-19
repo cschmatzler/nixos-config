@@ -7,26 +7,26 @@ with import ../../_lib/theme.nix; {
   }: {
     home.packages = with pkgs; [
       devenv
+      nano
     ];
 
     home.sessionVariables = {
       COLORTERM = "truecolor";
       COLORFGBG = "0;15";
+      EDITOR = "nano";
+      SHELL = "${pkgs.zsh}/bin/zsh";
       TERM_BACKGROUND = "light";
+      VISUAL = "nano";
     };
 
-    xdg.configFile."fish/themes/${name}.theme".source = "${pkgs.fetchFromGitHub {
-      owner = "rose-pine";
-      repo = "fish";
-      rev = "127a990e5ad4688118c950123787fb0686afa4c8";
-      hash = "sha256-3heI6nhItw5WfKGQT1FRQKfv+lONyn+DzwYjYqJjzLE=";
-    }}/themes/${name}.theme";
-
-    programs.direnv.enable = true;
+    programs.direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
 
     programs.atuin = {
       enable = true;
-      enableFishIntegration = true;
+      enableZshIntegration = true;
       flags = ["--disable-up-arrow"];
       settings = {
         style = "compact";
@@ -40,102 +40,132 @@ with import ../../_lib/theme.nix; {
       enable = true;
       activeTheme = slug;
       enableBashIntegration = false;
-      enableFishIntegration = true;
       enableNushellIntegration = false;
-      enableZshIntegration = false;
+      enableZshIntegration = true;
     };
 
-    programs.fish = {
+    programs.zsh = {
       enable = true;
-      shellInit =
+      autocd = true;
+      defaultKeymap = "viins";
+      enableCompletion = true;
+      autosuggestion = {
+        enable = true;
+        highlight = "fg=${hex.muted}";
+      };
+      syntaxHighlighting = {
+        enable = true;
+        highlighters = ["brackets"];
+        styles = {
+          alias = "fg=${hex.iris}";
+          builtin = "fg=${hex.pine}";
+          command = "fg=${hex.pine}";
+          comment = "fg=${hex.muted}";
+          function = "fg=${hex.iris}";
+          globbing = "fg=${hex.rose}";
+          path = "fg=${hex.foam},underline";
+          precommand = "fg=${hex.gold}";
+          reserved-word = "fg=${hex.pine},bold";
+          single-hyphen-option = "fg=${hex.foam}";
+          double-hyphen-option = "fg=${hex.foam}";
+          single-quoted-argument = "fg=${hex.gold}";
+          double-quoted-argument = "fg=${hex.gold}";
+          unknown-token = "fg=${hex.love}";
+        };
+      };
+      envExtra =
         ''
-          set -gx SHELL ${pkgs.fish}/bin/fish
+          typeset -U path PATH
         ''
         + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
-          fish_add_path --prepend "$HOME/.nix-profile/bin" /run/current-system/sw/bin
+          path=(
+            "$HOME/.nix-profile/bin"
+            /run/current-system/sw/bin
+            $path
+          )
         ''
         + lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
-          fish_add_path --prepend \
-            /run/wrappers/bin \
-            "$HOME/.nix-profile/bin" \
-            /nix/profile/bin \
-            "$HOME/.local/state/nix/profile/bin" \
-            "/etc/profiles/per-user/$USER/bin" \
-            /nix/var/nix/profiles/default/bin \
+          path=(
+            /run/wrappers/bin
+            "$HOME/.nix-profile/bin"
+            /nix/profile/bin
+            "$HOME/.local/state/nix/profile/bin"
+            "/etc/profiles/per-user/$USER/bin"
+            /nix/var/nix/profiles/default/bin
             /run/current-system/sw/bin
+            $path
+          )
+        ''
+        + ''
+          export PATH
         '';
-      interactiveShellInit = ''
-        set fish_greeting
-        fish_vi_key_bindings
-        fish_config theme choose "${name}" >/dev/null
-      '';
-      functions = {
-        fish_mode_prompt = ''
-          switch $fish_bind_mode
-            case default
-              set_color --bold ${builtins.replaceStrings ["#"] [""] hex.pine}
-              echo -n "· "
-              set_color normal
-            case insert
-              echo -n "· "
-          end
-        '';
-        grt = ''
-          cd (git rev-parse --show-toplevel; or echo ".")
-        '';
-        scratch = ''
-          set -l tmpfile (mktemp)
-          if set -q EDITOR
-            $EDITOR $tmpfile
-          else if command -v nvim &>/dev/null
-            nvim $tmpfile
-          else if command -v vim &>/dev/null
-            vim $tmpfile
-          else
-            nano $tmpfile
-          end
-        '';
-        trash = ''
-          if test (count $argv) -lt 1
-            echo "Usage: trash <file>..."
+      initContent = lib.mkAfter ''
+        setopt interactive_comments no_beep
+        KEYTIMEOUT=1
+
+        for keymap in viins vicmd; do
+          bindkey -M "$keymap" '^[[A' history-beginning-search-backward
+          bindkey -M "$keymap" '^[[B' history-beginning-search-forward
+          bindkey -M "$keymap" '^[OA' history-beginning-search-backward
+          bindkey -M "$keymap" '^[OB' history-beginning-search-forward
+        done
+        unset keymap
+
+        zstyle ':completion:*' menu select
+        zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+
+        grt() {
+          local root
+          root="$(git rev-parse --show-toplevel 2>/dev/null)" || root="."
+          cd "$root"
+        }
+
+        scratch() {
+          local tmpfile
+          tmpfile="$(mktemp)" || return 1
+          command "''${EDITOR:-nano}" "$tmpfile"
+        }
+
+        trash() {
+          if (( $# < 1 )); then
+            print -u2 "Usage: trash <file>..."
             return 1
-          end
+          fi
 
-          set -l trash_dir
-          if test (uname) = Darwin
-            set trash_dir ~/.Trash
-          else if test -n "$XDG_DATA_HOME"
-            set trash_dir $XDG_DATA_HOME/Trash/files
+          local trash_dir
+          if [[ "$OSTYPE" == darwin* ]]; then
+            trash_dir="$HOME/.Trash"
+          elif [[ -n "$XDG_DATA_HOME" ]]; then
+            trash_dir="$XDG_DATA_HOME/Trash/files"
           else
-            set trash_dir ~/.local/share/Trash/files
-          end
+            trash_dir="$HOME/.local/share/Trash/files"
+          fi
 
-          if not test -d $trash_dir
-            mkdir -p $trash_dir
-          end
+          command mkdir -p "$trash_dir" || return 1
 
-          for file in $argv
-            if not test -e $file
-              echo "Error: '$file' does not exist"
+          local file basename dest
+          for file in "$@"; do
+            if [[ ! -e "$file" ]]; then
+              print -u2 "Error: '$file' does not exist"
               continue
-            end
+            fi
 
-            set -l basename (basename $file)
-            set -l dest $trash_dir/$basename
+            basename="''${file:t}"
+            dest="$trash_dir/$basename"
 
-            if test -e $dest
-              set dest "$trash_dir/$basename."(date +%s)
-            end
+            if [[ -e "$dest" ]]; then
+              dest="$trash_dir/$basename.$(date +%s)"
+            fi
 
-            mv -v $file $dest
-          end
-        '';
-      };
+            command mv -v -- "$file" "$dest"
+          done
+        }
+      '';
     };
 
     programs.starship = {
       enable = true;
-      enableFishIntegration = true;
+      enableZshIntegration = true;
       settings = {
         format = "$directory$git_branch$git_status$git_state$git_commit$hostname$line_break$character";
         buf = {
@@ -144,6 +174,10 @@ with import ../../_lib/theme.nix; {
         character = {
           error_symbol = "[󰘧](bold ${hex.love})";
           success_symbol = "[󰘧](bold ${hex.pine})";
+          vimcmd_symbol = "[󰘧](bold ${hex.pine})";
+          vimcmd_replace_one_symbol = "[󰘧](bold ${hex.rose})";
+          vimcmd_replace_symbol = "[󰘧](bold ${hex.rose})";
+          vimcmd_visual_symbol = "[󰘧](bold ${hex.iris})";
         };
         directory = {
           truncate_to_repo = false;

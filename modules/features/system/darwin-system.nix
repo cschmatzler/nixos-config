@@ -198,7 +198,7 @@ with import ../../_lib/local.nix; {
       name = user.name;
       home = mkHome "aarch64-darwin";
       isHidden = false;
-      shell = pkgs.fish;
+      shell = pkgs.zsh;
     };
   };
 }

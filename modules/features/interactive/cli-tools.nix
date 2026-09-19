@@ -69,7 +69,8 @@ in {
 
       fzf = {
         enable = true;
-        historyWidget.fish.command = "";
+        enableZshIntegration = true;
+        historyWidget.zsh.command = "";
       };
 
       ripgrep = {
@@ -95,12 +96,12 @@ in {
 
       zoxide = {
         enable = true;
-        enableFishIntegration = true;
+        enableZshIntegration = true;
       };
 
       yazi = {
         enable = true;
-        enableFishIntegration = true;
+        enableZshIntegration = true;
         shellWrapperName = "y";
         flavors.${slug} = "${pkgs.fetchFromGitHub {
           owner = "rose-pine";
