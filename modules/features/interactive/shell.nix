@@ -7,16 +7,15 @@ with import ../../_lib/theme.nix; {
   }: {
     home.packages = with pkgs; [
       devenv
-      nano
     ];
 
     home.sessionVariables = {
       COLORTERM = "truecolor";
       COLORFGBG = "0;15";
-      EDITOR = "nano";
+      EDITOR = "nvim";
       SHELL = "${pkgs.zsh}/bin/zsh";
       TERM_BACKGROUND = "light";
-      VISUAL = "nano";
+      VISUAL = "nvim";
     };
 
     programs.direnv = {
@@ -123,7 +122,7 @@ with import ../../_lib/theme.nix; {
         scratch() {
           local tmpfile
           tmpfile="$(mktemp)" || return 1
-          command "''${EDITOR:-nano}" "$tmpfile"
+          command "''${EDITOR:-nvim}" "$tmpfile"
         }
 
         trash() {

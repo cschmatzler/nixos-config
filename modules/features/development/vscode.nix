@@ -22,45 +22,48 @@ in {
       }: {
         imports = [inputs.nixvim.homeModules.nixvim];
 
-        config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-          xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
-
-          # vscode-neovim needs a private Neovim runtime. Keeping Nixvim
-          # disabled prevents that runtime from being installed in PATH.
-          programs.nixvim = {
-            enable = false;
-            extraPlugins = with pkgs.vimPlugins; [
-              flash-nvim
-              hardtime-nvim
-              mini-nvim
-            ];
-            version.enableNixpkgsReleaseCheck = false;
-          };
-
-          programs.ssh.settings.tahani = {
-            HostName = local.tailscaleHost "tahani";
-            User = local.user.name;
-          };
-
-          programs.vscode = {
-            enable = true;
-            package = null;
-            mutableExtensionsDir = false;
-            profiles.default = {
-              enableUpdateCheck = false;
-              enableExtensionUpdateCheck = false;
-              extensions = with pkgs.vscode-extensions; [
-                asvetliakov.vscode-neovim
-                jnoortheen.nix-ide
-                ms-vscode-remote.remote-ssh
-                mvllow.rose-pine
-                oxc.oxc-vscode
-              ];
-              userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
-              userTasks = import ./_vscode/tasks.nix;
+        config = lib.mkMerge [
+          {
+            # Keep Neovim available as a regular CLI editor with only the
+            # plugins used by the vscode-neovim init on Darwin.
+            programs.nixvim = {
+              enable = true;
+              extraPlugins = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs.vimPlugins; [
+                flash-nvim
+                hardtime-nvim
+                mini-nvim
+              ]);
+              version.enableNixpkgsReleaseCheck = false;
             };
-          };
-        };
+          }
+          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+            xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
+
+            programs.ssh.settings.tahani = {
+              HostName = local.tailscaleHost "tahani";
+              User = local.user.name;
+            };
+
+            programs.vscode = {
+              enable = true;
+              package = null;
+              mutableExtensionsDir = false;
+              profiles.default = {
+                enableUpdateCheck = false;
+                enableExtensionUpdateCheck = false;
+                extensions = with pkgs.vscode-extensions; [
+                  asvetliakov.vscode-neovim
+                  jnoortheen.nix-ide
+                  ms-vscode-remote.remote-ssh
+                  mvllow.rose-pine
+                  oxc.oxc-vscode
+                ];
+                userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
+                userTasks = import ./_vscode/tasks.nix;
+              };
+            };
+          })
+        ];
       };
     };
 

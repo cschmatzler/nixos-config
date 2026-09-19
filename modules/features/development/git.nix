@@ -16,7 +16,7 @@ with import ../../_lib/theme.nix; {
         user.name = (import ../../_lib/local.nix).user.fullName;
         init.defaultBranch = "main";
         core = {
-          editor = "nano";
+          editor = "nvim";
           autocrlf = "input";
           pager = "delta";
         };
@@ -101,7 +101,7 @@ with import ../../_lib/theme.nix; {
           nerdFontsVersion = "3";
         };
         os = {
-          editPreset = "nano";
+          editPreset = "nvim";
           editInTerminal = true;
         };
       };
