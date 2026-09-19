@@ -35,6 +35,7 @@ with import ../../_lib/local.nix; {
       ghostty-bin
       mas
       obsidian
+      brewCasks.pearcleaner
       brewCasks.tuna
       whatsapp-for-mac
     ];
