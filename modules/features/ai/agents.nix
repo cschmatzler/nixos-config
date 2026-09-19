@@ -62,6 +62,11 @@ in {
         enableMcpIntegration = true;
         commandsDir = ./_agents/prompts;
         inherit skills;
+        settings.attribution = {
+          commit = "";
+          pr = "";
+          sessionUrl = false;
+        };
       };
 
       programs.codex = {
