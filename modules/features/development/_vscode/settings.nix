@@ -88,16 +88,11 @@ in
       "asvetliakov.vscode-neovim" = ["ui"];
     };
 
-    # Settings are Home Manager-managed and read-only, so extensions cannot
-    # persist these themselves.
     "extensions.experimental.affinity"."asvetliakov.vscode-neovim" = 1;
 
     "remote.SSH.remotePlatform".tahani = "linux";
 
-    # Workspace trust can't prompt-and-persist into the read-only settings
-    # file, so the feature is disabled declaratively.
     "security.workspace.trust.enabled" = false;
-    # The inverse flag must be false to skip the confirmation dialog.
     "security.promptForRemoteFileProtocolHandling" = false;
     "security.promptForLocalFileProtocolHandling" = false;
     "remote.SSH.defaultExtensions" = [
