@@ -88,7 +88,13 @@ in
       "asvetliakov.vscode-neovim" = ["ui"];
     };
 
+    "extensions.experimental.affinity"."asvetliakov.vscode-neovim" = 1;
+
     "remote.SSH.remotePlatform".tahani = "linux";
+
+    "security.workspace.trust.enabled" = false;
+    "security.promptForRemoteFileProtocolHandling" = false;
+    "security.promptForLocalFileProtocolHandling" = false;
     "remote.SSH.defaultExtensions" = [
       "jnoortheen.nix-ide"
       "oxc.oxc-vscode"
