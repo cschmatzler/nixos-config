@@ -88,7 +88,19 @@ in
       "asvetliakov.vscode-neovim" = ["ui"];
     };
 
+    # Settings are Home Manager-managed and read-only, so extensions cannot
+    # persist these themselves. Pre-set them to silence the prompts.
+    "extensions.experimental.affinity"."asvetliakov.vscode-neovim" = 1;
+
     "remote.SSH.remotePlatform".tahani = "linux";
+
+    # Workspace trust can't prompt-and-persist into the read-only settings
+    # file, so the feature is disabled declaratively.
+    "security.workspace.trust.enabled" = false;
+    # T3 Code opens vscode-remote:// URLs; the inverse flag must be false to
+    # skip the "external application wants to open" confirmation.
+    "security.promptForRemoteFileProtocolHandling" = false;
+    "security.promptForLocalFileProtocolHandling" = false;
     "remote.SSH.defaultExtensions" = [
       "jnoortheen.nix-ide"
       "oxc.oxc-vscode"
