@@ -12,7 +12,7 @@ in {
       t3code = pkgs.writeShellApplication {
         name = "t3";
         runtimeInputs = [pkgs.nodejs_24];
-        text = ''exec npx --yes --ignore-scripts t3@0.0.43-nightly.20260919.1962 "$@"'';
+        text = ''exec npx --yes --ignore-scripts t3@0.0.43-nightly.20260921.2044 "$@"'';
       };
       relayEnvironment = {
         # Public production identifiers from https://github.com/pingdotgg/t3code/blob/main/.env.example.

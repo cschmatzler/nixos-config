@@ -6,12 +6,12 @@
   }: let
     taste = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
       pname = "taste";
-      version = "0.3.0";
+      version = "0.3.3";
 
       src = pkgs.fetchurl {
         name = "Taste-${finalAttrs.version}.zip";
         url = "https://buildwithtaste.com/downloads/Taste-${finalAttrs.version}.zip";
-        hash = "sha256-gaf+4/N5EwCdvS8NIYgC1JrACXPSYp8GmPMaMGYBP9s=";
+        hash = "sha256-bW0bZLvH9vhJ7qH01bembBiYhxPY8PYtiKvuIsTOPWg=";
       };
 
       nativeBuildInputs = [pkgs._7zz];
