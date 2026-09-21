@@ -1,5 +1,6 @@
 _: let
   local = import ../../_lib/local.nix;
+  nightlyVersion = "0.0.43-nightly.20260921.2044";
 in {
   den.aspects.t3code = {
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
@@ -12,7 +13,7 @@ in {
       t3code = pkgs.writeShellApplication {
         name = "t3";
         runtimeInputs = [pkgs.nodejs_24];
-        text = ''exec npx --yes --ignore-scripts t3@0.0.43-nightly.20260921.2044 "$@"'';
+        text = ''exec npx --yes --ignore-scripts t3@${nightlyVersion} "$@"'';
       };
       relayEnvironment = {
         # Public production identifiers from https://github.com/pingdotgg/t3code/blob/main/.env.example.
@@ -50,6 +51,66 @@ in {
           after = ["t3code.service"];
         };
       };
+    };
+
+    # Nightly desktop app on the Macs. The release .app is code signed, so install
+    # it untouched; the built-in updater still runs but cannot write to the store.
+    darwin = {
+      lib,
+      pkgs,
+      ...
+    }: let
+      build = builtins.getAttr pkgs.stdenv.hostPlatform.system {
+        aarch64-darwin = {
+          arch = "arm64";
+          hash = "sha256-vNtjuK41L22Xc1NByJSKW2ZFLZ9h1rFNlL+JY+PuPMw=";
+        };
+        x86_64-darwin = {
+          arch = "x64";
+          hash = "sha256-kEWMKTq3gfHY04VYZMjeAR0Cvk5IiRDWPd77IbqCY54=";
+        };
+      };
+      appName = "T3 Code (Nightly)";
+      desktop = pkgs.stdenvNoCC.mkDerivation {
+        pname = "t3code-desktop";
+        version = nightlyVersion;
+
+        src = pkgs.fetchurl {
+          name = "T3-Code-${nightlyVersion}-${build.arch}.zip";
+          url = "https://github.com/pingdotgg/t3code/releases/download/v${nightlyVersion}/T3-Code-${nightlyVersion}-${build.arch}.zip";
+          inherit (build) hash;
+        };
+
+        nativeBuildInputs = [pkgs._7zz];
+        unpackCmd = "7zz x -snld20 -xr'!*:com.apple.*' $curSrc";
+        sourceRoot = "${appName}.app";
+
+        dontPatch = true;
+        dontConfigure = true;
+        dontBuild = true;
+        dontFixup = true;
+
+        installPhase = ''
+          runHook preInstall
+
+          mkdir -p "$out/Applications/${appName}.app"
+          cp -R . "$out/Applications/${appName}.app"
+
+          runHook postInstall
+        '';
+
+        meta = {
+          description = "Nightly desktop build of T3 Code";
+          homepage = "https://t3.codes";
+          downloadPage = "https://t3.codes/download";
+          changelog = "https://github.com/pingdotgg/t3code/releases/tag/v${nightlyVersion}";
+          license = lib.licenses.mit;
+          platforms = lib.platforms.darwin;
+          sourceProvenance = [lib.sourceTypes.binaryNativeCode];
+        };
+      };
+    in {
+      environment.systemPackages = [desktop];
     };
   };
 }
