@@ -5,11 +5,11 @@
 }:
 stdenvNoCC.mkDerivation rec {
   pname = "scheduler-card";
-  version = "4.0.9";
+  version = "4.0.19";
 
   src = fetchurl {
     url = "https://github.com/nielsfaber/scheduler-card/releases/download/v${version}/scheduler-card.js";
-    hash = "sha256-5BK8JjrgoKtj/4MstFnz2BzqdaNodIUJNhqJA20tFE0=";
+    hash = "sha256-UDOrixd2Xn3lo3K5Kb9M1gdgYCZz55ejJECg2FrMFzs=";
   };
 
   dontUnpack = true;

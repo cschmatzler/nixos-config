@@ -5,11 +5,11 @@
 }:
 stdenvNoCC.mkDerivation rec {
   pname = "better-thermostat-ui-card";
-  version = "2.2.1";
+  version = "3.3.0";
 
   src = fetchurl {
     url = "https://github.com/KartoffelToby/better-thermostat-ui-card/releases/download/${version}/better-thermostat-ui-card.js";
-    hash = "sha256-tmE5EzioQQ21bAeMLuvYh/Pnh4Bi0iW254EVeT3fNO4=";
+    hash = "sha256-dRUhL+Y0gRT+n5OnVY2lwrIkow2RV0wiM+tqampEEMY=";
   };
 
   dontUnpack = true;
