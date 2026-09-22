@@ -1,6 +1,6 @@
 _: let
   local = import ../../_lib/local.nix;
-  nightlyVersion = "0.0.43-nightly.20260921.2044";
+  nightlyVersion = "0.0.43-nightly.20260922.2083";
 in {
   den.aspects.t3code = {
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
@@ -63,11 +63,11 @@ in {
       build = builtins.getAttr pkgs.stdenv.hostPlatform.system {
         aarch64-darwin = {
           arch = "arm64";
-          hash = "sha256-vNtjuK41L22Xc1NByJSKW2ZFLZ9h1rFNlL+JY+PuPMw=";
+          hash = "sha256-fzPIibrl/ANz66zWtaczXDvqo9qvcww3upSTBK6699I=";
         };
         x86_64-darwin = {
           arch = "x64";
-          hash = "sha256-kEWMKTq3gfHY04VYZMjeAR0Cvk5IiRDWPd77IbqCY54=";
+          hash = "sha256-zIgrZPxreSX+Xd/Yezx6eyHk20lhOXqvcHsqvmmxBMw=";
         };
       };
       appName = "T3 Code (Nightly)";
