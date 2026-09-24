@@ -4,7 +4,6 @@
   ...
 }: let
   local = import ../../_lib/local.nix;
-  homeAssistantMcpUrl = "https://${local.tailscaleHost "ha"}/api/mcp";
 in {
   flake-file.inputs = {
     llm-agents = {
@@ -31,6 +30,7 @@ in {
     };
 
     homeManager = {
+      config,
       inputs',
       lib,
       pkgs,
@@ -55,7 +55,7 @@ in {
             args = ["-y" "opensrc-mcp"];
           };
           executor.url = "https://executor.sh/mcp?search_tools=true";
-          homeassistant.url = homeAssistantMcpUrl;
+          homeassistant.url = "https://${local.tailscaleHost "ha"}/api/mcp";
         };
       };
 
@@ -67,7 +67,7 @@ in {
         inherit skills;
         mcpServers.homeassistant = {
           type = "http";
-          url = homeAssistantMcpUrl;
+          url = config.programs.mcp.servers.homeassistant.url;
           oauth = {
             clientId = "http://localhost:12345";
             callbackPort = 12345;
@@ -86,7 +86,7 @@ in {
         enableMcpIntegration = true;
         inherit skills;
         settings.mcp_servers.homeassistant = {
-          url = homeAssistantMcpUrl;
+          url = config.programs.mcp.servers.homeassistant.url;
           oauth = {
             client_id = "http://127.0.0.1:12345";
             callback_port = 12345;
@@ -104,7 +104,7 @@ in {
         inherit skills;
         settings.mcp.homeassistant = {
           type = "remote";
-          url = homeAssistantMcpUrl;
+          url = config.programs.mcp.servers.homeassistant.url;
           oauth.clientId = "http://127.0.0.1:19876";
         };
       };
