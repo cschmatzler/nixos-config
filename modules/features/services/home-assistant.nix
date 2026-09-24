@@ -117,7 +117,6 @@ _: {
         ];
         customLovelaceModules = [
           (pkgs.callPackage ./_home-assistant-packages/scheduler-card.nix {})
-          (pkgs.callPackage ./_home-assistant-packages/ha-floorplan.nix {})
           (pkgs.callPackage ./_home-assistant-packages/better-thermostat-ui-card.nix {})
         ];
       };
