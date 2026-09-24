@@ -3,23 +3,23 @@
     includes = [den.aspects.git];
 
     homeManager = {pkgs, ...}: let
-      version = "0.10.6";
+      version = "0.11.2";
       release = builtins.getAttr pkgs.stdenv.hostPlatform.system {
         x86_64-linux = {
           asset = "entire_linux_amd64.tar.gz";
-          hash = "sha256-rdVlkbsdQpwAg4ow7NRKSYNKyISFQAXgUWTS6SkMZgI=";
+          hash = "sha256-y7kyjX5B5zzxqtkpWT+jB31W4xwJ8nweaeW9HiZyaUw=";
         };
         aarch64-linux = {
           asset = "entire_linux_arm64.tar.gz";
-          hash = "sha256-w40hCrE5vf9D6tYOB+RXtjBcuPUfUECzyWdrleDl8yo=";
+          hash = "sha256-UxHm2faJdoX7VP3hvPV8OIP9dRPDdOkIT7He30L1Yas=";
         };
         x86_64-darwin = {
           asset = "entire_darwin_amd64.tar.gz";
-          hash = "sha256-b078a3v8E7Q2V40eosF6PBTTy1/MZBZTINvYyHD06PE=";
+          hash = "sha256-qLH4ni5qLTz6TIGY1KiiAdCV/XFObLm18Z65y6cwa6M=";
         };
         aarch64-darwin = {
           asset = "entire_darwin_arm64.tar.gz";
-          hash = "sha256-vM7X0ZEeS43tmTPD7bLzX1D3a6hFct/xrIVOM3R6cHA=";
+          hash = "sha256-3b4BxFSGtJFN6kW2N9yXH1KySUasU+zJxQToiNSz8+M=";
         };
       };
       entire = pkgs.stdenvNoCC.mkDerivation {
