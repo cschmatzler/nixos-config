@@ -92,7 +92,6 @@ _: {
 
         extraComponents = [
           "apple_tv"
-          "eheimdigital"
           "esphome"
           "go2rtc"
           "google_translate"
