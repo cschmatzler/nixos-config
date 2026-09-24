@@ -7,19 +7,19 @@
       release = builtins.getAttr pkgs.stdenv.hostPlatform.system {
         x86_64-linux = {
           asset = "entire_linux_amd64.tar.gz";
-          hash = "sha256-y7kyjX5B5zzxqtkpWT+jB31W4xwJ8nweaeW9HiZyaUw=";
+          hash = "sha256-a7k7JX9TIeoxHwzY4Mp0tOqfj1vfOxHmje1XJC+CTSY=";
         };
         aarch64-linux = {
           asset = "entire_linux_arm64.tar.gz";
-          hash = "sha256-UxHm2faJdoX7VP3hvPV8OIP9dRPDdOkIT7He30L1Yas=";
+          hash = "sha256-UxHm/aaFaJe3S07Rf32plADs3tcoQL6oMG9MQZO1Yb0=";
         };
         x86_64-darwin = {
           asset = "entire_darwin_amd64.tar.gz";
-          hash = "sha256-qLH4ni5qLTz6TIGY1KiiAdCV/XFObLm18Z65y6cwa6M=";
+          hash = "sha256-qLH4ni7aeYfYm6s9mdj1wQV8xOhtqApMUnjAFg0L2tM=";
         };
         aarch64-darwin = {
           asset = "entire_darwin_arm64.tar.gz";
-          hash = "sha256-3b4BxFSGtJFN6kW2N9yXH1KySUasU+zJxQToiNSz8+M=";
+          hash = "sha256-3b4BxFjCJJRInb0EInWUuOQ2BwXFPFHXyiRty8T0nJ4=";
         };
       };
       entire = pkgs.stdenvNoCC.mkDerivation {
