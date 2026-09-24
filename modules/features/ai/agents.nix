@@ -4,6 +4,7 @@
   ...
 }: let
   local = import ../../_lib/local.nix;
+  homeAssistantMcpUrl = "https://${local.tailscaleHost "ha"}/api/mcp";
 in {
   flake-file.inputs = {
     llm-agents = {
@@ -54,6 +55,7 @@ in {
             args = ["-y" "opensrc-mcp"];
           };
           executor.url = "https://executor.sh/mcp?search_tools=true";
+          homeassistant.url = homeAssistantMcpUrl;
         };
       };
 
@@ -63,6 +65,14 @@ in {
         enableMcpIntegration = true;
         commandsDir = ./_agents/prompts;
         inherit skills;
+        mcpServers.homeassistant = {
+          type = "http";
+          url = homeAssistantMcpUrl;
+          oauth = {
+            clientId = "http://localhost:12345";
+            callbackPort = 12345;
+          };
+        };
         settings.attribution = {
           commit = "";
           pr = "";
@@ -75,6 +85,13 @@ in {
         package = inputs'.llm-agents.packages.codex;
         enableMcpIntegration = true;
         inherit skills;
+        settings.mcp_servers.homeassistant = {
+          url = homeAssistantMcpUrl;
+          oauth = {
+            client_id = "http://127.0.0.1:12345";
+            callback_port = 12345;
+          };
+        };
       };
       home.file.".codex/config.toml".enable = false;
       home.file.".codex/prompts".source = ./_agents/prompts;
@@ -85,6 +102,11 @@ in {
         enableMcpIntegration = true;
         commands = ./_agents/prompts;
         inherit skills;
+        settings.mcp.homeassistant = {
+          type = "remote";
+          url = homeAssistantMcpUrl;
+          oauth.clientId = "http://127.0.0.1:19876";
+        };
       };
     };
   };
