@@ -26,7 +26,6 @@ in {
       den.aspects.dev-tools
       den.aspects.vscode
       den.aspects.agents
-      den.aspects.entire
       den.aspects.zk
     ];
 
