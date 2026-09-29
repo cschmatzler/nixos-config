@@ -18,6 +18,7 @@ _: {
         nodejs_24
         oxfmt
         pnpm
+        python3
         # containers / databases
         docker
         docker-compose
