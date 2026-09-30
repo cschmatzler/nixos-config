@@ -43,7 +43,6 @@ in {
         skillDirs ./_agents/skills
         // {
           bro = inputs.dmmulroy-skills + "/bro";
-          effect-service-design = inputs.dmmulroy-skills + "/effect-service-design";
           show-me = inputs.humanlayer-skills + "/plugins/show-me/skills/show-me";
         };
     in {
