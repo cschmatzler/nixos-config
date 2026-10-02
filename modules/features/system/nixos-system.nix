@@ -28,7 +28,6 @@ with import ../../_lib/local.nix; {
 
     nix = {
       settings.trusted-users = [user.name];
-      gc.dates = "weekly";
       nixPath = [
         "nixos-config=${mkHome "x86_64-linux"}/.local/share/src/nixos-config"
         "/etc/nixos"

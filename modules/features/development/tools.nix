@@ -27,6 +27,7 @@ _: {
         sqlite
         # misc
         ast-grep
+        (callPackage ./_tools/mr-boxington.nix {})
         fnox
         gnumake
         hk

@@ -1,0 +1,9 @@
+[gc]
+auto = true
+interval = "1h"
+max_total_size = "60GiB"
+min_free_size = "100GiB"
+
+[target]
+max_age = "7d"
+evict_first = [".t3/worktrees", "/tmp"]

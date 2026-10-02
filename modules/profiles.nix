@@ -13,6 +13,7 @@ in {
       den.aspects.nixos-system
       den.aspects.core
       den.aspects.openssh
+      den.aspects.disk-maintenance
       den.aspects.tailscale
     ];
 
@@ -24,6 +25,7 @@ in {
       den.aspects.cli-tools
       den.aspects.git
       den.aspects.dev-tools
+      den.aspects.disk-maintenance
       den.aspects.vscode
       den.aspects.agents
       den.aspects.zk
