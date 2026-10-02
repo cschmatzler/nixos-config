@@ -36,6 +36,31 @@ Roll back with `darwin-rebuild --rollback` or `nixos-rebuild switch --rollback`.
 
 Do not bump `system.stateVersion` or `home.stateVersion`.
 
+## Disk maintenance on Tahani
+
+The `disk-maintenance` aspect collects Nix garbage daily while retaining
+30 days of generations. Nix also attempts collection during builds when free
+space drops below 100 GiB, aiming to restore 200 GiB free.
+Systemd cleans `/tmp` after two days unused and `/var/tmp` after seven days,
+checking hourly; the journal is limited to 1 GiB.
+
+Docker's default builder collects cache toward a 30 GB budget. Daily pruning
+also removes unused images, stopped containers, and cache older than seven
+days; volumes are retained.
+
+Home Manager supplies `~/.config/mbx/config.toml` and an hourly `mbx-gc` user
+timer. Mr. Boxington shares a 60 GiB collection budget across its action store,
+managed targets, and incremental state, prioritizing temporary and T3 worktree
+targets for eviction. This is a collection target rather than a hard quota:
+active builds, explicitly protected targets, and the most recent state can
+exceed it. Files in unmanaged Cargo targets and worktree source files are
+outside this policy. Environment variables such as `MBX_TARGET_KEEP` override
+the configuration for the commands that set them.
+
+Inspect cleanup with `journalctl -u nix-gc -u docker-prune` and
+`journalctl --user -u mbx-gc`. Apply configuration changes with `nix run .#apply`
+from this repository; the user timer is enabled through Home Manager.
+
 ## T3 Connect on Tahani
 
 The T3 aspect installs a `t3` launcher and its relay client, `cloudflared`, through Nix.
