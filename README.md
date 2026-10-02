@@ -48,8 +48,10 @@ Docker's default builder collects cache toward a 30 GB budget. Daily pruning
 also removes unused images, stopped containers, and cache older than seven
 days; volumes are retained.
 
-Home Manager supplies `~/.config/mbx/config.toml` and an hourly `mbx-gc` user
-timer. Mr. Boxington shares a 60 GiB collection budget across its action store,
+The development tools aspect installs `mbx` on the user's normal PATH on all
+three hosts. Disk maintenance supplies `~/.config/mbx/config.toml` and an hourly
+`mbx-gc` user timer on Tahani, using that installed tool. Mr. Boxington shares
+a 60 GiB collection budget across its action store,
 managed targets, and incremental state, prioritizing temporary and T3 worktree
 targets for eviction. This is a collection target rather than a hard quota:
 active builds, explicitly protected targets, and the most recent state can

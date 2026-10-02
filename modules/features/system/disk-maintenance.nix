@@ -45,12 +45,11 @@ _: {
     };
 
     homeManager = {
+      config,
       lib,
       pkgs,
       ...
-    }: let
-      mbx = pkgs.callPackage ./_disk-maintenance/mr-boxington.nix {};
-    in
+    }:
       lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         xdg.configFile."mbx/config.toml".source = ./_disk-maintenance/mbx.toml;
 
@@ -59,7 +58,7 @@ _: {
           Unit.Description = "Collect Rust build caches within their shared budget";
           Service = {
             Type = "oneshot";
-            ExecStart = "${lib.getExe mbx} gc";
+            ExecStart = "${config.home.profileDirectory}/bin/mbx gc";
             Nice = 10;
             IOSchedulingClass = "idle";
           };
