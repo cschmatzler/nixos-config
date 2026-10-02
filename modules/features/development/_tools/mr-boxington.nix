@@ -23,7 +23,6 @@ in
   stdenvNoCC.mkDerivation {
     pname = "mr-boxington";
     inherit version;
-    # Match the shared rust-style tooling; nixpkgs does not package mbx yet.
     src = fetchurl {
       url = "https://github.com/jdx/mr-boxington/releases/download/v${version}/mbx-${release.target}.tar.gz";
       inherit (release) hash;
