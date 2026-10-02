@@ -5,7 +5,6 @@ in {
     includes = [
       den.aspects.host-nixos-base
       den.aspects.home-assistant
-      den.aspects.email
       den.aspects.syncthing
       den.aspects.t3code
       den.aspects.cliproxyapi
@@ -16,7 +15,6 @@ in {
       includes = [
         den.aspects.user-workstation
         den.aspects.user-personal
-        den.aspects.email
         den.aspects.vscode-remote
       ];
       homeManager.home.stateVersion = "25.11";
