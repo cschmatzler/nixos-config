@@ -36,7 +36,7 @@ _: {
     virtualisation.oci-containers = {
       backend = "docker";
       containers.cliproxyapi = {
-        image = "eceasy/cli-proxy-api:v7.3.10@sha256:ee21d2cc4b8f89d0df142724479e6d8107e69ea91c5dc6c14abfd837e42c2422";
+        image = "eceasy/cli-proxy-api:v8.0.12@sha256:f2f1ee7a3cd18f49b8e4ba13611b86b9f9069122eff9fb182912996964aa945d";
         cmd = ["./CLIProxyAPI" "-config" "/data/config.yaml"];
         ports = ["127.0.0.1:8317:8317"];
         volumes = ["/var/lib/cliproxyapi:/data"];

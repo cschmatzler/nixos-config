@@ -15,7 +15,7 @@ _: {
         statix
         # javascript
         bun
-        nodejs_24
+        nodejs_26
         oxfmt
         pnpm
         python3
@@ -23,7 +23,7 @@ _: {
         docker
         docker-compose
         lazydocker
-        postgresql_17
+        postgresql_18
         sqlite
         # misc
         ast-grep
@@ -37,7 +37,7 @@ _: {
         tree-sitter
       ]
       ++ lib.optionals stdenv.hostPlatform.isDarwin [xcodes]
-      ++ lib.optionals stdenv.hostPlatform.isLinux [chromium gcc15];
+      ++ lib.optionals stdenv.hostPlatform.isLinux [chromium gcc16];
 
     home.sessionVariables =
       {

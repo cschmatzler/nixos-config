@@ -1,6 +1,6 @@
 _: let
   local = import ../../_lib/local.nix;
-  nightlyVersion = "0.0.45-nightly.20261001.2539";
+  nightlyVersion = "0.0.46-nightly.20261003.2610";
 in {
   den.aspects.t3code = {
     # Headless server, exposed as https://t3.<tailnet>. Pairing token: `journalctl -u t3code`.
@@ -12,7 +12,7 @@ in {
       home = local.mkHome pkgs.stdenv.hostPlatform.system;
       t3code = pkgs.writeShellApplication {
         name = "t3";
-        runtimeInputs = [pkgs.nodejs_24];
+        runtimeInputs = [pkgs.nodejs_26];
         text = ''exec npx --yes --ignore-scripts t3@${nightlyVersion} "$@"'';
       };
       relayEnvironment = {
@@ -62,7 +62,7 @@ in {
     }: let
       build = {
         arch = "arm64";
-        hash = "sha256-8r8aD2ajfWFTrqMK6+g0TGwBAfA8OJHQO0dczsu/4sQ=";
+        hash = "sha256-3I29TKUC4e6mS8AyqaEtnB3XU6DL13OvHPm2IeElOeQ=";
       };
       appName = "T3 Code (Nightly)";
       desktop = pkgs.stdenvNoCC.mkDerivation {

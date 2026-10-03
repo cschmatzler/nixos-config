@@ -3,19 +3,19 @@
   stdenvNoCC,
   fetchurl,
 }: let
-  version = "1.21.0";
+  version = "1.21.1";
   releases = {
     x86_64-linux = {
       target = "x86_64-unknown-linux-musl";
-      hash = "sha256-UiWjt3+Q4c09HvDRBUzNRZOuGbLJi4Fa8bgqTf7Q+Xs=";
+      hash = "sha256-eAzLUqo6lawbDuDs9RhFYbGkvfH+iBgDM9wOEakpgPU=";
     };
     aarch64-linux = {
       target = "aarch64-unknown-linux-musl";
-      hash = "sha256-EH+GlV+DI+qWypDKLQbUm5sbmXid2AB/cfnFm7F7ttc=";
+      hash = "sha256-gPvVEKPpzudjrUDLrb+/IvxUrwJYn8/Y8AcNcFhJNVM=";
     };
     aarch64-darwin = {
       target = "aarch64-apple-darwin";
-      hash = "sha256-SqnaEI6QxsJpgZ/tjoIqQvUQEmCWHNURmZ+s1XJs+dk=";
+      hash = "sha256-mUZKW62Ww6RycU+qQneqwiGT6po4XdCYkvXBu+6cVro=";
     };
   };
   release = releases.${stdenvNoCC.hostPlatform.system};
