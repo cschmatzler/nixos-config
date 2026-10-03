@@ -67,11 +67,15 @@ from this repository; the user timer is enabled through Home Manager.
 
 The T3 aspect installs a `t3` launcher and its relay client, `cloudflared`, through Nix.
 Terminal commands and the service use the same launcher, which runs
-`t3@0.0.45-nightly.20260930.2468` through npm with installation scripts disabled
+`t3@0.0.46-nightly.20261003.2610` through npm with installation scripts disabled
 to preserve the bundled native binaries. npm caches the nightly in the user's home
 directory; the first invocation requires network access.
 Both login shells and the `t3code` service use `T3CODE_CLOUDFLARED_PATH` to
 select the Nix package. T3 starts and supervises the tunnel itself.
+
+This nightly introduces [Orchestrator V2](https://github.com/pingdotgg/t3code/releases/tag/v0.0.46-nightly.20261003.2610).
+On first start, V2 copies the existing database and imports its threads; V1 and V2
+then keep separate histories. Mobile access requires a V2 beta client.
 
 Both environments also receive the production relay URL, Clerk publishable key,
 and CLI OAuth client ID from [upstream's public configuration](https://github.com/pingdotgg/t3code/blob/main/.env.example).
