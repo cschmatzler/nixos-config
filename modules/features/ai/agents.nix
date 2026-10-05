@@ -44,6 +44,7 @@ in {
         // {
           bro = inputs.dmmulroy-skills + "/bro";
           show-me = inputs.humanlayer-skills + "/plugins/show-me/skills/show-me";
+          visual-pr = inputs.humanlayer-skills + "/plugins/visual-pr/skills/visual-pr";
         };
     in {
       programs.mcp = {
