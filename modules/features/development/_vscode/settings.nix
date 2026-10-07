@@ -28,8 +28,9 @@ in
     "chat.commandCenter.enabled" = false;
     "workbench.settings.showAISearchToggle" = false;
     "extensions.ignoreRecommendations" = true;
-    "extensions.showRecommendationsOnlyOnDemand" = true;
-    "extensions.autoUpdate" = false;
+    # VS Code migrates the old boolean to a string on startup; keep the
+    # current value here so it does not try to rewrite Nix's read-only file.
+    "extensions.autoUpdate" = "off";
     "update.showReleaseNotes" = false;
     "telemetry.telemetryLevel" = "off";
 
@@ -97,6 +98,10 @@ in
     "security.promptForLocalFileProtocolHandling" = false;
     "remote.SSH.defaultExtensions" = [
       "jnoortheen.nix-ide"
+      "mkhl.direnv"
       "oxc.oxc-vscode"
+      "rust-lang.rust-analyzer"
+      "tamasfe.even-better-toml"
+      "vadimcn.vscode-lldb"
     ];
   }

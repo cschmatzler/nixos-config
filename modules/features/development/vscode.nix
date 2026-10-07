@@ -54,9 +54,13 @@ in {
                 extensions = with pkgs.vscode-extensions; [
                   asvetliakov.vscode-neovim
                   jnoortheen.nix-ide
+                  mkhl.direnv
                   ms-vscode-remote.remote-ssh
                   mvllow.rose-pine
                   oxc.oxc-vscode
+                  rust-lang.rust-analyzer
+                  tamasfe.even-better-toml
+                  vadimcn.vscode-lldb
                 ];
                 userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
                 userTasks = import ./_vscode/tasks.nix;
