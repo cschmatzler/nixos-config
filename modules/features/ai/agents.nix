@@ -54,7 +54,7 @@ in {
             command = "npx";
             args = ["-y" "opensrc-mcp"];
           };
-          executor.url = "https://executor.sh/mcp?search_tools=true";
+          executor.url = "https://v2.executor.sh/mcp";
           homeassistant.url = "https://${local.tailscaleHost "ha"}/api/mcp";
         };
       };
