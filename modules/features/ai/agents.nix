@@ -73,6 +73,7 @@ in {
             callbackPort = 12345;
           };
         };
+        settings.autoMemoryEnabled = false;
         settings.attribution = {
           commit = "";
           pr = "";
