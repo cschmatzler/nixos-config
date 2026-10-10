@@ -24,6 +24,9 @@ in {
       system.stateVersion = "25.11";
       networking.hostName = "tahani";
 
+      hardware.enableRedistributableFirmware = true;
+      hardware.cpu.intel.updateMicrocode = true;
+
       boot = {
         loader = {
           systemd-boot = {
