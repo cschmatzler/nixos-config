@@ -63,43 +63,6 @@ Inspect cleanup with `journalctl -u nix-gc -u docker-prune` and
 `journalctl --user -u mbx-gc`. Apply configuration changes with `nix run .#apply`
 from this repository; the user timer is enabled through Home Manager.
 
-## T3 Connect on Tahani
-
-The T3 aspect installs a `t3` launcher and its relay client, `cloudflared`, through Nix.
-Terminal commands and the service use the same launcher, which runs
-`t3@0.0.46-nightly.20261009.2873` through npm with installation scripts disabled
-to preserve the bundled native binaries. npm caches the nightly in the user's home
-directory; the first invocation requires network access.
-Both login shells and the `t3code` service use `T3CODE_CLOUDFLARED_PATH` to
-select the Nix package. T3 starts and supervises the tunnel itself.
-
-The nightly series includes [Orchestrator V2](https://github.com/pingdotgg/t3code/releases/tag/v0.0.46-nightly.20261003.2610).
-On first start, V2 copies the existing database and imports its threads; V1 and V2
-then keep separate histories. Mobile access requires a V2 beta client.
-
-Both environments also receive the production relay URL, Clerk publishable key,
-and CLI OAuth client ID from [upstream's public configuration](https://github.com/pingdotgg/t3code/blob/main/.env.example).
-These public identifiers configure T3 Connect for both the CLI and server;
-they are separate from the credentials created when you authenticate.
-
-After applying the configuration, open a fresh SSH session to Tahani as
-`cschmatzler` and authenticate:
-
-```bash
-t3 connect link --headless
-sudo systemctl restart t3code
-t3 connect status
-```
-
-Follow the authentication instructions printed by the first command. Use
-`connect link` to authorize the existing Nix-managed server; plain `t3 connect`
-also offers to install an upstream background service. Run authentication as
-your normal user so it shares the server's T3 state directory. Credentials
-remain in T3's writable user state, outside the Nix store.
-
-The existing Tailscale endpoint remains available alongside T3 Connect.
-Inspect tunnel startup with `journalctl -u t3code -f`.
-
 ## CLIProxyAPI on Tahani
 
 CLIProxyAPI runs from a pinned upstream Docker image. Its official management UI
