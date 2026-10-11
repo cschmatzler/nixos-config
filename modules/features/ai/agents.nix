@@ -47,6 +47,8 @@ in {
           visual-pr = inputs.humanlayer-skills + "/plugins/visual-pr/skills/visual-pr";
         };
     in {
+      home.packages = [inputs'.llm-agents.packages.cursor-agent];
+
       programs.mcp = {
         enable = true;
         servers = {
