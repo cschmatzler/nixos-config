@@ -34,7 +34,7 @@ in {
           wants = ["network-online.target"];
           after = ["network-online.target"];
           environment = relayEnvironment;
-          # Agents (claude, codex, opencode) come from the user's Home Manager profile.
+          # Agents (claude, codex) come from the user's Home Manager profile.
           path = ["${home}/.nix-profile" "/run/current-system/sw" "/run/wrappers"];
           serviceConfig = {
             User = local.user.name;

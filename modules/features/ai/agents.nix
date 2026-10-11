@@ -98,19 +98,6 @@ in {
       };
       home.file.".codex/config.toml".enable = false;
       home.file.".codex/prompts".source = ./_agents/prompts;
-
-      programs.opencode = {
-        enable = true;
-        package = inputs'.llm-agents.packages.opencode;
-        enableMcpIntegration = true;
-        commands = ./_agents/prompts;
-        inherit skills;
-        settings.mcp.homeassistant = {
-          type = "remote";
-          url = config.programs.mcp.servers.homeassistant.url;
-          oauth.clientId = "http://127.0.0.1:19876";
-        };
-      };
     };
   };
 }
