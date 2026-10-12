@@ -15,17 +15,8 @@ in {
         runtimeInputs = [pkgs.nodejs_26];
         text = ''exec npx --yes --ignore-scripts t3@${nightlyVersion} "$@"'';
       };
-      relayEnvironment = {
-        # Public production identifiers from https://github.com/pingdotgg/t3code/blob/main/.env.example.
-        T3CODE_RELAY_URL = "https://relay.t3.codes";
-        T3CODE_CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsudDMuY29kZXMk";
-        T3CODE_CLERK_CLI_OAUTH_CLIENT_ID = "hzxSgY2cH10sDU2r";
-        # Prefer the Nix package even if T3 previously downloaded its own client.
-        T3CODE_CLOUDFLARED_PATH = lib.getExe pkgs.cloudflared;
-      };
     in {
-      environment.systemPackages = [t3code pkgs.cloudflared];
-      environment.variables = relayEnvironment;
+      environment.systemPackages = [t3code];
 
       systemd.services = {
         t3code = {
@@ -33,7 +24,6 @@ in {
           wantedBy = ["multi-user.target"];
           wants = ["network-online.target"];
           after = ["network-online.target"];
-          environment = relayEnvironment;
           # Agents (claude, codex) come from the user's Home Manager profile.
           path = ["${home}/.nix-profile" "/run/current-system/sw" "/run/wrappers"];
           serviceConfig = {
