@@ -11,10 +11,6 @@ in {
       inputs.flake-parts.follows = "flake-parts";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dmmulroy-skills = {
-      url = "github:dmmulroy/skills";
-      flake = false;
-    };
     humanlayer-skills = {
       url = "github:humanlayer/skills";
       flake = false;
@@ -24,11 +20,6 @@ in {
   den.aspects.agents = {
     includes = [den.aspects.dev-tools];
 
-    os = {config, ...}: {
-      environment.etc."codex/config.toml".source =
-        config.home-manager.users.${local.user.name}.home.file.".codex/config.toml".source;
-    };
-
     homeManager = {
       config,
       inputs',
@@ -37,8 +28,6 @@ in {
     }: let
       skills = import ./_agents/skills.nix {inherit inputs lib;};
     in {
-      home.packages = [inputs'.llm-agents.packages.cursor-agent];
-
       programs.mcp = {
         enable = true;
         servers = {
@@ -72,22 +61,6 @@ in {
           sessionUrl = false;
         };
       };
-
-      programs.codex = {
-        enable = true;
-        package = inputs'.llm-agents.packages.codex;
-        enableMcpIntegration = true;
-        inherit skills;
-        settings.mcp_servers.homeassistant = {
-          url = config.programs.mcp.servers.homeassistant.url;
-          oauth = {
-            client_id = "http://127.0.0.1:12345";
-            callback_port = 12345;
-          };
-        };
-      };
-      home.file.".codex/config.toml".enable = false;
-      home.file.".codex/prompts".source = ./_agents/prompts;
     };
   };
 }

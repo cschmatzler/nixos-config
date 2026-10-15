@@ -3,7 +3,6 @@
     includes = [
       den.aspects.host-darwin-base
       den.aspects.paper
-      den.aspects.t3code
       den.aspects.taste
       den.aspects.syncthing
     ];

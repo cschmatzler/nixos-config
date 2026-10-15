@@ -13,14 +13,14 @@ function supportsFastMode(ctx: ExtensionContext): boolean {
 
 /** /fast opts OpenAI requests into the priority tier without changing reasoning effort. */
 export default function openaiFastMode(pi: ExtensionAPI): void {
-  let enabled = false;
+  let enabled = true;
 
   function updateStatus(ctx: ExtensionContext): void {
     ctx.ui.setStatus(STATE_KEY, enabled && supportsFastMode(ctx) ? "fast" : undefined);
   }
 
   function restoreState(ctx: ExtensionContext): void {
-    enabled = false;
+    enabled = true;
     for (const entry of ctx.sessionManager.getBranch()) {
       if (entry.type !== "custom" || entry.customType !== STATE_KEY) continue;
       const data = entry.data as { enabled?: unknown } | undefined;

@@ -1,9 +1,6 @@
 {den, ...}: {
   den.aspects.chidi = {
-    includes = [
-      den.aspects.host-darwin-base
-      den.aspects.t3code
-    ];
+    includes = [den.aspects.host-darwin-base];
 
     provides.to-users = {
       includes = [
