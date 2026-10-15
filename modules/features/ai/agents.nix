@@ -36,16 +36,7 @@ in {
       pkgs,
       ...
     }: let
-      skillDirs = path:
-        lib.mapAttrs (name: _: path + "/${name}")
-        (lib.filterAttrs (_: type: type == "directory") (builtins.readDir path));
-      skills =
-        skillDirs ./_agents/skills
-        // {
-          bro = inputs.dmmulroy-skills + "/bro";
-          show-me = inputs.humanlayer-skills + "/plugins/show-me/skills/show-me";
-          visual-pr = inputs.humanlayer-skills + "/plugins/visual-pr/skills/visual-pr";
-        };
+      skills = import ./_agents/skills.nix {inherit inputs lib;};
     in {
       home.packages = [inputs'.llm-agents.packages.cursor-agent];
 

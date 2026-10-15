@@ -1,11 +1,6 @@
-{inputs, ...}: let
+_: let
   local = import ../../_lib/local.nix;
 in {
-  flake-file.inputs.nixvim = {
-    url = "github:nix-community/nixvim";
-    inputs.flake-parts.follows = "flake-parts";
-  };
-
   den.aspects = {
     vscode = {
       darwin = {pkgs, ...}: {
@@ -20,21 +15,14 @@ in {
         pkgs,
         ...
       }: {
-        imports = [inputs.nixvim.homeModules.nixvim];
-
         config = lib.mkMerge [
           {
-            # Keep Neovim available as a regular CLI editor with only the
-            # plugins used by the vscode-neovim init on Darwin.
-            programs.nixvim = {
-              enable = true;
-              extraPlugins = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs.vimPlugins; [
-                flash-nvim
-                hardtime-nvim
-                mini-nvim
-              ]);
-              version.enableNixpkgsReleaseCheck = false;
-            };
+            # These also remain available to the separate vscode-neovim init.
+            programs.nixvim.extraPlugins = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs.vimPlugins; [
+              flash-nvim
+              hardtime-nvim
+              mini-nvim
+            ]);
           }
           (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
             xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;

@@ -6,6 +6,7 @@ in {
       den.aspects.host-nixos-base
       den.aspects.home-assistant
       den.aspects.syncthing
+      den.aspects.herdr
       den.aspects.t3code
       den.aspects.cliproxyapi
       den.aspects.vscode-remote

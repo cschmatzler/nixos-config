@@ -82,3 +82,15 @@ directory across restarts and upgrades. Later edits to the Nix seed or SOPS keys
 do not overwrite the live configuration; rotate live keys through the UI and
 update the encrypted seed separately. The UI assets follow upstream automatic
 updates independently of the pinned server image.
+
+## Herdr, Neovim, and Pi
+
+The workstation profile includes Herdr, the full Neovim configuration, and Pi
+on all three hosts. Herdr and Neovim use Zsh; VS Code keeps its separate Neovim
+init and editor integrations. Tahani also runs Collie for Herdr's mobile UI.
+
+Pi shares the current agent prompts, skills, and MCP servers. The
+[pi-claude-bridge](https://github.com/elidickinson/pi-claude-bridge) package uses
+the Nix-managed Claude Code executable and its existing login. Select a
+`claude-bridge` model with `/model`. The bridge is configured for the Max
+subscription with `provider.plan = "max"` in `modules/features/ai/pi.nix`.

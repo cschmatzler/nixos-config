@@ -76,6 +76,22 @@
         "type": "github"
       }
     },
+    "code-review-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765543014,
+        "narHash": "sha256-WpbQswkUpB4Nblos8+5UE5I/PHUQOi+RQ+hj4CCdL4o=",
+        "owner": "choplin",
+        "repo": "code-review.nvim",
+        "rev": "ed91462e20bd08c3be71efb11a4a7d00459f0b47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "choplin",
+        "repo": "code-review.nvim",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -175,6 +191,45 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "herdr": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1791993401,
+        "narHash": "sha256-N7e7oCKxeCoxek6UT8Lweq16rSsQQi34QMb7C2iNpm8=",
+        "owner": "herdrdev",
+        "repo": "herdr",
+        "rev": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "herdrdev",
+        "ref": "v0.9.5",
+        "repo": "herdr",
+        "type": "github"
+      }
+    },
+    "herdr-plugin-worktree-bootstrap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785750178,
+        "narHash": "sha256-I4PVs2tg6/veI67rPnwgCfsJJnUUNcS0qzXrJXSFyk0=",
+        "owner": "zerodice0",
+        "repo": "herdr-plugin-worktree-bootstrap",
+        "rev": "85427a6adfa883c7c001602f879cccdc95201e45",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zerodice0",
+        "ref": "v0.4.0",
+        "repo": "herdr-plugin-worktree-bootstrap",
         "type": "github"
       }
     },
@@ -309,23 +364,83 @@
         "type": "github"
       }
     },
+    "pi-packages": {
+      "inputs": {
+        "bun2nix": [
+          "llm-agents",
+          "bun2nix"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "llm-agents",
+          "systems"
+        ],
+        "treefmt-nix": [
+          "llm-agents",
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792056293,
+        "narHash": "sha256-H2wGrjy3/l8hHZjpTabPSkM6EocN7v8pn/F4MR7cJmE=",
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "rev": "4e80fdc9b04f4531a78c89f6dff66e0a4d920b3f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "brew-api": "brew-api",
         "brew-nix": "brew-nix",
+        "code-review-nvim": "code-review-nvim",
         "darwin": "darwin",
         "den": "den",
         "dmmulroy-skills": "dmmulroy-skills",
         "flake-aspects": "flake-aspects",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
+        "herdr": "herdr",
+        "herdr-plugin-worktree-bootstrap": "herdr-plugin-worktree-bootstrap",
         "home-manager": "home-manager",
         "humanlayer-skills": "humanlayer-skills",
         "import-tree": "import-tree",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
+        "pi-packages": "pi-packages",
         "sops-nix": "sops-nix"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "herdr",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783577481,
+        "narHash": "sha256-EWMxOWrJ031f8f/lrcEmhTRs4npw1/5N3Hcjin846c8=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "4cdea398dc491b082dccdce0fad1ed0b75fa3394",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     },
     "sops-nix": {
