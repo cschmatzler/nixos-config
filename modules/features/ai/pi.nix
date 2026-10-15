@@ -25,16 +25,16 @@
           showCacheMissNotices = true;
           defaultProvider = "openai-codex";
           defaultModel = "gpt-6.1-sol";
-          defaultThinkingLevel = "medium";
+          defaultThinkingLevel = "xhigh";
           enableInstallTelemetry = false;
           defaultTools = ["+codemode"];
           codemode.mode = "only";
           packages = [
             "npm:@ff-labs/pi-fff"
-            "npm:mattpocock-skills-unofficial-plugin"
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:pi-web-access"
-            "npm:pi-claude-bridge@0.9.3"
+            "npm:pi-claude-bridge"
+            "npm:pi-herdsman"
           ];
           prompts = ["./prompts"];
           skills = ["./skills"];
@@ -50,7 +50,6 @@
 
         ".pi/agent/claude-bridge.json".source = json.generate "pi-claude-bridge.json" {
           provider = {
-            # Use the Max subscription context limits.
             plan = "max";
             pathToClaudeCodeExecutable = "${config.programs.claude-code.package}/bin/claude";
           };
