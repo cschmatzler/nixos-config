@@ -189,6 +189,9 @@
         })
       ];
       extraConfigLua = ''
+        -- The optional watcher cannot install into the read-only Nix store.
+        -- Use CodeDiff's polling fallback unless a watcher is already available.
+        vim.env.CODEDIFF_WATCHER_NO_AUTO_INSTALL = "1"
         require("codediff").setup({
           highlights = {
             line_insert = "DiffAdd",
