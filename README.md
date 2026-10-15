@@ -94,3 +94,21 @@ Pi shares the current agent prompts, skills, and MCP servers. The
 the Nix-managed Claude Code executable and its existing login. Select a
 `claude-bridge` model with `/model`. The bridge is configured for the Max
 subscription with `provider.plan = "max"` in `modules/features/ai/pi.nix`.
+
+### Neovim reviews → Pi
+
+CodeDiff provides inline diffs and integrates with Neogit. Use
+`<leader>vd` for the current file, `<leader>vD` for all changes, or
+`<leader>vR` to compare the branch with `origin/HEAD`.
+
+Use code-review.nvim to collect feedback:
+- `<leader>rc` comments on the cursor line or visual selection; submit with Ctrl+Enter.
+- `<leader>rp` previews the review; `<leader>rl` lists comments.
+- `<leader>ry` copies structured Markdown with filenames, line numbers, and code context.
+- Paste into the running Pi session and ask it to address the feedback.
+- `<leader>rw` saves a review to a file instead; `<leader>rx` clears comments.
+
+Comments persist in the project's `.code-review/` directory. Clipboard export
+uses Neovim's OSC52 provider, so copying also works from an SSH session.
+GitHub PR browsing remains at `<leader>rg` (open) and `<leader>rP` (all).
+No browser service or custom Pi bridge is involved.

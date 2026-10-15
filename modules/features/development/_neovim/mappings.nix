@@ -59,8 +59,8 @@ in {
 
     # v - vcs
     (normal "<leader>va" ":vnew | terminal git blame -- %<CR>" "Annotate (blame)")
-    (normal "<leader>vd" (snacksPicker "git_diff({ filter = { buf = true } })") "Diff (current file)")
-    (normal "<leader>vD" (snacksPicker "git_diff()") "Diff (all changes)")
+    (normal "<leader>vd" ":CodeDiff file HEAD --inline<CR>" "Diff (current file)")
+    (normal "<leader>vD" ":CodeDiff --inline<CR>" "Diff (all changes)")
     (normal "<leader>ve" ":Neogit commit<CR>" "Commit")
     (normal "<leader>vf" ":!git fetch --all --prune<CR>" "Fetch")
     (normal "<leader>vv" ":Neogit<CR>" "Neogit")
@@ -69,9 +69,23 @@ in {
     (normal "<leader>vn" ":Neogit branch<CR>" "Branch")
     (normal "<leader>vp" ":!git push<CR>" "Push")
     (normal "<leader>vs" ":Neogit<CR>" "Status")
+    (normal "<leader>vq" ":CodeDiff<CR>" "Close diff")
+    (normal "<leader>vR" ":CodeDiff origin/HEAD...HEAD --inline<CR>" "Review branch")
 
-    # r - GitHub reviews/issues (actions are available with <CR> in the picker)
-    (normal "<leader>rp" (snacksPicker "gh_pr()") "Pull requests (open)")
+    # r - local review; copy structured feedback and paste into Pi
+    (normalVisual "<leader>rc" (luaFunction "require(\"code-review\").add_comment(vim.v.count > 0 and vim.v.count or nil)") "Add review comment")
+    (normal "<leader>rd" ":CodeReviewDeleteComment<CR>" "Delete comment")
+    (normal "<leader>rl" ":CodeReviewList<CR>" "List comments")
+    (normal "<leader>ro" ":CodeReviewResolve<CR>" "Resolve thread")
+    (normal "<leader>rp" ":CodeReviewPreview<CR>" "Preview review")
+    (normal "<leader>rr" ":CodeReviewReply<CR>" "Reply to comment")
+    (normal "<leader>rs" ":CodeReviewShowComment<CR>" "Show comment")
+    (normal "<leader>rw" ":CodeReviewSave<CR>" "Save review")
+    (normal "<leader>rx" ":CodeReviewClear<CR>" "Clear comments")
+    (normal "<leader>ry" ":CodeReviewCopy<CR>" "Copy review for Pi")
+
+    # GitHub review/issue pickers remain available alongside local reviews
+    (normal "<leader>rg" (snacksPicker "gh_pr()") "Pull requests (open)")
     (normal "<leader>rP" (snacksPicker "gh_pr({ state = 'all' })") "Pull requests (all)")
     (normal "<leader>ri" (snacksPicker "gh_issue()") "Issues (open)")
     (normal "<leader>rI" (snacksPicker "gh_issue({ state = 'all' })") "Issues (all)")

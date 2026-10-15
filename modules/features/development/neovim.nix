@@ -4,6 +4,10 @@
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
     };
+    code-review-nvim = {
+      url = "github:choplin/code-review.nvim";
+      flake = false;
+    };
   };
 
   den.aspects.neovim.homeManager = {
@@ -66,6 +70,16 @@
             };
             DiffText = {
               bg = "rose";
+              blend = 30;
+              bold = true;
+            };
+            CodeDiffCharInsertTheme = {
+              bg = "leaf";
+              blend = 30;
+              bold = true;
+            };
+            CodeDiffCharDeleteTheme = {
+              bg = "love";
               blend = 30;
               bold = true;
             };
@@ -164,6 +178,40 @@
           command = "setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2";
         }
       ];
+
+      extraPlugins = [
+        pkgs.vimPlugins.codediff-nvim
+        (pkgs.vimUtils.buildVimPlugin {
+          pname = "code-review-nvim";
+          version = "unstable";
+          src = inputs.code-review-nvim;
+          doCheck = false;
+        })
+      ];
+      extraConfigLua = ''
+        require("codediff").setup({
+          highlights = {
+            line_insert = "DiffAdd",
+            line_delete = "DiffDelete",
+            char_insert = "CodeDiffCharInsertTheme",
+            char_delete = "CodeDiffCharDeleteTheme",
+          },
+          diff = {
+            layout = "inline",
+            filler_text = "",
+            compact = true,
+            compact_context_lines = 3,
+          },
+        })
+        require("code-review").setup({
+          keymaps = false,
+          comment = { storage = { backend = "file" } },
+          ui = {
+            input_window = { title = "Review (C-CR to submit)", height = 4, border = "single" },
+            preview = { float = { border = "single" } },
+          },
+        })
+      '';
     };
   };
 }

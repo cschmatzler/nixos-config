@@ -27,6 +27,8 @@
           defaultModel = "gpt-6.1-sol";
           defaultThinkingLevel = "medium";
           enableInstallTelemetry = false;
+          defaultTools = ["+codemode"];
+          codemode.mode = "only";
           packages = [
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"

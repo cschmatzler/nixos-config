@@ -152,6 +152,8 @@
         preview_buffer.kind = "floating";
         popup.kind = "floating";
         disable_commit_confirmation = true;
+        diff_viewer = "codediff";
+        integrations.codediff = true;
         sections = let
           open = {
             folded = false;
@@ -401,8 +403,8 @@
           }
           {
             __unkeyed-1 = "<leader>r";
-            mode = "n";
-            group = "GitHub";
+            mode = ["n" "v"];
+            group = "Review";
             icon = " ";
           }
           {
