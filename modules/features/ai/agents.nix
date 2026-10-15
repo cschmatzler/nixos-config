@@ -33,7 +33,6 @@ in {
       config,
       inputs',
       lib,
-      pkgs,
       ...
     }: let
       skills = import ./_agents/skills.nix {inherit inputs lib;};

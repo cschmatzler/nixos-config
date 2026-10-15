@@ -21,10 +21,7 @@
       ./_neovim/plugins.nix
     ];
 
-    home.sessionVariables = {
-      EDITOR = "nvim";
-      MANPAGER = "nvim +Man!";
-    };
+    home.sessionVariables.MANPAGER = "nvim +Man!";
     home.shellAliases.v = "nvim";
 
     programs.zsh.initContent = ''

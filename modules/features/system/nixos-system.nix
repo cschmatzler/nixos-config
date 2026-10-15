@@ -26,13 +26,7 @@ with import ../../_lib/local.nix; {
 
     time.timeZone = "UTC";
 
-    nix = {
-      settings.trusted-users = [user.name];
-      nixPath = [
-        "nixos-config=${mkHome "x86_64-linux"}/.local/share/src/nixos-config"
-        "/etc/nixos"
-      ];
-    };
+    nix.settings.trusted-users = [user.name];
 
     users.users = {
       ${user.name} = {
@@ -40,8 +34,6 @@ with import ../../_lib/local.nix; {
         home = mkHome "x86_64-linux";
         extraGroups = [
           "wheel"
-          "sudo"
-          "network"
           "systemd-journal"
         ];
         shell = pkgs.zsh;

@@ -5,7 +5,6 @@ rec {
     emails = {
       personal = "christoph@schmatzler.com";
       work = "christoph@phase0.com";
-      icloud = "christoph.schmatzler@icloud.com";
     };
     ssh.authorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHfRZQ+7ejD3YHbyMTrV0gN1Gc0DxtGgl5CVZSupo5ws"

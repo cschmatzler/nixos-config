@@ -37,7 +37,7 @@
       ++ lib.optional pkgs.stdenv.hostPlatform.isLinux {
         plugin_id = "herdr.collie";
         name = "Collie";
-        version = collie.version;
+        inherit (collie) version;
         min_herdr_version = "0.7.0";
         manifest_path = "${collie}/herdr-plugin.toml";
         plugin_root = "${collie}";

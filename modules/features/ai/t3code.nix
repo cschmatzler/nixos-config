@@ -54,10 +54,11 @@ in {
         arch = "arm64";
         hash = "sha256-gywUwukdNDuDUuYTjUWmW0HF5ySvMiJamENvrNeqsI0=";
       };
-      appName = "T3 Code (Nightly)";
-      desktop = pkgs.stdenvNoCC.mkDerivation {
+      desktop = import ../../_lib/darwin-app.nix {
+        inherit pkgs;
         pname = "t3code-desktop";
         version = nightlyVersion;
+        appName = "T3 Code (Nightly)";
 
         src = pkgs.fetchurl {
           name = "T3-Code-${nightlyVersion}-${build.arch}.zip";
@@ -65,32 +66,12 @@ in {
           inherit (build) hash;
         };
 
-        nativeBuildInputs = [pkgs._7zz];
-        unpackCmd = "7zz x -snld20 -xr'!*:com.apple.*' $curSrc";
-        sourceRoot = "${appName}.app";
-
-        dontPatch = true;
-        dontConfigure = true;
-        dontBuild = true;
-        dontFixup = true;
-
-        installPhase = ''
-          runHook preInstall
-
-          mkdir -p "$out/Applications/${appName}.app"
-          cp -R . "$out/Applications/${appName}.app"
-
-          runHook postInstall
-        '';
-
         meta = {
           description = "Nightly desktop build of T3 Code";
           homepage = "https://t3.codes";
           downloadPage = "https://t3.codes/download";
           changelog = "https://github.com/pingdotgg/t3code/releases/tag/v${nightlyVersion}";
           license = lib.licenses.mit;
-          platforms = lib.platforms.darwin;
-          sourceProvenance = [lib.sourceTypes.binaryNativeCode];
         };
       };
     in {

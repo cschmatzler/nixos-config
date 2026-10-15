@@ -64,16 +64,6 @@
       url = "github:nix-community/nixvim";
       inputs.flake-parts.follows = "flake-parts";
     };
-    pi-packages = {
-      url = "github:numtide/llm-agents.nix";
-      inputs = {
-        bun2nix.follows = "llm-agents/bun2nix";
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "llm-agents/systems";
-        treefmt-nix.follows = "llm-agents/treefmt-nix";
-      };
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -14,49 +14,38 @@ in {
         lib,
         pkgs,
         ...
-      }: {
-        config = lib.mkMerge [
-          {
-            # These also remain available to the separate vscode-neovim init.
-            programs.nixvim.extraPlugins = lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with pkgs.vimPlugins; [
-              flash-nvim
-              hardtime-nvim
-              mini-nvim
-            ]);
-          }
-          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-            xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
+      }:
+        lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+          xdg.configFile."vscode-neovim/init.lua".source = ./_vscode/init.lua;
 
-            programs.ssh.settings.tahani = {
-              HostName = local.tailscaleHost "tahani";
-              User = local.user.name;
-            };
+          programs.ssh.settings.tahani = {
+            HostName = local.tailscaleHost "tahani";
+            User = local.user.name;
+          };
 
-            programs.vscode = {
-              enable = true;
-              package = null;
-              mutableExtensionsDir = false;
-              profiles.default = {
-                enableUpdateCheck = false;
-                enableExtensionUpdateCheck = false;
-                extensions = with pkgs.vscode-extensions; [
-                  asvetliakov.vscode-neovim
-                  jnoortheen.nix-ide
-                  mkhl.direnv
-                  ms-vscode-remote.remote-ssh
-                  mvllow.rose-pine
-                  oxc.oxc-vscode
-                  rust-lang.rust-analyzer
-                  tamasfe.even-better-toml
-                  vadimcn.vscode-lldb
-                ];
-                userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
-                userTasks = import ./_vscode/tasks.nix;
-              };
+          programs.vscode = {
+            enable = true;
+            package = null;
+            mutableExtensionsDir = false;
+            profiles.default = {
+              enableUpdateCheck = false;
+              enableExtensionUpdateCheck = false;
+              extensions = with pkgs.vscode-extensions; [
+                asvetliakov.vscode-neovim
+                jnoortheen.nix-ide
+                mkhl.direnv
+                ms-vscode-remote.remote-ssh
+                mvllow.rose-pine
+                oxc.oxc-vscode
+                rust-lang.rust-analyzer
+                tamasfe.even-better-toml
+                vadimcn.vscode-lldb
+              ];
+              userSettings = import ./_vscode/settings.nix {inherit config pkgs;};
+              userTasks = import ./_vscode/tasks.nix;
             };
-          })
-        ];
-      };
+          };
+        };
     };
 
     vscode-remote.nixos = {pkgs, ...}: {

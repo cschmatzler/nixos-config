@@ -4,25 +4,31 @@ _: let
 in {
   den.aspects.cli-tools.homeManager = {
     config,
+    lib,
     pkgs,
     ...
   }: let
     glowConfig = import ./_cli-tools/glow.nix {inherit config theme;};
+    # "#286983" -> "0x28,0x69,0x83", the RGB form ripgrep's --colors expects.
+    rgColor = color: lib.concatMapStringsSep "," (i: "0x${builtins.substring i 2 color}") [1 3 5];
   in {
-    home.packages = with pkgs; [
-      dust
-      fastfetch
-      fd
-      glow
-      htop
-      jq
-      killall
-      lsof
-      ouch
-      ov
-      sd
-      tree
-    ];
+    # macOS ships /usr/bin/trash.
+    home.packages = with pkgs;
+      [
+        dust
+        fastfetch
+        fd
+        glow
+        htop
+        jq
+        killall
+        lsof
+        ouch
+        ov
+        sd
+        tree
+      ]
+      ++ lib.optionals stdenv.hostPlatform.isLinux [trash-cli];
 
     home.sessionVariables.FZF_DEFAULT_OPTS = ''
       --bind=alt-k:up,alt-j:down
@@ -81,15 +87,15 @@ in {
           "--hidden"
           "--smart-case"
           "--colors=column:none"
-          "--colors=column:fg:0x28,0x69,0x83"
+          "--colors=column:fg:${rgColor hex.pine}"
           "--colors=column:style:underline"
           "--colors=line:none"
-          "--colors=line:fg:0x28,0x69,0x83"
+          "--colors=line:fg:${rgColor hex.pine}"
           "--colors=match:none"
-          "--colors=match:bg:0xf2,0xe9,0xe1"
-          "--colors=match:fg:0x56,0x94,0x9f"
+          "--colors=match:bg:${rgColor hex.overlay}"
+          "--colors=match:fg:${rgColor hex.foam}"
           "--colors=path:none"
-          "--colors=path:fg:0x56,0x94,0x9f"
+          "--colors=path:fg:${rgColor hex.foam}"
           "--colors=path:style:bold"
         ];
       };

@@ -44,10 +44,7 @@
     default = {
       nixos.home-manager.useGlobalPkgs = true;
       darwin.home-manager.useGlobalPkgs = true;
-      homeManager = {
-        home.enableNixpkgsReleaseCheck = false;
-        programs.home-manager.enable = true;
-      };
+      homeManager.home.enableNixpkgsReleaseCheck = false;
       includes = [
         den.provides.define-user
         den.provides.inputs'

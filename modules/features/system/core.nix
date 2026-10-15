@@ -21,9 +21,7 @@ _: {
     };
 
     nix = {
-      package = pkgs.nix;
       settings = {
-        cores = 0;
         experimental-features = [
           "nix-command"
           "flakes"

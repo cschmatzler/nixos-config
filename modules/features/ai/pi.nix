@@ -3,17 +3,6 @@
   inputs,
   ...
 }: {
-  # Keep Pi current without changing the other agents' existing pins.
-  flake-file.inputs.pi-packages = {
-    url = "github:numtide/llm-agents.nix";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-      flake-parts.follows = "flake-parts";
-      systems.follows = "llm-agents/systems";
-      treefmt-nix.follows = "llm-agents/treefmt-nix";
-      bun2nix.follows = "llm-agents/bun2nix";
-    };
-  };
   den.aspects.pi = {
     includes = [den.aspects.dev-tools];
 
@@ -26,7 +15,7 @@
       theme = import ../../_lib/theme.nix;
       json = pkgs.formats.json {};
     in {
-      home.packages = [inputs'.pi-packages.packages.pi];
+      home.packages = [inputs'.llm-agents.packages.pi];
 
       home.file = {
         ".pi/agent/settings.json".source = json.generate "pi-settings.json" {
@@ -150,7 +139,7 @@
         ".pi/agent/skills" = {
           source = pkgs.linkFarm "pi-skills" (pkgs.lib.mapAttrsToList (name: path: {inherit name path;}) (import ./_agents/skills.nix {
             inherit inputs;
-            lib = pkgs.lib;
+            inherit (pkgs) lib;
           }));
         };
         ".pi/agent/extensions" = {

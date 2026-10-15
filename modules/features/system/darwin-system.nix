@@ -42,7 +42,6 @@ with import ../../_lib/local.nix; {
 
     system.defaults = {
       NSGlobalDomain = {
-        AppleInterfaceStyle = null;
         AppleKeyboardUIMode = 2;
         AppleShowAllExtensions = true;
         ApplePressAndHoldEnabled = false;
@@ -185,18 +184,15 @@ with import ../../_lib/local.nix; {
         Hour = 2;
         Minute = 0;
       };
-      optimise = {
-        automatic = true;
-        interval = {
-          Weekday = 0;
-          Hour = 3;
-          Minute = 0;
-        };
+      optimise.interval = {
+        Weekday = 0;
+        Hour = 3;
+        Minute = 0;
       };
     };
 
     users.users.${user.name} = {
-      name = user.name;
+      inherit (user) name;
       home = mkHome "aarch64-darwin";
       isHidden = false;
       shell = pkgs.zsh;
