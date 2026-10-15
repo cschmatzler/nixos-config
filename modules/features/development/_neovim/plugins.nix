@@ -1,5 +1,8 @@
 {pkgs, ...}: {
+  programs.nixvim.extraPackages = [pkgs.gh];
+
   programs.nixvim.plugins = {
+    fff.enable = true;
     flash = {
       enable = true;
       settings.modes.char.enabled = false;
@@ -32,11 +35,21 @@
       enable = true;
       autoInstall.enable = true;
       settings = {
-        format_on_save = {};
+        # rust-analyzer passes the Cargo project's edition to rustfmt.
+        format_on_save.__raw = ''
+          function(bufnr)
+            if vim.bo[bufnr].filetype == "rust" then
+              return { lsp_format = "prefer", timeout_ms = 1000 }
+            end
+            return {}
+          end
+        '';
         formatters_by_ft = {
           nix = ["alejandra"];
           javascript = ["oxfmt"];
+          javascriptreact = ["oxfmt"];
           typescript = ["oxfmt"];
+          typescriptreact = ["oxfmt"];
         };
       };
     };
@@ -49,6 +62,12 @@
         dockerls.enable = true;
         jsonls.enable = true;
         nil_ls.enable = true;
+        rust_analyzer = {
+          enable = true;
+          installCargo = true;
+          installRustc = true;
+          installRustfmt = true;
+        };
         vtsls.enable = true;
         yamlls.enable = true;
         zk.enable = true;
@@ -133,8 +152,6 @@
         preview_buffer.kind = "floating";
         popup.kind = "floating";
         disable_commit_confirmation = true;
-        diff_viewer = "codediff";
-        integrations.codediff = true;
         sections = let
           open = {
             folded = false;
@@ -242,6 +259,7 @@
       enable = true;
       settings = {
         bigfile.enabled = true;
+        gh.enabled = true;
         indent.enabled = true;
         dashboard = {
           enabled = true;
@@ -313,12 +331,15 @@
         css
         diff
         elixir
+        html
         javascript
         lua
         markdown
         markdown_inline
         nix
         regex
+        rust
+        tsx
         typescript
         vim
       ];
@@ -380,8 +401,8 @@
           }
           {
             __unkeyed-1 = "<leader>r";
-            mode = ["n" "v"];
-            group = "Review";
+            mode = "n";
+            group = "GitHub";
             icon = " ";
           }
           {

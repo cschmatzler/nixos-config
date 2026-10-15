@@ -28,7 +28,6 @@
           defaultThinkingLevel = "medium";
           enableInstallTelemetry = false;
           packages = [
-            "./packages/pi-herdr"
             "npm:@ff-labs/pi-fff"
             "npm:mattpocock-skills-unofficial-plugin"
             "npm:@juicesharp/rpiv-ask-user-question"
@@ -128,10 +127,6 @@
           };
         };
 
-        ".pi/agent/packages/pi-herdr" = {
-          source = ./_pi/packages/pi-herdr;
-          recursive = true;
-        };
         ".pi/agent/prompts" = {
           source = ./_agents/prompts;
           recursive = true;

@@ -506,12 +506,6 @@ const searchingMessages = [
   "Dusting the codebase for fingerprints...",
 ] as const;
 
-const herdingMessages = [
-  "Rallying the herd...",
-  "Counting agents before they hatch...",
-  "Passing notes between tiny terminals...",
-] as const;
-
 const toolMessages = [
   "Deploying the tool gnomes...",
   "Handing this to a tiny specialist...",
@@ -554,10 +548,6 @@ function messagesForTool(toolName: string): readonly string[] {
     case "find":
     case "ls":
       return searchingMessages;
-    case "herdr_layout":
-    case "herdr_pane":
-    case "herdr_agent":
-      return herdingMessages;
     default:
       return toolMessages;
   }
