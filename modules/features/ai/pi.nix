@@ -35,7 +35,7 @@
           hideThinkingBlock = true;
           showCacheMissNotices = true;
           defaultProvider = "openai-codex";
-          defaultModel = "gpt-5.6-sol";
+          defaultModel = "gpt-6.1-sol";
           defaultThinkingLevel = "medium";
           enableInstallTelemetry = false;
           packages = [
@@ -52,7 +52,7 @@
 
         ".pi/agent/mcp.json".source = json.generate "pi-mcp.json" {
           mcpServers =
-            config.programs.mcp.servers
+            pkgs.lib.mapAttrs (_: server: pkgs.lib.filterAttrs (_: value: value != null) server) config.programs.mcp.servers
             // {
               homeassistant = config.programs.claude-code.mcpServers.homeassistant;
             };
