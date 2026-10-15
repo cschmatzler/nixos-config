@@ -23,7 +23,7 @@
           quietStartup = true;
           hideThinkingBlock = true;
           showCacheMissNotices = true;
-          defaultProvider = "openai-codex";
+          defaultProvider = "openai";
           defaultModel = "gpt-6.1-sol";
           defaultThinkingLevel = "xhigh";
           enableInstallTelemetry = false;
@@ -32,9 +32,9 @@
           packages = [
             "npm:@ff-labs/pi-fff"
             "npm:@juicesharp/rpiv-ask-user-question"
+            "npm:@juicesharp/rpiv-todo"
             "npm:pi-web-access"
             "npm:pi-claude-bridge"
-            "npm:pi-herdsman"
           ];
           prompts = ["./prompts"];
           skills = ["./skills"];

@@ -89,6 +89,9 @@ export default function compactFooter(pi: ExtensionAPI): void {
           theme.fg("dim", formatTokens(sessionTokens(ctx))),
         ];
 
+        const fastMode = statuses.get("openai-fast-mode");
+        if (fastMode) parts.push(theme.fg("accent", fastMode));
+
         const context = formatContext(ctx);
         if (context) {
           if (context.percent > 75) parts.push(theme.fg("error", context.text));

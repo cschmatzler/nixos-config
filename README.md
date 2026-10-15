@@ -95,6 +95,12 @@ the Nix-managed Claude Code executable and its existing login. Select a
 `claude-bridge` model with `/model`. The bridge is configured for the Max
 subscription with `provider.plan = "max"` in `modules/features/ai/pi.nix`.
 
+Use `/fast` to toggle OpenAI fast mode, or `/fast on|off|status` to set or inspect
+it explicitly. Fast mode requests the priority service tier without changing
+reasoning effort and can increase cost or subscription usage. It defaults to
+off, follows the session branch across reloads and resumes, and shows `fast`
+in the footer while active on an OpenAI model.
+
 ### Neovim reviews → Pi
 
 CodeDiff provides inline diffs and integrates with Neogit. Use
