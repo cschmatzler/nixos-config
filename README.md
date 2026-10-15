@@ -102,11 +102,6 @@ on; `/fast off` disables it for the current conversation. The setting follows
 the session branch across reloads and resumes, and shows `fast` in the footer
 while active on an OpenAI model.
 
-Pstack's `poteto-mode` skill loads automatically with the first prompt in each
-new conversation, without a separate startup model turn. Resumed conversations
-are left alone. Use `/poteto-mode off` before the first prompt to opt out;
-`/poteto-mode` remains available for manual activation.
-
 ### Neovim reviews → Pi
 
 CodeDiff provides inline diffs and integrates with Neogit. Use

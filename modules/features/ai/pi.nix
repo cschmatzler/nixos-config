@@ -30,7 +30,6 @@
           defaultTools = ["+codemode"];
           codemode.mode = "only";
           packages = [
-            "npm:@casualjim/pi-pstack"
             "npm:@ff-labs/pi-fff"
             "npm:@gotgenes/pi-anthropic-auth"
             "npm:@juicesharp/rpiv-ask-user-question"

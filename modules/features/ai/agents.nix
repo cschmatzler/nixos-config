@@ -36,6 +36,7 @@ in {
             args = ["-y" "opensrc-mcp"];
           };
           executor.url = "https://v2.executor.sh/mcp";
+          executor-selfhost.url = "https://executor.schmatzler.com/mcp";
           homeassistant.url = "https://${local.tailscaleHost "ha"}/api/mcp";
         };
       };
