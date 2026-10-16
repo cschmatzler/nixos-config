@@ -52,12 +52,25 @@ The development tools aspect installs `mbx` on the user's normal PATH on all
 three hosts. Disk maintenance supplies `~/.config/mbx/config.toml` and an hourly
 `mbx-gc` user timer on Tahani, using that installed tool. Mr. Boxington shares
 a 60 GiB collection budget across its action store,
-managed targets, and incremental state, prioritizing temporary and T3 worktree
-targets for eviction. This is a collection target rather than a hard quota:
-active builds, explicitly protected targets, and the most recent state can
-exceed it. Files in unmanaged Cargo targets and worktree source files are
-outside this policy. Environment variables such as `MBX_TARGET_KEEP` override
-the configuration for the commands that set them.
+managed targets, and incremental state, prioritizing temporary targets for
+eviction. Targets under `.t3/worktrees` are kept while their checkout exists,
+including between worker commands and under disk pressure; deleting the
+checkout makes them eligible for collection again. A build lease alone only
+protects a target while its mbx command runs, so evicting live worker targets
+can leave dangling `target` symlinks between commands.
+
+This is a collection target rather than a hard quota: live T3 worktrees,
+active builds, other explicitly protected targets, and the most recent state
+can exceed it. Remove finished worktrees to release their protected caches.
+Files in unmanaged Cargo targets and worktree source files are outside this
+policy. Environment variables such as `MBX_TARGET_KEEP` override the
+configuration for the commands that set them.
+
+The policy does not repair links left dangling by earlier collection. From
+the affected Cargo workspace, run `mbx build` without a target-directory
+override to recreate its managed target and record. Cargo that bypasses mbx,
+or a build using `--target-dir` or `CARGO_TARGET_DIR`, does not perform this
+repair.
 
 Inspect cleanup with `journalctl -u nix-gc -u docker-prune` and
 `journalctl --user -u mbx-gc`. Apply configuration changes with `nix run .#apply`
