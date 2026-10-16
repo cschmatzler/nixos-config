@@ -83,6 +83,18 @@ do not overwrite the live configuration; rotate live keys through the UI and
 update the encrypted seed separately. The UI assets follow upstream automatic
 updates independently of the pinned server image.
 
+## OpenCode 2
+
+All three workstation users receive `opencode2` from `llm-agents.nix`, with
+self-updates disabled so Nix owns upgrades. Its Home Manager configuration
+reuses the shared MCP servers and skills, including Home Assistant's OAuth
+client settings. Host-specific skills under `~/.agents/skills` are discovered
+automatically.
+
+The only configured plugin is `@ex-machina/opencode-anthropic-auth`, pinned to
+the v2-compatible `2.0.0-next.6` release. After applying, launch `opencode2`, run
+`/connect`, and select **Anthropic → Claude Pro/Max** to sign in.
+
 ## Herdr, Neovim, and Pi
 
 The workstation profile includes Herdr, the full Neovim configuration, and Pi
