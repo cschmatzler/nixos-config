@@ -8,6 +8,7 @@ in {
       den.aspects.syncthing
       den.aspects.herdr
       den.aspects.cliproxyapi
+      den.aspects.t3code
       den.aspects.vscode-remote
     ];
 

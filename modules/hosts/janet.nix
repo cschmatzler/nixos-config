@@ -2,6 +2,7 @@
   den.aspects.janet = {
     includes = [
       den.aspects.host-darwin-base
+      den.aspects.t3code
       den.aspects.paper
       den.aspects.taste
       den.aspects.syncthing
