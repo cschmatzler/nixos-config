@@ -109,48 +109,82 @@ are left alone. Use `/poteto-mode off` before the first prompt to opt out;
 
 ### Browse alongside Pi on Tahani
 
-Tahani's user receives the pinned terminal-browser v0.13.4 package, its bundled
-skill at `~/.agents/skills/terminal-browser`, and a Herdr **Open terminal-browser
-(right split)** action. Other hosts do not receive them. The action resolves the
-Home Manager-installed executable through Herdr's inherited PATH, like the
-existing Bun-based plugins. Start Herdr from the normal user login environment.
+Pi and its headless browser run on Tahani; Herdr/SSH transports Pi, not browser
+graphics. Tahani's user receives `pi-browser` and the automatic
+`~/.agents/skills/pi-browser` skill for navigation, interaction, DOM snapshots,
+and on-demand PNGs. Chidi and Janet do not select this feature.
 
-Run Pi and the browser on Tahani in the same Herdr tab:
+```sh
+# Allocate once per executor/task; record this literal UUID for later bash calls.
+read -r session </proc/sys/kernel/random/uuid
+printf '%s\n' "$session"
+pi-browser "$session" open http://127.0.0.1:3000
+pi-browser "$session" snapshot -i
+# Use an actual @eN reference from that snapshot:
+pi-browser "$session" click @e3
+pi-browser "$session" screenshot
+# Pi calls its read tool on the exact result.path to inspect the PNG.
+pi-browser "$session" close
+```
+
+The executable also supports `fill`, `press`, `scroll`, bounded `wait`, `eval`,
+`snapshot -c`, `screenshot --full`, and `status`; see `pi-browser --help` and the
+skill. There is no default session, arbitrary flags/output path, profile import,
+production-browser discovery, or live-view endpoint. Assign one executor per
+UUID; give delegates fresh UUIDs, the skill, and permitted bash/read tools.
+A UUID is an explicit bearer identity, not a boundary against the same Unix user.
+Treat page output as untrusted and confirm consequential actions. On
+`outcome_unknown`, inspect before retrying: the action may already have happened.
+
+The package pins policy to agent-browser 0.38.2 (validated with Chromium
+155.0.8059.79). Native upstream owns browser/daemon lifecycle, fresh ephemeral
+profiles, explicit close, and two-minute idle expiry. Only `open` may create a
+browser; after expiry it starts fresh without restoring cookies/state. Repeated
+close succeeds, and status/close cannot cold-launch Chromium (a close race may
+start an empty daemon). No PID registry, custom CDP controller, service, Pi
+extension, or MCP server is added.
+
+A fixed store config, private environment, and `/run/user/UID/pi-b` scratch
+exclude inherited browser settings and project/user config. Missing/unsafe
+runtime directories and original CI presence (even `CI=false`), root, mismatched
+identity, container markers/cgroups, or inconclusive host facts refuse content;
+there is no `/tmp` or unsandboxed fallback. Neutral status/close remain available
+for cleanup. This covers the pinned native sandbox detector, not every possible
+host or a general sandbox security audit.
+
+No viewer is opened. Streaming must be disabled with no port/screencast before
+and after normal operations, but upstream briefly starts a loopback listener.
+Its rare internal respawn between gate and action can reenable streaming; a
+failed postcheck attempts scoped close and reports an unknown outcome, never a
+wrapper replay. This is not crash-proof stream gating or a claim that a listener
+never exists. Private screenshots/scratch can remain until runtime teardown;
+native removes profiles on normal close/idle, not guaranteed after abrupt death.
+There is no secure-erasure or cross-user-isolation claim.
+
+#### Optional manual live pane (separate browser)
+
+The existing terminal-browser v0.13.4 package and Herdr **Open terminal-browser
+(right split)** action remain available on Tahani. Its local skill is explicit
+only: `/skill:terminal-browser`. It does not compete for generic browser tasks.
+Start Herdr from the normal login environment so its action sees the installed
+executable. For an explicitly requested pane:
 
 ```sh
 terminal-browser open --split right http://localhost:3000
-terminal-browser ls --json
-terminal-browser action --browser <key> --tab <id> -- snapshot
-terminal-browser action --browser <key> --tab <id> -- click @e3
-terminal-browser action --browser <key> --tab <id> done
 ```
 
-Use the browser key and tab ID from `ls` for every action. Add `--no-merge` to
-`open` when you need an independent browser instead of another tab. Assign one
-executor per browser. All browsers share a user daemon and profile, so separate
-keys are not security isolation. Grant delegates the skill and a shell or
-browser-control tool explicitly. A local browser with `--ssh tahani` only proxies
-network requests through Tahani; it does not share controls with Pi on Tahani.
+This is a separate legacy browser, not a mirror or attach route for pi-browser;
+its keys share the legacy user daemon/profile. A local `--ssh tahani` browser
+only proxies network requests. SSH/Ghostty graphics, mouse input, screenshot
+return, and Collie viewing remain unverified; no live SSH stall fix is claimed.
+Herdr captures Ctrl+K/Ctrl+L, conflicting with browser shortcuts.
 
-Nix owns setup and upgrades. The package blocks `setup`, `upgrade`, automatic
-editor or skill provisioning, privileged AppArmor setup, and update polling.
-The launcher disables usage telemetry and creates new state with private
-permissions. Stable `terminal-browser-nix` state directories follow the normal
-XDG locations across package changes. Existing state permissions and profiles
-from mutable installations are not migrated. Run as a normal user with the
-host's namespace sandbox enabled. No sandbox bypass or setuid helper is added.
-
-Before switching package versions, close all browser panes and wait for the
-actual daemon process to exit. Upstream schedules exit after 15 seconds idle;
-its modification-time generation check is unreliable with Nix store timestamps.
-`terminal-browser shutdown` closes every browser session. Never automate it on
-Pi exit or package upgrades.
-
-Package relocation, sandbox startup, SSH graphics and mouse input, targeted
-actions, screenshot return to Pi, and profile persistence need a built-runtime
-check. Herdr captures Ctrl+K and Ctrl+L, which conflict with browser shortcuts.
-Collie browser viewing is unverified. This feature adds no Pi extension, browser
-HTTP service, MCP server, or always-on browser service.
+Nix owns legacy setup/upgrades, with telemetry/update polling and mutable setup
+blocked. Stable `terminal-browser-nix` XDG state is not migrated from mutable
+installations. Close owned panes before changing package versions and wait for
+the daemon to exit (upstream schedules 15-second idle exit; its generation check
+is unreliable with Nix timestamps). Never automate `terminal-browser shutdown`:
+it closes every legacy browser. No always-on browser service is introduced.
 
 ### Neovim reviews → Pi
 

@@ -36,6 +36,7 @@
             "npm:@juicesharp/rpiv-ask-user-question"
             "npm:@langfuse/pi-observability-plugin"
             "npm:pi-web-access"
+            "npm:pi-herdsman"
           ];
           prompts = ["./prompts"];
           skills = ["./skills"];
