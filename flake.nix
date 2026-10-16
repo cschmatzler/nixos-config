@@ -31,14 +31,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    herdr = {
-      url = "github:herdrdev/herdr/v0.9.5";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    herdr-plugin-worktree-bootstrap = {
-      url = "github:zerodice0/herdr-plugin-worktree-bootstrap/v0.4.0";
-      flake = false;
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

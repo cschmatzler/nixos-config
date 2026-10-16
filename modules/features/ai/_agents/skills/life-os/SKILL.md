@@ -17,7 +17,7 @@ Read [references/notion-ids.md](references/notion-ids.md) before the first Notio
 4. Return a short summary and direct Notion link for every created or changed record.
 5. Keep implementation terms such as routing contract, mutation, schema, deduplication, and handoff out of visible Notion content.
 
-Pi in this workflow means the Pi assistant using Notion MCP. It does not mean Notion AI and requires no Notion AI purchase.
+This workflow uses the assistant with Notion MCP. It does not use Notion AI and requires no Notion AI purchase.
 
 ## Routing
 

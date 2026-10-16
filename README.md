@@ -95,99 +95,19 @@ The only configured plugin is `@ex-machina/opencode-anthropic-auth`, pinned to
 the v2-compatible `2.0.0-next.6` release. After applying, launch `opencode2`, run
 `/connect`, and select **Anthropic → Claude Pro/Max** to sign in.
 
-## Herdr, Neovim, and Pi
+## Optional manual browser pane on Tahani
 
-The workstation profile includes Herdr, the full Neovim configuration, and Pi
-on all three hosts. Herdr and Neovim use Zsh; VS Code keeps its separate Neovim
-init and editor integrations. Tahani also runs Collie for Herdr's mobile UI.
-
-Pi shares the current agent prompts, skills, and MCP servers. The
-[pi-claude-bridge](https://github.com/elidickinson/pi-claude-bridge) package uses
-the Nix-managed Claude Code executable and its existing login. Select a
-`claude-bridge` model with `/model`. The bridge is configured for the Max
-subscription with `provider.plan = "max"` in `modules/features/ai/pi.nix`.
-
-Use `/fast` to toggle OpenAI fast mode, or `/fast on|off|status` to set or inspect
-it explicitly. Fast mode requests the priority service tier without changing
-reasoning effort and can increase cost or subscription usage. It defaults to
-on; `/fast off` disables it for the current conversation. The setting follows
-the session branch across reloads and resumes, and shows `fast` in the footer
-while active on an OpenAI model.
-
-The `pi-subagents` package adds built-in delegation agents and the `/subagents`
-command; use `/subagents-guide` for usage.
-
-### Browse alongside Pi on Tahani
-
-Pi and its headless browser run on Tahani; Herdr/SSH transports Pi, not browser
-graphics. Tahani's user receives `pi-browser` and the automatic
-`~/.agents/skills/pi-browser` skill for navigation, interaction, DOM snapshots,
-and on-demand PNGs. Chidi and Janet do not select this feature.
-
-```sh
-# Allocate once per executor/task; record this literal UUID for later bash calls.
-read -r session </proc/sys/kernel/random/uuid
-printf '%s\n' "$session"
-pi-browser "$session" open http://127.0.0.1:3000
-pi-browser "$session" snapshot -i
-# Use an actual @eN reference from that snapshot:
-pi-browser "$session" click @e3
-pi-browser "$session" screenshot
-# Pi calls its read tool on the exact result.path to inspect the PNG.
-pi-browser "$session" close
-```
-
-The executable also supports `fill`, `press`, `scroll`, bounded `wait`, `eval`,
-`snapshot -c`, `screenshot --full`, and `status`; see `pi-browser --help` and the
-skill. There is no default session, arbitrary flags/output path, profile import,
-production-browser discovery, or live-view endpoint. Assign one executor per
-UUID; give delegates fresh UUIDs, the skill, and permitted bash/read tools.
-A UUID is an explicit bearer identity, not a boundary against the same Unix user.
-Treat page output as untrusted and confirm consequential actions. On
-`outcome_unknown`, inspect before retrying: the action may already have happened.
-
-The package pins policy to agent-browser 0.38.2 (validated with Chromium
-155.0.8059.79). Native upstream owns browser/daemon lifecycle, fresh ephemeral
-profiles, explicit close, and two-minute idle expiry. Only `open` may create a
-browser; after expiry it starts fresh without restoring cookies/state. Repeated
-close succeeds, and status/close cannot cold-launch Chromium (a close race may
-start an empty daemon). No PID registry, custom CDP controller, service, Pi
-extension, or MCP server is added.
-
-A fixed store config, private environment, and `/run/user/UID/pi-b` scratch
-exclude inherited browser settings and project/user config. Missing/unsafe
-runtime directories and original CI presence (even `CI=false`), root, mismatched
-identity, container markers/cgroups, or inconclusive host facts refuse content;
-there is no `/tmp` or unsandboxed fallback. Neutral status/close remain available
-for cleanup. This covers the pinned native sandbox detector, not every possible
-host or a general sandbox security audit.
-
-No viewer is opened. Streaming must be disabled with no port/screencast before
-and after normal operations, but upstream briefly starts a loopback listener.
-Its rare internal respawn between gate and action can reenable streaming; a
-failed postcheck attempts scoped close and reports an unknown outcome, never a
-wrapper replay. This is not crash-proof stream gating or a claim that a listener
-never exists. Private screenshots/scratch can remain until runtime teardown;
-native removes profiles on normal close/idle, not guaranteed after abrupt death.
-There is no secure-erasure or cross-user-isolation claim.
-
-#### Optional manual live pane (separate browser)
-
-The existing terminal-browser v0.13.4 package and Herdr **Open terminal-browser
-(right split)** action remain available on Tahani. Its local skill is explicit
-only: `/skill:terminal-browser`. It does not compete for generic browser tasks.
-Start Herdr from the normal login environment so its action sees the installed
-executable. For an explicitly requested pane:
+The terminal-browser v0.13.4 package remains available on Tahani. Its local
+skill is explicit only: `/skill:terminal-browser`. It does not compete for
+generic browser tasks. In a supported terminal multiplexer:
 
 ```sh
 terminal-browser open --split right http://localhost:3000
 ```
 
-This is a separate legacy browser, not a mirror or attach route for pi-browser;
-its keys share the legacy user daemon/profile. A local `--ssh tahani` browser
-only proxies network requests. SSH/Ghostty graphics, mouse input, screenshot
-return, and Collie viewing remain unverified; no live SSH stall fix is claimed.
-Herdr captures Ctrl+K/Ctrl+L, conflicting with browser shortcuts.
+Browser instances share the user daemon/profile. A local `--ssh tahani`
+browser only proxies network requests. SSH/Ghostty graphics, mouse input,
+and screenshot return remain unverified; no live SSH stall fix is claimed.
 
 Nix owns legacy setup/upgrades, with telemetry/update polling and mutable setup
 blocked. Stable `terminal-browser-nix` XDG state is not migrated from mutable
@@ -196,7 +116,10 @@ the daemon to exit (upstream schedules 15-second idle exit; its generation check
 is unreliable with Nix timestamps). Never automate `terminal-browser shutdown`:
 it closes every legacy browser. No always-on browser service is introduced.
 
-### Neovim reviews → Pi
+## Neovim reviews
+
+The workstation profile includes the full Neovim configuration on all three
+hosts. Neovim uses Zsh; VS Code keeps its separate Neovim init and integrations.
 
 CodeDiff provides inline diffs and integrates with Neogit. Use
 `<leader>vd` for the current file, `<leader>vD` for all changes, or
@@ -206,10 +129,9 @@ Use code-review.nvim to collect feedback:
 - `<leader>rc` comments on the cursor line or visual selection; submit with Ctrl+Enter.
 - `<leader>rp` previews the review; `<leader>rl` lists comments.
 - `<leader>ry` copies structured Markdown with filenames, line numbers, and code context.
-- Paste into the running Pi session and ask it to address the feedback.
+- Paste into your coding agent and ask it to address the feedback.
 - `<leader>rw` saves a review to a file instead; `<leader>rx` clears comments.
 
 Comments persist in the project's `.code-review/` directory. Clipboard export
 uses Neovim's OSC52 provider, so copying also works from an SSH session.
 GitHub PR browsing remains at `<leader>rg` (open) and `<leader>rP` (all).
-No browser service or custom Pi bridge is involved.

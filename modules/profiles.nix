@@ -28,8 +28,6 @@ in {
       den.aspects.disk-maintenance
       den.aspects.neovim
       den.aspects.vscode
-      den.aspects.herdr
-      den.aspects.pi
       den.aspects.opencode
       den.aspects.agents
       den.aspects.zk

@@ -23,7 +23,7 @@ in {
           wantedBy = ["multi-user.target"];
           wants = ["network-online.target"];
           after = ["network-online.target"];
-          # Pi comes from the user's Home Manager profile.
+          # Agent executables come from the user's Home Manager profile.
           path = ["${home}/.nix-profile" "/run/current-system/sw" "/run/wrappers"];
           serviceConfig = {
             User = local.user.name;

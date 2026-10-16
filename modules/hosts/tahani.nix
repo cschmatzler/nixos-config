@@ -6,7 +6,6 @@ in {
       den.aspects.host-nixos-base
       den.aspects.home-assistant
       den.aspects.syncthing
-      den.aspects.herdr
       den.aspects.cliproxyapi
       den.aspects.t3code
       den.aspects.vscode-remote
@@ -17,7 +16,6 @@ in {
         den.aspects.user-workstation
         den.aspects.user-personal
         den.aspects.vscode-remote
-        den.aspects.pi-browser
         den.aspects.terminal-browser
       ];
       homeManager.home.stateVersion = "25.11";

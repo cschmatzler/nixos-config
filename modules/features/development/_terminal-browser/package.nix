@@ -108,7 +108,7 @@ in
 
     preFixup = ''
       root="$out/libexec/terminal-browser"
-      # GApps arguments exist only after preFixupPhases. Herdr reentry uses
+      # GApps arguments exist only after preFixupPhases. All entry points use
       # this same launcher, so privacy and environment policy belong here.
       makeShellWrapper "$root/${release.paths.electron}" "$root/${release.paths.launcher}" \
         --run 'umask 077' \

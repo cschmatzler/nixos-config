@@ -72,7 +72,7 @@ in {
     (normal "<leader>vq" ":CodeDiff<CR>" "Close diff")
     (normal "<leader>vR" ":CodeDiff origin/HEAD...HEAD --inline<CR>" "Review branch")
 
-    # r - local review; copy structured feedback and paste into Pi
+    # r - local review; copy structured feedback for a coding agent
     (normalVisual "<leader>rc" (luaFunction "require(\"code-review\").add_comment(vim.v.count > 0 and vim.v.count or nil)") "Add review comment")
     (normal "<leader>rd" ":CodeReviewDeleteComment<CR>" "Delete comment")
     (normal "<leader>rl" ":CodeReviewList<CR>" "List comments")
@@ -82,7 +82,7 @@ in {
     (normal "<leader>rs" ":CodeReviewShowComment<CR>" "Show comment")
     (normal "<leader>rw" ":CodeReviewSave<CR>" "Save review")
     (normal "<leader>rx" ":CodeReviewClear<CR>" "Clear comments")
-    (normal "<leader>ry" ":CodeReviewCopy<CR>" "Copy review for Pi")
+    (normal "<leader>ry" ":CodeReviewCopy<CR>" "Copy review for agent")
 
     # GitHub review/issue pickers remain available alongside local reviews
     (normal "<leader>rg" (snacksPicker "gh_pr()") "Pull requests (open)")
