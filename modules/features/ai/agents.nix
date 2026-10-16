@@ -1,8 +1,4 @@
-{
-  den,
-  inputs,
-  ...
-}: let
+{den, ...}: let
   local = import ../../_lib/local.nix;
 in {
   flake-file.inputs = {
@@ -21,13 +17,6 @@ in {
     includes = [den.aspects.dev-tools];
 
     homeManager = {
-      config,
-      inputs',
-      lib,
-      ...
-    }: let
-      skills = import ./_agents/skills.nix {inherit inputs lib;};
-    in {
       programs.mcp = {
         enable = true;
         servers = {
@@ -37,28 +26,6 @@ in {
           };
           executor.url = "https://executor.leuchtturm.dev/mcp";
           homeassistant.url = "https://${local.tailscaleHost "ha"}/api/mcp";
-        };
-      };
-
-      programs.claude-code = {
-        enable = true;
-        package = inputs'.llm-agents.packages.claude-code;
-        enableMcpIntegration = true;
-        commandsDir = ./_agents/prompts;
-        inherit skills;
-        mcpServers.homeassistant = {
-          type = "http";
-          url = config.programs.mcp.servers.homeassistant.url;
-          oauth = {
-            clientId = "http://localhost:12345";
-            callbackPort = 12345;
-          };
-        };
-        settings.autoMemoryEnabled = false;
-        settings.attribution = {
-          commit = "";
-          pr = "";
-          sessionUrl = false;
         };
       };
     };

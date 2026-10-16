@@ -4,6 +4,5 @@ _: {
   in {
     home.packages = [browser];
     home.file.".agents/skills/terminal-browser".source = ./_terminal-browser/skill;
-    programs.herdr.extraPlugins.terminal-browser = ./_terminal-browser/herdr-plugin;
   };
 }

@@ -26,7 +26,6 @@
             }
         )
         config.programs.mcp.servers;
-      homeassistantOAuth = config.programs.claude-code.mcpServers.homeassistant.oauth;
     in {
       programs.opencode = {
         enable = true;
@@ -39,10 +38,10 @@
           # Home Manager's MCP integration still emits the v1 configuration shape.
           mcp.servers = lib.recursiveUpdate mcpServers {
             homeassistant.oauth = {
-              client_id = homeassistantOAuth.clientId;
-              callback_port = homeassistantOAuth.callbackPort;
+              client_id = "http://localhost:12345";
+              callback_port = 12345;
               # Home Assistant requires the redirect host to match its client ID.
-              redirect_uri = "${homeassistantOAuth.clientId}/callback";
+              redirect_uri = "http://localhost:12345/callback";
             };
           };
         };
