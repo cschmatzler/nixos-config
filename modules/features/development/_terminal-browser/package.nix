@@ -110,7 +110,7 @@ in
       root="$out/libexec/terminal-browser"
       # GApps arguments exist only after preFixupPhases. Herdr reentry uses
       # this same launcher, so privacy and environment policy belong here.
-      makeWrapper "$root/${release.paths.electron}" "$root/${release.paths.launcher}" \
+      makeShellWrapper "$root/${release.paths.electron}" "$root/${release.paths.launcher}" \
         --run 'umask 077' \
         --set TERMINAL_BROWSER_DIST_ROOT "$root" \
         --set ELECTRON_RUN_AS_NODE 1 \
