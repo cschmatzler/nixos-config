@@ -6,4 +6,7 @@ min_free_size = "100GiB"
 
 [target]
 max_age = "7d"
-evict_first = [".t3/worktrees", "/tmp"]
+# Workers use target/ between mbx commands, when no build lease protects it.
+# Keep their outputs until the checkout is deleted, even under disk pressure.
+keep = [".t3/worktrees"]
+evict_first = ["/tmp"]
