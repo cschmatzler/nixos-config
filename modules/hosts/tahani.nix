@@ -16,6 +16,7 @@ in {
         den.aspects.user-workstation
         den.aspects.user-personal
         den.aspects.vscode-remote
+        den.aspects.terminal-browser
       ];
       homeManager.home.stateVersion = "25.11";
     };

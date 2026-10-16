@@ -19,10 +19,12 @@
   }: let
     local = import ../../_lib/local.nix;
     collie = import ./_herdr/collie.nix {inherit pkgs;};
-    plugins = {
-      gh-pr-workspace = ./_herdr/plugins/gh-pr-workspace;
-      worktree-bootstrap = inputs.herdr-plugin-worktree-bootstrap;
-    };
+    plugins =
+      {
+        gh-pr-workspace = ./_herdr/plugins/gh-pr-workspace;
+        worktree-bootstrap = inputs.herdr-plugin-worktree-bootstrap;
+      }
+      // config.programs.herdr.extraPlugins;
     pluginRegistry =
       builtins.map (source: let
         manifest = builtins.fromTOML (builtins.readFile "${source}/herdr-plugin.toml");
@@ -45,6 +47,20 @@
         source.kind = "local";
       };
   in {
+    imports = [
+      {
+        options.programs.herdr.extraPlugins = lib.mkOption {
+          type = lib.types.attrsOf lib.types.path;
+          default = {};
+          description = ''
+            Additional Herdr plugin source directories, keyed by a local name.
+            Each directory must contain an evaluation-readable herdr-plugin.toml.
+            Do not pass derivation-generated roots, which require a build during evaluation.
+          '';
+        };
+      }
+    ];
+
     home = {
       packages =
         (with pkgs; [

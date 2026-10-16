@@ -107,6 +107,51 @@ new conversation, without a separate startup model turn. Resumed conversations
 are left alone. Use `/poteto-mode off` before the first prompt to opt out;
 `/poteto-mode` remains available for manual activation.
 
+### Browse alongside Pi on Tahani
+
+Tahani's user receives the pinned terminal-browser v0.13.4 package, its bundled
+skill at `~/.agents/skills/terminal-browser`, and a Herdr **Open terminal-browser
+(right split)** action. Other hosts do not receive them. The action resolves the
+Home Manager-installed executable through Herdr's inherited PATH, like the
+existing Bun-based plugins. Start Herdr from the normal user login environment.
+
+Run Pi and the browser on Tahani in the same Herdr tab:
+
+```sh
+terminal-browser open --split right http://localhost:3000
+terminal-browser ls --json
+terminal-browser action --browser <key> --tab <id> -- snapshot
+terminal-browser action --browser <key> --tab <id> -- click @e3
+terminal-browser action --browser <key> --tab <id> done
+```
+
+Use the browser key and tab ID from `ls` for every action. Add `--no-merge` to
+`open` when you need an independent browser instead of another tab. Assign one
+executor per browser. All browsers share a user daemon and profile, so separate
+keys are not security isolation. Grant delegates the skill and a shell or
+browser-control tool explicitly. A local browser with `--ssh tahani` only proxies
+network requests through Tahani; it does not share controls with Pi on Tahani.
+
+Nix owns setup and upgrades. The package blocks `setup`, `upgrade`, automatic
+editor or skill provisioning, privileged AppArmor setup, and update polling.
+The launcher disables usage telemetry and creates new state with private
+permissions. Stable `terminal-browser-nix` state directories follow the normal
+XDG locations across package changes. Existing state permissions and profiles
+from mutable installations are not migrated. Run as a normal user with the
+host's namespace sandbox enabled. No sandbox bypass or setuid helper is added.
+
+Before switching package versions, close all browser panes and wait for the
+actual daemon process to exit. Upstream schedules exit after 15 seconds idle;
+its modification-time generation check is unreliable with Nix store timestamps.
+`terminal-browser shutdown` closes every browser session. Never automate it on
+Pi exit or package upgrades.
+
+Package relocation, sandbox startup, SSH graphics and mouse input, targeted
+actions, screenshot return to Pi, and profile persistence need a built-runtime
+check. Herdr captures Ctrl+K and Ctrl+L, which conflict with browser shortcuts.
+Collie browser viewing is unverified. This feature adds no Pi extension, browser
+HTTP service, MCP server, or always-on browser service.
+
 ### Neovim reviews → Pi
 
 CodeDiff provides inline diffs and integrates with Neogit. Use

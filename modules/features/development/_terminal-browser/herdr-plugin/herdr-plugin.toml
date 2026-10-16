@@ -1,0 +1,13 @@
+id = "zenbu-labs.terminal-browser"
+name = "Terminal Browser"
+version = "0.1.0"
+min_herdr_version = "0.8.2"
+description = "Open the Nix-managed browser inside Herdr"
+platforms = ["linux"]
+
+[[actions]]
+id = "open-split"
+title = "Open terminal-browser (right split)"
+description = "Split the focused pane and open terminal-browser"
+contexts = ["global"]
+command = ["terminal-browser", "open", "--split", "right"]
