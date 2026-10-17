@@ -24,6 +24,15 @@ with import ../../_lib/theme.nix; {
 
       atuin = {
         enable = true;
+        package =
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then
+            pkgs.atuin.overrideAttrs {
+              # Atuin 18.23.0's Darwin checks fail in capture and Bash PTY tests.
+              # Remove this workaround once the upstream package checks are fixed.
+              doCheck = false;
+            }
+          else pkgs.atuin;
         enableZshIntegration = true;
         flags = ["--disable-up-arrow"];
         settings = {
