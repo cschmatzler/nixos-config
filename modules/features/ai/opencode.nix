@@ -33,7 +33,7 @@
         skills = import ./_agents/skills.nix {inherit inputs lib;};
         settings = {
           update = "disable";
-          plugins = ["@ex-machina/opencode-anthropic-auth@2.0.0-next.6" "@rama_nigg/open-cursor"];
+          plugins = ["@langfuse/opencode-observability-plugin" "@ex-machina/opencode-anthropic-auth@next" "@rama_nigg/open-cursor"];
 
           # Home Manager's MCP integration still emits the v1 configuration shape.
           mcp.servers = lib.recursiveUpdate mcpServers {
