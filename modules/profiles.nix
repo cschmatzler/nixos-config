@@ -33,6 +33,7 @@ in {
       den.aspects.opencode
       den.aspects.codex
       den.aspects.claude-code
+      den.aspects.cursor-agent
       den.aspects.agents
       den.aspects.zk
     ];
