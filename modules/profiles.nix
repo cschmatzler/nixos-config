@@ -7,6 +7,7 @@ in {
       den.aspects.core
       den.aspects.tailscale
       den.aspects.vscode
+      den.aspects.codex
     ];
 
     host-nixos-base.includes = [
@@ -15,6 +16,7 @@ in {
       den.aspects.openssh
       den.aspects.disk-maintenance
       den.aspects.tailscale
+      den.aspects.codex
     ];
 
     user-workstation.includes = [
@@ -29,6 +31,8 @@ in {
       den.aspects.neovim
       den.aspects.vscode
       den.aspects.opencode
+      den.aspects.codex
+      den.aspects.claude-code
       den.aspects.agents
       den.aspects.zk
     ];

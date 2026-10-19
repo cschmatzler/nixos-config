@@ -1,6 +1,6 @@
 _: let
   local = import ../../_lib/local.nix;
-  nightlyVersion = "0.1.1-nightly.20261016.3203";
+  nightlyVersion = "0.1.1-nightly.20261019.3348";
 in {
   den.aspects.t3code = {
     nixos = {
@@ -50,7 +50,7 @@ in {
     }: let
       build = {
         arch = "arm64";
-        hash = "sha256-Rs+gRG4lplWsNWISFcI0KgauJafVeyDO0AqfYumq4QA=";
+        hash = "sha256-smGT9CHq4bmK3Qy1Kn3JwVfYnv/R+hEhHbK/fEzs1sg=";
       };
       desktop = import ../../_lib/darwin-app.nix {
         inherit pkgs;
