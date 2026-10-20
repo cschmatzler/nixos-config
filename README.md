@@ -108,6 +108,23 @@ The only configured plugin is `@ex-machina/opencode-anthropic-auth`, pinned to
 the v2-compatible `2.0.0-next.6` release. After applying, launch `opencode2`, run
 `/connect`, and select **Anthropic → Claude Pro/Max** to sign in.
 
+## Langfuse tracing
+
+Codex, Claude Code, and the Cursor agent send session traces to the same
+Langfuse project Pi already uses. The keys are SOPS-encrypted in
+`secrets/langfuse` for all three hosts. Activation writes user-owned files
+under `/run/secrets/rendered`, and the agent configs point at those files.
+
+Codex runs the pinned `@langfuse/codex-observability-plugin` Stop hook and
+reads `~/.codex/langfuse.json`. The first run asks you to trust that hook.
+Claude Code runs the pinned Langfuse Stop and SessionEnd hooks. `uv` installs
+the Langfuse Python SDK the first time a hook runs, which needs a network.
+Cursor, including `cursor-agent`, runs the pinned observability hooks from
+`~/.cursor/hooks.json` and reads `~/.cursor/langfuse.json`.
+
+Traces use the `development` environment from the Pi config. Apply with
+`nix run .#apply`.
+
 ## Optional manual browser pane on Tahani
 
 The terminal-browser v0.13.4 package remains available on Tahani. Its local
