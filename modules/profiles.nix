@@ -8,6 +8,7 @@ in {
       den.aspects.tailscale
       den.aspects.vscode
       den.aspects.codex
+      den.aspects.langfuse
     ];
 
     host-nixos-base.includes = [
@@ -17,6 +18,7 @@ in {
       den.aspects.disk-maintenance
       den.aspects.tailscale
       den.aspects.codex
+      den.aspects.langfuse
     ];
 
     user-workstation.includes = [
@@ -34,6 +36,7 @@ in {
       den.aspects.codex
       den.aspects.claude-code
       den.aspects.cursor-agent
+      den.aspects.langfuse
       den.aspects.agents
       den.aspects.zk
     ];
