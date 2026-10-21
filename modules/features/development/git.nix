@@ -2,6 +2,7 @@ _:
 with import ../../_lib/theme.nix; {
   den.aspects.git.homeManager = {pkgs, ...}: {
     home.packages = with pkgs; [
+      (callPackage ./_git/gitcafe.nix {})
       delta
       gh
       glab
