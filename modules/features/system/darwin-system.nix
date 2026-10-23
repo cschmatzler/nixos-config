@@ -30,7 +30,13 @@ with import ../../_lib/local.nix; {
 
     environment.systemPackages = with pkgs; [
       _1password-gui
-      alcove
+      # Cask URL is unversioned (sha256 :no_check); bump hash when upstream updates.
+      (brewCasks.alcove.overrideAttrs (old: {
+        src = pkgs.fetchurl {
+          url = builtins.head old.src.urls;
+          hash = "sha256-F8SB/6mvkfx24rqZlflnUFOL8XHl6yvmAsByVfTZROU=";
+        };
+      }))
       brewCasks.cleanshot
       ghostty-bin
       mas
