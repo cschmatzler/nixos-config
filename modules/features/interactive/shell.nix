@@ -17,11 +17,6 @@ with import ../../_lib/theme.nix; {
     };
 
     programs = {
-      direnv = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-
       atuin = {
         enable = true;
         package =
@@ -81,6 +76,8 @@ with import ../../_lib/theme.nix; {
           };
         };
         initContent = lib.mkAfter ''
+          eval "$(${pkgs.devenv}/bin/devenv hook zsh)"
+
           setopt interactive_comments no_beep
           KEYTIMEOUT=1
 

@@ -98,7 +98,6 @@ in
     "security.promptForLocalFileProtocolHandling" = false;
     "remote.SSH.defaultExtensions" = [
       "jnoortheen.nix-ide"
-      "mkhl.direnv"
       "oxc.oxc-vscode"
       "rust-lang.rust-analyzer"
       "tamasfe.even-better-toml"
