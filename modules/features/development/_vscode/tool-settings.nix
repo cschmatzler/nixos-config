@@ -10,7 +10,6 @@
   "oxc.path.oxfmt" = "${pkgs.oxfmt}/bin/oxfmt";
 
   # Use host-native Nix binaries, including for Marketplace extensions on SSH.
-  "direnv.path.executable" = "${pkgs.direnv}/bin/direnv";
   "rust-analyzer.server.path" = "${pkgs.rust-analyzer}/bin/rust-analyzer";
   "rust-analyzer.check.command" = "clippy";
   "[rust]"."editor.defaultFormatter" = "rust-lang.rust-analyzer";

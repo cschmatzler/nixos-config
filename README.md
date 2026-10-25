@@ -36,6 +36,14 @@ Roll back with `darwin-rebuild --rollback` or `nixos-rebuild switch --rollback`.
 
 Do not bump `system.stateVersion` or `home.stateVersion`.
 
+## Development environments
+
+Zsh uses devenv's native auto-activation hook. Run `devenv allow` once in each
+project to trust it; entering that directory then activates its environment,
+and leaving it deactivates the environment. Run `devenv revoke` in a project
+to stop auto-activation. Projects need a `devenv.nix`; `.envrc` files are no
+longer loaded automatically.
+
 ## Disk maintenance on Tahani
 
 The `disk-maintenance` aspect collects Nix garbage daily while retaining

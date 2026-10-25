@@ -33,7 +33,6 @@ in {
               extensions = with pkgs.vscode-extensions; [
                 asvetliakov.vscode-neovim
                 jnoortheen.nix-ide
-                mkhl.direnv
                 ms-vscode-remote.remote-ssh
                 mvllow.rose-pine
                 oxc.oxc-vscode
