@@ -11,6 +11,10 @@ in {
       url = "github:humanlayer/skills";
       flake = false;
     };
+    tstack = {
+      url = "github:t3dotgg/tstack";
+      flake = false;
+    };
   };
 
   den.aspects.agents = {

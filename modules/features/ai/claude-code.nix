@@ -9,7 +9,6 @@
     homeManager = {
       config,
       inputs',
-      lib,
       ...
     }: {
       programs.claude-code = {
@@ -17,7 +16,7 @@
         package = inputs'.llm-agents.packages.claude-code;
         enableMcpIntegration = true;
         commandsDir = ./_agents/prompts;
-        skills = import ./_agents/skills.nix {inherit inputs lib;};
+        skills = import ./_agents/skills.nix {inherit inputs;};
         mcpServers.homeassistant = {
           type = "http";
           url = config.programs.mcp.servers.homeassistant.url;

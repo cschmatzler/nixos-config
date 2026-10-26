@@ -30,7 +30,7 @@
       programs.opencode = {
         enable = true;
         package = inputs'.llm-agents.packages.opencode2;
-        skills = import ./_agents/skills.nix {inherit inputs lib;};
+        skills = import ./_agents/skills.nix {inherit inputs;};
         settings = {
           update = "disable";
           plugins = ["@langfuse/opencode-observability-plugin" "@ex-machina/opencode-anthropic-auth@next" "@rama_nigg/open-cursor"];
