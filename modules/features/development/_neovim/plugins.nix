@@ -146,17 +146,6 @@
 
     neogit = {
       enable = true;
-      # Drop this backport once nixpkgs includes NeogitOrg/neogit#2020.
-      package = pkgs.vimPlugins.neogit.overrideAttrs (old: {
-        patches =
-          (old.patches or [])
-          ++ [
-            (pkgs.fetchurl {
-              url = "https://github.com/NeogitOrg/neogit/commit/2063bd554255ec29a709540f5c51572b2d834a6c.patch";
-              hash = "sha256-uEbSMAuTn57K1Pyjxy39/twrT8nINxJRs2iIul0sg88=";
-            })
-          ];
-      });
       settings = {
         kind = "replace";
         commit_popup.kind = "floating";
