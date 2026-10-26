@@ -112,9 +112,7 @@ reuses the shared MCP servers and skills, including Home Assistant's OAuth
 client settings. Host-specific skills under `~/.agents/skills` are discovered
 automatically.
 
-The only configured plugin is `@ex-machina/opencode-anthropic-auth`, pinned to
-the v2-compatible `2.0.0-next.6` release. After applying, launch `opencode2`, run
-`/connect`, and select **Anthropic → Claude Pro/Max** to sign in.
+The only configured plugin is `@langfuse/opencode-observability-plugin`.
 
 ## Langfuse tracing
 
