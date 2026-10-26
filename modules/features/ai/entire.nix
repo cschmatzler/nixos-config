@@ -75,7 +75,10 @@
     in {
       home = {
         packages = [entire];
-        sessionVariables.ENTIRE_NO_AUTO_UPDATE = "1";
+        sessionVariables = {
+          ENTIRE_NO_AUTO_UPDATE = "1";
+          ENTIRE_TOKEN_STORE = "file";
+        };
       };
 
       programs.codex = {
