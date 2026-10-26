@@ -101,8 +101,8 @@ in {
         }
       ];
     in {
-      programs.codex.settings = {
-        features.hooks = true;
+      programs.codex = {
+        settings.features.hooks = true;
         hooks.Stop = [
           {
             hooks = [
@@ -140,32 +140,30 @@ in {
         ];
       };
 
+      programs.cursor-agent.hooks = {
+        sessionStart = cursorHook 10;
+        sessionEnd = cursorHook 60;
+        beforeSubmitPrompt = cursorHook 60;
+        preToolUse = cursorHook 10;
+        postToolUse = cursorHook 10;
+        postToolUseFailure = cursorHook 10;
+        subagentStart = cursorHook 10;
+        subagentStop = cursorHook 10;
+        beforeShellExecution = cursorHook 10;
+        afterShellExecution = cursorHook 10;
+        beforeMCPExecution = cursorHook 10;
+        afterMCPExecution = cursorHook 10;
+        beforeReadFile = cursorHook 10;
+        afterFileEdit = cursorHook 10;
+        afterAgentResponse = cursorHook 10;
+        afterAgentThought = cursorHook 10;
+        preCompact = cursorHook 10;
+        stop = cursorHook 60;
+      };
+
       home.file = {
         ".codex/langfuse.json".source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."codex-langfuse.json".path;
         ".cursor/langfuse.json".source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."cursor-langfuse.json".path;
-        ".cursor/hooks.json".text = builtins.toJSON {
-          version = 1;
-          hooks = {
-            sessionStart = cursorHook 10;
-            sessionEnd = cursorHook 60;
-            beforeSubmitPrompt = cursorHook 60;
-            preToolUse = cursorHook 10;
-            postToolUse = cursorHook 10;
-            postToolUseFailure = cursorHook 10;
-            subagentStart = cursorHook 10;
-            subagentStop = cursorHook 10;
-            beforeShellExecution = cursorHook 10;
-            afterShellExecution = cursorHook 10;
-            beforeMCPExecution = cursorHook 10;
-            afterMCPExecution = cursorHook 10;
-            beforeReadFile = cursorHook 10;
-            afterFileEdit = cursorHook 10;
-            afterAgentResponse = cursorHook 10;
-            afterAgentThought = cursorHook 10;
-            preCompact = cursorHook 10;
-            stop = cursorHook 60;
-          };
-        };
       };
     };
   };

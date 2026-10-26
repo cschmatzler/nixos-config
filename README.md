@@ -112,7 +112,23 @@ reuses the shared MCP servers and skills, including Home Assistant's OAuth
 client settings. Host-specific skills under `~/.agents/skills` are discovered
 automatically.
 
-The only configured plugin is `@langfuse/opencode-observability-plugin`.
+OpenCode loads `@langfuse/opencode-observability-plugin` and Entire’s pinned
+local plugin.
+
+## Entire session capture
+
+All three workstation users receive Entire v0.12.2, including
+`git-remote-entire`. Nix owns upgrades; Entire's automatic updater is disabled.
+Codex, Claude Code and Cursor have user-level lifecycle hooks alongside
+Langfuse, and OpenCode loads the upstream Entire plugin from the same release.
+
+After applying the configuration, enable capture in each repository with
+`entire enable`. This installs the repository's Git hooks and settings;
+repositories remain opt-in. If setup adds project-level agent integrations,
+remove those duplicates with `entire agent remove <name>` (`codex`,
+`claude-code`, `cursor`, or `opencode`); the user-level integrations above
+remain installed. Keep the repository settings and Git hooks.
+`entire status` reports repository-local integration presence.
 
 ## Langfuse tracing
 

@@ -38,6 +38,7 @@ in {
       den.aspects.cursor-agent
       den.aspects.langfuse
       den.aspects.agents
+      den.aspects.entire
       den.aspects.zk
     ];
 
