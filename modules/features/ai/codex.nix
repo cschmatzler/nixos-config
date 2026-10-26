@@ -16,14 +16,13 @@ in {
     homeManager = {
       config,
       inputs',
-      lib,
       ...
     }: {
       programs.codex = {
         enable = true;
         package = inputs'.llm-agents.packages.codex;
         enableMcpIntegration = true;
-        skills = import ./_agents/skills.nix {inherit inputs lib;};
+        skills = import ./_agents/skills.nix {inherit inputs;};
         settings.mcp_servers.homeassistant = {
           url = config.programs.mcp.servers.homeassistant.url;
           oauth = {

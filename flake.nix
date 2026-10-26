@@ -56,5 +56,9 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tstack = {
+      url = "github:t3dotgg/tstack";
+      flake = false;
+    };
   };
 }
